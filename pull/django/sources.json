@@ -1,0 +1,8 @@
+{
+  "sources": {
+    "weblate": {
+      "before_sql": "-- The sequence Weblate's own migration creates (workspaces/migrations/0004_workspace_metric_id.py) for the db_default of Workspace.metric_id, which the models alone do not create.\nCREATE SEQUENCE workspaces_workspace_metric_id_seq AS integer;"
+    }
+  },
+  "skip": {}
+}

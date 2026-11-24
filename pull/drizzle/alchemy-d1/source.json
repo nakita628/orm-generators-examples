@@ -1,0 +1,100 @@
+{
+  "source": "drizzle/alchemy-d1",
+  "about": "the Drizzle schema of [apps/drizzler/examples/alchemy-d1](../../../apps/drizzler/examples/alchemy-d1)",
+  "dialect": "sqlite",
+  "tables": 2,
+  "models": 2,
+  "prisma": "8.1.0-dev.9",
+  "pulled_at": "2026-11-24T19:46:05.426Z",
+  "sql": {
+    "prisma": {
+      "status": "error",
+      "error": "Error: SQLite database error"
+    },
+    "drizzle": {
+      "status": "error",
+      "error": "Error: SQLite database error"
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "error",
+      "error": "sqlite3.OperationalError: object name reserved for internal use: sqlite_autoindex_users_1"
+    },
+    "django": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"posts\"",
+          "lines": [
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())",
+            "- FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON UPDATE NO ACTION ON DELETE CASCADE",
+            "+ FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON UPDATE NO ACTION ON DELETE NO ACTION"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())"
+          ]
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": []
+    },
+    "gorm": {
+      "status": "error",
+      "error": "near \"(\": syntax error"
+    },
+    "sea-orm": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"posts\"",
+          "lines": [
+            "- \"title\" TEXT NOT NULL",
+            "+ \"title\" VARCHAR NOT NULL",
+            "- \"body\" TEXT NOT NULL",
+            "+ \"body\" VARCHAR NOT NULL",
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"email\" TEXT NOT NULL",
+            "+ \"email\" VARCHAR NOT NULL",
+            "- \"name\" TEXT NOT NULL",
+            "+ \"name\" VARCHAR NOT NULL",
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL"
+          ]
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": []
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "error",
+      "error": "SQLite Error 1: 'object name reserved for internal use: sqlite_autoindex_users_1'."
+    },
+    "exposed": {
+      "status": "not-generated"
+    }
+  },
+  "hekireki": "0.52.20",
+  "checked_at": "2026-11-24T19:49:14.964Z"
+}

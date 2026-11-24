@@ -12,6 +12,7 @@ from __future__ import annotations
 import base64
 import enum
 import importlib.util
+import ipaddress
 import json
 import sys
 import uuid
@@ -215,6 +216,8 @@ def normal(value: Any) -> Any:
     if isinstance(value, enum.Enum):
         return value.value
     if isinstance(value, uuid.UUID):
+        return str(value)
+    if isinstance(value, (ipaddress.IPv4Address, ipaddress.IPv6Address, ipaddress.IPv4Interface, ipaddress.IPv6Interface)):
         return str(value)
     if isinstance(value, (list, tuple)):
         return [normal(v) for v in value]

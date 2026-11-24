@@ -106,9 +106,13 @@ function layerConfig(layer) {
 
 function allSources() {
   const sources = []
+  // `sources.json` of the django and drizzle layers may hold, per example, what the project's ORM
+  // needs and the example's own files do not say: `before_sql` / `after_sql` (a sequence or a
+  // function the app creates outside its models).
+  const extra = (layer, name) => layerConfig(layer).sources?.[name] ?? {}
   for (const name of readdirSync(djangoerExamples).sort()) {
     if (!existsSync(join(djangoerExamples, name, 'pyproject.toml'))) continue
-    sources.push({ layer: 'django', name, dialect: 'postgresql', about: `the models of [apps/djangoer/examples/${name}](../../../apps/djangoer/examples/${name})` })
+    sources.push({ layer: 'django', name, dialect: 'postgresql', about: `the models of [apps/djangoer/examples/${name}](../../../apps/djangoer/examples/${name})`, ...extra('django', name) })
   }
   for (const name of readdirSync(drizzlerExamples).sort()) {
     const config = join(drizzlerExamples, name, 'drizzle.config.ts')
@@ -119,6 +123,7 @@ function allSources() {
       name,
       dialect: { postgresql: 'postgresql', mysql: 'mysql', sqlite: 'sqlite', turso: 'sqlite' }[dialect] ?? dialect,
       about: `the Drizzle schema of [apps/drizzler/examples/${name}](../../../apps/drizzler/examples/${name})`,
+      ...extra('drizzle', name),
     })
   }
   for (const layer of ['activerecord', 'sqlalchemy']) {
@@ -401,6 +406,7 @@ function validate(source, pulledModels, work, url) {
       continue
     }
     let changed = false
+    const gin = new Set()
     for (const [, message, at] of out.matchAll(/error: (.*?)\n\s*-->\s*validate\.prisma:(\d+)/g)) {
       const index = Number(at) - offset
       const mismatch = /The type of the field `(\w+)` in the model `(\w+)` is not matching the type of the referenced field `(\w+)` in model `(\w+)`/.exec(message)
@@ -422,8 +428,18 @@ function validate(source, pulledModels, work, url) {
           fixes.push(`${modelOf(lines, index)}.${before.trim().split(/\s+/)[0]}: its default dropped (a default on an Unsupported field has to be dbgenerated())`)
           changed = true
         }
+      } else if (/The Gin index type does not support the type of the field/.test(message) && /^\s*@@index\(/.test(lines[index] ?? '')) {
+        gin.add(index)
       }
     }
+    // A Gin index over text and integer columns together (Django's GinIndex with btree_gin):
+    // Prisma writes it up and then refuses it, so the index goes.
+    for (const index of [...gin].sort((a, b) => a - b)) {
+      const name = /map:\s*"([^"]+)"/.exec(lines[index])?.[1] ?? lines[index].trim()
+      fixes.push(`${modelOf(lines, index)}: @@index "${name}" dropped (a Gin index over these column types, which Prisma writes up and then refuses)`)
+      changed = true
+    }
+    for (const index of [...gin].sort((a, b) => b - a)) lines.splice(index, 1)
     if (!changed) throw new Error(`the pulled schema does not validate: ${tail(run)}`)
   }
   throw new Error('the pulled schema still does not validate after 10 rounds of changes')

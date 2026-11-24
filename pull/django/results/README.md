@@ -8,7 +8,9 @@ Each project's tables as Django created them (`<project>/source.sql`), written u
 | [django-categories](django-categories.md) | 11 | 0.52.2 | ✅ 75/75 · tables ≠ | ⚠️ 49/51 · no tables | ✅ 75/75 · tables ≠ | ✅ 75/75 · tables ❌ | ✅ 75/75 · tables ≠ | ⚠️ 63/66 · tables ≠ | ✅ 75/75 · no tables | ✅ 75/75 · no tables | ✅ 75/75 · no tables | ✅ 75/75 · tables ≠ | ✅ 75/75 · tables ✅ |
 | [django-oidc-provider](django-oidc-provider.md) | 16 | 0.52.2 | ✅ 111/111 · tables ≠ | ⚠️ 68/75 · no tables | ✅ 111/111 · tables ≠ | ✅ 111/111 · tables ❌ | ⚠️ 107/111 · tables ❌ | ⚠️ 101/104 · tables ≠ | ✅ 111/111 · no tables | ✅ 111/111 · no tables | ✅ 111/111 · no tables | ✅ 111/111 · tables ≠ | ✅ 111/111 · tables ✅ |
 | [django-simple-captcha](django-simple-captcha.md) | 10 | 0.52.2 | ✅ 64/64 · tables ≠ | ✅ 46/46 · no tables | ✅ 64/64 · tables ≠ | ✅ 64/64 · tables ❌ | ✅ 64/64 · tables ≠ | ⚠️ 54/57 · tables ≠ | ✅ 64/64 · no tables | ✅ 64/64 · no tables | ✅ 64/64 · no tables | ✅ 64/64 · tables ≠ | ✅ 64/64 · tables ✅ |
+| [django-user-accounts](django-user-accounts.md) | 18 | 0.52.20 | ✅ 120/120 · tables ≠ | ✅ 84/84 · no tables | ✅ 120/120 · tables ≠ | ✅ 120/120 · tables ≠ | ✅ 120/120 · tables ✅ | ✅ 120/120 · tables ≠ | ✅ 120/120 · no tables | ✅ 120/120 · no tables | ✅ 120/120 · no tables | ✅ 120/120 · tables ≠ | ✅ 120/120 · tables ✅ |
 | [wagtail](wagtail.md) | 55 | 0.52.2 | ✅ 430/430 · tables ≠ | ⚠️ 251/252 · no tables | ✅ 430/430 · tables ≠ | ✅ 430/430 · tables ❌ | ✅ 430/430 · tables ❌ | ⚠️ 293/311 · tables ❌ | ⚠️ 302/321 · no tables | ⚠️ 426/427 · no tables | ✅ 430/430 · no tables | ⚠️ 429/430 · tables ≠ | ✅ 430/430 · tables ≠ |
+| [weblate](weblate.md) | 110 | 0.52.20 | ⚠️ 760/778 · tables ≠ | ⚠️ 458/476 · no tables | ⚠️ 841/847 · tables ≠ | ⚠️ 841/847 · tables ≠ | ⚠️ 760/778 · tables ≠ | ⚠️ 746/765 · tables ≠ | ⚠️ 754/773 · no tables | ⚠️ 760/778 · no tables | ⚠️ 760/778 · no tables | ⚠️ 754/773 · tables ≠ | ⚠️ 760/778 · tables ✅ |
 
 ## The SQL each ORM creates from the write-up
 
@@ -22,7 +24,9 @@ Each project's tables as Django created them (`<project>/source.sql`), written u
 | [django-categories](../django-categories/README.md) | ≠ 11 | ≠ 11 | ≠ 11 | ❌ | ≠ 11 | ≠ 11 | ≠ 11 | ≠ 11 |
 | [django-oidc-provider](../django-oidc-provider/README.md) | ≠ 16 | ≠ 16 | ≠ 16 | ❌ | ❌ | ≠ 16 | ≠ 16 | ≠ 16 |
 | [django-simple-captcha](../django-simple-captcha/README.md) | ≠ 10 | ≠ 10 | ≠ 10 | ❌ | ≠ 10 | ≠ 10 | ≠ 10 | ≠ 10 |
+| [django-user-accounts](../django-user-accounts/README.md) | ≠ 18 | ≠ 18 | ≠ 18 | ≠ 3 | ≠ 18 | ≠ 18 | ≠ 18 | ≠ 18 |
 | [wagtail](../wagtail/README.md) | ≠ 55 | ≠ 55 | ≠ 55 | ❌ | ❌ | ❌ | ≠ 55 | ≠ 55 |
+| [weblate](../weblate/README.md) | ≠ 110 | ≠ 110 | ≠ 110 | ≠ 38 | ≠ 111 | ≠ 110 | ≠ 110 | ≠ 110 |
 
 ### Against prisma.sql, what Prisma itself creates from the same write-up
 
@@ -34,4 +38,6 @@ What the write-up cannot say (Django's identity columns become serial ones, chec
 | [django-categories](../django-categories/README.md) | ≈ | ≈ | ❌ | ≠ 10 | ≠ 11 | ≈ | ≈ |
 | [django-oidc-provider](../django-oidc-provider/README.md) | ≈ | ≈ | ❌ | ❌ | ≠ 16 | ≈ | ≈ |
 | [django-simple-captcha](../django-simple-captcha/README.md) | ≈ | ≈ | ❌ | ≠ 9 | ≠ 10 | ≈ | ≈ |
+| [django-user-accounts](../django-user-accounts/README.md) | ≈ | ≈ | ≠ 18 | = | ≠ 16 | ≈ | ≈ |
 | [wagtail](../wagtail/README.md) | ≠ 4 | ≠ 4 | ❌ | ❌ | ❌ | ≠ 2 | ≠ 1 |
+| [weblate](../weblate/README.md) | ≠ 13 | ≠ 13 | ≠ 109 | ≠ 34 | ≠ 105 | ≠ 11 | ≈ |

@@ -1,0 +1,7 @@
+--- source.sql
++++ sql/sea-orm.sql
+@@ -1,2 +1,2 @@
+-CREATE TABLE `posts` (`id` integer PRIMARY KEY AUTOINCREMENT, `user_id` integer NOT NULL, `title` text NOT NULL, `body` text NOT NULL, `created_at` integer DEFAULT (unixepoch()) NOT NULL, CONSTRAINT `fk_posts_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE);
+-CREATE TABLE `users` (`id` integer PRIMARY KEY AUTOINCREMENT, `email` text NOT NULL UNIQUE, `name` text NOT NULL, `created_at` integer DEFAULT (unixepoch()) NOT NULL);
++CREATE TABLE "posts" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL, "title" varchar NOT NULL, "body" varchar NOT NULL, "created_at" integer NOT NULL, FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION);
++CREATE TABLE "users" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "email" varchar NOT NULL UNIQUE, "name" varchar NOT NULL, "created_at" integer NOT NULL);

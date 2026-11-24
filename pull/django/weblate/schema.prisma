@@ -1,0 +1,2163 @@
+// django/weblate: the tables that Django creates from the models of apps/djangoer/examples/weblate,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+//
+// Changed from what `prisma db pull` wrote, which `prisma validate` refuses:
+// - memory_memory: @@index "memory_source_trgm" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_comment: @@index "comment_comment_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_suggestion: @@index "suggestion_target_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_context_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_explanation_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_location_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_note_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_source_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+// - trans_unit: @@index "unit_target_fulltext" dropped (a Gin index over these column types, which Prisma writes up and then refuses)
+
+datasource db {
+  provider = "postgresql"
+}
+
+// The preview features the schema needs.
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_auditlog {
+  id                Int                @id @default(autoincrement())
+  user_id           Int?
+  activity          String             @db.VarChar(20)
+  params            Json
+  address           String?            @db.Inet
+  user_agent        String             @db.VarChar(200)
+  timestamp         DateTime           @db.Timestamptz(6)
+  weblate_auth_user weblate_auth_user? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_auditlog_user_id_1dfbca79_fk_weblate_auth_user_id")
+
+  @@index([activity], map: "accounts_auditlog_activity_8f58593c")
+  @@index([activity], map: "accounts_auditlog_activity_8f58593c_like")
+  @@index([timestamp], map: "accounts_auditlog_timestamp_fc82620d")
+  @@index([user_id], map: "accounts_auditlog_user_id_1dfbca79")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_profile {
+  id                                   Int                                    @id @default(autoincrement())
+  user_id                              Int                                    @unique
+  language                             String                                 @db.VarChar(10)
+  suggested                            Int
+  translated                           Int
+  uploaded                             Int
+  commented                            Int
+  theme                                String                                 @db.VarChar(10)
+  hide_completed                       Boolean
+  secondary_in_zen                     Boolean
+  hide_source_secondary                Boolean
+  wide_tables                          Boolean
+  listing_columns                      Json
+  editor_link                          String                                 @db.VarChar(200)
+  translate_mode                       Int
+  zen_mode                             Int
+  special_chars                        String                                 @db.VarChar(30)
+  nearby_strings                       Int                                    @db.SmallInt
+  auto_watch                           Boolean
+  contribute_personal_tm               Boolean
+  dashboard_view                       Int
+  dashboard_component_list_id          Int?
+  website                              String                                 @db.VarChar(200)
+  contact                              String                                 @db.VarChar(200)
+  liberapay                            String                                 @db.VarChar(50)
+  fediverse                            String                                 @db.VarChar(200)
+  codesite                             String                                 @db.VarChar(200)
+  github                               String                                 @db.VarChar(50)
+  twitter                              String                                 @db.VarChar(50)
+  linkedin                             String                                 @db.VarChar(50)
+  location                             String                                 @db.VarChar(100)
+  company                              String                                 @db.VarChar(100)
+  public_email                         String                                 @db.VarChar(190)
+  commit_email                         String                                 @db.VarChar(190)
+  commit_name                          Int
+  last_2fa                             String                                 @db.VarChar(15)
+  trans_componentlist                  trans_componentlist?                   @relation(fields: [dashboard_component_list_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_dashboard_component__4730151f_fk_trans_com")
+  weblate_auth_user                    weblate_auth_user                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_user_id_49a85d32_fk_weblate_auth_user_id")
+  accounts_profile_languages           accounts_profile_languages[]
+  accounts_profile_secondary_languages accounts_profile_secondary_languages[]
+  accounts_profile_watched             accounts_profile_watched[]
+
+  @@index([commented], map: "accounts_profile_commented_8e3a8722")
+  @@index([dashboard_component_list_id], map: "accounts_profile_dashboard_component_list_id_4730151f")
+  @@index([suggested], map: "accounts_profile_suggested_8e0fb145")
+  @@index([translated], map: "accounts_profile_translated_45d8856d")
+  @@index([uploaded], map: "accounts_profile_uploaded_f5223324")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_profile_languages {
+  id               Int              @id @default(autoincrement())
+  profile_id       Int
+  language_id      Int
+  lang_language    lang_language    @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_lan_language_id_194609ba_fk_lang_lang")
+  accounts_profile accounts_profile @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_lan_profile_id_eabf6019_fk_accounts_")
+
+  @@unique([profile_id, language_id], map: "accounts_profile_languages_profile_id_language_id_48036091_uniq")
+  @@index([language_id], map: "accounts_profile_languages_language_id_194609ba")
+  @@index([profile_id], map: "accounts_profile_languages_profile_id_eabf6019")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_profile_secondary_languages {
+  id               Int              @id @default(autoincrement())
+  profile_id       Int
+  language_id      Int
+  lang_language    lang_language    @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_sec_language_id_e0f1e325_fk_lang_lang")
+  accounts_profile accounts_profile @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_sec_profile_id_acf6974e_fk_accounts_")
+
+  @@unique([profile_id, language_id], map: "accounts_profile_seconda_profile_id_language_id_cb800d1e_uniq")
+  @@index([language_id], map: "accounts_profile_secondary_languages_language_id_e0f1e325")
+  @@index([profile_id], map: "accounts_profile_secondary_languages_profile_id_acf6974e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_profile_watched {
+  id               Int              @id @default(autoincrement())
+  profile_id       Int
+  project_id       Int
+  accounts_profile accounts_profile @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_wat_profile_id_adce7487_fk_accounts_")
+  trans_project    trans_project    @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_profile_wat_project_id_b8975f00_fk_trans_pro")
+
+  @@unique([profile_id, project_id], map: "accounts_profile_watched_profile_id_project_id_678d8754_uniq")
+  @@index([profile_id], map: "accounts_profile_watched_profile_id_adce7487")
+  @@index([project_id], map: "accounts_profile_watched_project_id_b8975f00")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_subscription {
+  id                Int               @id @default(autoincrement())
+  user_id           Int
+  notification      String            @db.VarChar(100)
+  scope             Int
+  frequency         Int
+  project_id        Int?
+  component_id      Int?
+  onetime           Boolean
+  trans_component   trans_component?  @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_subscriptio_component_id_f17fa0c7_fk_trans_com")
+  trans_project     trans_project?    @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_subscription_project_id_0ac0474e_fk_trans_project_id")
+  weblate_auth_user weblate_auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_subscription_user_id_980c85f5_fk_weblate_auth_user_id")
+
+  @@unique([notification, scope, project_id, component_id, user_id], map: "accounts_subscription_notification_unique")
+  @@index([component_id], map: "accounts_subscription_component_id_f17fa0c7")
+  @@index([project_id], map: "accounts_subscription_project_id_0ac0474e")
+  @@index([user_id], map: "accounts_subscription_user_id_980c85f5")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model accounts_teamauditlog {
+  id                   Int                   @id @default(autoincrement())
+  team_id              Int?
+  team_name            String                @db.VarChar(150)
+  scope                String                @db.VarChar(10)
+  scope_label          String                @db.VarChar(200)
+  project_id           Int?
+  workspace_id         String?               @db.Uuid
+  actor_id             Int?
+  event                String                @db.VarChar(20)
+  details              Json
+  timestamp            DateTime              @db.Timestamptz(6)
+  workspaces_workspace workspaces_workspace? @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_teamauditlo_workspace_id_43f2ba4f_fk_workspace")
+  weblate_auth_user    weblate_auth_user?    @relation(fields: [actor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_teamauditlog_actor_id_96cc352d_fk_weblate_auth_user_id")
+  trans_project        trans_project?        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_teamauditlog_project_id_c3db3056_fk_trans_project_id")
+  weblate_auth_group   weblate_auth_group?   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_teamauditlog_team_id_b59809a3_fk_weblate_auth_group_id")
+
+  @@index([actor_id], map: "accounts_teamauditlog_actor_id_96cc352d")
+  @@index([project_id], map: "accounts_teamauditlog_project_id_c3db3056")
+  @@index([team_id], map: "accounts_teamauditlog_team_id_b59809a3")
+  @@index([timestamp], map: "accounts_teamauditlog_timestamp_184b340e")
+  @@index([workspace_id], map: "accounts_teamauditlog_workspace_id_43f2ba4f")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model accounts_verifiedemail {
+  id                         Int                        @id @default(autoincrement())
+  is_deliverable             Boolean
+  social_id                  BigInt
+  email                      String                     @db.VarChar(190)
+  social_auth_usersocialauth social_auth_usersocialauth @relation(fields: [social_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_verifiedema_social_id_c6d8a262_fk_social_au")
+
+  @@index([social_id], map: "accounts_verifiedemail_social_id_c6d8a262")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model addons_addon {
+  id                           Int                            @id @default(autoincrement())
+  component_id                 Int?
+  project_id                   Int?
+  category_id                  Int?
+  name                         String                         @db.VarChar(100)
+  configuration                Json
+  state                        Json
+  repo_scope                   Boolean
+  trans_category               trans_category?                @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_addon_category_id_99fed34f_fk_trans_category_id")
+  trans_component              trans_component?               @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_addon_component_id_87dbd2fc_fk_trans_component_id")
+  trans_project                trans_project?                 @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_addon_project_id_d2181050_fk_trans_project_id")
+  addons_addonactivitylog      addons_addonactivitylog[]
+  addons_event                 addons_event[]
+  kotlin_sdk_kotlinsdkartifact kotlin_sdk_kotlinsdkartifact[]
+  kotlin_sdk_kotlinsdkbuild    kotlin_sdk_kotlinsdkbuild[]
+  trans_change                 trans_change[]
+
+  @@index([category_id], map: "addons_addon_category_id_99fed34f")
+  @@index([component_id], map: "addons_addon_component_id_87dbd2fc")
+  @@index([project_id], map: "addons_addon_project_id_d2181050")
+  @@index([repo_scope], map: "addons_addon_repo_scope_20c74be8")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model addons_addonactivitylog {
+  id              Int              @id @default(autoincrement())
+  addon_id        Int
+  component_id    Int?
+  event           Int
+  created         DateTime         @db.Timestamptz(6)
+  details         Json
+  status          Int
+  trans_component trans_component? @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_addonactivity_component_id_baafffdc_fk_trans_com")
+  addons_addon    addons_addon     @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_addonactivitylog_addon_id_44e38f98_fk_addons_addon_id")
+
+  @@index([addon_id], map: "addons_addonactivitylog_addon_id_44e38f98")
+  @@index([component_id], map: "addons_addonactivitylog_component_id_baafffdc")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model addons_event {
+  id           Int          @id @default(autoincrement())
+  addon_id     Int
+  event        Int
+  addons_addon addons_addon @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addons_event_addon_id_66d8d06c_fk_addons_addon_id")
+
+  @@unique([addon_id, event], map: "addons_event_addon_id_event_2407a5ef_uniq")
+}
+
+model auth_group {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique @db.VarChar(150)
+  auth_group_permissions auth_group_permissions[]
+
+  @@index([name], map: "auth_group_name_a6ea08ec_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_group_permissions {
+  id              Int             @id @default(autoincrement())
+  group_id        Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm")
+  auth_group      auth_group      @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id")
+
+  @@unique([group_id, permission_id], map: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
+  @@index([group_id], map: "auth_group_permissions_group_id_b120cbf9")
+  @@index([permission_id], map: "auth_group_permissions_permission_id_84c5c92e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_permission {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(255)
+  content_type_id        Int
+  codename               String                   @db.VarChar(100)
+  auth_group_permissions auth_group_permissions[]
+  django_content_type    django_content_type      @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_permission_content_type_id_2f476e4b_fk_django_co")
+
+  @@unique([content_type_id, codename], map: "auth_permission_content_type_id_codename_01ab375a_uniq")
+  @@index([content_type_id], map: "auth_permission_content_type_id_2f476e4b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model authtoken_token {
+  key               String            @id @db.VarChar(40)
+  user_id           Int               @unique
+  created           DateTime          @db.Timestamptz(6)
+  weblate_auth_user weblate_auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "authtoken_token_user_id_35299eff_fk_weblate_auth_user_id")
+
+  @@index([key], map: "authtoken_token_key_10f0b77e_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model checks_check {
+  id         Int        @id @default(autoincrement())
+  unit_id    Int
+  name       String     @db.VarChar(50)
+  dismissed  Boolean
+  metadata   Json
+  trans_unit trans_unit @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "checks_check_unit_id_c312ecef_fk_trans_unit_id")
+
+  @@unique([unit_id, name], map: "checks_check_unit_id_name_ea73a317_uniq")
+  @@index([unit_id], map: "checks_active_unit_idx", where: raw("(NOT dismissed)"))
+  @@index([dismissed], map: "checks_check_dismissed_a11836a3")
+}
+
+model configuration_setting {
+  id       Int    @id @default(autoincrement())
+  category Int
+  name     String @db.VarChar(100)
+  value    Json
+
+  @@unique([category, name], map: "configuration_setting_category_name_5144ffcf_uniq")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_admin_log {
+  id                  Int                  @id @default(autoincrement())
+  action_time         DateTime             @db.Timestamptz(6)
+  user_id             Int
+  content_type_id     Int?
+  object_id           String?
+  object_repr         String               @db.VarChar(200)
+  action_flag         Int                  @db.SmallInt
+  change_message      String
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_content_type_id_c4bce8eb_fk_django_co")
+  weblate_auth_user   weblate_auth_user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_user_id_c564eba6_fk_weblate_auth_user_id")
+
+  @@index([content_type_id], map: "django_admin_log_content_type_id_c4bce8eb")
+  @@index([user_id], map: "django_admin_log_user_id_c564eba6")
+}
+
+model django_celery_beat_clockedschedule {
+  id                              Int                               @id @default(autoincrement())
+  clocked_time                    DateTime                          @db.Timestamptz(6)
+  django_celery_beat_periodictask django_celery_beat_periodictask[]
+}
+
+model django_celery_beat_crontabschedule {
+  id                              Int                               @id @default(autoincrement())
+  minute                          String                            @db.VarChar(240)
+  hour                            String                            @db.VarChar(96)
+  day_of_month                    String                            @db.VarChar(124)
+  month_of_year                   String                            @db.VarChar(64)
+  day_of_week                     String                            @db.VarChar(64)
+  timezone                        String                            @db.VarChar(63)
+  django_celery_beat_periodictask django_celery_beat_periodictask[]
+}
+
+model django_celery_beat_intervalschedule {
+  id                              Int                               @id @default(autoincrement())
+  every                           Int
+  period                          String                            @db.VarChar(24)
+  django_celery_beat_periodictask django_celery_beat_periodictask[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_celery_beat_periodictask {
+  id                                  Int                                  @id @default(autoincrement())
+  name                                String                               @unique @db.VarChar(200)
+  task                                String                               @db.VarChar(200)
+  interval_id                         Int?
+  crontab_id                          Int?
+  solar_id                            Int?
+  clocked_id                          Int?
+  args                                String
+  kwargs                              String
+  queue                               String?                              @db.VarChar(200)
+  exchange                            String?                              @db.VarChar(200)
+  routing_key                         String?                              @db.VarChar(200)
+  headers                             String
+  priority                            Int?
+  expires                             DateTime?                            @db.Timestamptz(6)
+  expire_seconds                      Int?
+  one_off                             Boolean
+  start_time                          DateTime?                            @db.Timestamptz(6)
+  enabled                             Boolean
+  last_run_at                         DateTime?                            @db.Timestamptz(6)
+  total_run_count                     Int
+  date_changed                        DateTime                             @db.Timestamptz(6)
+  description                         String
+  django_celery_beat_clockedschedule  django_celery_beat_clockedschedule?  @relation(fields: [clocked_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_celery_beat_p_clocked_id_47a69f82_fk_django_ce")
+  django_celery_beat_crontabschedule  django_celery_beat_crontabschedule?  @relation(fields: [crontab_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_celery_beat_p_crontab_id_d3cba168_fk_django_ce")
+  django_celery_beat_intervalschedule django_celery_beat_intervalschedule? @relation(fields: [interval_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_celery_beat_p_interval_id_a8ca27da_fk_django_ce")
+  django_celery_beat_solarschedule    django_celery_beat_solarschedule?    @relation(fields: [solar_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_celery_beat_p_solar_id_a87ce72c_fk_django_ce")
+
+  @@index([clocked_id], map: "django_celery_beat_periodictask_clocked_id_47a69f82")
+  @@index([crontab_id], map: "django_celery_beat_periodictask_crontab_id_d3cba168")
+  @@index([interval_id], map: "django_celery_beat_periodictask_interval_id_a8ca27da")
+  @@index([name], map: "django_celery_beat_periodictask_name_265a36b7_like")
+  @@index([solar_id], map: "django_celery_beat_periodictask_solar_id_a87ce72c")
+}
+
+model django_celery_beat_periodictasks {
+  ident       Int      @id @db.SmallInt
+  last_update DateTime @db.Timestamptz(6)
+}
+
+model django_celery_beat_solarschedule {
+  id                              Int                               @id @default(autoincrement())
+  event                           String                            @db.VarChar(24)
+  latitude                        Decimal                           @db.Decimal(9, 6)
+  longitude                       Decimal                           @db.Decimal(9, 6)
+  django_celery_beat_periodictask django_celery_beat_periodictask[]
+
+  @@unique([event, latitude, longitude], map: "django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq")
+}
+
+model django_content_type {
+  id               Int                @id @default(autoincrement())
+  app_label        String             @db.VarChar(100)
+  model            String             @db.VarChar(100)
+  auth_permission  auth_permission[]
+  django_admin_log django_admin_log[]
+
+  @@unique([app_label, model], map: "django_content_type_app_label_model_76bd3d3b_uniq")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_otp_webauthn_webauthnattestation {
+  id                                     BigInt                                 @id @default(autoincrement())
+  fmt                                    String                                 @db.VarChar(255)
+  data                                   Bytes
+  client_data_json                       Bytes
+  credential_id                          BigInt                                 @unique
+  django_otp_webauthn_webauthncredential django_otp_webauthn_webauthncredential @relation(fields: [credential_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_otp_webauthn__credential_id_b2e6f7e8_fk_django_ot")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_otp_webauthn_webauthncredential {
+  id                                      BigInt                                   @id @default(autoincrement())
+  user_id                                 Int
+  name                                    String                                   @db.VarChar(64)
+  confirmed                               Boolean
+  created_at                              DateTime?                                @db.Timestamptz(6)
+  last_used_at                            DateTime?                                @db.Timestamptz(6)
+  credential_type                         String                                   @db.VarChar(32)
+  credential_id                           Bytes
+  public_key                              Bytes
+  transports                              Json
+  sign_count                              Int
+  backup_eligible                         Boolean
+  backup_state                            Boolean
+  aaguid                                  String                                   @db.VarChar(36)
+  credential_id_sha256                    String                                   @unique @db.VarChar(64)
+  discoverable                            Boolean?
+  django_otp_webauthn_webauthnattestation django_otp_webauthn_webauthnattestation?
+  weblate_auth_user                       weblate_auth_user                        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_otp_webauthn__user_id_023391d8_fk_weblate_a")
+
+  @@index([credential_id_sha256], map: "django_otp_webauthn_weba_credential_id_sha256_1a385252_like")
+  @@index([user_id], map: "django_otp_webauthn_webauthncredential_user_id_023391d8")
+  @@index([credential_id_sha256], map: "webauthncredential_sha256_idx")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_otp_webauthn_webauthnuserhandle {
+  handle_hex        String            @unique @db.VarChar(128)
+  user_id           Int               @id
+  weblate_auth_user weblate_auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_otp_webauthn__user_id_47f479ce_fk_weblate_a")
+
+  @@index([handle_hex], map: "django_otp_webauthn_webauthnuserhandle_handle_hex_ebcf77a1_like")
+}
+
+model django_session {
+  session_key  String   @id @db.VarChar(40)
+  session_data String
+  expire_date  DateTime @db.Timestamptz(6)
+
+  @@index([expire_date], map: "django_session_expire_date_a5c62663")
+  @@index([session_key], map: "django_session_session_key_c0390e0f_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model fonts_font {
+  id                 Int                  @id @default(autoincrement())
+  family             String               @db.VarChar(100)
+  style              String               @db.VarChar(100)
+  font               String               @db.VarChar(100)
+  project_id         Int
+  timestamp          DateTime             @db.Timestamptz(6)
+  user_id            Int?
+  trans_project      trans_project        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_font_project_id_855704e0_fk_trans_project_id")
+  weblate_auth_user  weblate_auth_user?   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_font_user_id_5897e323_fk_weblate_auth_user_id")
+  fonts_fontgroup    fonts_fontgroup[]
+  fonts_fontoverride fonts_fontoverride[]
+
+  @@unique([family, style, project_id], map: "fonts_font_family_style_project_id_9f3996b3_uniq")
+  @@index([project_id], map: "fonts_font_project_id_855704e0")
+  @@index([user_id], map: "fonts_font_user_id_5897e323")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model fonts_fontgroup {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  font_id            Int
+  project_id         Int
+  fonts_font         fonts_font           @relation(fields: [font_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_fontgroup_font_id_e4c04e1d_fk_fonts_font_id")
+  trans_project      trans_project        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_fontgroup_project_id_5d47adf5_fk_trans_project_id")
+  fonts_fontoverride fonts_fontoverride[]
+
+  @@unique([project_id, name], map: "fonts_fontgroup_project_id_name_0b0fa938_uniq")
+  @@index([font_id], map: "fonts_fontgroup_font_id_e4c04e1d")
+  @@index([name], map: "fonts_fontgroup_name_cf198a4d")
+  @@index([name], map: "fonts_fontgroup_name_cf198a4d_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model fonts_fontoverride {
+  id              Int             @id @default(autoincrement())
+  group_id        Int
+  font_id         Int
+  language_id     Int
+  fonts_font      fonts_font      @relation(fields: [font_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_fontoverride_font_id_ae703c52_fk_fonts_font_id")
+  fonts_fontgroup fonts_fontgroup @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_fontoverride_group_id_cab65c09_fk_fonts_fontgroup_id")
+  lang_language   lang_language   @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fonts_fontoverride_language_id_ccb8c819_fk_lang_language_id")
+
+  @@unique([group_id, language_id], map: "fonts_fontoverride_group_id_language_id_92a46b82_uniq")
+  @@index([font_id], map: "fonts_fontoverride_font_id_ae703c52")
+  @@index([language_id], map: "fonts_fontoverride_language_id_ccb8c819")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model kotlin_sdk_kotlinsdkartifact {
+  id                                  Int                                   @id @default(autoincrement())
+  addon_id                            Int
+  digest                              String                                @db.VarChar(64)
+  unreferenced                        DateTime?                             @db.Timestamptz(6)
+  addons_addon                        addons_addon                          @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotlin_sdk_kotlinsdk_addon_id_ebe8e551_fk_addons_ad")
+  kotlin_sdk_kotlinsdkartifact_builds kotlin_sdk_kotlinsdkartifact_builds[]
+
+  @@unique([addon_id, digest], map: "kotlin_sdk_artifact_unique")
+  @@index([addon_id], map: "kotlin_sdk_kotlinsdkartifact_addon_id_ebe8e551")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model kotlin_sdk_kotlinsdkartifact_builds {
+  id                           Int                          @id @default(autoincrement())
+  kotlinsdkartifact_id         Int
+  kotlinsdkbuild_id            Int
+  kotlin_sdk_kotlinsdkartifact kotlin_sdk_kotlinsdkartifact @relation(fields: [kotlinsdkartifact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotlin_sdk_kotlinsdk_kotlinsdkartifact_id_ebd2906e_fk_kotlin_sd")
+  kotlin_sdk_kotlinsdkbuild    kotlin_sdk_kotlinsdkbuild    @relation(fields: [kotlinsdkbuild_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotlin_sdk_kotlinsdk_kotlinsdkbuild_id_070b729b_fk_kotlin_sd")
+
+  @@unique([kotlinsdkartifact_id, kotlinsdkbuild_id], map: "kotlin_sdk_kotlinsdkarti_kotlinsdkartifact_id_kot_6c5e8d5f_uniq")
+  @@index([kotlinsdkartifact_id], map: "kotlin_sdk_kotlinsdkartifa_kotlinsdkartifact_id_ebd2906e")
+  @@index([kotlinsdkbuild_id], map: "kotlin_sdk_kotlinsdkartifact_builds_kotlinsdkbuild_id_070b729b")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model kotlin_sdk_kotlinsdkbuild {
+  id                                  Int                                   @id @default(autoincrement())
+  addon_id                            Int
+  package_name                        String                                @db.VarChar(127)
+  version_code                        BigInt
+  metadata                            Json
+  pending_manifest                    Json
+  digest                              String                                @db.VarChar(64)
+  created                             DateTime                              @db.Timestamptz(6)
+  retired                             DateTime?                             @db.Timestamptz(6)
+  status                              String                                @db.VarChar(16)
+  error                               String
+  published                           DateTime?                             @db.Timestamptz(6)
+  kotlin_sdk_kotlinsdkartifact_builds kotlin_sdk_kotlinsdkartifact_builds[]
+  addons_addon                        addons_addon                          @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotlin_sdk_kotlinsdkbuild_addon_id_7ab4618d_fk_addons_addon_id")
+  kotlin_sdk_kotlinsdkcleanup         kotlin_sdk_kotlinsdkcleanup?
+
+  @@unique([addon_id, package_name, version_code], map: "kotlin_sdk_build_unique")
+  @@index([addon_id], map: "kotlin_sdk_kotlinsdkbuild_addon_id_7ab4618d")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model kotlin_sdk_kotlinsdkcleanup {
+  id                        Int                        @id @default(autoincrement())
+  path                      String                     @unique
+  build_id                  Int?                       @unique
+  kotlin_sdk_kotlinsdkbuild kotlin_sdk_kotlinsdkbuild? @relation(fields: [build_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotlin_sdk_kotlinsdk_build_id_5cb8cade_fk_kotlin_sd")
+
+  @@index([path], map: "kotlin_sdk_kotlinsdkcleanup_path_eac6eb18_like")
+}
+
+model lang_language {
+  id                                                                            Int                                        @id @default(autoincrement())
+  code                                                                          String                                     @unique @db.VarChar(50)
+  name                                                                          String                                     @db.VarChar(100)
+  direction                                                                     String                                     @db.VarChar(3)
+  population                                                                    BigInt
+  accounts_profile_languages                                                    accounts_profile_languages[]
+  accounts_profile_secondary_languages                                          accounts_profile_secondary_languages[]
+  fonts_fontoverride                                                            fonts_fontoverride[]
+  lang_plural                                                                   lang_plural?
+  memory_memory_memory_memory_source_language_idTolang_language                 memory_memory[]                            @relation("memory_memory_source_language_idTolang_language")
+  memory_memory_memory_memory_target_language_idTolang_language                 memory_memory[]                            @relation("memory_memory_target_language_idTolang_language")
+  trans_announcement                                                            trans_announcement[]
+  trans_category                                                                trans_category[]
+  trans_change                                                                  trans_change[]
+  trans_component_trans_component_secondary_language_idTolang_language          trans_component[]                          @relation("trans_component_secondary_language_idTolang_language")
+  trans_component_trans_component_source_language_idTolang_language             trans_component[]                          @relation("trans_component_source_language_idTolang_language")
+  trans_project                                                                 trans_project[]
+  trans_translation                                                             trans_translation[]
+  trans_workflowsetting_trans_workflowsetting_source_language_idTolang_language trans_workflowsetting[]                    @relation("trans_workflowsetting_source_language_idTolang_language")
+  trans_workflowsetting_trans_workflowsetting_language_idTolang_language        trans_workflowsetting[]                    @relation("trans_workflowsetting_language_idTolang_language")
+  weblate_auth_group_languages                                                  weblate_auth_group_languages[]
+  weblate_auth_invitation_limit_languages                                       weblate_auth_invitation_limit_languages[]
+  weblate_auth_user_groups_limit_languages                                      weblate_auth_user_groups_limit_languages[]
+  workspaces_workspace                                                          workspaces_workspace[]
+
+  @@index([code], map: "lang_language_code_764a7a1d_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model lang_plural {
+  id                Int                 @id @default(autoincrement())
+  source            Int                 @db.SmallInt
+  number            Int                 @db.SmallInt
+  formula           String
+  type              Int
+  language_id       Int                 @unique(map: "lang_plural_unique_cldr_zero", where: raw("(source = 3)"))
+  lang_language     lang_language       @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lang_plural_language_id_b5f4646a_fk_lang_language_id")
+  trans_translation trans_translation[]
+
+  @@index([language_id], map: "lang_plural_language_id_b5f4646a")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model machinery_machineryerror {
+  id                              Int                             @id @default(autoincrement())
+  installation_id                 Int
+  timestamp                       DateTime                        @db.Timestamptz(6)
+  error                           String
+  machinery_machineryinstallation machinery_machineryinstallation @relation(fields: [installation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machinerye_installation_id_721886a4_fk_machinery")
+
+  @@index([installation_id, timestamp(sort: Desc), id(sort: Desc)], map: "machinery_m_install_ec7c4c_idx")
+  @@index([installation_id], map: "machinery_machineryerror_installation_id_721886a4")
+  @@index([timestamp], map: "machinery_machineryerror_timestamp_07d8c763")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model machinery_machineryexclusion {
+  id                              Int                              @id @default(autoincrement())
+  workspace_id                    String?                          @db.Uuid
+  project_id                      Int?
+  installation_id                 Int?
+  engine                          String                           @db.VarChar(100)
+  machinery_machineryinstallation machinery_machineryinstallation? @relation(fields: [installation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machinerye_installation_id_f938fc8b_fk_machinery")
+  trans_project                   trans_project?                   @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machinerye_project_id_d1dfc73d_fk_trans_pro")
+  workspaces_workspace            workspaces_workspace?            @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machinerye_workspace_id_7aa4f8fd_fk_workspace")
+
+  @@unique([project_id, engine], map: "machinery_project_engine_exclusion", where: raw("(NOT ((engine)::text = ''::text))"))
+  @@unique([project_id, installation_id], map: "machinery_project_installation_exclusion")
+  @@unique([workspace_id, engine], map: "machinery_workspace_engine_exclusion", where: raw("(NOT ((engine)::text = ''::text))"))
+  @@unique([workspace_id, installation_id], map: "machinery_workspace_installation_exclusion")
+  @@index([installation_id], map: "machinery_machineryexclusion_installation_id_f938fc8b")
+  @@index([project_id], map: "machinery_machineryexclusion_project_id_d1dfc73d")
+  @@index([workspace_id], map: "machinery_machineryexclusion_workspace_id_7aa4f8fd")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model machinery_machineryinstallation {
+  id                           Int                            @id @default(autoincrement())
+  engine                       String                         @db.VarChar(100)
+  slug                         String                         @unique(map: "machinery_site_slug", where: raw("((project_id IS NULL) AND ((slug)::text > ''::text) AND (workspace_id IS NULL))")) @db.VarChar(100)
+  configuration                Json
+  enabled                      Boolean
+  workspace_id                 String?                        @db.Uuid
+  project_id                   Int?
+  machinery_machineryerror     machinery_machineryerror[]
+  machinery_machineryexclusion machinery_machineryexclusion[]
+  trans_project                trans_project?                 @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machineryi_project_id_7821aa7d_fk_trans_pro")
+  workspaces_workspace         workspaces_workspace?          @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery_machineryi_workspace_id_071d1875_fk_workspace")
+
+  @@unique([project_id, slug], map: "machinery_project_slug", where: raw("((project_id IS NOT NULL) AND ((slug)::text > ''::text))"))
+  @@unique([workspace_id, slug], map: "machinery_workspace_slug", where: raw("(((slug)::text > ''::text) AND (workspace_id IS NOT NULL))"))
+  @@index([project_id], map: "machinery_machineryinstallation_project_id_7821aa7d")
+  @@index([slug], map: "machinery_machineryinstallation_slug_620b370d")
+  @@index([slug], map: "machinery_machineryinstallation_slug_620b370d_like")
+  @@index([workspace_id], map: "machinery_machineryinstallation_workspace_id_071d1875")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model memory_memory {
+  id                                                            Int                  @id @default(autoincrement())
+  source_language_id                                            Int
+  target_language_id                                            Int
+  source                                                        String
+  target                                                        String
+  origin                                                        String
+  context                                                       String
+  legacy_user_id                                                Int?
+  legacy_project_id                                             Int?
+  legacy_from_file                                              Boolean
+  legacy_shared                                                 Boolean
+  status                                                        Int
+  trans_project                                                 trans_project?       @relation(fields: [legacy_project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memory_legacy_project_id_13aeb4a1_fk_trans_project_id")
+  weblate_auth_user                                             weblate_auth_user?   @relation(fields: [legacy_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memory_legacy_user_id_aedef6a6_fk_weblate_auth_user_id")
+  lang_language_memory_memory_source_language_idTolang_language lang_language        @relation("memory_memory_source_language_idTolang_language", fields: [source_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memory_source_language_id_c53ef4ff_fk_lang_language_id")
+  lang_language_memory_memory_target_language_idTolang_language lang_language        @relation("memory_memory_target_language_idTolang_language", fields: [target_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memory_target_language_id_c44dca3c_fk_lang_language_id")
+  memory_memoryscope                                            memory_memoryscope[]
+
+  @@index([legacy_from_file], map: "memory_from_file", where: raw("legacy_from_file"))
+  @@index([legacy_project_id], map: "memory_memory_legacy_project_id_13aeb4a1")
+  @@index([legacy_user_id], map: "memory_memory_legacy_user_id_aedef6a6")
+  @@index([source_language_id], map: "memory_memory_source_language_id_c53ef4ff")
+  @@index([target_language_id], map: "memory_memory_target_language_id_c44dca3c")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model memory_memoryscope {
+  id                                                                Int                   @id @default(autoincrement())
+  memory_id                                                         Int
+  scope                                                             Int                   @db.SmallInt
+  project_id                                                        Int?
+  workspace_id                                                      String?               @db.Uuid
+  source_project_id                                                 Int?
+  source_component_id                                               Int?
+  user_id                                                           Int?
+  memory_memory                                                     memory_memory         @relation(fields: [memory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_memory_id_59a416c6_fk_memory_memory_id")
+  trans_project_memory_memoryscope_project_idTotrans_project        trans_project?        @relation("memory_memoryscope_project_idTotrans_project", fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_project_id_0f24de49_fk_trans_project_id")
+  trans_component                                                   trans_component?      @relation(fields: [source_component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_source_component_id_bc705407_fk_trans_com")
+  trans_project_memory_memoryscope_source_project_idTotrans_project trans_project?        @relation("memory_memoryscope_source_project_idTotrans_project", fields: [source_project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_source_project_id_080b6f0a_fk_trans_pro")
+  weblate_auth_user                                                 weblate_auth_user?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_user_id_bccb55f8_fk_weblate_auth_user_id")
+  workspaces_workspace                                              workspaces_workspace? @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "memory_memoryscope_workspace_id_6d209c88_fk_workspace")
+
+  @@unique([memory_id, scope], map: "memory_scope_shared_null", where: raw("((scope = 3) AND (source_project_id IS NULL))"))
+  @@unique([memory_id, scope], map: "memory_scope_unique_global", where: raw("(scope = 5)"))
+  @@unique([memory_id, scope, project_id], map: "memory_scope_unique_project", where: raw("((project_id IS NOT NULL) AND (scope = ANY (ARRAY[1, 6])))"))
+  @@unique([memory_id, scope, source_project_id], map: "memory_scope_unique_shared", where: raw("((scope = 3) AND (source_project_id IS NOT NULL))"))
+  @@unique([memory_id, scope, user_id], map: "memory_scope_unique_user", where: raw("((scope = ANY (ARRAY[4, 7])) AND (user_id IS NOT NULL))"))
+  @@unique([memory_id, scope, workspace_id, source_project_id], map: "memory_scope_unique_workspace", where: raw("((scope = 2) AND (source_project_id IS NOT NULL) AND (workspace_id IS NOT NULL))"))
+  @@unique([memory_id, scope, workspace_id], map: "memory_scope_workspace_null", where: raw("((scope = 2) AND (source_project_id IS NULL) AND (workspace_id IS NOT NULL))"))
+  @@index([memory_id], map: "memory_memoryscope_memory_id_59a416c6")
+  @@index([project_id], map: "memory_memoryscope_project_id_0f24de49")
+  @@index([source_component_id], map: "memory_memoryscope_source_component_id_bc705407")
+  @@index([source_project_id], map: "memory_memoryscope_source_project_id_080b6f0a")
+  @@index([user_id], map: "memory_memoryscope_user_id_bccb55f8")
+  @@index([workspace_id], map: "memory_memoryscope_workspace_id_6d209c88")
+  @@index([scope, project_id, memory_id], map: "memory_scope_project")
+  @@index([scope, memory_id], map: "memory_scope_scope_memory")
+  @@index([scope, source_component_id, memory_id], map: "memory_scope_source_component")
+  @@index([scope, source_project_id, memory_id], map: "memory_scope_source_project")
+  @@index([scope, user_id, memory_id], map: "memory_scope_user")
+  @@index([scope, workspace_id, memory_id], map: "memory_scope_workspace")
+  @@index([scope, workspace_id, source_project_id, memory_id], map: "memory_scope_workspace_source")
+}
+
+model memory_memoryscopemigrationstate {
+  name           String   @id @db.VarChar(50)
+  last_memory_id Int
+  completed      Boolean
+  updated        DateTime @db.Timestamptz(6)
+
+  @@index([name], map: "memory_memoryscopemigrationstate_name_d3f4ce7e_like")
+}
+
+model metrics_metric {
+  id        BigInt   @id @default(autoincrement())
+  date      DateTime @db.Date
+  scope     Int      @db.SmallInt
+  relation  Int
+  secondary Int
+  changes   Int
+  data      Json?
+
+  @@unique([scope, relation, secondary, date], map: "metrics_metric_scope_relation_secondary_date_f0ac693e_uniq")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model otp_static_staticdevice {
+  id                           Int                      @id @default(autoincrement())
+  user_id                      Int
+  name                         String                   @db.VarChar(64)
+  confirmed                    Boolean
+  throttling_failure_timestamp DateTime?                @db.Timestamptz(6)
+  throttling_failure_count     Int
+  created_at                   DateTime?                @db.Timestamptz(6)
+  last_used_at                 DateTime?                @db.Timestamptz(6)
+  weblate_auth_user            weblate_auth_user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "otp_static_staticdev_user_id_7f9cff2b_fk_weblate_a")
+  otp_static_statictoken       otp_static_statictoken[]
+
+  @@index([user_id], map: "otp_static_staticdevice_user_id_7f9cff2b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model otp_static_statictoken {
+  id                      Int                     @id @default(autoincrement())
+  device_id               Int
+  token                   String                  @db.VarChar(16)
+  otp_static_staticdevice otp_static_staticdevice @relation(fields: [device_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "otp_static_statictok_device_id_74b7c7d1_fk_otp_stati")
+
+  @@index([device_id], map: "otp_static_statictoken_device_id_74b7c7d1")
+  @@index([token], map: "otp_static_statictoken_token_d0a51866")
+  @@index([token], map: "otp_static_statictoken_token_d0a51866_like")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model otp_totp_totpdevice {
+  id                           Int               @id @default(autoincrement())
+  user_id                      Int
+  name                         String            @db.VarChar(64)
+  confirmed                    Boolean
+  throttling_failure_timestamp DateTime?         @db.Timestamptz(6)
+  throttling_failure_count     Int
+  created_at                   DateTime?         @db.Timestamptz(6)
+  last_used_at                 DateTime?         @db.Timestamptz(6)
+  key                          String            @db.VarChar(80)
+  step                         Int               @db.SmallInt
+  t0                           BigInt
+  digits                       Int               @db.SmallInt
+  tolerance                    Int               @db.SmallInt
+  drift                        Int               @db.SmallInt
+  last_t                       BigInt
+  weblate_auth_user            weblate_auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "otp_totp_totpdevice_user_id_0fb18292_fk_weblate_auth_user_id")
+
+  @@index([user_id], map: "otp_totp_totpdevice_user_id_0fb18292")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model screenshots_screenshot {
+  id                           Int                            @id @default(autoincrement())
+  backup_author_claim_id       Int?
+  name                         String                         @db.VarChar(200)
+  repository_filename          String                         @db.VarChar(200)
+  image                        String                         @db.VarChar(100)
+  translation_id               Int
+  timestamp                    DateTime                       @db.Timestamptz(6)
+  user_id                      Int?
+  trans_backupauthorclaim      trans_backupauthorclaim?       @relation(fields: [backup_author_claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screensh_backup_author_claim__19b10d15_fk_trans_bac")
+  trans_translation            trans_translation              @relation(fields: [translation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screensh_translation_id_3b239850_fk_trans_tra")
+  weblate_auth_user            weblate_auth_user?             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screenshot_user_id_9350e149_fk_weblate_auth_user_id")
+  screenshots_screenshot_units screenshots_screenshot_units[]
+  screenshots_screenshotocr    screenshots_screenshotocr?
+  trans_change                 trans_change[]
+
+  @@index([backup_author_claim_id], map: "screenshots_screenshot_backup_author_claim_id_19b10d15")
+  @@index([translation_id], map: "screenshots_screenshot_translation_id_3b239850")
+  @@index([user_id], map: "screenshots_screenshot_user_id_9350e149")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model screenshots_screenshot_units {
+  id                     Int                    @id @default(autoincrement())
+  screenshot_id          Int
+  unit_id                Int
+  screenshots_screenshot screenshots_screenshot @relation(fields: [screenshot_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screensh_screenshot_id_03db0a11_fk_screensho")
+  trans_unit             trans_unit             @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screenshot_units_unit_id_2b24914f_fk_trans_unit_id")
+
+  @@unique([screenshot_id, unit_id], map: "screenshots_screenshot_u_screenshot_id_unit_id_c8f65eb6_uniq")
+  @@index([screenshot_id], map: "screenshots_screenshot_units_screenshot_id_03db0a11")
+  @@index([unit_id], map: "screenshots_screenshot_units_unit_id_2b24914f")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model screenshots_screenshotocr {
+  screenshot_id          Int                    @id
+  signature              Json
+  generation             String                 @db.Uuid
+  data                   Json?
+  task_id                String?                @db.Uuid
+  requested_at           DateTime?              @db.Timestamptz(6)
+  error                  String                 @db.VarChar(16)
+  screenshots_screenshot screenshots_screenshot @relation(fields: [screenshot_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "screenshots_screensh_screenshot_id_845ecce4_fk_screensho")
+}
+
+model social_auth_association {
+  id         BigInt @id @default(autoincrement())
+  server_url String @db.VarChar(255)
+  handle     String @db.VarChar(255)
+  secret     String @db.VarChar(255)
+  issued     Int
+  lifetime   Int
+  assoc_type String @db.VarChar(64)
+
+  @@unique([server_url, handle], map: "social_auth_association_server_url_handle_078befa2_uniq")
+}
+
+model social_auth_code {
+  id        BigInt   @id @default(autoincrement())
+  email     String   @db.VarChar(254)
+  code      String   @db.VarChar(32)
+  verified  Boolean
+  timestamp DateTime @db.Timestamptz(6)
+
+  @@unique([email, code], map: "social_auth_code_email_code_801b2d02_uniq")
+  @@index([code], map: "social_auth_code_code_a2393167")
+  @@index([code], map: "social_auth_code_code_a2393167_like")
+  @@index([timestamp], map: "social_auth_code_timestamp_176b341f")
+}
+
+model social_auth_nonce {
+  id         BigInt @id @default(autoincrement())
+  server_url String @db.VarChar(255)
+  timestamp  Int
+  salt       String @db.VarChar(65)
+
+  @@unique([server_url, timestamp, salt], map: "social_auth_nonce_server_url_timestamp_salt_f6284463_uniq")
+  @@index([timestamp], map: "social_auth_nonce_timestamp_bc4d078a")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model social_auth_partial {
+  id        BigInt   @id @default(autoincrement())
+  token     String   @db.VarChar(32)
+  next_step Int      @db.SmallInt
+  backend   String   @db.VarChar(32)
+  data      Json
+  timestamp DateTime @db.Timestamptz(6)
+
+  @@index([timestamp], map: "social_auth_partial_timestamp_50f2119f")
+  @@index([token], map: "social_auth_partial_token_3017fea3")
+  @@index([token], map: "social_auth_partial_token_3017fea3_like")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model social_auth_usersocialauth {
+  id                     BigInt                   @id @default(autoincrement())
+  user_id                Int
+  provider               String                   @db.VarChar(32)
+  id_key                 String                   @db.VarChar(255)
+  uid                    String                   @db.VarChar(255)
+  extra_data             Json
+  created                DateTime                 @db.Timestamptz(6)
+  modified               DateTime                 @db.Timestamptz(6)
+  accounts_verifiedemail accounts_verifiedemail[]
+  weblate_auth_user      weblate_auth_user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "social_auth_usersoci_user_id_17d28448_fk_weblate_a")
+
+  @@unique([provider, uid], map: "social_auth_usersocialauth_provider_uid_e6b5e668_uniq")
+  @@index([uid], map: "social_auth_usersocialauth_uid_796e51dc")
+  @@index([uid], map: "social_auth_usersocialauth_uid_796e51dc_like")
+  @@index([user_id], map: "social_auth_usersocialauth_user_id_17d28448")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_alert {
+  id                    Int                @id @default(autoincrement())
+  component_id          Int
+  timestamp             DateTime           @db.Timestamptz(6)
+  updated               DateTime           @db.Timestamptz(6)
+  name                  String             @db.VarChar(150)
+  dismissed_at          DateTime?          @db.Timestamptz(6)
+  dismissed_by_id       Int?
+  dismissal_reason      String             @db.VarChar(500)
+  dismissal_fingerprint String             @db.VarChar(64)
+  severity              Int                @db.SmallInt
+  details               Json
+  trans_component       trans_component    @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_alert_component_id_e9bdfacb_fk_trans_component_id")
+  weblate_auth_user     weblate_auth_user? @relation(fields: [dismissed_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_alert_dismissed_by_id_7fb54cb8_fk_weblate_auth_user_id")
+  trans_change          trans_change[]
+
+  @@unique([component_id, name], map: "trans_alert_component_id_name_4a5a9b1d_uniq")
+  @@index([component_id, severity], map: "trans_alert_active_idx", where: raw("(dismissed_at IS NULL)"))
+  @@index([dismissed_by_id], map: "trans_alert_dismissed_by_id_7fb54cb8")
+  @@index([severity], map: "trans_alert_severity_3a81ac0d")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_announcement {
+  id              Int              @id @default(autoincrement())
+  message         String
+  project_id      Int?
+  category_id     Int?
+  component_id    Int?
+  language_id     Int?
+  severity        String           @db.VarChar(25)
+  expiry          DateTime?        @db.Date
+  notify          Boolean
+  trans_category  trans_category?  @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_announcement_category_id_913f87b9_fk_trans_category_id")
+  trans_component trans_component? @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_announcement_component_id_72695410_fk_trans_component_id")
+  lang_language   lang_language?   @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_announcement_language_id_f5f7a357_fk_lang_language_id")
+  trans_project   trans_project?   @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_announcement_project_id_3713e8a9_fk_trans_project_id")
+  trans_change    trans_change[]
+
+  @@index([category_id], map: "trans_announcement_category_id_913f87b9")
+  @@index([component_id], map: "trans_announcement_component_id_72695410")
+  @@index([expiry], map: "trans_announcement_expiry_a06d62a1")
+  @@index([language_id], map: "trans_announcement_language_id_f5f7a357")
+  @@index([project_id], map: "trans_announcement_project_id_3713e8a9")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_autocomponentlist {
+  id                  Int                 @id @default(autoincrement())
+  project_match       String              @db.VarChar(200)
+  component_match     String              @db.VarChar(200)
+  componentlist_id    Int
+  trans_componentlist trans_componentlist @relation(fields: [componentlist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_autocomponentl_componentlist_id_9ff87f21_fk_trans_com")
+
+  @@index([componentlist_id], map: "trans_autocomponentlist_componentlist_id_9ff87f21")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_backupauthorclaim {
+  id                      Int                       @id @default(autoincrement())
+  project_id              Int
+  user_id                 Int
+  invitation_id           String?                   @unique @db.Uuid
+  accepted_at             DateTime?                 @db.Timestamptz(6)
+  screenshots_screenshot  screenshots_screenshot[]
+  weblate_auth_invitation weblate_auth_invitation?  @relation(fields: [invitation_id], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorcl_invitation_id_d0b51998_fk_weblate_a")
+  weblate_auth_user       weblate_auth_user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorcl_user_id_7d26dd3f_fk_weblate_a")
+  trans_project           trans_project             @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorclaim_project_id_9f198408_fk_trans_project_id")
+  trans_backupauthorvote  trans_backupauthorvote[]
+  trans_change            trans_change[]
+  trans_comment           trans_comment[]
+  trans_pendingunitchange trans_pendingunitchange[]
+  trans_suggestion        trans_suggestion[]
+
+  @@index([project_id], map: "trans_backupauthorclaim_project_id_9f198408")
+  @@index([user_id], map: "trans_backupauthorclaim_user_id_7d26dd3f")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_backupauthorvote {
+  id                      Int                     @id @default(autoincrement())
+  claim_id                Int
+  suggestion_id           Int
+  placeholder_id          Int?
+  value                   Int                     @db.SmallInt
+  trans_backupauthorclaim trans_backupauthorclaim @relation(fields: [claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorvo_claim_id_69890c5f_fk_trans_bac")
+  trans_suggestion        trans_suggestion        @relation(fields: [suggestion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorvo_suggestion_id_bdad2c90_fk_trans_sug")
+  trans_vote              trans_vote?             @relation(fields: [placeholder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_backupauthorvote_placeholder_id_cda3b1bd_fk_trans_vote_id")
+
+  @@index([claim_id], map: "trans_backupauthorvote_claim_id_69890c5f")
+  @@index([placeholder_id], map: "trans_backupauthorvote_placeholder_id_cda3b1bd")
+  @@index([suggestion_id], map: "trans_backupauthorvote_suggestion_id_bdad2c90")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_category {
+  id                          Int                          @id @default(autoincrement())
+  name                        String                       @db.VarChar(100)
+  slug                        String                       @db.VarChar(100)
+  project_id                  Int
+  category_id                 Int?
+  check_flags                 String
+  enforced_checks             Json
+  inherit_enforced_checks     Boolean
+  license                     String                       @db.VarChar(150)
+  inherit_license             Boolean
+  agreement                   String
+  inherit_agreement           Boolean
+  new_lang                    String                       @db.VarChar(10)
+  inherit_new_lang            Boolean
+  language_code_style         String                       @db.VarChar(20)
+  inherit_language_code_style Boolean
+  secondary_language_id       Int?
+  inherit_secondary_language  Boolean
+  commit_message              String
+  inherit_commit_message      Boolean
+  add_message                 String
+  inherit_add_message         Boolean
+  delete_message              String
+  inherit_delete_message      Boolean
+  merge_message               String
+  inherit_merge_message       Boolean
+  addon_message               String
+  inherit_addon_message       Boolean
+  pull_message                String
+  inherit_pull_message        Boolean
+  addons_addon                addons_addon[]
+  trans_announcement          trans_announcement[]
+  trans_category              trans_category?              @relation("trans_categoryTotrans_category", fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_category_category_id_0f21e824_fk_trans_category_id")
+  other_trans_category        trans_category[]             @relation("trans_categoryTotrans_category")
+  trans_project               trans_project                @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_category_project_id_7dc717ed_fk_trans_project_id")
+  lang_language               lang_language?               @relation(fields: [secondary_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_category_secondary_language_i_3b074b19_fk_lang_lang")
+  trans_change                trans_change[]
+  trans_component             trans_component[]
+  trans_component_links       trans_component_links[]
+  trans_contributoragreement  trans_contributoragreement[]
+  trans_report                trans_report[]
+
+  @@unique([project_id, category_id, name], map: "category_name_unique")
+  @@unique([project_id, category_id, slug], map: "category_slug_unique")
+  @@index([category_id], map: "trans_category_category_id_0f21e824")
+  @@index([project_id], map: "trans_category_project_id_7dc717ed")
+  @@index([secondary_language_id], map: "trans_category_secondary_language_id_3b074b19")
+  @@index([slug], map: "trans_category_slug_52f13beb")
+  @@index([slug], map: "trans_category_slug_52f13beb_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_change {
+  id                                                          Int                      @id @default(autoincrement())
+  backup_author_claim_id                                      Int?
+  unit_id                                                     Int?
+  language_id                                                 Int?
+  project_id                                                  Int?
+  workspace_id                                                String?                  @db.Uuid
+  category_id                                                 Int?
+  component_id                                                Int?
+  translation_id                                              Int?
+  comment_id                                                  Int?
+  suggestion_id                                               Int?
+  announcement_id                                             Int?
+  screenshot_id                                               Int?
+  alert_id                                                    Int?
+  addon_id                                                    Int?
+  user_id                                                     Int?
+  author_id                                                   Int?
+  timestamp                                                   DateTime                 @db.Timestamptz(6)
+  action                                                      Int
+  target                                                      String
+  old                                                         String
+  details                                                     Json
+  addons_addon                                                addons_addon?            @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_addon_id_84220e1c_fk_addons_addon_id")
+  trans_alert                                                 trans_alert?             @relation(fields: [alert_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_alert_id_34808078_fk_trans_alert_id")
+  trans_announcement                                          trans_announcement?      @relation(fields: [announcement_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_announcement_id_1ad27981_fk_trans_announcement_id")
+  weblate_auth_user_trans_change_author_idToweblate_auth_user weblate_auth_user?       @relation("trans_change_author_idToweblate_auth_user", fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_author_id_09329d48_fk_weblate_auth_user_id")
+  trans_backupauthorclaim                                     trans_backupauthorclaim? @relation(fields: [backup_author_claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_backup_author_claim__69f41b5a_fk_trans_bac")
+  trans_category                                              trans_category?          @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_category_id_436958e0_fk_trans_category_id")
+  trans_comment                                               trans_comment?           @relation(fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_comment_id_9702b436_fk_trans_comment_id")
+  trans_component                                             trans_component?         @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_component_id_288ed925_fk_trans_component_id")
+  lang_language                                               lang_language?           @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_language_id_73bd2ce4_fk_lang_language_id")
+  trans_project                                               trans_project?           @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_project_id_b2db51ee_fk_trans_project_id")
+  screenshots_screenshot                                      screenshots_screenshot?  @relation(fields: [screenshot_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_screenshot_id_ebbee35e_fk_screensho")
+  trans_suggestion                                            trans_suggestion?        @relation(fields: [suggestion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_suggestion_id_0e61f1cb_fk_trans_suggestion_id")
+  trans_translation                                           trans_translation?       @relation(fields: [translation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_translation_id_c5aa927b_fk_trans_translation_id")
+  trans_unit                                                  trans_unit?              @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_unit_id_76b0c6c0_fk_trans_unit_id")
+  weblate_auth_user_trans_change_user_idToweblate_auth_user   weblate_auth_user?       @relation("trans_change_user_idToweblate_auth_user", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_user_id_8d1225f9_fk_weblate_auth_user_id")
+  workspaces_workspace                                        workspaces_workspace?    @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_change_workspace_id_a1fbe04c_fk_workspaces_workspace_id")
+
+  @@index([timestamp(sort: Desc), action], map: "trans_change_action_idx")
+  @@index([addon_id], map: "trans_change_addon_id_84220e1c")
+  @@index([alert_id], map: "trans_change_alert_id_34808078")
+  @@index([timestamp(sort: Desc)], map: "trans_change_announce_idx", where: raw("(action = 46)"))
+  @@index([announcement_id], map: "trans_change_announcement_id_1ad27981")
+  @@index([backup_author_claim_id], map: "trans_change_backup_author_claim_id_69f41b5a")
+  @@index([category_id, timestamp(sort: Desc), action], map: "trans_change_category_idx", where: raw("(category_id IS NOT NULL)"))
+  @@index([comment_id], map: "trans_change_comment_id_9702b436")
+  @@index([component_id, timestamp(sort: Desc), action], map: "trans_change_component_idx", where: raw("(component_id IS NOT NULL)"))
+  @@index([language_id, category_id, timestamp(sort: Desc)], map: "trans_change_lang_cat_idx", where: raw("((category_id IS NOT NULL) AND (language_id IS NOT NULL))"))
+  @@index([language_id, component_id, timestamp(sort: Desc)], map: "trans_change_lang_comp_idx", where: raw("((component_id IS NOT NULL) AND (language_id IS NOT NULL))"))
+  @@index([language_id, timestamp(sort: Desc), action], map: "trans_change_language_idx", where: raw("(language_id IS NOT NULL)"))
+  @@index([project_id, language_id, timestamp(sort: Desc), action], map: "trans_change_prj_language_idx", where: raw("((project_id IS NOT NULL) AND (language_id IS NOT NULL))"))
+  @@index([project_id, timestamp(sort: Desc)], map: "trans_change_proj_addon_idx", where: raw("((action = ANY (ARRAY[60, 61, 62])) AND (project_id IS NOT NULL) AND (component_id IS NULL))"))
+  @@index([project_id, timestamp(sort: Desc), action], map: "trans_change_project_idx", where: raw("(project_id IS NOT NULL)"))
+  @@index([screenshot_id], map: "trans_change_screenshot_id_ebbee35e")
+  @@index([timestamp(sort: Desc)], map: "trans_change_site_addon_idx", where: raw("((action = ANY (ARRAY[60, 61, 62])) AND (project_id IS NULL) AND (category_id IS NULL) AND (component_id IS NULL))"))
+  @@index([suggestion_id], map: "trans_change_suggestion_id_0e61f1cb")
+  @@index([translation_id, timestamp(sort: Desc), action], map: "trans_change_translation_idx", where: raw("(translation_id IS NOT NULL)"))
+  @@index([unit_id, timestamp(sort: Desc), action], map: "trans_change_unit_idx", where: raw("(unit_id IS NOT NULL)"))
+  @@index([user_id], map: "trans_change_user_id_8d1225f9")
+  @@index([user_id, timestamp(sort: Desc), action], map: "trans_change_user_idx")
+  @@index([workspace_id, timestamp(sort: Desc), action], map: "trans_change_workspace_idx", where: raw("(workspace_id IS NOT NULL)"))
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_comment {
+  id                      Int                      @id @default(autoincrement())
+  backup_author_claim_id  Int?
+  unit_id                 Int
+  comment                 String
+  user_id                 Int?
+  timestamp               DateTime                 @db.Timestamptz(6)
+  resolved                Boolean
+  userdetails             Json
+  trans_change            trans_change[]
+  trans_backupauthorclaim trans_backupauthorclaim? @relation(fields: [backup_author_claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_comment_backup_author_claim__3052bed5_fk_trans_bac")
+  trans_unit              trans_unit               @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_comment_unit_id_73ca7c89_fk_trans_unit_id")
+  weblate_auth_user       weblate_auth_user?       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_comment_user_id_c2f200eb_fk_weblate_auth_user_id")
+
+  @@index([backup_author_claim_id], map: "trans_comment_backup_author_claim_id_3052bed5")
+  @@index([resolved], map: "trans_comment_resolved_81cae7f4")
+  @@index([timestamp], map: "trans_comment_timestamp_1148a5ab")
+  @@index([unit_id], map: "trans_comment_unit_id_73ca7c89")
+  @@index([user_id], map: "trans_comment_user_id_c2f200eb")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_component {
+  id                                                                 Int                              @id @default(autoincrement())
+  name                                                               String                           @db.VarChar(100)
+  slug                                                               String                           @db.VarChar(100)
+  project_id                                                         Int
+  category_id                                                        Int?
+  vcs                                                                String                           @db.VarChar(20)
+  vcs_params                                                         Json
+  repo                                                               String                           @db.VarChar(300)
+  linked_component_id                                                Int?
+  push                                                               String                           @db.VarChar(300)
+  repoweb                                                            String                           @db.VarChar(200)
+  repoweb_translations                                               String                           @db.VarChar(200)
+  git_export                                                         String                           @db.VarChar(220)
+  report_source_bugs                                                 String                           @db.VarChar(190)
+  branch                                                             String                           @db.VarChar(200)
+  push_branch                                                        String                           @db.VarChar(200)
+  filemask                                                           String                           @db.VarChar(400)
+  screenshot_filemask                                                String                           @db.VarChar(400)
+  template                                                           String                           @db.VarChar(400)
+  edit_template                                                      Boolean
+  intermediate                                                       String                           @db.VarChar(400)
+  new_base                                                           String                           @db.VarChar(400)
+  file_format                                                        String                           @db.VarChar(50)
+  file_format_params                                                 Json
+  locked                                                             Boolean
+  hide_glossary_matches                                              Boolean
+  allow_translation_propagation                                      Boolean
+  contribute_project_tm                                              Boolean
+  enable_suggestions                                                 Boolean
+  suggestion_voting                                                  Boolean
+  suggestion_autoaccept                                              Int                              @db.SmallInt
+  check_flags                                                        String
+  enforced_checks                                                    Json
+  inherit_enforced_checks                                            Boolean
+  license                                                            String                           @db.VarChar(150)
+  inherit_license                                                    Boolean
+  agreement                                                          String
+  inherit_agreement                                                  Boolean
+  new_lang                                                           String                           @db.VarChar(10)
+  inherit_new_lang                                                   Boolean
+  language_code_style                                                String                           @db.VarChar(20)
+  inherit_language_code_style                                        Boolean
+  manage_units                                                       Boolean
+  merge_style                                                        String                           @db.VarChar(10)
+  commit_message                                                     String
+  inherit_commit_message                                             Boolean
+  add_message                                                        String
+  inherit_add_message                                                Boolean
+  delete_message                                                     String
+  inherit_delete_message                                             Boolean
+  merge_message                                                      String
+  inherit_merge_message                                              Boolean
+  addon_message                                                      String
+  inherit_addon_message                                              Boolean
+  pull_message                                                       String
+  inherit_pull_message                                               Boolean
+  push_on_commit                                                     Boolean
+  push_on_update                                                     Boolean
+  commit_pending_age                                                 Int                              @db.SmallInt
+  auto_lock_error                                                    Boolean
+  source_language_id                                                 Int
+  language_regex                                                     String                           @db.VarChar(500)
+  variant_regex                                                      String                           @db.VarChar(190)
+  priority                                                           Int
+  restricted                                                         Boolean
+  is_glossary                                                        Boolean
+  glossary_color                                                     String                           @db.VarChar(30)
+  remote_revision                                                    String                           @db.VarChar(200)
+  local_revision                                                     String                           @db.VarChar(200)
+  processed_revision                                                 String                           @db.VarChar(200)
+  pull_request_url                                                   String                           @db.VarChar(2048)
+  key_filter                                                         String                           @db.VarChar(500)
+  secondary_language_id                                              Int?
+  inherit_secondary_language                                         Boolean
+  accounts_subscription                                              accounts_subscription[]
+  addons_addon                                                       addons_addon[]
+  addons_addonactivitylog                                            addons_addonactivitylog[]
+  memory_memoryscope                                                 memory_memoryscope[]
+  trans_alert                                                        trans_alert[]
+  trans_announcement                                                 trans_announcement[]
+  trans_change                                                       trans_change[]
+  trans_category                                                     trans_category?                  @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_category_id_7c9c5306_fk_trans_category_id")
+  trans_component                                                    trans_component?                 @relation("trans_componentTotrans_component", fields: [linked_component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_linked_component_id_82b0de9e_fk_trans_com")
+  other_trans_component                                              trans_component[]                @relation("trans_componentTotrans_component")
+  trans_project                                                      trans_project                    @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_project_id_04a8b52c_fk_trans_project_id")
+  lang_language_trans_component_secondary_language_idTolang_language lang_language?                   @relation("trans_component_secondary_language_idTolang_language", fields: [secondary_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_secondary_language_i_496a8d45_fk_lang_lang")
+  lang_language_trans_component_source_language_idTolang_language    lang_language                    @relation("trans_component_source_language_idTolang_language", fields: [source_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_source_language_id_2610b49e_fk_lang_language_id")
+  trans_component_links                                              trans_component_links[]
+  trans_componentlist_components                                     trans_componentlist_components[]
+  trans_contributoragreement                                         trans_contributoragreement[]
+  trans_report                                                       trans_report[]
+  trans_translation                                                  trans_translation[]
+  trans_variant                                                      trans_variant[]
+  weblate_auth_group_components                                      weblate_auth_group_components[]
+
+  @@unique([project_id, category_id, name], map: "component_name_unique")
+  @@unique([project_id, category_id, slug], map: "component_slug_unique")
+  @@index([repo, branch], map: "trans_comp_repo_branch_idx")
+  @@index([project_id, allow_translation_propagation], map: "trans_compo_project_d044e1_idx")
+  @@index([category_id], map: "trans_component_category_id_7c9c5306")
+  @@index([is_glossary], map: "trans_component_is_glossary_b4b922b7")
+  @@index([linked_component_id], map: "trans_component_linked_component_id_82b0de9e")
+  @@index([restricted], map: "trans_component_restricted_ec682d06")
+  @@index([secondary_language_id], map: "trans_component_secondary_language_id_496a8d45")
+  @@index([slug], map: "trans_component_slug_5bd48be1")
+  @@index([slug], map: "trans_component_slug_5bd48be1_like")
+  @@index([source_language_id], map: "trans_component_source_language_id_2610b49e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_component_links {
+  id              Int             @id @default(autoincrement())
+  component_id    Int
+  project_id      Int
+  category_id     Int?
+  trans_component trans_component @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_link_component_id_2342af45_fk_trans_com")
+  trans_category  trans_category? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_links_category_id_28d2bcf2_fk_trans_category_id")
+  trans_project   trans_project   @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_component_links_project_id_840f1e11_fk_trans_project_id")
+
+  @@unique([component_id, project_id], map: "trans_component_links_component_id_project_id_8e996e95_uniq")
+  @@index([category_id], map: "trans_component_links_category_id_28d2bcf2")
+  @@index([component_id], map: "trans_component_links_component_id_2342af45")
+  @@index([project_id], map: "trans_component_links_project_id_840f1e11")
+}
+
+model trans_componentlist {
+  id                                Int                                 @id @default(autoincrement())
+  name                              String                              @unique @db.VarChar(100)
+  slug                              String                              @unique @db.VarChar(100)
+  show_dashboard                    Boolean
+  accounts_profile                  accounts_profile[]
+  trans_autocomponentlist           trans_autocomponentlist[]
+  trans_componentlist_components    trans_componentlist_components[]
+  weblate_auth_group_componentlists weblate_auth_group_componentlists[]
+
+  @@index([name], map: "trans_componentlist_name_93196759_like")
+  @@index([show_dashboard], map: "trans_componentlist_show_dashboard_1394f78f")
+  @@index([slug], map: "trans_componentlist_slug_05ac37c2_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_componentlist_components {
+  id                  Int                 @id @default(autoincrement())
+  componentlist_id    Int
+  component_id        Int
+  trans_component     trans_component     @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_componentlist__component_id_5642ff5c_fk_trans_com")
+  trans_componentlist trans_componentlist @relation(fields: [componentlist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_componentlist__componentlist_id_44d9ba8f_fk_trans_com")
+
+  @@unique([componentlist_id, component_id], map: "trans_componentlist_comp_componentlist_id_compone_99528c41_uniq")
+  @@index([component_id], map: "trans_componentlist_components_component_id_5642ff5c")
+  @@index([componentlist_id], map: "trans_componentlist_components_componentlist_id_44d9ba8f")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_contributoragreement {
+  id                   Int                   @id @default(autoincrement())
+  user_id              Int
+  component_id         Int?
+  project_id           Int?
+  category_id          Int?
+  workspace_id         String?               @db.Uuid
+  timestamp            DateTime              @db.Timestamptz(6)
+  trans_category       trans_category?       @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_contributoragr_category_id_16151d5d_fk_trans_cat")
+  trans_component      trans_component?      @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_contributoragr_component_id_31bafbef_fk_trans_com")
+  trans_project        trans_project?        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_contributoragr_project_id_5761269c_fk_trans_pro")
+  weblate_auth_user    weblate_auth_user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_contributoragr_user_id_220dedfc_fk_weblate_a")
+  workspaces_workspace workspaces_workspace? @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_contributoragr_workspace_id_34926ae5_fk_workspace")
+
+  @@unique([user_id, category_id], map: "contributor_agreement_unique_category", where: raw("(category_id IS NOT NULL)"))
+  @@unique([user_id, component_id], map: "contributor_agreement_unique_component", where: raw("(component_id IS NOT NULL)"))
+  @@unique([user_id, project_id], map: "contributor_agreement_unique_project", where: raw("(project_id IS NOT NULL)"))
+  @@unique([user_id, workspace_id], map: "contributor_agreement_unique_workspace", where: raw("(workspace_id IS NOT NULL)"))
+  @@index([category_id], map: "trans_contributoragreement_category_id_16151d5d")
+  @@index([component_id], map: "trans_contributoragreement_component_id_31bafbef")
+  @@index([project_id], map: "trans_contributoragreement_project_id_5761269c")
+  @@index([workspace_id], map: "trans_contributoragreement_workspace_id_34926ae5")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_label {
+  id                Int                 @id @default(autoincrement())
+  project_id        Int
+  name              String              @db.VarChar(190)
+  color             String              @db.VarChar(30)
+  description       String              @db.VarChar(250)
+  trans_project     trans_project       @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_label_project_id_8320ed70_fk_trans_project_id")
+  trans_unit_labels trans_unit_labels[]
+
+  @@unique([project_id, name], map: "trans_label_project_id_name_ef6f7cca_uniq")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_pendingunitchange {
+  id                       Int                      @id @default(autoincrement())
+  backup_author_claim_id   Int?
+  unit_id                  Int
+  author_id                Int
+  target                   String
+  explanation              String
+  source_unit_explanation  String
+  state                    Int
+  timestamp                DateTime                 @db.Timestamptz(6)
+  add_unit                 Boolean
+  automatically_translated Boolean
+  metadata                 Json
+  weblate_auth_user        weblate_auth_user        @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_pendingunitcha_author_id_38073ef3_fk_weblate_a")
+  trans_backupauthorclaim  trans_backupauthorclaim? @relation(fields: [backup_author_claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_pendingunitcha_backup_author_claim__96ae0409_fk_trans_bac")
+  trans_unit               trans_unit               @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_pendingunitchange_unit_id_eda769c3_fk_trans_unit_id")
+
+  @@index([author_id], map: "trans_pendingunitchange_author_id_38073ef3")
+  @@index([backup_author_claim_id], map: "trans_pendingunitchange_backup_author_claim_id_96ae0409")
+  @@index([state], map: "trans_pendingunitchange_state_bbbe001f")
+  @@index([timestamp], map: "trans_pendingunitchange_timestamp_1f1271fd")
+  @@index([unit_id], map: "trans_pendingunitchange_unit_id_eda769c3")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_project {
+  id                                                                     Int                               @id @default(autoincrement())
+  name                                                                   String                            @unique @db.VarChar(60)
+  slug                                                                   String                            @unique @db.VarChar(60)
+  web                                                                    String                            @db.VarChar(200)
+  instructions                                                           String
+  workspace_id                                                           String?                           @db.Uuid
+  use_shared_tm                                                          Boolean
+  contribute_shared_tm                                                   Boolean
+  use_workspace_tm                                                       Boolean
+  contribute_workspace_tm                                                Boolean
+  autoclean_tm                                                           Boolean
+  access_control                                                         Int
+  public_sharing                                                         Boolean
+  enforced_2fa                                                           Boolean
+  translation_review                                                     Boolean
+  source_review                                                          Boolean
+  commit_policy                                                          Int
+  enable_hooks                                                           Boolean
+  language_aliases                                                       String
+  secondary_language_id                                                  Int?
+  check_flags                                                            String
+  enforced_checks                                                        Json
+  inherit_enforced_checks                                                Boolean
+  license                                                                String                            @db.VarChar(150)
+  inherit_license                                                        Boolean
+  agreement                                                              String
+  inherit_agreement                                                      Boolean
+  new_lang                                                               String                            @db.VarChar(10)
+  inherit_new_lang                                                       Boolean
+  language_code_style                                                    String                            @db.VarChar(20)
+  inherit_language_code_style                                            Boolean
+  inherit_secondary_language                                             Boolean
+  commit_message                                                         String
+  inherit_commit_message                                                 Boolean
+  add_message                                                            String
+  inherit_add_message                                                    Boolean
+  delete_message                                                         String
+  inherit_delete_message                                                 Boolean
+  merge_message                                                          String
+  inherit_merge_message                                                  Boolean
+  addon_message                                                          String
+  inherit_addon_message                                                  Boolean
+  pull_message                                                           String
+  inherit_pull_message                                                   Boolean
+  accounts_profile_watched                                               accounts_profile_watched[]
+  accounts_subscription                                                  accounts_subscription[]
+  accounts_teamauditlog                                                  accounts_teamauditlog[]
+  addons_addon                                                           addons_addon[]
+  fonts_font                                                             fonts_font[]
+  fonts_fontgroup                                                        fonts_fontgroup[]
+  machinery_machineryexclusion                                           machinery_machineryexclusion[]
+  machinery_machineryinstallation                                        machinery_machineryinstallation[]
+  memory_memory                                                          memory_memory[]
+  memory_memoryscope_memory_memoryscope_project_idTotrans_project        memory_memoryscope[]              @relation("memory_memoryscope_project_idTotrans_project")
+  memory_memoryscope_memory_memoryscope_source_project_idTotrans_project memory_memoryscope[]              @relation("memory_memoryscope_source_project_idTotrans_project")
+  trans_announcement                                                     trans_announcement[]
+  trans_backupauthorclaim                                                trans_backupauthorclaim[]
+  trans_category                                                         trans_category[]
+  trans_change                                                           trans_change[]
+  trans_component                                                        trans_component[]
+  trans_component_links                                                  trans_component_links[]
+  trans_contributoragreement                                             trans_contributoragreement[]
+  trans_label                                                            trans_label[]
+  lang_language                                                          lang_language?                    @relation(fields: [secondary_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_project_secondary_language_i_57e84b09_fk_lang_lang")
+  workspaces_workspace                                                   workspaces_workspace?             @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_project_workspace_id_a1945651_fk_workspaces_workspace_id")
+  trans_report                                                           trans_report[]
+  trans_savedsearch                                                      trans_savedsearch[]
+  trans_workflowsetting                                                  trans_workflowsetting[]
+  weblate_auth_group                                                     weblate_auth_group[]
+  weblate_auth_group_projects                                            weblate_auth_group_projects[]
+  weblate_auth_userblock                                                 weblate_auth_userblock[]
+
+  @@index([access_control], map: "trans_project_access_control_c17e787a")
+  @@index([name], map: "trans_project_name_a3285a23_like")
+  @@index([secondary_language_id], map: "trans_project_secondary_language_id_57e84b09")
+  @@index([slug], map: "trans_project_slug_77cd973b_like")
+  @@index([workspace_id], map: "trans_project_workspace_id_a1945651")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_report {
+  id                   Int                   @id @default(autoincrement())
+  creator_id           Int
+  created              DateTime              @db.Timestamptz(6)
+  kind                 String                @db.VarChar(32)
+  version              Int                   @db.SmallInt
+  parameters           Json
+  data                 Json
+  workspace_id         String?               @db.Uuid
+  project_id           Int?
+  category_id          Int?
+  component_id         Int?
+  trans_category       trans_category?       @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_report_category_id_fb4530ac_fk_trans_category_id")
+  trans_component      trans_component?      @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_report_component_id_894b3313_fk_trans_component_id")
+  weblate_auth_user    weblate_auth_user     @relation(fields: [creator_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_report_creator_id_2b66af65_fk_weblate_auth_user_id")
+  trans_project        trans_project?        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_report_project_id_026b7e0f_fk_trans_project_id")
+  workspaces_workspace workspaces_workspace? @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_report_workspace_id_f914bdb5_fk_workspaces_workspace_id")
+
+  @@index([category_id], map: "trans_report_category_id_fb4530ac")
+  @@index([component_id], map: "trans_report_component_id_894b3313")
+  @@index([created], map: "trans_report_created_04e774e5")
+  @@index([creator_id], map: "trans_report_creator_id_2b66af65")
+  @@index([kind], map: "trans_report_kind_82833535")
+  @@index([kind], map: "trans_report_kind_82833535_like")
+  @@index([project_id], map: "trans_report_project_id_026b7e0f")
+  @@index([workspace_id], map: "trans_report_workspace_id_f914bdb5")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_savedsearch {
+  id                Int                @id @default(autoincrement())
+  project_id        Int?
+  user_id           Int?
+  name              String             @db.VarChar(190)
+  query             String
+  description       String             @db.VarChar(250)
+  trans_project     trans_project?     @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_savedsearch_project_id_6559d9bb_fk_trans_project_id")
+  weblate_auth_user weblate_auth_user? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_savedsearch_user_id_8c4baec1_fk_weblate_auth_user_id")
+
+  @@unique([project_id, name], map: "trans_saved_search_project_name")
+  @@unique([user_id, name], map: "trans_saved_search_user_name")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_suggestion {
+  id                      Int                      @id @default(autoincrement())
+  backup_author_claim_id  Int?
+  unit_id                 Int
+  target                  String
+  user_id                 Int?
+  userdetails             Json
+  timestamp               DateTime                 @db.Timestamptz(6)
+  trans_backupauthorvote  trans_backupauthorvote[]
+  trans_change            trans_change[]
+  trans_backupauthorclaim trans_backupauthorclaim? @relation(fields: [backup_author_claim_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_suggestion_backup_author_claim__f18fec6a_fk_trans_bac")
+  trans_unit              trans_unit               @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_suggestion_unit_id_eb46fceb_fk_trans_unit_id")
+  weblate_auth_user       weblate_auth_user?       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_suggestion_user_id_69ce0c2b_fk_weblate_auth_user_id")
+  trans_vote              trans_vote[]
+
+  @@index([backup_author_claim_id], map: "trans_suggestion_backup_author_claim_id_f18fec6a")
+  @@index([unit_id], map: "trans_suggestion_unit_id_eb46fceb")
+  @@index([user_id], map: "trans_suggestion_user_id_69ce0c2b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_translation {
+  id                     Int                      @id @default(autoincrement())
+  component_id           Int
+  language_id            Int
+  plural_id              Int
+  revision               String                   @db.VarChar(200)
+  filename               String                   @db.VarChar(400)
+  language_code          String                   @db.VarChar(50)
+  check_flags            String
+  screenshots_screenshot screenshots_screenshot[]
+  trans_change           trans_change[]
+  trans_component        trans_component          @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_translation_component_id_c4b70a26_fk_trans_component_id")
+  lang_language          lang_language            @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_translation_language_id_030f0b30_fk_lang_language_id")
+  lang_plural            lang_plural              @relation(fields: [plural_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_translation_plural_id_5cf36dc7_fk_lang_plural_id")
+  trans_unit             trans_unit[]
+
+  @@unique([component_id, language_id], map: "trans_translation_component_id_language_id_331fa2a7_uniq")
+  @@index([language_id], map: "trans_translation_language_id_030f0b30")
+  @@index([plural_id], map: "trans_translation_plural_id_5cf36dc7")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model trans_unit {
+  id                                                            Int                            @id @default(autoincrement())
+  translation_id                                                Int
+  id_hash                                                       BigInt
+  location                                                      String
+  context                                                       String
+  note                                                          String
+  flags                                                         String
+  source                                                        String
+  previous_source                                               String
+  target                                                        String
+  state                                                         Int
+  original_state                                                Int
+  details                                                       Json
+  position                                                      Int
+  num_words                                                     Int
+  priority                                                      Int
+  timestamp                                                     DateTime                       @db.Timestamptz(6)
+  last_updated                                                  DateTime                       @db.Timestamptz(6)
+  extra_flags                                                   String
+  explanation                                                   String
+  variant_id                                                    Int?
+  automatically_translated                                      Boolean
+  source_unit_id                                                Int?
+  translation_parent_id                                         Int?
+  checks_check                                                  checks_check[]
+  screenshots_screenshot_units                                  screenshots_screenshot_units[]
+  trans_change                                                  trans_change[]
+  trans_comment                                                 trans_comment[]
+  trans_pendingunitchange                                       trans_pendingunitchange[]
+  trans_suggestion                                              trans_suggestion[]
+  trans_unit_trans_unit_source_unit_idTotrans_unit              trans_unit?                    @relation("trans_unit_source_unit_idTotrans_unit", fields: [source_unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_source_unit_id_7a735f87_fk_trans_unit_id")
+  other_trans_unit_trans_unit_source_unit_idTotrans_unit        trans_unit[]                   @relation("trans_unit_source_unit_idTotrans_unit")
+  trans_translation                                             trans_translation              @relation(fields: [translation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_translation_id_513bb910_fk_trans_translation_id")
+  trans_unit_trans_unit_translation_parent_idTotrans_unit       trans_unit?                    @relation("trans_unit_translation_parent_idTotrans_unit", fields: [translation_parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_translation_parent_id_bad2a48e_fk_trans_unit_id")
+  other_trans_unit_trans_unit_translation_parent_idTotrans_unit trans_unit[]                   @relation("trans_unit_translation_parent_idTotrans_unit")
+  trans_variant                                                 trans_variant?                 @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_variant_id_c3315c70_fk_trans_variant_id")
+  trans_unit_labels                                             trans_unit_labels[]
+  trans_variant_defining_units                                  trans_variant_defining_units[]
+
+  @@unique([translation_id, id_hash], map: "trans_unit_translation_id_id_hash_ab945589_uniq")
+  @@index([automatically_translated], map: "trans_unit_automatically_translated_96d2b31d")
+  @@index([source(ops: raw("gin_trgm_ops"))], map: "trans_unit_source_tm_idx", type: Gin, where: raw("((state >= 20) AND (NOT (target = ''::text)))"))
+  @@index([source_unit_id], map: "trans_unit_source_unit_id_7a735f87")
+  @@index([translation_parent_id], map: "trans_unit_translation_parent_id_bad2a48e")
+  @@index([variant_id], map: "trans_unit_variant_id_c3315c70")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_unit_labels {
+  id          Int         @id @default(autoincrement())
+  unit_id     Int
+  label_id    Int
+  trans_label trans_label @relation(fields: [label_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_labels_label_id_4ca92ebd_fk_trans_label_id")
+  trans_unit  trans_unit  @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_unit_labels_unit_id_a3c2ddc5_fk_trans_unit_id")
+
+  @@unique([unit_id, label_id], map: "trans_unit_labels_unit_id_label_id_6ab4c307_uniq")
+  @@index([label_id], map: "trans_unit_labels_label_id_4ca92ebd")
+  @@index([unit_id], map: "trans_unit_labels_unit_id_a3c2ddc5")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model trans_variant {
+  id                           Int                            @id @default(autoincrement())
+  component_id                 Int
+  variant_regex                String                         @db.VarChar(190)
+  key                          String
+  trans_unit                   trans_unit[]
+  trans_component              trans_component                @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_variant_component_id_0915cbfc_fk_trans_component_id")
+  trans_variant_defining_units trans_variant_defining_units[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_variant_defining_units {
+  id            Int           @id @default(autoincrement())
+  variant_id    Int
+  unit_id       Int
+  trans_variant trans_variant @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_variant_defini_variant_id_20848c13_fk_trans_var")
+  trans_unit    trans_unit    @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_variant_defining_units_unit_id_f692977b_fk_trans_unit_id")
+
+  @@unique([variant_id, unit_id], map: "trans_variant_defining_units_variant_id_unit_id_cf32c9b3_uniq")
+  @@index([unit_id], map: "trans_variant_defining_units_unit_id_f692977b")
+  @@index([variant_id], map: "trans_variant_defining_units_variant_id_20848c13")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_vote {
+  id                     Int                      @id @default(autoincrement())
+  suggestion_id          Int
+  user_id                Int
+  value                  Int                      @db.SmallInt
+  trans_backupauthorvote trans_backupauthorvote[]
+  trans_suggestion       trans_suggestion         @relation(fields: [suggestion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_vote_suggestion_id_0df2bda2_fk_trans_suggestion_id")
+  weblate_auth_user      weblate_auth_user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_vote_user_id_86a644fd_fk_weblate_auth_user_id")
+
+  @@unique([suggestion_id, user_id], map: "trans_vote_suggestion_id_user_id_fe8bdce2_uniq")
+  @@index([user_id], map: "trans_vote_user_id_86a644fd")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model trans_workflowsetting {
+  id                                                                    Int            @id @default(autoincrement())
+  project_id                                                            Int?
+  language_id                                                           Int
+  source_language_id                                                    Int?
+  translation_review                                                    Boolean
+  enable_suggestions                                                    Boolean
+  restrict_direct_editing                                               Boolean
+  suggestion_voting                                                     Boolean
+  suggestion_autoaccept                                                 Int            @db.SmallInt
+  lang_language_trans_workflowsetting_source_language_idTolang_language lang_language? @relation("trans_workflowsetting_source_language_idTolang_language", fields: [source_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_workflowsettin_source_language_id_6df86150_fk_lang_lang")
+  lang_language_trans_workflowsetting_language_idTolang_language        lang_language  @relation("trans_workflowsetting_language_idTolang_language", fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_workflowsetting_language_id_fcb1fa15_fk_lang_language_id")
+  trans_project                                                         trans_project? @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trans_workflowsetting_project_id_32daa6c8_fk_trans_project_id")
+
+  @@index([language_id], map: "trans_workflowsetting_language_id_fcb1fa15")
+  @@index([project_id], map: "trans_workflowsetting_project_id_32daa6c8")
+  @@index([source_language_id], map: "trans_workflowsetting_source_language_id_6df86150")
+}
+
+model vcs_githubappcredentials {
+  id             Int      @id @default(autoincrement())
+  hostname       String   @unique @db.VarChar(255)
+  app_id         String   @db.VarChar(50)
+  app_slug       String   @db.VarChar(255)
+  private_key    String
+  client_id      String   @db.VarChar(255)
+  client_secret  String   @db.VarChar(255)
+  webhook_secret String   @db.VarChar(255)
+  webhook_token  String   @unique @db.Uuid
+  html_url       String   @db.VarChar(200)
+  created        DateTime @db.Timestamptz(6)
+  updated        DateTime @db.Timestamptz(6)
+
+  @@index([hostname], map: "vcs_githubappcredentials_hostname_71ed5837_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model vcs_installation {
+  id                   Int                  @id @default(autoincrement())
+  provider             String               @db.VarChar(20)
+  installation_id      String               @db.VarChar(50)
+  target_type          String               @db.VarChar(20)
+  target_login         String               @db.VarChar(255)
+  workspace_id         String               @db.Uuid
+  hostname             String               @db.VarChar(255)
+  enabled              Boolean
+  created              DateTime             @db.Timestamptz(6)
+  repositories         Json
+  repositories_updated DateTime?            @db.Timestamptz(6)
+  workspaces_workspace workspaces_workspace @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "vcs_installation_workspace_id_1a97507d_fk_workspace")
+
+  @@unique([provider, hostname, installation_id, workspace_id], map: "vcs_installation_provider_hostname_instal_ab8ed013_uniq")
+  @@index([workspace_id], map: "vcs_installation_workspace_id_1a97507d")
+}
+
+model vcs_pendinginstallation {
+  id              Int      @id @default(autoincrement())
+  provider        String   @db.VarChar(20)
+  hostname        String   @db.VarChar(255)
+  installation_id String   @db.VarChar(50)
+  payload         Json
+  created         DateTime @db.Timestamptz(6)
+  updated         DateTime @db.Timestamptz(6)
+
+  @@unique([provider, hostname, installation_id], map: "vcs_pendinginstallation_provider_hostname_instal_1c297e27_uniq")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_autogroup {
+  id                 Int                @id @default(autoincrement())
+  match              String             @db.VarChar(200)
+  group_id           Int
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_autogro_group_id_37b7ff0b_fk_weblate_a")
+
+  @@index([group_id], map: "weblate_auth_autogroup_group_id_37b7ff0b")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group {
+  id                                Int                                 @id @default(autoincrement())
+  name                              String                              @db.VarChar(150)
+  defining_project_id               Int?
+  defining_workspace_id             String?                             @db.Uuid
+  project_selection                 Int
+  language_selection                Int
+  internal                          Boolean
+  enforced_2fa                      Boolean
+  accounts_teamauditlog             accounts_teamauditlog[]
+  weblate_auth_autogroup            weblate_auth_autogroup[]
+  trans_project                     trans_project?                      @relation(fields: [defining_project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_defining_project_id_b2ad81a7_fk_trans_pro")
+  workspaces_workspace              workspaces_workspace?               @relation(fields: [defining_workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_defining_workspace_i_84f40bfd_fk_workspace")
+  weblate_auth_group_admins         weblate_auth_group_admins[]
+  weblate_auth_group_componentlists weblate_auth_group_componentlists[]
+  weblate_auth_group_components     weblate_auth_group_components[]
+  weblate_auth_group_languages      weblate_auth_group_languages[]
+  weblate_auth_group_projects       weblate_auth_group_projects[]
+  weblate_auth_group_roles          weblate_auth_group_roles[]
+  weblate_auth_invitation           weblate_auth_invitation[]
+  weblate_auth_user_groups          weblate_auth_user_groups[]
+
+  @@unique([defining_workspace_id, name], map: "weblate_auth_group_unique_workspace_name", where: raw("(defining_workspace_id IS NOT NULL)"))
+  @@index([defining_project_id], map: "weblate_auth_group_defining_project_id_b2ad81a7")
+  @@index([defining_workspace_id], map: "weblate_auth_group_defining_workspace_id_84f40bfd")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_admins {
+  id                 Int                @id @default(autoincrement())
+  group_id           Int
+  user_id            Int
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_a_group_id_fa29ae29_fk_weblate_a")
+  weblate_auth_user  weblate_auth_user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_a_user_id_f5851c1b_fk_weblate_a")
+
+  @@unique([group_id, user_id], map: "weblate_auth_group_admins_group_id_user_id_8c69bc69_uniq")
+  @@index([group_id], map: "weblate_auth_group_admins_group_id_fa29ae29")
+  @@index([user_id], map: "weblate_auth_group_admins_user_id_f5851c1b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_componentlists {
+  id                  Int                 @id @default(autoincrement())
+  group_id            Int
+  componentlist_id    Int
+  trans_componentlist trans_componentlist @relation(fields: [componentlist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_c_componentlist_id_b59f8fe9_fk_trans_com")
+  weblate_auth_group  weblate_auth_group  @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_c_group_id_7af40eb9_fk_weblate_a")
+
+  @@unique([group_id, componentlist_id], map: "weblate_auth_group_compo_group_id_componentlist_i_4a7f6bad_uniq")
+  @@index([componentlist_id], map: "weblate_auth_group_componentlists_componentlist_id_b59f8fe9")
+  @@index([group_id], map: "weblate_auth_group_componentlists_group_id_7af40eb9")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_components {
+  id                 Int                @id @default(autoincrement())
+  group_id           Int
+  component_id       Int
+  trans_component    trans_component    @relation(fields: [component_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_c_component_id_2b53d012_fk_trans_com")
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_c_group_id_a07e20aa_fk_weblate_a")
+
+  @@unique([group_id, component_id], map: "weblate_auth_group_compo_group_id_component_id_57e2f006_uniq")
+  @@index([component_id], map: "weblate_auth_group_components_component_id_2b53d012")
+  @@index([group_id], map: "weblate_auth_group_components_group_id_a07e20aa")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_languages {
+  id                 Int                @id @default(autoincrement())
+  group_id           Int
+  language_id        Int
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_l_group_id_aa12d0a6_fk_weblate_a")
+  lang_language      lang_language      @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_l_language_id_4b7f5d81_fk_lang_lang")
+
+  @@unique([group_id, language_id], map: "weblate_auth_group_languages_group_id_language_id_c34f29db_uniq")
+  @@index([group_id], map: "weblate_auth_group_languages_group_id_aa12d0a6")
+  @@index([language_id], map: "weblate_auth_group_languages_language_id_4b7f5d81")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_projects {
+  id                 Int                @id @default(autoincrement())
+  group_id           Int
+  project_id         Int
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_p_group_id_f713a220_fk_weblate_a")
+  trans_project      trans_project      @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_p_project_id_26b8e2b6_fk_trans_pro")
+
+  @@unique([group_id, project_id], map: "weblate_auth_group_projects_group_id_project_id_2a91e8e2_uniq")
+  @@index([group_id], map: "weblate_auth_group_projects_group_id_f713a220")
+  @@index([project_id], map: "weblate_auth_group_projects_project_id_26b8e2b6")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_group_roles {
+  id                 Int                @id @default(autoincrement())
+  group_id           Int
+  role_id            Int
+  weblate_auth_group weblate_auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_r_group_id_ed18f8d0_fk_weblate_a")
+  weblate_auth_role  weblate_auth_role  @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_group_r_role_id_de6300ca_fk_weblate_a")
+
+  @@unique([group_id, role_id], map: "weblate_auth_group_roles_group_id_role_id_9662132c_uniq")
+  @@index([group_id], map: "weblate_auth_group_roles_group_id_ed18f8d0")
+  @@index([role_id], map: "weblate_auth_group_roles_role_id_de6300ca")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_invitation {
+  uuid                                                                   String                                    @id @db.Uuid
+  backup_authorship                                                      Boolean
+  timestamp                                                              DateTime                                  @db.Timestamptz(6)
+  author_id                                                              Int
+  user_id                                                                Int?
+  username                                                               String                                    @db.VarChar(150)
+  full_name                                                              String                                    @db.VarChar(150)
+  group_id                                                               Int
+  email                                                                  String                                    @db.VarChar(190)
+  automatic                                                              Boolean
+  team_admin                                                             Boolean
+  is_superuser                                                           Boolean
+  trans_backupauthorclaim                                                trans_backupauthorclaim?
+  weblate_auth_user_weblate_auth_invitation_author_idToweblate_auth_user weblate_auth_user                         @relation("weblate_auth_invitation_author_idToweblate_auth_user", fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_invitat_author_id_a713ef92_fk_weblate_a")
+  weblate_auth_group                                                     weblate_auth_group                        @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_invitat_group_id_07a52aff_fk_weblate_a")
+  weblate_auth_user_weblate_auth_invitation_user_idToweblate_auth_user   weblate_auth_user?                        @relation("weblate_auth_invitation_user_idToweblate_auth_user", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_invitat_user_id_6a0c6dec_fk_weblate_a")
+  weblate_auth_invitation_limit_languages                                weblate_auth_invitation_limit_languages[]
+
+  @@index([author_id], map: "weblate_auth_invitation_author_id_a713ef92")
+  @@index([group_id], map: "weblate_auth_invitation_group_id_07a52aff")
+  @@index([user_id], map: "weblate_auth_invitation_user_id_6a0c6dec")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_invitation_limit_languages {
+  id                      Int                     @id @default(autoincrement())
+  invitation_id           String                  @db.Uuid
+  language_id             Int
+  weblate_auth_invitation weblate_auth_invitation @relation(fields: [invitation_id], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_invitat_invitation_id_ed3a1e77_fk_weblate_a")
+  lang_language           lang_language           @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_invitat_language_id_26454a1a_fk_lang_lang")
+
+  @@unique([invitation_id, language_id], map: "weblate_auth_invitation__invitation_id_language_i_f7270cfe_uniq")
+  @@index([invitation_id], map: "weblate_auth_invitation_limit_languages_invitation_id_ed3a1e77")
+  @@index([language_id], map: "weblate_auth_invitation_limit_languages_language_id_26454a1a")
+}
+
+model weblate_auth_permission {
+  id                            Int                             @id @default(autoincrement())
+  codename                      String                          @unique @db.VarChar(100)
+  name                          String                          @db.VarChar(200)
+  weblate_auth_role_permissions weblate_auth_role_permissions[]
+
+  @@index([codename], map: "weblate_auth_permission_codename_b551931f_like")
+}
+
+model weblate_auth_role {
+  id                            Int                             @id @default(autoincrement())
+  name                          String                          @unique @db.VarChar(200)
+  weblate_auth_group_roles      weblate_auth_group_roles[]
+  weblate_auth_role_permissions weblate_auth_role_permissions[]
+
+  @@index([name], map: "weblate_auth_role_name_97854f8d_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_role_permissions {
+  id                      Int                     @id @default(autoincrement())
+  role_id                 Int
+  permission_id           Int
+  weblate_auth_permission weblate_auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_role_pe_permission_id_d0650152_fk_weblate_a")
+  weblate_auth_role       weblate_auth_role       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_role_pe_role_id_fa163124_fk_weblate_a")
+
+  @@unique([role_id, permission_id], map: "weblate_auth_role_permis_role_id_permission_id_58e25e9f_uniq")
+  @@index([permission_id], map: "weblate_auth_role_permissions_permission_id_d0650152")
+  @@index([role_id], map: "weblate_auth_role_permissions_role_id_fa163124")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model weblate_auth_user {
+  id                                                                           Int                                      @id @default(autoincrement())
+  password                                                                     String                                   @db.VarChar(128)
+  last_login                                                                   DateTime?                                @db.Timestamptz(6)
+  username                                                                     String                                   @unique @db.VarChar(150)
+  full_name                                                                    String                                   @db.VarChar(150)
+  email                                                                        String?                                  @unique @db.VarChar(190)
+  is_superuser                                                                 Boolean
+  is_active                                                                    Boolean
+  is_bot                                                                       Boolean
+  date_expires                                                                 DateTime?                                @db.Timestamptz(6)
+  date_joined                                                                  DateTime                                 @db.Timestamptz(6)
+  accounts_auditlog                                                            accounts_auditlog[]
+  accounts_profile                                                             accounts_profile?
+  accounts_subscription                                                        accounts_subscription[]
+  accounts_teamauditlog                                                        accounts_teamauditlog[]
+  authtoken_token                                                              authtoken_token?
+  django_admin_log                                                             django_admin_log[]
+  django_otp_webauthn_webauthncredential                                       django_otp_webauthn_webauthncredential[]
+  django_otp_webauthn_webauthnuserhandle                                       django_otp_webauthn_webauthnuserhandle?
+  fonts_font                                                                   fonts_font[]
+  memory_memory                                                                memory_memory[]
+  memory_memoryscope                                                           memory_memoryscope[]
+  otp_static_staticdevice                                                      otp_static_staticdevice[]
+  otp_totp_totpdevice                                                          otp_totp_totpdevice[]
+  screenshots_screenshot                                                       screenshots_screenshot[]
+  social_auth_usersocialauth                                                   social_auth_usersocialauth[]
+  trans_alert                                                                  trans_alert[]
+  trans_backupauthorclaim                                                      trans_backupauthorclaim[]
+  trans_change_trans_change_author_idToweblate_auth_user                       trans_change[]                           @relation("trans_change_author_idToweblate_auth_user")
+  trans_change_trans_change_user_idToweblate_auth_user                         trans_change[]                           @relation("trans_change_user_idToweblate_auth_user")
+  trans_comment                                                                trans_comment[]
+  trans_contributoragreement                                                   trans_contributoragreement[]
+  trans_pendingunitchange                                                      trans_pendingunitchange[]
+  trans_report                                                                 trans_report[]
+  trans_savedsearch                                                            trans_savedsearch[]
+  trans_suggestion                                                             trans_suggestion[]
+  trans_vote                                                                   trans_vote[]
+  weblate_auth_group_admins                                                    weblate_auth_group_admins[]
+  weblate_auth_invitation_weblate_auth_invitation_author_idToweblate_auth_user weblate_auth_invitation[]                @relation("weblate_auth_invitation_author_idToweblate_auth_user")
+  weblate_auth_invitation_weblate_auth_invitation_user_idToweblate_auth_user   weblate_auth_invitation[]                @relation("weblate_auth_invitation_user_idToweblate_auth_user")
+  weblate_auth_user_groups                                                     weblate_auth_user_groups[]
+  weblate_auth_userblock                                                       weblate_auth_userblock[]
+  wladmin_securityfinding                                                      wladmin_securityfinding[]
+  wladmin_securityfindingevent                                                 wladmin_securityfindingevent[]
+  wladmin_securityscan                                                         wladmin_securityscan[]
+
+  @@index([email], map: "weblate_auth_user_email_aaabd769_like")
+  @@index([is_bot], map: "weblate_auth_user_is_bot_f4b1c6fb")
+  @@index([username], map: "weblate_auth_user_username_d226e4a0_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_user_groups {
+  id                                       Int                                        @id @default(autoincrement())
+  user_id                                  Int
+  group_id                                 Int
+  weblate_auth_group                       weblate_auth_group                         @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_user_gr_group_id_48c0a977_fk_weblate_a")
+  weblate_auth_user                        weblate_auth_user                          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_user_gr_user_id_37e61ff1_fk_weblate_a")
+  weblate_auth_user_groups_limit_languages weblate_auth_user_groups_limit_languages[]
+
+  @@unique([user_id, group_id], map: "weblate_auth_user_groups_user_id_group_id_16cfc05b_uniq")
+  @@index([group_id], map: "weblate_auth_user_groups_group_id_48c0a977")
+  @@index([user_id], map: "weblate_auth_user_groups_user_id_37e61ff1")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_user_groups_limit_languages {
+  id                       Int                      @id @default(autoincrement())
+  teammembership_id        Int
+  language_id              Int
+  lang_language            lang_language            @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_user_gr_language_id_52ecbc9e_fk_lang_lang")
+  weblate_auth_user_groups weblate_auth_user_groups @relation(fields: [teammembership_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_user_gr_teammembership_id_8da6367c_fk_weblate_a")
+
+  @@unique([teammembership_id, language_id], map: "weblate_auth_user_groups_teammembership_id_langua_73451555_uniq")
+  @@index([teammembership_id], map: "weblate_auth_user_groups_l_teammembership_id_8da6367c")
+  @@index([language_id], map: "weblate_auth_user_groups_limit_languages_language_id_52ecbc9e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model weblate_auth_userblock {
+  id                Int               @id @default(autoincrement())
+  user_id           Int
+  project_id        Int
+  expiry            DateTime?         @db.Timestamptz(6)
+  note              String
+  trans_project     trans_project     @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_userblock_project_id_44aae0be_fk_trans_project_id")
+  weblate_auth_user weblate_auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "weblate_auth_userblock_user_id_06173205_fk_weblate_auth_user_id")
+
+  @@unique([user_id, project_id], map: "weblate_auth_userblock_user_id_project_id_7e74a707_uniq")
+  @@index([project_id], map: "weblate_auth_userblock_project_id_44aae0be")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wladmin_backuplog {
+  id                    Int                   @id @default(autoincrement())
+  service_id            Int
+  timestamp             DateTime              @db.Timestamptz(6)
+  event                 String                @db.VarChar(100)
+  warning               Boolean
+  log                   String
+  wladmin_backupservice wladmin_backupservice @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_backuplog_service_id_10292c2d_fk_wladmin_b")
+
+  @@index([event], map: "wladmin_backuplog_event_fbf23e08")
+  @@index([event], map: "wladmin_backuplog_event_fbf23e08_like")
+  @@index([service_id], map: "wladmin_backuplog_service_id_10292c2d")
+}
+
+model wladmin_backupservice {
+  id                Int                 @id @default(autoincrement())
+  repository        String              @db.VarChar(500)
+  enabled           Boolean
+  timestamp         DateTime            @db.Timestamptz(6)
+  passphrase        String              @db.VarChar(100)
+  paperkey          String
+  wladmin_backuplog wladmin_backuplog[]
+}
+
+model wladmin_configurationerror {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(150)
+  message   String
+  timestamp DateTime @db.Timestamptz(6)
+  ignored   Boolean
+
+  @@index([ignored, timestamp], map: "wladmin_con_ignored_fb498d_idx")
+  @@index([ignored], map: "wladmin_configurationerror_ignored_8a22575f")
+  @@index([name], map: "wladmin_configurationerror_name_99ad2168_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wladmin_securityfinding {
+  id                           Int                            @id @default(autoincrement())
+  user_id                      Int
+  finding_type                 String                         @db.VarChar(50)
+  key                          String                         @db.VarChar(64)
+  evidence                     Json
+  status                       String                         @db.VarChar(10)
+  first_seen                   DateTime                       @db.Timestamptz(6)
+  last_seen                    DateTime                       @db.Timestamptz(6)
+  handled_at                   DateTime?                      @db.Timestamptz(6)
+  weblate_auth_user            weblate_auth_user              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_securityfind_user_id_6c31bc00_fk_weblate_a")
+  wladmin_securityfindingevent wladmin_securityfindingevent[]
+
+  @@unique([user_id, finding_type, key], map: "security_finding_identity")
+  @@index([status, finding_type], map: "wladmin_sec_status_ec922b_idx")
+  @@index([user_id], map: "wladmin_securityfinding_user_id_6c31bc00")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wladmin_securityfindingevent {
+  id                      Int                     @id @default(autoincrement())
+  finding_id              Int
+  scan_id                 String                  @db.Uuid
+  actor_id                Int?
+  action                  String                  @db.VarChar(20)
+  timestamp               DateTime                @db.Timestamptz(6)
+  reason                  String                  @db.VarChar(50)
+  evidence                Json
+  weblate_auth_user       weblate_auth_user?      @relation(fields: [actor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_securityfind_actor_id_ddbbf0da_fk_weblate_a")
+  wladmin_securityfinding wladmin_securityfinding @relation(fields: [finding_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_securityfind_finding_id_fb30cf88_fk_wladmin_s")
+  wladmin_securityscan    wladmin_securityscan    @relation(fields: [scan_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_securityfind_scan_id_573ba79c_fk_wladmin_s")
+
+  @@unique([finding_id, scan_id, action], map: "security_finding_event_identity")
+  @@index([actor_id], map: "wladmin_securityfindingevent_actor_id_ddbbf0da")
+  @@index([finding_id], map: "wladmin_securityfindingevent_finding_id_fb30cf88")
+  @@index([scan_id], map: "wladmin_securityfindingevent_scan_id_573ba79c")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wladmin_securityscan {
+  id                           String                         @id @db.Uuid
+  actor_id                     Int?
+  filename                     String                         @db.VarChar(255)
+  operation                    String                         @db.VarChar(20)
+  finding_type                 String                         @db.VarChar(50)
+  state                        String                         @db.VarChar(20)
+  created                      DateTime                       @db.Timestamptz(6)
+  completed                    DateTime?                      @db.Timestamptz(6)
+  processed                    Int
+  total                        Int
+  summary                      Json
+  error                        String
+  wladmin_securityfindingevent wladmin_securityfindingevent[]
+  weblate_auth_user            weblate_auth_user?             @relation(fields: [actor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wladmin_securityscan_actor_id_0aebe956_fk_weblate_auth_user_id")
+
+  @@index([actor_id], map: "wladmin_securityscan_actor_id_0aebe956")
+  @@index([state], map: "wladmin_securityscan_state_135c0fa8")
+  @@index([state], map: "wladmin_securityscan_state_135c0fa8_like")
+}
+
+model wladmin_supportstatus {
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(150)
+  secret            String    @db.VarChar(400)
+  expiry            DateTime? @db.Timestamptz(6)
+  in_limits         Boolean
+  discoverable      Boolean
+  limits            Json
+  has_subscription  Boolean
+  backup_repository String    @db.VarChar(500)
+  enabled           Boolean
+
+  @@index([enabled], map: "wladmin_supportstatus_enabled_fbe08b47")
+  @@index([expiry], map: "wladmin_supportstatus_expiry_2855a549")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model workspaces_workspace {
+  id                              String                            @id @db.Uuid
+  metric_id                       Int                               @unique @default(autoincrement())
+  name                            String                            @db.VarChar(100)
+  propagation_scope               String                            @db.VarChar(20)
+  name_managed                    Boolean
+  use_workspace_tm                Boolean
+  contribute_workspace_tm         Boolean
+  license                         String                            @db.VarChar(150)
+  agreement                       String
+  new_lang                        String                            @db.VarChar(10)
+  language_code_style             String                            @db.VarChar(20)
+  secondary_language_id           Int?
+  check_flags                     String
+  enforced_checks                 Json
+  inherit_enforced_checks         Boolean
+  commit_message                  String
+  add_message                     String
+  delete_message                  String
+  merge_message                   String
+  addon_message                   String
+  pull_message                    String
+  accounts_teamauditlog           accounts_teamauditlog[]
+  machinery_machineryexclusion    machinery_machineryexclusion[]
+  machinery_machineryinstallation machinery_machineryinstallation[]
+  memory_memoryscope              memory_memoryscope[]
+  trans_change                    trans_change[]
+  trans_contributoragreement      trans_contributoragreement[]
+  trans_project                   trans_project[]
+  trans_report                    trans_report[]
+  vcs_installation                vcs_installation[]
+  weblate_auth_group              weblate_auth_group[]
+  lang_language                   lang_language?                    @relation(fields: [secondary_language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "workspaces_workspace_secondary_language_i_b8ff77e6_fk_lang_lang")
+
+  @@index([secondary_language_id], map: "workspaces_workspace_secondary_language_id_b8ff77e6")
+}

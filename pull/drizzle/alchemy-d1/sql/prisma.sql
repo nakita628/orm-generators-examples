@@ -1,0 +1,24 @@
+-- prisma db push failed:
+-- Loaded Prisma config from prisma.config.mjs.
+-- 
+-- Prisma schema loaded from ../../../../../../home/user/orm-generators-examples/pull/drizzle/alchemy-d1/schema.prisma.
+-- Error: SQLite database error
+-- near "(": syntax error in CREATE TABLE "posts" (
+--     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+--     "user_id" INTEGER NOT NULL,
+--     "title" TEXT NOT NULL,
+--     "body" TEXT NOT NULL,
+--     "created_at" INTEGER NOT NULL DEFAULT unixepoch(),
+--     CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+-- ) at offset 212
+--    0: sql_schema_connector::apply_migration::migration_step
+--            with step=CreateTable { table_id: TableId(0) }
+--              at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:28
+--    1: sql_schema_connector::apply_migration::apply_migration
+--              at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:11
+--    2: schema_core::state::SchemaPush
+--              at schema-engine/core/src/state.rs:547
+-- 
+-- Datasource "db": SQLite database "pull_drizzle_alchemy_d1_prisma.db" at "file:/root/.cache/orm-generators-examples/pull/drizzle/alchemy-d1/pull_drizzle_alchemy_d1_prisma.db"
+-- 
+-- SQLite database pull_drizzle_alchemy_d1_prisma.db created at file:/root/.cache/orm-generators-examples/pull/drizzle/alchemy-d1/pull_drizzle_alchemy_d1_prisma.db
