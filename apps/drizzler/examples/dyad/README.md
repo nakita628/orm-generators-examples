@@ -2,7 +2,7 @@
 
 The local SQLite schema of Dyad, a local, open-source AI app builder: apps, chats, messages, prompts, versions, MCP servers, custom models and providers, and more.
 
-- Source: [dyad-sh/dyad `src/db/schema.ts`](https://github.com/dyad-sh/dyad/blob/63d28b887c1b62b8509373ba58d4b03573bb714a/src/db/schema.ts), [`src/shared/inference_source.ts`](https://github.com/dyad-sh/dyad/blob/63d28b887c1b62b8509373ba58d4b03573bb714a/src/shared/inference_source.ts) and [`src/shared/chat_turn_outcome.ts`](https://github.com/dyad-sh/dyad/blob/63d28b887c1b62b8509373ba58d4b03573bb714a/src/shared/chat_turn_outcome.ts) (Apache-2.0)
+- Source: [dyad-sh/dyad `src/db/schema.ts`](https://github.com/dyad-sh/dyad/blob/bc4f2af5c8739d3179e135b2dc874f87cf002213/src/db/schema.ts), [`src/shared/inference_source.ts`](https://github.com/dyad-sh/dyad/blob/bc4f2af5c8739d3179e135b2dc874f87cf002213/src/shared/inference_source.ts) and [`src/shared/chat_turn_outcome.ts`](https://github.com/dyad-sh/dyad/blob/bc4f2af5c8739d3179e135b2dc874f87cf002213/src/shared/chat_turn_outcome.ts) (Apache-2.0)
 - Dialect: SQLite
 - Covers: imports through a tsconfig `paths` alias (`@/shared/...`), `text({ enum })` built from imported `as const` arrays, `integer` with `mode: "timestamp"` and `` .default(sql`(unixepoch())`) ``, `primaryKey({ autoIncrement: true })`, `unique` and `uniqueIndex`, long comments between columns, and v1 `relations`
 

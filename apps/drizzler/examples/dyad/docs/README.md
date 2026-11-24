@@ -237,6 +237,53 @@ CREATE TABLE `language_models` (
 	CONSTRAINT `fk_language_models_custom_provider_id_language_model_providers_id_fk` FOREIGN KEY (`custom_provider_id`) REFERENCES `language_model_providers`(`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `mcp_app_config_apps` (
+	`app_config_id` integer NOT NULL,
+	`server_id` integer NOT NULL,
+	`app_id` integer NOT NULL,
+	CONSTRAINT `fk_mcp_app_config_apps_app_config_id_mcp_app_configs_id_fk` FOREIGN KEY (`app_config_id`) REFERENCES `mcp_app_configs`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_app_config_apps_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_app_config_apps_app_id_apps_id_fk` FOREIGN KEY (`app_id`) REFERENCES `apps`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `mcp_app_config_tool_consents` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`app_config_id` integer NOT NULL,
+	`tool_name` text NOT NULL,
+	`consent` text DEFAULT 'ask' NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	CONSTRAINT `fk_mcp_app_config_tool_consents_app_config_id_mcp_app_configs_id_fk` FOREIGN KEY (`app_config_id`) REFERENCES `mcp_app_configs`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `uniq_mcp_app_config_consent` UNIQUE(`app_config_id`,`tool_name`)
+);
+
+CREATE TABLE `mcp_app_configs` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`server_id` integer NOT NULL,
+	`name` text NOT NULL,
+	`transport` text NOT NULL,
+	`command` text,
+	`args` text,
+	`env_encrypted` text,
+	`headers_encrypted` text,
+	`url` text,
+	`oauth_enabled` integer DEFAULT 0 NOT NULL,
+	`oauth_state` text,
+	`oauth_client_id` text,
+	`oauth_client_secret` text,
+	`oauth_scope` text,
+	`oauth_callback_port` integer,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	CONSTRAINT `fk_mcp_app_configs_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `mcp_server_default_apps` (
+	`server_id` integer NOT NULL,
+	`app_id` integer NOT NULL,
+	CONSTRAINT `fk_mcp_server_default_apps_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_server_default_apps_app_id_apps_id_fk` FOREIGN KEY (`app_id`) REFERENCES `apps`(`id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `mcp_servers` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`name` text NOT NULL,
@@ -256,6 +303,8 @@ CREATE TABLE `mcp_servers` (
 	`oauth_scope` text,
 	`oauth_callback_port` integer,
 	`catalog_slug` text,
+	`default_scope` text DEFAULT 'all' NOT NULL,
+	`scoped_enabled` integer DEFAULT 0 NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`updated_at` integer DEFAULT (unixepoch()) NOT NULL
 );
@@ -346,6 +395,18 @@ CREATE INDEX `agent_threads_chat_id_idx` ON `agent_threads` (`chat_id`);
 
 CREATE INDEX `chat_turn_intents_chat_idx` ON `chat_turn_intents` (`chat_id`);
 
+CREATE UNIQUE INDEX `uniq_mcp_app_config_plugin_app` ON `mcp_app_config_apps` (`server_id`,`app_id`);
+
+CREATE INDEX `mcp_app_config_apps_config_idx` ON `mcp_app_config_apps` (`app_config_id`);
+
+CREATE INDEX `mcp_app_config_apps_app_idx` ON `mcp_app_config_apps` (`app_id`);
+
+CREATE INDEX `mcp_app_configs_server_idx` ON `mcp_app_configs` (`server_id`);
+
+CREATE UNIQUE INDEX `uniq_mcp_server_default_app` ON `mcp_server_default_apps` (`server_id`,`app_id`);
+
+CREATE INDEX `mcp_server_default_apps_app_idx` ON `mcp_server_default_apps` (`app_id`);
+
 CREATE UNIQUE INDEX `uniq_mcp_catalog_slug` ON `mcp_servers` (`catalog_slug`);
 
 CREATE UNIQUE INDEX `messages_chat_user_input_request_unique` ON `messages` (`chat_id`,`user_input_request_id`);
@@ -361,33 +422,37 @@ CREATE INDEX `security_fix_chats_fix_chat_id_idx` ON `security_fix_chats` (`fix_
 
 ## Contents
 
-| Table                                                       | Name in the database         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ----------------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [prompts](#table-prompts)                                   | `prompts`                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [appCollections](#table-appCollections)                     | `app_collections`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [apps](#table-apps)                                         | `apps`                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [testUserCleanup](#table-testUserCleanup)                   | `test_user_cleanup`          | Independent recovery records: concurrent cases must never overwrite another run's user. Deliberately no cascading FK: a failed remote deletion must remain recoverable even after the local app is deleted. No credentials are stored.                                                                                                                                                                                                                                                                                                                                                                                            |
-| [testBranchCleanup](#table-testBranchCleanup)               | `test_branch_cleanup`        | One record per sandboxed run, independent of the recorder's app-row marker. Retain provider identity after app deletion/reassociation so failed cleanup remains recoverable. Never store connection strings or auth credentials here.                                                                                                                                                                                                                                                                                                                                                                                             |
-| [chats](#table-chats)                                       | `chats`                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [messages](#table-messages)                                 | `messages`                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [chatTurnIntents](#table-chatTurnIntents)                   | `chat_turn_intents`          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [chatQueueStates](#table-chatQueueStates)                   | `chat_queue_states`          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [chatQueueEntries](#table-chatQueueEntries)                 | `chat_queue_entries`         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [agentThreads](#table-agentThreads)                         | `agent_threads`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [agentMessages](#table-agentMessages)                       | `agent_messages`             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [agentActivities](#table-agentActivities)                   | `agent_activities`           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [versions](#table-versions)                                 | `versions`                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [security_fix_chats](#table-security_fix_chats)             | `security_fix_chats`         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [coolifyAppConnections](#table-coolifyAppConnections)       | `coolify_app_connections`    | Where an app deploys to on a Coolify instance. A table rather than columns on `apps` because these are set together and mean nothing apart: a server without a project names nowhere, and an application id without either belongs to no instance. The row existing is what "connected" means, so disconnecting deletes it rather than nulling every field and hoping each writer nulls the same ones. One row is one deployment. The target columns are NOT NULL because the database will not hold a half-configured connection; the rest fill in as a deploy progresses. The API token is instance-wide and lives in settings. |
-| [cloudflareAppConnections](#table-cloudflareAppConnections) | `cloudflare_app_connections` | Which Cloudflare Worker a folder of an app deploys to. One row per target, where a target is a folder with a Wrangler config or a Nitro app: an app can deploy several Workers, each with its own rule on Cloudflare. The row existing is what "connected" means, so every column but `workerUrl` is NOT NULL and disconnecting deletes the row. The API token is account-wide and lives in settings.                                                                                                                                                                                                                             |
-| [language_model_providers](#table-language_model_providers) | `language_model_providers`   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [language_models](#table-language_models)                   | `language_models`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [mcpServers](#table-mcpServers)                             | `mcp_servers`                | --- MCP (Model Context Protocol) tables ---                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| [mcpToolConsents](#table-mcpToolConsents)                   | `mcp_tool_consents`          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [chatSearchDirtyMessages](#table-chatSearchDirtyMessages)   | `chat_search_dirty_messages` | --- Chat search (FTS5) support tables --- Dirty queues for the chat_search_fts index (created in a custom migration — drizzle cannot model FTS5 virtual tables). Rows are enqueued by SQLite triggers when source rows change and drained by ChatSearchIndexer, which builds the searchable text projection in TypeScript. No foreign keys: triggers own the row lifecycle, including cleanup on delete.                                                                                                                                                                                                                          |
-| [chatSearchDirtyChats](#table-chatSearchDirtyChats)         | `chat_search_dirty_chats`    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [chatSearchMeta](#table-chatSearchMeta)                     | `chat_search_meta`           | Key/value metadata for the chat-search index (e.g. projection version so a policy change can trigger a background rebuild).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| [customThemes](#table-customThemes)                         | `custom_themes`              | --- Custom Themes table ---                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Table                                                       | Name in the database           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [prompts](#table-prompts)                                   | `prompts`                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [appCollections](#table-appCollections)                     | `app_collections`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [apps](#table-apps)                                         | `apps`                         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [testUserCleanup](#table-testUserCleanup)                   | `test_user_cleanup`            | Independent recovery records: concurrent cases must never overwrite another run's user. Deliberately no cascading FK: a failed remote deletion must remain recoverable even after the local app is deleted. No credentials are stored.                                                                                                                                                                                                                                                                                                                                                                                            |
+| [testBranchCleanup](#table-testBranchCleanup)               | `test_branch_cleanup`          | One record per sandboxed run, independent of the recorder's app-row marker. Retain provider identity after app deletion/reassociation so failed cleanup remains recoverable. Never store connection strings or auth credentials here.                                                                                                                                                                                                                                                                                                                                                                                             |
+| [chats](#table-chats)                                       | `chats`                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [messages](#table-messages)                                 | `messages`                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [chatTurnIntents](#table-chatTurnIntents)                   | `chat_turn_intents`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [chatQueueStates](#table-chatQueueStates)                   | `chat_queue_states`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [chatQueueEntries](#table-chatQueueEntries)                 | `chat_queue_entries`           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [agentThreads](#table-agentThreads)                         | `agent_threads`                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [agentMessages](#table-agentMessages)                       | `agent_messages`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [agentActivities](#table-agentActivities)                   | `agent_activities`             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [versions](#table-versions)                                 | `versions`                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [security_fix_chats](#table-security_fix_chats)             | `security_fix_chats`           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [coolifyAppConnections](#table-coolifyAppConnections)       | `coolify_app_connections`      | Where an app deploys to on a Coolify instance. A table rather than columns on `apps` because these are set together and mean nothing apart: a server without a project names nowhere, and an application id without either belongs to no instance. The row existing is what "connected" means, so disconnecting deletes it rather than nulling every field and hoping each writer nulls the same ones. One row is one deployment. The target columns are NOT NULL because the database will not hold a half-configured connection; the rest fill in as a deploy progresses. The API token is instance-wide and lives in settings. |
+| [cloudflareAppConnections](#table-cloudflareAppConnections) | `cloudflare_app_connections`   | Which Cloudflare Worker a folder of an app deploys to. One row per target, where a target is a folder with a Wrangler config or a Nitro app: an app can deploy several Workers, each with its own rule on Cloudflare. The row existing is what "connected" means, so every column but `workerUrl` is NOT NULL and disconnecting deletes the row. The API token is account-wide and lives in settings.                                                                                                                                                                                                                             |
+| [language_model_providers](#table-language_model_providers) | `language_model_providers`     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [language_models](#table-language_models)                   | `language_models`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [mcpServers](#table-mcpServers)                             | `mcp_servers`                  | --- MCP (Model Context Protocol) tables ---                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [mcpServerDefaultApps](#table-mcpServerDefaultApps)         | `mcp_server_default_apps`      | The apps a plugin's default configuration serves when its `defaultScope` is "selected".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [mcpAppConfigs](#table-mcpAppConfigs)                       | `mcp_app_configs`              | App-specific configurations of a plugin (app-scoped plugins experiment). Kept out of mcp_servers so builds without the feature never see them: they only know the default configuration. The config columns mirror mcp_servers; secrets are always stored encrypted.                                                                                                                                                                                                                                                                                                                                                              |
+| [mcpAppConfigApps](#table-mcpAppConfigApps)                 | `mcp_app_config_apps`          | Which apps use which app-specific configuration. `serverId` repeats the configuration's plugin so the unique index can guarantee an app uses at most one configuration of each plugin.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [mcpAppConfigToolConsents](#table-mcpAppConfigToolConsents) | `mcp_app_config_tool_consents` | Tool approvals for app-specific configurations. Each configuration can reach a different server or account, so approvals are not shared with the default configuration's (mcp_tool_consents).                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [mcpToolConsents](#table-mcpToolConsents)                   | `mcp_tool_consents`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [chatSearchDirtyMessages](#table-chatSearchDirtyMessages)   | `chat_search_dirty_messages`   | --- Chat search (FTS5) support tables --- Dirty queues for the chat_search_fts index (created in a custom migration — drizzle cannot model FTS5 virtual tables). Rows are enqueued by SQLite triggers when source rows change and drained by ChatSearchIndexer, which builds the searchable text projection in TypeScript. No foreign keys: triggers own the row lifecycle, including cleanup on delete.                                                                                                                                                                                                                          |
+| [chatSearchDirtyChats](#table-chatSearchDirtyChats)         | `chat_search_dirty_chats`      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [chatSearchMeta](#table-chatSearchMeta)                     | `chat_search_meta`             | Key/value metadata for the chat-search index (e.g. projection version so a policy change can trigger a background rebuild).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [customThemes](#table-customThemes)                         | `custom_themes`                | --- Custom Themes table ---                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Tables
 
@@ -737,6 +802,8 @@ CREATE TABLE `apps` (
 - `id` → [security_fix_chats.appId](#table-security_fix_chats) (one to many, on delete cascade)
 - `id` → [coolifyAppConnections.appId](#table-coolifyAppConnections) (one to many, on delete cascade)
 - `id` → [cloudflareAppConnections.appId](#table-cloudflareAppConnections) (one to many, on delete cascade)
+- `id` → [mcpServerDefaultApps.appId](#table-mcpServerDefaultApps) (one to many, on delete cascade)
+- `id` → [mcpAppConfigApps.appId](#table-mcpAppConfigApps) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -3054,28 +3121,30 @@ Table `mcp_servers`. --- MCP (Model Context Protocol) tables ---
 
 ![mcpServers and the tables it relates to](tables/mcpServers.svg)
 
-| Column                                      | Type      | Constraints | Default                          | Description                                                                                                                                                                                                                                                              |
-| ------------------------------------------- | --------- | ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                                        | `integer` | PK NOT NULL |                                  |                                                                                                                                                                                                                                                                          |
-| `name`                                      | `text`    | NOT NULL    |                                  |                                                                                                                                                                                                                                                                          |
-| `transport`                                 | `text`    | NOT NULL    |                                  |                                                                                                                                                                                                                                                                          |
-| `command`                                   | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                          |
-| `args`                                      | `text`    | NULL        |                                  | Store typed JSON for args and environment variables                                                                                                                                                                                                                      |
-| `envJson` (`env_json`)                      | `text`    | NULL        |                                  | Legacy plaintext env vars and headers. These remain for unedited rows so older builds can still use their existing configuration; new writes and secret edits clear them in favor of the encrypted columns below, which are what this build reads.                       |
-| `headersJson` (`headers_json`)              | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                          |
-| `envEncrypted` (`env_encrypted`)            | `text`    | NULL        |                                  | Env vars and headers encrypted via Electron `safeStorage`, or base64 plaintext where no keyring is available (see encryptSecretMap). Both hold a JSON object of strings.                                                                                                 |
-| `headersEncrypted` (`headers_encrypted`)    | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                          |
-| `url`                                       | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                          |
-| `enabled`                                   | `integer` | NOT NULL    | ``.default(sql`0`)``             |                                                                                                                                                                                                                                                                          |
-| `oauthEnabled` (`oauth_enabled`)            | `integer` | NOT NULL    | ``.default(sql`0`)``             | Whether this server requires OAuth. When true, the MCP manager wires an `OAuthClientProvider` into the streamable HTTP transport so the Vercel `@ai-sdk/mcp` `auth()` flow can drive PKCE + refresh.                                                                     |
-| `oauthState` (`oauth_state`)                | `text`    | NULL        |                                  | OAuth state (tokens, expiry, client info). Encrypted via Electron `safeStorage`, or base64 plaintext where no keyring is available (see encryptToString). Read/written only by DyadOAuthClientProvider.                                                                  |
-| `oauthClientId` (`oauth_client_id`)         | `text`    | NULL        |                                  | Optional pre-registered OAuth client_id for servers that don't support dynamic client registration (RFC 7591). User-supplied via the add-server UI; left blank for servers that support DCR.                                                                             |
-| `oauthClientSecret` (`oauth_client_secret`) | `text`    | NULL        |                                  | Optional pre-registered OAuth client_secret for confidential clients. Encrypted via `safeStorage` (base64 plaintext fallback where no keyring exists). Never sent to the renderer.                                                                                       |
-| `oauthScope` (`oauth_scope`)                | `text`    | NULL        |                                  | Space-separated OAuth scopes requested at the authorize endpoint. Server-defined values; check provider docs. Blank means omit the `scope` parameter entirely so the server applies its own default (rather than us guessing a value that fits a minority of providers). |
-| `oauthCallbackPort` (`oauth_callback_port`) | `integer` | NULL        |                                  | Per-server callback port. Manual (non-DCR) flows pre-register a redirect URI that includes the port, so it must stay stable for those rows. Null falls back to DEFAULT_OAUTH_CALLBACK_PORT.                                                                              |
-| `catalogSlug` (`catalog_slug`)              | `text`    | NULL        |                                  | Slug of the curated catalog entry this server was added from. Null for manually configured servers.                                                                                                                                                                      |
-| `createdAt` (`created_at`)                  | `integer` | NOT NULL    | ``.default(sql`(unixepoch())`)`` |                                                                                                                                                                                                                                                                          |
-| `updatedAt` (`updated_at`)                  | `integer` | NOT NULL    | ``.default(sql`(unixepoch())`)`` |                                                                                                                                                                                                                                                                          |
+| Column                                      | Type      | Constraints | Default                          | Description                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------- | --------- | ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                                        | `integer` | PK NOT NULL |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `name`                                      | `text`    | NOT NULL    |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `transport`                                 | `text`    | NOT NULL    |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `command`                                   | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `args`                                      | `text`    | NULL        |                                  | Store typed JSON for args and environment variables                                                                                                                                                                                                                                                                                                                                  |
+| `envJson` (`env_json`)                      | `text`    | NULL        |                                  | Legacy plaintext env vars and headers. These remain for unedited rows so older builds can still use their existing configuration; new writes and secret edits clear them in favor of the encrypted columns below, which are what this build reads.                                                                                                                                   |
+| `headersJson` (`headers_json`)              | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `envEncrypted` (`env_encrypted`)            | `text`    | NULL        |                                  | Env vars and headers encrypted via Electron `safeStorage`, or base64 plaintext where no keyring is available (see encryptSecretMap). Both hold a JSON object of strings.                                                                                                                                                                                                             |
+| `headersEncrypted` (`headers_encrypted`)    | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `url`                                       | `text`    | NULL        |                                  |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `enabled`                                   | `integer` | NOT NULL    | ``.default(sql`0`)``             |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `oauthEnabled` (`oauth_enabled`)            | `integer` | NOT NULL    | ``.default(sql`0`)``             | Whether this server requires OAuth. When true, the MCP manager wires an `OAuthClientProvider` into the streamable HTTP transport so the Vercel `@ai-sdk/mcp` `auth()` flow can drive PKCE + refresh.                                                                                                                                                                                 |
+| `oauthState` (`oauth_state`)                | `text`    | NULL        |                                  | OAuth state (tokens, expiry, client info). Encrypted via Electron `safeStorage`, or base64 plaintext where no keyring is available (see encryptToString). Read/written only by DyadOAuthClientProvider.                                                                                                                                                                              |
+| `oauthClientId` (`oauth_client_id`)         | `text`    | NULL        |                                  | Optional pre-registered OAuth client_id for servers that don't support dynamic client registration (RFC 7591). User-supplied via the add-server UI; left blank for servers that support DCR.                                                                                                                                                                                         |
+| `oauthClientSecret` (`oauth_client_secret`) | `text`    | NULL        |                                  | Optional pre-registered OAuth client_secret for confidential clients. Encrypted via `safeStorage` (base64 plaintext fallback where no keyring exists). Never sent to the renderer.                                                                                                                                                                                                   |
+| `oauthScope` (`oauth_scope`)                | `text`    | NULL        |                                  | Space-separated OAuth scopes requested at the authorize endpoint. Server-defined values; check provider docs. Blank means omit the `scope` parameter entirely so the server applies its own default (rather than us guessing a value that fits a minority of providers).                                                                                                             |
+| `oauthCallbackPort` (`oauth_callback_port`) | `integer` | NULL        |                                  | Per-server callback port. Manual (non-DCR) flows pre-register a redirect URI that includes the port, so it must stay stable for those rows. Null falls back to DEFAULT_OAUTH_CALLBACK_PORT.                                                                                                                                                                                          |
+| `catalogSlug` (`catalog_slug`)              | `text`    | NULL        |                                  | Slug of the curated catalog entry this server was added from. Null for manually configured servers.                                                                                                                                                                                                                                                                                  |
+| `defaultScope` (`default_scope`)            | `text`    | NOT NULL    | `.default("all")`                | App-scoped plugins experiment. Which apps the default configuration (this row) serves: "all", "selected" (the apps in mcp_server_default_apps), or "none". `enabled` stays the switch older builds read, so it is only true for an "all" plugin that is on; the switch for a plugin whose default is limited lives in `scopedEnabled`. See src/ipc/utils/mcp_plugin_availability.ts. |
+| `scopedEnabled` (`scoped_enabled`)          | `integer` | NOT NULL    | ``.default(sql`0`)``             |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `createdAt` (`created_at`)                  | `integer` | NOT NULL    | ``.default(sql`(unixepoch())`)`` |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `updatedAt` (`updated_at`)                  | `integer` | NOT NULL    | ``.default(sql`(unixepoch())`)`` |                                                                                                                                                                                                                                                                                                                                                                                      |
 
 #### Definition
 
@@ -3099,6 +3168,8 @@ CREATE TABLE `mcp_servers` (
 	`oauth_scope` text,
 	`oauth_callback_port` integer,
 	`catalog_slug` text,
+	`default_scope` text DEFAULT 'all' NOT NULL,
+	`scoped_enabled` integer DEFAULT 0 NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`updated_at` integer DEFAULT (unixepoch()) NOT NULL
 );
@@ -3112,6 +3183,9 @@ CREATE UNIQUE INDEX `uniq_mcp_catalog_slug` ON `mcp_servers` (`catalog_slug`);
 
 #### Referenced by
 
+- `id` → [mcpServerDefaultApps.serverId](#table-mcpServerDefaultApps) (one to many, on delete cascade)
+- `id` → [mcpAppConfigs.serverId](#table-mcpAppConfigs) (one to many, on delete cascade)
+- `id` → [mcpAppConfigApps.serverId](#table-mcpAppConfigApps) (one to many, on delete cascade)
 - `id` → [mcpToolConsents.serverId](#table-mcpToolConsents) (one to many, on delete cascade)
 
 <details>
@@ -3124,7 +3198,7 @@ db.select().from(mcpServers);
 ```
 
 ```sql
-select "id", "name", "transport", "command", "args", "env_json", "headers_json", "env_encrypted", "headers_encrypted", "url", "enabled", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "catalog_slug", "created_at", "updated_at"
+select "id", "name", "transport", "command", "args", "env_json", "headers_json", "env_encrypted", "headers_encrypted", "url", "enabled", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "catalog_slug", "default_scope", "scoped_enabled", "created_at", "updated_at"
 from "mcp_servers"
 ```
 
@@ -3146,7 +3220,7 @@ db.query.mcpServers.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_json" as "envJson", "d0"."headers_json" as "headersJson", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."enabled" as "enabled", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."catalog_slug" as "catalogSlug", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_json" as "envJson", "d0"."headers_json" as "headersJson", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."enabled" as "enabled", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."catalog_slug" as "catalogSlug", "d0"."default_scope" as "defaultScope", "d0"."scoped_enabled" as "scopedEnabled", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "mcp_servers" as "d0"
 ```
 
@@ -3157,7 +3231,7 @@ db.query.mcpServers.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_json" as "envJson", "d0"."headers_json" as "headersJson", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."enabled" as "enabled", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."catalog_slug" as "catalogSlug", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_json" as "envJson", "d0"."headers_json" as "headersJson", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."enabled" as "enabled", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."catalog_slug" as "catalogSlug", "d0"."default_scope" as "defaultScope", "d0"."scoped_enabled" as "scopedEnabled", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "mcp_servers" as "d0"
 where "d0"."id" = ?
 limit ?
@@ -3171,9 +3245,9 @@ db.insert(mcpServers).values({ id: 1, name: "name", transport: "transport" });
 ```
 
 ```sql
-insert into "mcp_servers" ("id", "name", "transport", "command", "args", "env_json", "headers_json", "env_encrypted", "headers_encrypted", "url", "enabled", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "catalog_slug", "created_at", "updated_at")
-values (?, ?, ?, null, null, null, null, null, null, null, 0, 0, null, null, null, null, null, null, (unixepoch()), (unixepoch()))
--- params: [1,"name","transport"]
+insert into "mcp_servers" ("id", "name", "transport", "command", "args", "env_json", "headers_json", "env_encrypted", "headers_encrypted", "url", "enabled", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "catalog_slug", "default_scope", "scoped_enabled", "created_at", "updated_at")
+values (?, ?, ?, null, null, null, null, null, null, null, 0, 0, null, null, null, null, null, null, ?, 0, (unixepoch()), (unixepoch()))
+-- params: [1,"name","transport","all"]
 ```
 
 **Update**: Changes a row of mcpServers, found by its primary key.
@@ -3198,6 +3272,475 @@ db.delete(mcpServers).where(eq(mcpServers.id, 1));
 ```sql
 delete from "mcp_servers"
 where "mcp_servers"."id" = ?
+-- params: [1]
+```
+
+</details>
+
+<a id="table-mcpServerDefaultApps"></a>
+
+### mcpServerDefaultApps
+
+Table `mcp_server_default_apps`. The apps a plugin's default configuration serves when its `defaultScope` is "selected".
+
+![mcpServerDefaultApps and the tables it relates to](tables/mcpServerDefaultApps.svg)
+
+| Column                   | Type      | Constraints                                   | Default | Description |
+| ------------------------ | --------- | --------------------------------------------- | ------- | ----------- |
+| `serverId` (`server_id`) | `integer` | NOT NULL → [mcpServers.id](#table-mcpServers) |         |             |
+| `appId` (`app_id`)       | `integer` | NOT NULL → [apps.id](#table-apps)             |         |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `mcp_server_default_apps` (
+	`server_id` integer NOT NULL,
+	`app_id` integer NOT NULL,
+	CONSTRAINT `fk_mcp_server_default_apps_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_server_default_apps_app_id_apps_id_fk` FOREIGN KEY (`app_id`) REFERENCES `apps`(`id`) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX `uniq_mcp_server_default_app` ON `mcp_server_default_apps` (`server_id`,`app_id`);
+
+CREATE INDEX `mcp_server_default_apps_app_idx` ON `mcp_server_default_apps` (`app_id`);
+```
+
+#### Indexes
+
+- UNIQUE `serverId`, `appId`
+- INDEX `appId`
+
+#### References
+
+- `serverId` → [mcpServers.id](#table-mcpServers) (many to one, on delete cascade)
+- `appId` → [apps.id](#table-apps) (many to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of mcpServerDefaultApps.
+
+```ts
+db.select().from(mcpServerDefaultApps);
+```
+
+```sql
+select "server_id", "app_id"
+from "mcp_server_default_apps"
+```
+
+**Count**: How many rows mcpServerDefaultApps has.
+
+```ts
+db.select({ count: count() }).from(mcpServerDefaultApps);
+```
+
+```sql
+select count(*)
+from "mcp_server_default_apps"
+```
+
+**Find many**: The rows of mcpServerDefaultApps, through the relational query API.
+
+```ts
+db.query.mcpServerDefaultApps.findMany();
+```
+
+```sql
+select "d0"."server_id" as "serverId", "d0"."app_id" as "appId"
+from "mcp_server_default_apps" as "d0"
+```
+
+**Insert**: Adds a row to mcpServerDefaultApps, giving the columns that have no default.
+
+```ts
+db.insert(mcpServerDefaultApps).values({ serverId: 1, appId: 1 });
+```
+
+```sql
+insert into "mcp_server_default_apps" ("server_id", "app_id")
+values (?, ?)
+-- params: [1,1]
+```
+
+</details>
+
+<a id="table-mcpAppConfigs"></a>
+
+### mcpAppConfigs
+
+Table `mcp_app_configs`. App-specific configurations of a plugin (app-scoped plugins experiment). Kept out of mcp_servers so builds without the feature never see them: they only know the default configuration. The config columns mirror mcp_servers; secrets are always stored encrypted.
+
+![mcpAppConfigs and the tables it relates to](tables/mcpAppConfigs.svg)
+
+| Column                                      | Type      | Constraints                                   | Default                          | Description |
+| ------------------------------------------- | --------- | --------------------------------------------- | -------------------------------- | ----------- |
+| `id`                                        | `integer` | PK NOT NULL                                   |                                  |             |
+| `serverId` (`server_id`)                    | `integer` | NOT NULL → [mcpServers.id](#table-mcpServers) |                                  |             |
+| `name`                                      | `text`    | NOT NULL                                      |                                  |             |
+| `transport`                                 | `text`    | NOT NULL                                      |                                  |             |
+| `command`                                   | `text`    | NULL                                          |                                  |             |
+| `args`                                      | `text`    | NULL                                          |                                  |             |
+| `envEncrypted` (`env_encrypted`)            | `text`    | NULL                                          |                                  |             |
+| `headersEncrypted` (`headers_encrypted`)    | `text`    | NULL                                          |                                  |             |
+| `url`                                       | `text`    | NULL                                          |                                  |             |
+| `oauthEnabled` (`oauth_enabled`)            | `integer` | NOT NULL                                      | ``.default(sql`0`)``             |             |
+| `oauthState` (`oauth_state`)                | `text`    | NULL                                          |                                  |             |
+| `oauthClientId` (`oauth_client_id`)         | `text`    | NULL                                          |                                  |             |
+| `oauthClientSecret` (`oauth_client_secret`) | `text`    | NULL                                          |                                  |             |
+| `oauthScope` (`oauth_scope`)                | `text`    | NULL                                          |                                  |             |
+| `oauthCallbackPort` (`oauth_callback_port`) | `integer` | NULL                                          |                                  |             |
+| `createdAt` (`created_at`)                  | `integer` | NOT NULL                                      | ``.default(sql`(unixepoch())`)`` |             |
+| `updatedAt` (`updated_at`)                  | `integer` | NOT NULL                                      | ``.default(sql`(unixepoch())`)`` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `mcp_app_configs` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`server_id` integer NOT NULL,
+	`name` text NOT NULL,
+	`transport` text NOT NULL,
+	`command` text,
+	`args` text,
+	`env_encrypted` text,
+	`headers_encrypted` text,
+	`url` text,
+	`oauth_enabled` integer DEFAULT 0 NOT NULL,
+	`oauth_state` text,
+	`oauth_client_id` text,
+	`oauth_client_secret` text,
+	`oauth_scope` text,
+	`oauth_callback_port` integer,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	CONSTRAINT `fk_mcp_app_configs_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE
+);
+
+CREATE INDEX `mcp_app_configs_server_idx` ON `mcp_app_configs` (`server_id`);
+```
+
+#### Indexes
+
+- INDEX `serverId`
+
+#### References
+
+- `serverId` → [mcpServers.id](#table-mcpServers) (many to one, on delete cascade)
+
+#### Referenced by
+
+- `id` → [mcpAppConfigApps.appConfigId](#table-mcpAppConfigApps) (one to many, on delete cascade)
+- `id` → [mcpAppConfigToolConsents.appConfigId](#table-mcpAppConfigToolConsents) (one to many, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of mcpAppConfigs.
+
+```ts
+db.select().from(mcpAppConfigs);
+```
+
+```sql
+select "id", "server_id", "name", "transport", "command", "args", "env_encrypted", "headers_encrypted", "url", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "created_at", "updated_at"
+from "mcp_app_configs"
+```
+
+**Count**: How many rows mcpAppConfigs has.
+
+```ts
+db.select({ count: count() }).from(mcpAppConfigs);
+```
+
+```sql
+select count(*)
+from "mcp_app_configs"
+```
+
+**Find many**: The rows of mcpAppConfigs, through the relational query API.
+
+```ts
+db.query.mcpAppConfigs.findMany();
+```
+
+```sql
+select "d0"."id" as "id", "d0"."server_id" as "serverId", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+from "mcp_app_configs" as "d0"
+```
+
+**Find by primary key**: One row of mcpAppConfigs, through the relational query API.
+
+```ts
+db.query.mcpAppConfigs.findFirst({ where: { id: 1 } });
+```
+
+```sql
+select "d0"."id" as "id", "d0"."server_id" as "serverId", "d0"."name" as "name", "d0"."transport" as "transport", "d0"."command" as "command", "d0"."args" as "args", "d0"."env_encrypted" as "envEncrypted", "d0"."headers_encrypted" as "headersEncrypted", "d0"."url" as "url", "d0"."oauth_enabled" as "oauthEnabled", "d0"."oauth_state" as "oauthState", "d0"."oauth_client_id" as "oauthClientId", "d0"."oauth_client_secret" as "oauthClientSecret", "d0"."oauth_scope" as "oauthScope", "d0"."oauth_callback_port" as "oauthCallbackPort", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+from "mcp_app_configs" as "d0"
+where "d0"."id" = ?
+limit ?
+-- params: [1,1]
+```
+
+**Insert**: Adds a row to mcpAppConfigs, giving the columns that have no default.
+
+```ts
+db.insert(mcpAppConfigs).values({ id: 1, serverId: 1, name: "name", transport: "transport" });
+```
+
+```sql
+insert into "mcp_app_configs" ("id", "server_id", "name", "transport", "command", "args", "env_encrypted", "headers_encrypted", "url", "oauth_enabled", "oauth_state", "oauth_client_id", "oauth_client_secret", "oauth_scope", "oauth_callback_port", "created_at", "updated_at")
+values (?, ?, ?, ?, null, null, null, null, null, 0, null, null, null, null, null, (unixepoch()), (unixepoch()))
+-- params: [1,1,"name","transport"]
+```
+
+**Update**: Changes a row of mcpAppConfigs, found by its primary key.
+
+```ts
+db.update(mcpAppConfigs).set({ serverId: 1 }).where(eq(mcpAppConfigs.id, 1));
+```
+
+```sql
+update "mcp_app_configs"
+set "server_id" = ?
+where "mcp_app_configs"."id" = ?
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of mcpAppConfigs, found by its primary key.
+
+```ts
+db.delete(mcpAppConfigs).where(eq(mcpAppConfigs.id, 1));
+```
+
+```sql
+delete from "mcp_app_configs"
+where "mcp_app_configs"."id" = ?
+-- params: [1]
+```
+
+</details>
+
+<a id="table-mcpAppConfigApps"></a>
+
+### mcpAppConfigApps
+
+Table `mcp_app_config_apps`. Which apps use which app-specific configuration. `serverId` repeats the configuration's plugin so the unique index can guarantee an app uses at most one configuration of each plugin.
+
+![mcpAppConfigApps and the tables it relates to](tables/mcpAppConfigApps.svg)
+
+| Column                          | Type      | Constraints                                         | Default | Description |
+| ------------------------------- | --------- | --------------------------------------------------- | ------- | ----------- |
+| `appConfigId` (`app_config_id`) | `integer` | NOT NULL → [mcpAppConfigs.id](#table-mcpAppConfigs) |         |             |
+| `serverId` (`server_id`)        | `integer` | NOT NULL → [mcpServers.id](#table-mcpServers)       |         |             |
+| `appId` (`app_id`)              | `integer` | NOT NULL → [apps.id](#table-apps)                   |         |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `mcp_app_config_apps` (
+	`app_config_id` integer NOT NULL,
+	`server_id` integer NOT NULL,
+	`app_id` integer NOT NULL,
+	CONSTRAINT `fk_mcp_app_config_apps_app_config_id_mcp_app_configs_id_fk` FOREIGN KEY (`app_config_id`) REFERENCES `mcp_app_configs`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_app_config_apps_server_id_mcp_servers_id_fk` FOREIGN KEY (`server_id`) REFERENCES `mcp_servers`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mcp_app_config_apps_app_id_apps_id_fk` FOREIGN KEY (`app_id`) REFERENCES `apps`(`id`) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX `uniq_mcp_app_config_plugin_app` ON `mcp_app_config_apps` (`server_id`,`app_id`);
+
+CREATE INDEX `mcp_app_config_apps_config_idx` ON `mcp_app_config_apps` (`app_config_id`);
+
+CREATE INDEX `mcp_app_config_apps_app_idx` ON `mcp_app_config_apps` (`app_id`);
+```
+
+#### Indexes
+
+- UNIQUE `serverId`, `appId`
+- INDEX `appConfigId`
+- INDEX `appId`
+
+#### References
+
+- `appConfigId` → [mcpAppConfigs.id](#table-mcpAppConfigs) (many to one, on delete cascade)
+- `serverId` → [mcpServers.id](#table-mcpServers) (many to one, on delete cascade)
+- `appId` → [apps.id](#table-apps) (many to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of mcpAppConfigApps.
+
+```ts
+db.select().from(mcpAppConfigApps);
+```
+
+```sql
+select "app_config_id", "server_id", "app_id"
+from "mcp_app_config_apps"
+```
+
+**Count**: How many rows mcpAppConfigApps has.
+
+```ts
+db.select({ count: count() }).from(mcpAppConfigApps);
+```
+
+```sql
+select count(*)
+from "mcp_app_config_apps"
+```
+
+**Find many**: The rows of mcpAppConfigApps, through the relational query API.
+
+```ts
+db.query.mcpAppConfigApps.findMany();
+```
+
+```sql
+select "d0"."app_config_id" as "appConfigId", "d0"."server_id" as "serverId", "d0"."app_id" as "appId"
+from "mcp_app_config_apps" as "d0"
+```
+
+**Insert**: Adds a row to mcpAppConfigApps, giving the columns that have no default.
+
+```ts
+db.insert(mcpAppConfigApps).values({ appConfigId: 1, serverId: 1, appId: 1 });
+```
+
+```sql
+insert into "mcp_app_config_apps" ("app_config_id", "server_id", "app_id")
+values (?, ?, ?)
+-- params: [1,1,1]
+```
+
+</details>
+
+<a id="table-mcpAppConfigToolConsents"></a>
+
+### mcpAppConfigToolConsents
+
+Table `mcp_app_config_tool_consents`. Tool approvals for app-specific configurations. Each configuration can reach a different server or account, so approvals are not shared with the default configuration's (mcp_tool_consents).
+
+![mcpAppConfigToolConsents and the tables it relates to](tables/mcpAppConfigToolConsents.svg)
+
+| Column                          | Type      | Constraints                                         | Default                          | Description |
+| ------------------------------- | --------- | --------------------------------------------------- | -------------------------------- | ----------- |
+| `id`                            | `integer` | PK NOT NULL                                         |                                  |             |
+| `appConfigId` (`app_config_id`) | `integer` | NOT NULL → [mcpAppConfigs.id](#table-mcpAppConfigs) |                                  |             |
+| `toolName` (`tool_name`)        | `text`    | NOT NULL                                            |                                  |             |
+| `consent`                       | `text`    | NOT NULL                                            | `.default("ask")`                |             |
+| `updatedAt` (`updated_at`)      | `integer` | NOT NULL                                            | ``.default(sql`(unixepoch())`)`` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `mcp_app_config_tool_consents` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`app_config_id` integer NOT NULL,
+	`tool_name` text NOT NULL,
+	`consent` text DEFAULT 'ask' NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	CONSTRAINT `fk_mcp_app_config_tool_consents_app_config_id_mcp_app_configs_id_fk` FOREIGN KEY (`app_config_id`) REFERENCES `mcp_app_configs`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `uniq_mcp_app_config_consent` UNIQUE(`app_config_id`,`tool_name`)
+);
+```
+
+#### Indexes
+
+- UNIQUE `appConfigId`, `toolName`
+
+#### References
+
+- `appConfigId` → [mcpAppConfigs.id](#table-mcpAppConfigs) (many to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of mcpAppConfigToolConsents.
+
+```ts
+db.select().from(mcpAppConfigToolConsents);
+```
+
+```sql
+select "id", "app_config_id", "tool_name", "consent", "updated_at"
+from "mcp_app_config_tool_consents"
+```
+
+**Count**: How many rows mcpAppConfigToolConsents has.
+
+```ts
+db.select({ count: count() }).from(mcpAppConfigToolConsents);
+```
+
+```sql
+select count(*)
+from "mcp_app_config_tool_consents"
+```
+
+**Find many**: The rows of mcpAppConfigToolConsents, through the relational query API.
+
+```ts
+db.query.mcpAppConfigToolConsents.findMany();
+```
+
+```sql
+select "d0"."id" as "id", "d0"."app_config_id" as "appConfigId", "d0"."tool_name" as "toolName", "d0"."consent" as "consent", "d0"."updated_at" as "updatedAt"
+from "mcp_app_config_tool_consents" as "d0"
+```
+
+**Find by primary key**: One row of mcpAppConfigToolConsents, through the relational query API.
+
+```ts
+db.query.mcpAppConfigToolConsents.findFirst({ where: { id: 1 } });
+```
+
+```sql
+select "d0"."id" as "id", "d0"."app_config_id" as "appConfigId", "d0"."tool_name" as "toolName", "d0"."consent" as "consent", "d0"."updated_at" as "updatedAt"
+from "mcp_app_config_tool_consents" as "d0"
+where "d0"."id" = ?
+limit ?
+-- params: [1,1]
+```
+
+**Insert**: Adds a row to mcpAppConfigToolConsents, giving the columns that have no default.
+
+```ts
+db.insert(mcpAppConfigToolConsents).values({ id: 1, appConfigId: 1, toolName: "toolName" });
+```
+
+```sql
+insert into "mcp_app_config_tool_consents" ("id", "app_config_id", "tool_name", "consent", "updated_at")
+values (?, ?, ?, ?, (unixepoch()))
+-- params: [1,1,"toolName","ask"]
+```
+
+**Update**: Changes a row of mcpAppConfigToolConsents, found by its primary key.
+
+```ts
+db.update(mcpAppConfigToolConsents)
+  .set({ appConfigId: 1 })
+  .where(eq(mcpAppConfigToolConsents.id, 1));
+```
+
+```sql
+update "mcp_app_config_tool_consents"
+set "app_config_id" = ?
+where "mcp_app_config_tool_consents"."id" = ?
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of mcpAppConfigToolConsents, found by its primary key.
+
+```ts
+db.delete(mcpAppConfigToolConsents).where(eq(mcpAppConfigToolConsents.id, 1));
+```
+
+```sql
+delete from "mcp_app_config_tool_consents"
+where "mcp_app_config_tool_consents"."id" = ?
 -- params: [1]
 ```
 

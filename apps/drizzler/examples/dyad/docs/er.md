@@ -16,6 +16,13 @@ erDiagram
     apps ||--o{ coolify_app_connections : "(id) - (app_id)"
     apps ||--o{ cloudflare_app_connections : "(id) - (app_id)"
     language_model_providers |o--o{ language_models : "(id) - (custom_provider_id)"
+    mcp_servers ||--o{ mcp_server_default_apps : "(id) - (server_id)"
+    apps ||--o{ mcp_server_default_apps : "(id) - (app_id)"
+    mcp_servers ||--o{ mcp_app_configs : "(id) - (server_id)"
+    mcp_app_configs ||--o{ mcp_app_config_apps : "(id) - (app_config_id)"
+    mcp_servers ||--o{ mcp_app_config_apps : "(id) - (server_id)"
+    apps ||--o{ mcp_app_config_apps : "(id) - (app_id)"
+    mcp_app_configs ||--o{ mcp_app_config_tool_consents : "(id) - (app_config_id)"
     mcp_servers ||--o{ mcp_tool_consents : "(id) - (server_id)"
     prompts {
         integer id PK
@@ -273,7 +280,44 @@ erDiagram
         text oauth_scope "Space-separated OAuth scopes requested at the authorize endpoint. Server-defined values; check provider docs. Blank means omit the `scope` parameter entirely so the server applies its own default (rather than us guessing a value that fits a minority of providers)."
         integer oauth_callback_port "Per-server callback port. Manual (non-DCR) flows pre-register a redirect URI that includes the port, so it must stay stable for those rows. Null falls back to DEFAULT_OAUTH_CALLBACK_PORT."
         text catalog_slug "Slug of the curated catalog entry this server was added from. Null for manually configured servers."
+        text default_scope "App-scoped plugins experiment. Which apps the default configuration (this row) serves: 'all', 'selected' (the apps in mcp_server_default_apps), or 'none'. `enabled` stays the switch older builds read, so it is only true for an 'all' plugin that is on; the switch for a plugin whose default is limited lives in `scopedEnabled`. See src/ipc/utils/mcp_plugin_availability.ts."
+        integer scoped_enabled
         integer created_at
+        integer updated_at
+    }
+    mcp_server_default_apps {
+        integer server_id FK
+        integer app_id FK
+    }
+    mcp_app_configs {
+        integer id PK
+        integer server_id FK
+        text name
+        text transport
+        text command
+        text args
+        text env_encrypted
+        text headers_encrypted
+        text url
+        integer oauth_enabled
+        text oauth_state
+        text oauth_client_id
+        text oauth_client_secret
+        text oauth_scope
+        integer oauth_callback_port
+        integer created_at
+        integer updated_at
+    }
+    mcp_app_config_apps {
+        integer app_config_id FK
+        integer server_id FK
+        integer app_id FK
+    }
+    mcp_app_config_tool_consents {
+        integer id PK
+        integer app_config_id FK
+        text tool_name
+        text consent
         integer updated_at
     }
     mcp_tool_consents {
