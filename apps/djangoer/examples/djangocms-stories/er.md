@@ -426,7 +426,7 @@ erDiagram
         DateTimeField date_modified
         DateTimeField date_published
         DateTimeField date_published_end
-        DateTimeField date_featured
+        DateTimeField date_featured "Featured posts are listed before other posts, most recently featured first. Leave empty for regular order by date, or set a future date to feature the post from that date on."
         BooleanField include_in_rss
         FilerImageField main_image_id FK
         ForeignKey main_image_thumbnail_id FK
@@ -453,6 +453,7 @@ erDiagram
         BooleanField current_site "Select items from the current site only"
         LatestPostsPluginTemplateFolder template_folder "Select plugin layout to load for this instance"
         IntegerField latest_posts "The number of latests entries to be displayed."
+        BooleanField featured_first "List featured posts before recent ones. Careful: if you feature as many posts as this plugin shows, no recent post will be displayed any more."
     }
     djangocms_stories_authorentriesplugin {
         OneToOneField cmsplugin_ptr_id PK

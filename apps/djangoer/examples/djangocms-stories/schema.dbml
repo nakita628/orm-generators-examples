@@ -678,7 +678,7 @@ Table djangocms_stories_storiesconfig_translation {
   indexes {
     (language_code) [name: 'djangocms_stories_storiesconfig_translation_language_code_bb06c9ed']
     (master_id) [name: 'djangocms_stories_storiesconfig_translation_master_id_a155f9ca']
-    (language_code, master_id) [unique, name: 'djangocms_stories_storiesconfig_translation_uniq_lang']
+    (language_code, master_id) [unique, name: 'djangocms_stories_storiesc6510']
   }
 
   Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
@@ -771,7 +771,7 @@ Table djangocms_stories_postcategory_translation {
     (slug) [name: 'djangocms_stories_postcategory_translation_slug_aa73b4f6']
     (master_id) [name: 'djangocms_stories_postcategory_translation_master_id_920bc899']
     (language_code, slug) [unique, name: 'djangocms_stories_postcategory_translation_language_code_slug_6690704b_uniq']
-    (language_code, master_id) [unique, name: 'djangocms_stories_postcategory_translation_uniq_lang']
+    (language_code, master_id) [unique, name: 'djangocms_stories_postcate81fa']
   }
 
   Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
@@ -806,7 +806,7 @@ Table djangocms_stories_post {
   date_modified datetime [not null, note: 'default in Python: now()']
   date_published datetime
   date_published_end datetime
-  date_featured datetime
+  date_featured datetime [note: 'Featured posts are listed before other posts, most recently featured first. Leave empty for regular order by date, or set a future date to feature the post from that date on.']
   include_in_rss bool [default: true, not null]
   main_image_id integer
   main_image_thumbnail_id integer
@@ -854,6 +854,7 @@ Table djangocms_stories_latestpostsplugin {
   current_site bool [default: true, not null, note: 'Select items from the current site only']
   template_folder LatestPostsPluginTemplateFolder [default: 'plugins', not null, note: 'Select plugin layout to load for this instance']
   latest_posts integer [default: 5, not null, note: 'The number of latests entries to be displayed.']
+  featured_first bool [default: true, not null, note: 'List featured posts before recent ones. Careful: if you feature as many posts as this plugin shows, no recent post will be displayed any more.']
 
   indexes {
     (app_config_id) [name: 'djangocms_stories_latestpostsplugin_app_config_id_6a5c2121']

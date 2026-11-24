@@ -84,11 +84,11 @@ CREATE TABLE "taggit_tag" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "nam
 
 CREATE TABLE "taggit_taggeditem" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "tag_id" integer NOT NULL REFERENCES "taggit_tag" ("id") DEFERRABLE INITIALLY DEFERRED, "content_type_id" integer NOT NULL REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED, "object_id" integer NOT NULL, CONSTRAINT "taggit_taggeditem_content_type_id_object_id_tag_id_4bb97a8e_uniq" UNIQUE ("content_type_id", "object_id", "tag_id"));
 
-CREATE TABLE "djangocms_stories_storiesconfig_translation" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "language_code" varchar(15) NOT NULL, "app_title" varchar(200) NOT NULL, "object_name" varchar(200) NOT NULL, "master_id" bigint NULL REFERENCES "djangocms_stories_storiesconfig" ("id") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT "djangocms_stories_storiesconfig_translation_uniq_lang" UNIQUE ("language_code", "master_id"));
+CREATE TABLE "djangocms_stories_storiesconfig_translation" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "language_code" varchar(15) NOT NULL, "app_title" varchar(200) NOT NULL, "object_name" varchar(200) NOT NULL, "master_id" bigint NULL REFERENCES "djangocms_stories_storiesconfig" ("id") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT "djangocms_stories_storiesc6510" UNIQUE ("language_code", "master_id"));
 
 CREATE TABLE "djangocms_stories_storiesconfig" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "type" varchar(100) NOT NULL, "namespace" varchar(100) NOT NULL UNIQUE, "default_image_full_id" integer NULL REFERENCES "filer_thumbnailoption" ("id") DEFERRABLE INITIALLY DEFERRED, "default_image_thumbnail_id" integer NULL REFERENCES "filer_thumbnailoption" ("id") DEFERRABLE INITIALLY DEFERRED, "url_patterns" varchar(12) NOT NULL, "use_placeholder" bool NOT NULL, "use_abstract" bool NOT NULL, "use_related" smallint NOT NULL, "set_author" bool NOT NULL, "paginate_by" smallint NULL, "template_prefix" varchar(200) NOT NULL, "menu_structure" varchar(200) NOT NULL, "menu_empty_categories" bool NOT NULL, "sitemap_changefreq" varchar(12) NOT NULL, "sitemap_priority" decimal NOT NULL, "object_type" varchar(200) NOT NULL, "og_type" varchar(200) NOT NULL, "og_app_id" varchar(200) NOT NULL, "og_profile_id" varchar(200) NOT NULL, "og_publisher" varchar(200) NOT NULL, "og_author_url" varchar(200) NOT NULL, "og_author" varchar(200) NOT NULL, "twitter_type" varchar(200) NOT NULL, "twitter_site" varchar(200) NOT NULL, "twitter_author" varchar(200) NOT NULL, "gplus_type" varchar(200) NOT NULL, "gplus_author" varchar(200) NOT NULL, "send_knock_create" bool NOT NULL, "send_knock_update" bool NOT NULL);
 
-CREATE TABLE "djangocms_stories_postcategory_translation" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "language_code" varchar(15) NOT NULL, "name" varchar(752) NOT NULL, "slug" varchar(752) NOT NULL, "meta_description" text NOT NULL, "abstract" text NOT NULL, "master_id" bigint NULL REFERENCES "djangocms_stories_postcategory" ("id") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT "djangocms_stories_postcategory_translation_uniq_lang" UNIQUE ("language_code", "master_id"));
+CREATE TABLE "djangocms_stories_postcategory_translation" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "language_code" varchar(15) NOT NULL, "name" varchar(752) NOT NULL, "slug" varchar(752) NOT NULL, "meta_description" text NOT NULL, "abstract" text NOT NULL, "master_id" bigint NULL REFERENCES "djangocms_stories_postcategory" ("id") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT "djangocms_stories_postcate81fa" UNIQUE ("language_code", "master_id"));
 
 CREATE TABLE "djangocms_stories_postcategory" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "parent_id" bigint NULL REFERENCES "djangocms_stories_postcategory" ("id") DEFERRABLE INITIALLY DEFERRED, "date_created" datetime NOT NULL, "date_modified" datetime NOT NULL, "app_config_id" bigint NULL REFERENCES "djangocms_stories_storiesconfig" ("id") DEFERRABLE INITIALLY DEFERRED, "priority" integer NULL, "main_image_id" integer NULL REFERENCES "filer_image" ("file_ptr_id") DEFERRABLE INITIALLY DEFERRED, "main_image_thumbnail_id" integer NULL REFERENCES "filer_thumbnailoption" ("id") DEFERRABLE INITIALLY DEFERRED, "main_image_full_id" integer NULL REFERENCES "filer_thumbnailoption" ("id") DEFERRABLE INITIALLY DEFERRED);
 
@@ -102,7 +102,7 @@ CREATE TABLE "djangocms_stories_post_related" ("id" integer NOT NULL PRIMARY KEY
 
 CREATE TABLE "djangocms_stories_postcontent" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "post_id" bigint NOT NULL REFERENCES "djangocms_stories_post" ("id") DEFERRABLE INITIALLY DEFERRED, "language" varchar(15) NOT NULL, "title" varchar(752) NOT NULL, "slug" varchar(752) NOT NULL, "subtitle" varchar(767) NOT NULL, "abstract" text NOT NULL, "meta_description" text NOT NULL, "meta_keywords" text NOT NULL, "meta_title" varchar(2000) NOT NULL, "post_text" text NOT NULL);
 
-CREATE TABLE "djangocms_stories_latestpostsplugin" ("cmsplugin_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "cms_cmsplugin" ("id") DEFERRABLE INITIALLY DEFERRED, "app_config_id" bigint NULL REFERENCES "djangocms_stories_storiesconfig" ("id") DEFERRABLE INITIALLY DEFERRED, "current_site" bool NOT NULL, "template_folder" varchar(200) NOT NULL, "latest_posts" integer NOT NULL);
+CREATE TABLE "djangocms_stories_latestpostsplugin" ("cmsplugin_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "cms_cmsplugin" ("id") DEFERRABLE INITIALLY DEFERRED, "app_config_id" bigint NULL REFERENCES "djangocms_stories_storiesconfig" ("id") DEFERRABLE INITIALLY DEFERRED, "current_site" bool NOT NULL, "template_folder" varchar(200) NOT NULL, "latest_posts" integer NOT NULL, "featured_first" bool NOT NULL);
 
 CREATE TABLE "djangocms_stories_latestpostsplugin_categories" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "latestpostsplugin_id" integer NOT NULL REFERENCES "djangocms_stories_latestpostsplugin" ("cmsplugin_ptr_id") DEFERRABLE INITIALLY DEFERRED, "postcategory_id" bigint NOT NULL REFERENCES "djangocms_stories_postcategory" ("id") DEFERRABLE INITIALLY DEFERRED);
 
@@ -1394,7 +1394,7 @@ Indexes:
 
 - index `djangocms_stories_storiesconfig_translation_language_code_bb06c9ed` on `language_code`
 - index `djangocms_stories_storiesconfig_translation_master_id_a155f9ca` on `master_id`
-- unique `djangocms_stories_storiesconfig_translation_uniq_lang` on `language_code`, `master_id`
+- unique `djangocms_stories_storiesc6510` on `language_code`, `master_id`
 
 Relations:
 
@@ -1515,7 +1515,7 @@ Indexes:
 - index `djangocms_stories_postcategory_translation_slug_aa73b4f6` on `slug`
 - index `djangocms_stories_postcategory_translation_master_id_920bc899` on `master_id`
 - unique `djangocms_stories_postcategory_translation_language_code_slug_6690704b_uniq` on `language_code`, `slug`
-- unique `djangocms_stories_postcategory_translation_uniq_lang` on `language_code`, `master_id`
+- unique `djangocms_stories_postcate81fa` on `language_code`, `master_id`
 
 Relations:
 
@@ -1579,7 +1579,7 @@ This model supports translation, site-specific publishing, image handling, taggi
 | `date_modified` | `DateTimeField` | `datetime` |  |  | `now()` |  |
 | `date_published` | `DateTimeField` | `datetime` | yes |  |  |  |
 | `date_published_end` | `DateTimeField` | `datetime` | yes |  |  |  |
-| `date_featured` | `DateTimeField` | `datetime` | yes |  |  |  |
+| `date_featured` | `DateTimeField` | `datetime` | yes |  |  | Featured posts are listed before other posts, most recently featured first. Leave empty for regular order by date, or set a future date to feature the post from that date on. |
 | `include_in_rss` | `BooleanField` | `bool` |  |  | `True` |  |
 | `main_image_id` | `FilerImageField` | `integer` | yes | FK |  |  |
 | `main_image_thumbnail_id` | `ForeignKey` | `integer` | yes | FK |  |  |
@@ -1658,6 +1658,7 @@ Columns from `BasePostPlugin` (abstract): `cmsplugin_ptr_id`, `app_config_id`, `
 | `current_site` | `BooleanField` | `bool` |  |  | `True` | Select items from the current site only |
 | `template_folder` | `LatestPostsPluginTemplateFolder` | `varchar(200)` |  |  | `'plugins'` | Select plugin layout to load for this instance |
 | `latest_posts` | `IntegerField` | `integer` |  |  | `5` | The number of latests entries to be displayed. |
+| `featured_first` | `BooleanField` | `bool` |  |  | `True` | List featured posts before recent ones. Careful: if you feature as many posts as this plugin shows, no recent post will be displayed any more. |
 
 Indexes:
 
