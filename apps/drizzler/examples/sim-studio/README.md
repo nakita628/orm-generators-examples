@@ -2,9 +2,9 @@
 
 The schema of Sim Studio, an open-source platform for building AI agent workflows: users and Better Auth, workspaces and organizations, workflows and their blocks, executions and logs, knowledge bases with embeddings, credentials, billing, copilot chats and more.
 
-- Source: [simstudioai/sim `packages/db/schema.ts`](https://github.com/simstudioai/sim/blob/ad89acd9726cfeaae2b4ebb0bd74e1e4871ab664/packages/db/schema.ts), [`constants.ts`](https://github.com/simstudioai/sim/blob/ad89acd9726cfeaae2b4ebb0bd74e1e4871ab664/packages/db/constants.ts), [`sealed-text.ts`](https://github.com/simstudioai/sim/blob/ad89acd9726cfeaae2b4ebb0bd74e1e4871ab664/packages/db/sealed-text.ts) and [`packages/utils/src/string.ts`](https://github.com/simstudioai/sim/blob/ad89acd9726cfeaae2b4ebb0bd74e1e4871ab664/packages/utils/src/string.ts) (Apache-2.0)
+- Source: [simstudioai/sim `packages/db/schema.ts`](https://github.com/simstudioai/sim/blob/1814ccd70e21906216bca2a08f95d6a2841db406/packages/db/schema.ts), [`constants.ts`](https://github.com/simstudioai/sim/blob/1814ccd70e21906216bca2a08f95d6a2841db406/packages/db/constants.ts), [`sealed-text.ts`](https://github.com/simstudioai/sim/blob/1814ccd70e21906216bca2a08f95d6a2841db406/packages/db/sealed-text.ts) and [`packages/utils/src/string.ts`](https://github.com/simstudioai/sim/blob/1814ccd70e21906216bca2a08f95d6a2841db406/packages/utils/src/string.ts) (Apache-2.0)
 - Dialect: PostgreSQL
-- Covers: 192 tables in one 394 KB file, a `customType` built inside a helper and called on the spot (`sealedText(table, column)`), `vector` columns with HNSW indexes, `tsvector` generated columns, `sql` expressions in indexes and checks, partial indexes, many `pgEnum`s and self-references
+- Covers: 200 tables in one 394 KB file, a `customType` built inside a helper and called on the spot (`sealedText(table, column)`), `vector` columns with HNSW indexes, `tsvector` generated columns, `sql` expressions in indexes and checks, partial indexes, many `pgEnum`s and self-references
 
 ## Changes from upstream
 

@@ -16,6 +16,7 @@ erDiagram
     user ||--o{ workflow : "(id) - (user_id)"
     workspace |o--o{ workflow : "(id) - (workspace_id)"
     folder |o--o{ workflow : "(id) - (folder_id)"
+    workflow ||--o| workflow_source_meta : "(id) - (workflow_id)"
     workflow ||--o{ workflow_blocks : "(id) - (workflow_id)"
     workflow ||--o{ workflow_edges : "(id) - (workflow_id)"
     workflow_blocks ||--o{ workflow_edges : "(id) - (source_block_id)"
@@ -110,6 +111,10 @@ erDiagram
     workspace ||--o{ workspace_fork_resource_map : "(id) - (child_workspace_id)"
     user |o--o{ workspace_fork_resource_map : "(id) - (created_by)"
     workspace ||--o{ workspace_fork_block_map : "(id) - (child_workspace_id)"
+    workspace ||--o{ workspace_resource_key : "(id) - (workspace_id)"
+    user |o--o{ workspace_resource_key : "(id) - (created_by)"
+    workspace ||--o{ workspace_source_staged_blob : "(id) - (workspace_id)"
+    workspace ||--o| workspace_source_apply_lease : "(id) - (workspace_id)"
     workspace ||--o{ workspace_fork_dependent_value : "(id) - (child_workspace_id)"
     workspace ||--o{ workspace_fork_promote_run : "(id) - (child_workspace_id)"
     user |o--o{ workspace_fork_promote_run : "(id) - (created_by)"
@@ -144,11 +149,6 @@ erDiagram
     organization |o--o{ workspace_files : "(id) - (organization_id)"
     folder |o--o{ workspace_files : "(id) - (folder_id)"
     copilot_chats |o--o{ workspace_files : "(id) - (chat_id)"
-    workspace_files ||--o{ workspace_file_search_index : "(id) - (file_id)"
-    workspace ||--o{ workspace_file_search_index : "(id) - (workspace_id)"
-    workspace ||--o| workspace_file_search_dispatch_queue : "(id) - (workspace_id)"
-    workspace_files ||--o{ workspace_file_search_segment : "(id) - (file_id)"
-    workspace ||--o{ workspace_file_search_segment : "(id) - (workspace_id)"
     workspace_files ||--o| workspace_file_search_revision : "(id) - (file_id)"
     workspace_file_search_build |o--o{ workspace_file_search_revision : "(id) - (build_id)"
     workspace_file_search_build ||--o{ workspace_file_search_chunk : "(id) - (build_id)"
@@ -316,6 +316,9 @@ erDiagram
     knowledge_connector ||--o{ knowledge_connector_partition : "(id) - (connector_id)"
     knowledge_connector ||--o| knowledge_connector_permission_snapshot : "(id) - (connector_id)"
     knowledge_connector_permission_snapshot ||--o{ knowledge_connector_permission_grant : "(connector_id) - (connector_id)"
+    knowledge_connector ||--o{ knowledge_connector_permission_import : "(id) - (connector_id)"
+    knowledge_connector_permission_import ||--o{ knowledge_connector_permission_import_identity : "(id) - (import_id)"
+    knowledge_connector_permission_import ||--o{ knowledge_connector_permission_import_grant : "(id) - (import_id)"
     workspace |o--o{ knowledge_connector_member : "(id) - (workspace_id)"
     organization |o--o{ knowledge_connector_member : "(id) - (organization_id)"
     knowledge_connector ||--o{ knowledge_connector_member : "(id) - (connector_id)"
@@ -482,6 +485,11 @@ erDiagram
         json variables
         timestamp archived_at
     }
+    workflow_source_meta {
+        text workflow_id PK, FK
+        jsonb meta
+        timestamp updated_at
+    }
     workflow_blocks {
         text id PK
         text workflow_id FK
@@ -521,13 +529,6 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    waitlist {
-        text id PK
-        text email
-        text status "pending, approved, rejected"
-        timestamp created_at
-        timestamp updated_at
-    }
     workflow_execution_snapshots {
         text id PK
         text workflow_id FK
@@ -554,6 +555,52 @@ erDiagram
         text models_used "Model names used by the run (incl. zero-cost/BYOK), for the v1 model filter."
         jsonb files "File metadata for execution files"
         timestamp created_at
+    }
+    workflow_activity_hourly {
+        text workspace_id PK
+        timestamp bucket_start PK "The UTC hour, in the same `timestamp` domain as `started_at`."
+        text workflow_id PK "`''` for runs whose workflow was already deleted when the cell was computed."
+        text trigger PK
+        integer runs
+        integer completed
+        integer failed
+        integer cancelled
+        integer in_flight "Runs not yet completed, failed, or cancelled; the pass rechecks cells that hold any."
+        bigint duration_sum_ms "Completed and failed runs with a non-negative duration, which is what activity averages."
+        integer duration_count
+        timestamptz computed_at "When the cell last changed."
+    }
+    activity_rollup_state {
+        text id PK
+        integer version
+        timestamp coverage_start
+        timestamp fresh_through
+        timestamptz backfill_completed_at "Set once no source row is older than `coverage_start`."
+        timestamp last_end_scan "The `ended_at` up to which late-ending runs have been marked dirty."
+        text lease_owner "The pass holding the lease, so two passes never run at once."
+        timestamptz lease_expires_at
+        timestamptz housekeeping_at
+        timestamptz maintained_at "When a pass last ran at this version past its reset decision (or started a coverage). Writers mark changes only while this is recent, and a pass that finds it older than the maintenance gap rebuilds the rollup."
+        integer failed_passes "Passes in a row that failed after taking the lease, by throwing or by dying with it held; reset by the next pass that completes."
+        timestamptz corrections_at "When a pass last ran both correction queues (dirty marks and in-flight rechecks) to the end of their step. Reads use the rollup only while this is recent, so cells nothing corrects any more are never served. Seeded when a coverage starts."
+        timestamptz updated_at
+    }
+    activity_rollup_blocked {
+        timestamp bucket_start PK
+        integer attempts
+        timestamptz retry_at
+    }
+    activity_rollup_dirty {
+        text workspace_id PK
+        timestamp bucket_start PK
+        timestamptz due_at "Rewritten by every mark; the pass removes a mark only at the `due_at` it read."
+        integer attempts "Recomputes of this cell that failed, each pushing `due_at` out with backoff."
+    }
+    activity_rollup_inflight {
+        text workspace_id PK
+        timestamp bucket_start PK
+        timestamptz next_check_at
+        integer attempts
     }
     execution_large_values {
         text key PK
@@ -925,7 +972,6 @@ erDiagram
         json session_policy_settings
         integer security_policy_version "Monotonic counter embedded in the Better Auth cookie-cache version for this org's members. Bumped on any security-policy change or org-wide session revocation so every cached session cookie in the org is invalidated (falls through to a DB session read) within the policy cache TTL instead of the 24h cookie-cache lifetime."
         boolean require_sso "Whether members must sign in through this organization's identity provider. Checked only when a session is created, so turning it on ends no session that already exists; signing everyone out stays the separate revoke action. Owners keep password sign-in as a break-glass path for a broken identity provider."
-        json whitelabel_settings
         json data_retention_settings
         decimal org_usage_limit
         bigint storage_used_bytes "Storage upload/delete hot-path tracker for org-scoped plans. This remains a direct aggregate write for organization file storage changes; personal storage writes update `user_stats.storageUsedBytes`."
@@ -1169,6 +1215,34 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
+    workspace_resource_key {
+        text id PK
+        text workspace_id FK
+        workspace_resource_kind kind
+        text key
+        text resource_id
+        text origin
+        text created_by FK "SET NULL: removing a user must not unbind the keys their source reads allocated."
+        timestamp created_at
+        timestamp updated_at
+    }
+    workspace_source_staged_blob {
+        text id PK
+        text workspace_id FK
+        text scope
+        text sha256
+        integer size
+        text storage_key
+        timestamp created_at
+        timestamp expires_at
+        timestamp consumed_at "When an apply wrote these bytes into the workspace, which then stores (and charges for) them: a consumed blob no longer counts toward the payer's storage quota. Staging it again clears it."
+    }
+    workspace_source_apply_lease {
+        text workspace_id PK, FK
+        text token
+        timestamp acquired_at
+        timestamp expires_at
+    }
     workspace_fork_dependent_value {
         text id PK
         text child_workspace_id FK
@@ -1323,27 +1397,8 @@ erDiagram
         timestamp deleted_at
         timestamp uploaded_at
         timestamp updated_at
-        timestamp content_updated_at "Content-scoped version: advances ONLY when the file's CONTENT changes (upload / content overwrite), never on metadata writes (rename, move, soft-delete, restore). It is the optimistic-concurrency validator the collaborative-document persist guards on (RFC 7232 `If-Match` semantics: validate the representation, not the row) — so a rename can't make a racing live-doc persist see a stale token, reconcile stale durable content, and clobber in-flight edits. NOT NULL with a `now()` default: Postgres applies this as a fast-default (no table rewrite), existing rows get a stable timestamp that — like every metadata write — never advances it, and every insert path is covered without per-call plumbing. Only a content write (upload / overwrite) advances it. MILLISECOND precision is an invariant, not an incidental detail. This value is a revision identity that round-trips through JavaScript `Date` and JSON — search-index dispatch payloads, If-Match tokens, realtime versions — all of which truncate to milliseconds, while `now()` stores microseconds. A sub-millisecond value therefore stops comparing equal to its own round-trip, and every SQL equality keyed on it matches zero rows: a file whose `workspace_file_search_index.source_content_updated_at` came from such a round trip can never be claimed, indexed, or cleaned up. The default truncates, and the `workspace_files_content_version_millisecond` trigger enforces it for the writers a default cannot reach — explicit `CURRENT_TIMESTAMP` expressions, raw SQL inserts, and updates that change row data. Relationship fences that only advance the row version preserve an existing revision."
+        timestamp content_updated_at "Content-scoped version: advances ONLY when the file's CONTENT changes (upload / content overwrite), never on metadata writes (rename, move, soft-delete, restore). It is the optimistic-concurrency validator the collaborative-document persist guards on (RFC 7232 `If-Match` semantics: validate the representation, not the row) — so a rename can't make a racing live-doc persist see a stale token, reconcile stale durable content, and clobber in-flight edits. NOT NULL with a `now()` default: Postgres applies this as a fast-default (no table rewrite), existing rows get a stable timestamp that — like every metadata write — never advances it, and every insert path is covered without per-call plumbing. Only a content write (upload / overwrite) advances it. MILLISECOND precision is an invariant, not an incidental detail. This value is a revision identity that round-trips through JavaScript `Date` and JSON — search-index dispatch payloads, If-Match tokens, realtime versions — all of which truncate to milliseconds, while `now()` stores microseconds. A sub-millisecond value therefore stops comparing equal to its own round-trip, and every SQL equality keyed on it matches zero rows: a file whose `workspace_file_search_revision.source_content_updated_at` came from such a round trip can never be claimed, indexed, or cleaned up. The default truncates, and the `workspace_files_content_version_millisecond` trigger enforces it for the writers a default cannot reach — explicit `CURRENT_TIMESTAMP` expressions, raw SQL inserts, and updates that change row data. Relationship fences that only advance the row version preserve an existing revision."
         integer secret_provenance_version "Durable cutover marker for content secret provenance. NULL is reserved for legacy rows and writes from app versions that predate tracking. Provenance-aware writers set version 1 in the same transaction as the matching sidecar. A tracked version without a matching sidecar fails closed."
-    }
-    workspace_file_search_index {
-        text file_id PK, FK
-        text workspace_id FK
-        timestamp source_content_updated_at PK
-        workspace_file_search_index_status status
-        boolean partial
-        text failure_reason
-        integer line_count
-        integer indexed_bytes
-        timestamp dispatched_at
-        timestamp created_at
-        timestamp updated_at
-    }
-    workspace_file_search_dispatch_queue {
-        text workspace_id PK, FK
-        timestamp enqueued_at
-        timestamp last_dispatched_at
-        timestamp updated_at
     }
     file_search_dispatch_queue {
         text entity_type PK
@@ -1360,16 +1415,6 @@ erDiagram
         text after_file_id
         timestamp completed_at
         timestamp updated_at
-    }
-    workspace_file_search_segment {
-        text file_id PK, FK
-        text workspace_id FK
-        timestamp source_content_updated_at PK
-        integer line_number PK
-        integer segment_number PK
-        integer segment_start
-        integer line_length
-        text content
     }
     workspace_file_search_build {
         text id PK
@@ -1609,6 +1654,7 @@ erDiagram
         text file_url
         text storage_key "Canonical storage key derived from fileUrl at write time (e.g. 'kb/<...>'), or null for external/data: ingestion URLs. KB file authorization matches on this exact key rather than re-parsing the URL at read time."
         integer file_size "Size in bytes"
+        text file_sha256 "SHA-256 (hex) of the original file's bytes, recorded when the server holds them: on upload, or on the first read of an older document's original. An original never changes in place, so it stays valid. NULL until then."
         text mime_type "e.g., 'application/pdf', 'text/plain'"
         integer chunk_count
         integer token_count
@@ -2527,6 +2573,31 @@ erDiagram
         text connector_id PK, FK
         text group_key PK
         text subject_token PK
+    }
+    knowledge_connector_permission_import {
+        text id PK
+        text connector_id FK
+        text credential_binding
+        integer expected_revision
+        jsonb metadata
+        jsonb manifest
+        jsonb part_digests
+        integer user_rows
+        integer project_rows
+        integer bytes
+        integer completed_revision
+        timestamptz expires_at
+    }
+    knowledge_connector_permission_import_identity {
+        text import_id PK, FK
+        text user_id PK
+        text subject_token
+    }
+    knowledge_connector_permission_import_grant {
+        text import_id PK, FK
+        text project_path PK
+        text user_id PK
+        text group_key
     }
     knowledge_connector_member {
         text id PK
