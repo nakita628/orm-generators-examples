@@ -303,6 +303,9 @@ Table submissions_externalgraderdetail {
   queue_key varchar(128)
   grader_file_name varchar(128) [default: '', not null]
   points_possible "integer unsigned" [default: 1, not null]
+  lang varchar(32) [default: '', not null]
+  hide_output bool [default: false, not null]
+  skip_grader bool [default: false, not null]
   status ExternalGraderDetailStatus [default: 'pending', not null]
   pullkey varchar(128)
   grader_reply text

@@ -120,6 +120,9 @@ erDiagram
         CharField queue_key
         CharField grader_file_name
         PositiveIntegerField points_possible
+        CharField lang
+        BooleanField hide_output
+        BooleanField skip_grader
         ExternalGraderDetailStatus status
         CharField pullkey
         TextField grader_reply

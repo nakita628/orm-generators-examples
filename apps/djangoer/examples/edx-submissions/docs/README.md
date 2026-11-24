@@ -38,7 +38,7 @@ CREATE TABLE "submissions_scoresummary" ("id" integer NOT NULL PRIMARY KEY AUTOI
 
 CREATE TABLE "submissions_scoreannotation" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "score_id" bigint NOT NULL REFERENCES "submissions_score" ("id") DEFERRABLE INITIALLY DEFERRED, "annotation_type" varchar(255) NOT NULL, "creator" varchar(255) NOT NULL, "reason" text NOT NULL);
 
-CREATE TABLE "submissions_externalgraderdetail" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "submission_id" bigint NOT NULL UNIQUE REFERENCES "submissions_submission" ("id") DEFERRABLE INITIALLY DEFERRED, "queue_name" varchar(128) NOT NULL, "queue_key" varchar(128) NULL, "grader_file_name" varchar(128) NOT NULL, "points_possible" integer unsigned NOT NULL CHECK ("points_possible" >= 0), "status" varchar(20) NOT NULL, "pullkey" varchar(128) NULL, "grader_reply" text NULL, "status_time" datetime NOT NULL, "created_at" datetime NOT NULL, "num_failures" integer unsigned NOT NULL CHECK ("num_failures" >= 0));
+CREATE TABLE "submissions_externalgraderdetail" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "submission_id" bigint NOT NULL UNIQUE REFERENCES "submissions_submission" ("id") DEFERRABLE INITIALLY DEFERRED, "queue_name" varchar(128) NOT NULL, "queue_key" varchar(128) NULL, "grader_file_name" varchar(128) NOT NULL, "points_possible" integer unsigned NOT NULL CHECK ("points_possible" >= 0), "lang" varchar(32) NOT NULL, "hide_output" bool NOT NULL, "skip_grader" bool NOT NULL, "status" varchar(20) NOT NULL, "pullkey" varchar(128) NULL, "grader_reply" text NULL, "status_time" datetime NOT NULL, "created_at" datetime NOT NULL, "num_failures" integer unsigned NOT NULL CHECK ("num_failures" >= 0));
 
 CREATE TABLE "submissions_submissionfile" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "uuid" char(32) NOT NULL, "external_grader_id" bigint NULL REFERENCES "submissions_externalgraderdetail" ("id") DEFERRABLE INITIALLY DEFERRED, "file" varchar(512) NOT NULL, "original_filename" varchar(255) NOT NULL, "created_at" datetime NOT NULL);
 
@@ -555,6 +555,9 @@ Tracks queue processing information for a Submission.
 | `queue_key` | `CharField` | `varchar(128)` | yes |  |  |  |
 | `grader_file_name` | `CharField` | `varchar(128)` |  |  | `''` |  |
 | `points_possible` | `PositiveIntegerField` | `integer unsigned` |  |  | `1` |  |
+| `lang` | `CharField` | `varchar(32)` |  |  | `''` |  |
+| `hide_output` | `BooleanField` | `bool` |  |  | `False` |  |
+| `skip_grader` | `BooleanField` | `bool` |  |  | `False` |  |
 | `status` | `ExternalGraderDetailStatus` | `varchar(20)` |  |  | `'pending'` |  |
 | `pullkey` | `CharField` | `varchar(128)` | yes |  |  |  |
 | `grader_reply` | `TextField` | `text` | yes |  |  |  |
