@@ -2,7 +2,7 @@
 
 ![ER diagram](er.svg)
 
-[Permission](#permission) · [Group](#group) · [User](#user) · [ContentType](#contenttype) · [Session](#session) · [AccessPolicy](#accesspolicy) · [Domain](#domain) · [AlternateContentSource](#alternatecontentsource) · [AlternateContentSourcePath](#alternatecontentsourcepath) · [Artifact](#artifact) · [PulpTemporaryFile](#pulptemporaryfile) · [Content](#content) · [ContentArtifact](#contentartifact) · [RemoteArtifact](#remoteartifact) · [SigningService](#signingservice) · [AsciiArmoredDetachedSigningService](#asciiarmoreddetachedsigningservice) · [AppStatus](#appstatus) · [core.Role](#corerole) · [UserRole](#userrole) · [GroupRole](#grouprole) · [ProfileArtifact](#profileartifact) · [Task](#task) · [TaskGroup](#taskgroup) · [CreatedResource](#createdresource) · [TaskSchedule](#taskschedule) · [Repository](#repository) · [Remote](#remote) · [RepositoryContent](#repositorycontent) · [RepositoryVersion](#repositoryversion) · [RepositoryVersionContentDetails](#repositoryversioncontentdetails) · [Export](#export) · [ExportedResource](#exportedresource) · [Exporter](#exporter) · [FilesystemExport](#filesystemexport) · [FilesystemExporter](#filesystemexporter) · [PulpExport](#pulpexport) · [PulpExporter](#pulpexporter) · [Import](#import) · [Importer](#importer) · [PulpImporter](#pulpimporter) · [PulpImporterRepository](#pulpimporterrepository) · [PulpImport](#pulpimport) · [Publication](#publication) · [PublishedArtifact](#publishedartifact) · [PublishedMetadata](#publishedmetadata) · [ContentGuard](#contentguard) · [RBACContentGuard](#rbaccontentguard) · [ContentRedirectContentGuard](#contentredirectcontentguard) · [HeaderContentGuard](#headercontentguard) · [EnvVarHeaderContentGuard](#envvarheadercontentguard) · [CompositeContentGuard](#compositecontentguard) · [Distribution](#distribution) · [ArtifactDistribution](#artifactdistribution) · [DistributedPublication](#distributedpublication) · [SystemID](#systemid) · [core.Upload](#coreupload) · [UploadChunk](#uploadchunk) · [VulnerabilityReport](#vulnerabilityreport) · [ProgressReport](#progressreport) · [GroupProgressReport](#groupprogressreport) · [UpstreamPulp](#upstreampulp) · [OpenPGPPublicKey](#openpgppublickey) · [OpenPGPPublicSubkey](#openpgppublicsubkey) · [OpenPGPUserID](#openpgpuserid) · [OpenPGPUserAttribute](#openpgpuserattribute) · [OpenPGPSignature](#openpgpsignature) · [OpenPGPKeyring](#openpgpkeyring) · [OpenPGPDistribution](#openpgpdistribution) · [Blob](#blob) · [Manifest](#manifest) · [BlobManifest](#blobmanifest) · [ManifestListManifest](#manifestlistmanifest) · [Tag](#tag) · [ManifestSignature](#manifestsignature) · [ContainerNamespace](#containernamespace) · [ContainerRemote](#containerremote) · [ContainerPullThroughRemote](#containerpullthroughremote) · [ManifestSigningService](#manifestsigningservice) · [ContainerRepository](#containerrepository) · [ContainerPushRepository](#containerpushrepository) · [ContainerPullThroughDistribution](#containerpullthroughdistribution) · [ContainerDistribution](#containerdistribution) · [container.Upload](#containerupload) · [RHSMCertGuard](#rhsmcertguard) · [X509CertGuard](#x509certguard) · [FileContent](#filecontent) · [FileRemote](#fileremote) · [FileGitRemote](#filegitremote) · [FileRepository](#filerepository) · [FilePublication](#filepublication) · [FileDistribution](#filedistribution) · [FileAlternateContentSource](#filealternatecontentsource) · [ansible.Role](#ansiblerole) · [Collection](#collection) · [CollectionImport](#collectionimport) · [AnsibleNamespace](#ansiblenamespace) · [CollectionVersion](#collectionversion) · [CollectionVersionMark](#collectionversionmark) · [CollectionVersionSignature](#collectionversionsignature) · [AnsibleNamespaceMetadata](#ansiblenamespacemetadata) · [DownloadLog](#downloadlog) · [CollectionDownloadCount](#collectiondownloadcount) · [RoleRemote](#roleremote) · [CollectionRemote](#collectionremote) · [GitRemote](#gitremote) · [AnsibleCollectionDeprecated](#ansiblecollectiondeprecated) · [AnsibleRepository](#ansiblerepository) · [AnsibleDistribution](#ansibledistribution) · [CrossRepositoryCollectionVersionIndex](#crossrepositorycollectionversionindex) · [PythonDistribution](#pythondistribution) · [PythonPackageContent](#pythonpackagecontent) · [PackageProvenance](#packageprovenance) · [PackageYank](#packageyank) · [PythonPublication](#pythonpublication) · [PythonRemote](#pythonremote) · [PythonRepository](#pythonrepository) · [PythonBlocklistEntry](#pythonblocklistentry)
+[Permission](#permission) · [Group](#group) · [User](#user) · [ContentType](#contenttype) · [Session](#session) · [AccessPolicy](#accesspolicy) · [Domain](#domain) · [AlternateContentSource](#alternatecontentsource) · [AlternateContentSourcePath](#alternatecontentsourcepath) · [Artifact](#artifact) · [PulpTemporaryFile](#pulptemporaryfile) · [Content](#content) · [ContentArtifact](#contentartifact) · [RemoteArtifact](#remoteartifact) · [SigningService](#signingservice) · [AsciiArmoredDetachedSigningService](#asciiarmoreddetachedsigningservice) · [AppStatus](#appstatus) · [core.Role](#corerole) · [UserRole](#userrole) · [GroupRole](#grouprole) · [ProfileArtifact](#profileartifact) · [Task](#task) · [TaskGroup](#taskgroup) · [CreatedResource](#createdresource) · [TaskSchedule](#taskschedule) · [Repository](#repository) · [Remote](#remote) · [RepositoryContent](#repositorycontent) · [RepositoryVersion](#repositoryversion) · [RepositoryVersionContentDetails](#repositoryversioncontentdetails) · [Export](#export) · [ExportedResource](#exportedresource) · [Exporter](#exporter) · [FilesystemExport](#filesystemexport) · [FilesystemExporter](#filesystemexporter) · [PulpExport](#pulpexport) · [PulpExporter](#pulpexporter) · [Import](#import) · [Importer](#importer) · [PulpImporter](#pulpimporter) · [PulpImporterRepository](#pulpimporterrepository) · [PulpImport](#pulpimport) · [Publication](#publication) · [PublishedArtifact](#publishedartifact) · [PublishedMetadata](#publishedmetadata) · [ContentGuard](#contentguard) · [RBACContentGuard](#rbaccontentguard) · [ContentRedirectContentGuard](#contentredirectcontentguard) · [HeaderContentGuard](#headercontentguard) · [EnvVarHeaderContentGuard](#envvarheadercontentguard) · [CompositeContentGuard](#compositecontentguard) · [Distribution](#distribution) · [ArtifactDistribution](#artifactdistribution) · [DistributedPublication](#distributedpublication) · [SystemID](#systemid) · [core.Upload](#coreupload) · [UploadChunk](#uploadchunk) · [VulnerabilityReport](#vulnerabilityreport) · [ProgressReport](#progressreport) · [GroupProgressReport](#groupprogressreport) · [UpstreamPulp](#upstreampulp) · [OpenPGPPublicKey](#openpgppublickey) · [OpenPGPPublicSubkey](#openpgppublicsubkey) · [OpenPGPUserID](#openpgpuserid) · [OpenPGPUserAttribute](#openpgpuserattribute) · [OpenPGPSignature](#openpgpsignature) · [OpenPGPKeyring](#openpgpkeyring) · [OpenPGPDistribution](#openpgpdistribution) · [RHSMCertGuard](#rhsmcertguard) · [X509CertGuard](#x509certguard) · [FileContent](#filecontent) · [FileRemote](#fileremote) · [FileGitRemote](#filegitremote) · [FileRepository](#filerepository) · [FilePublication](#filepublication) · [FileDistribution](#filedistribution) · [FileAlternateContentSource](#filealternatecontentsource) · [Blob](#blob) · [Manifest](#manifest) · [BlobManifest](#blobmanifest) · [ManifestListManifest](#manifestlistmanifest) · [Tag](#tag) · [ManifestSignature](#manifestsignature) · [ContainerNamespace](#containernamespace) · [ContainerRemote](#containerremote) · [ContainerPullThroughRemote](#containerpullthroughremote) · [ManifestSigningService](#manifestsigningservice) · [ContainerRepository](#containerrepository) · [ContainerPushRepository](#containerpushrepository) · [ContainerPullThroughDistribution](#containerpullthroughdistribution) · [ContainerDistribution](#containerdistribution) · [container.Upload](#containerupload) · [ansible.Role](#ansiblerole) · [Collection](#collection) · [CollectionImport](#collectionimport) · [AnsibleNamespace](#ansiblenamespace) · [CollectionVersion](#collectionversion) · [CollectionVersionMark](#collectionversionmark) · [CollectionVersionSignature](#collectionversionsignature) · [AnsibleNamespaceMetadata](#ansiblenamespacemetadata) · [DownloadLog](#downloadlog) · [CollectionDownloadCount](#collectiondownloadcount) · [RoleRemote](#roleremote) · [CollectionRemote](#collectionremote) · [GitRemote](#gitremote) · [AnsibleCollectionDeprecated](#ansiblecollectiondeprecated) · [AnsibleRepository](#ansiblerepository) · [AnsibleDistribution](#ansibledistribution) · [CrossRepositoryCollectionVersionIndex](#crossrepositorycollectionversionindex) · [PythonDistribution](#pythondistribution) · [PythonPackageContent](#pythonpackagecontent) · [PackageProvenance](#packageprovenance) · [PackageYank](#packageyank) · [PythonPublication](#pythonpublication) · [PythonRemote](#pythonremote) · [PythonRepository](#pythonrepository) · [PythonBlocklistEntry](#pythonblocklistentry)
 
 <details>
 <summary>The whole schema as SQL</summary>
@@ -158,6 +158,24 @@ CREATE TABLE "core_openpgpkeyring" ("repository_ptr_id" uuid NOT NULL PRIMARY KE
 
 CREATE TABLE "core_openpgpdistribution" ("distribution_ptr_id" uuid NOT NULL PRIMARY KEY);
 
+CREATE TABLE "certguard_rhsmcertguard" ("contentguard_ptr_id" uuid NOT NULL PRIMARY KEY, "ca_certificate" text NOT NULL);
+
+CREATE TABLE "certguard_x509certguard" ("contentguard_ptr_id" uuid NOT NULL PRIMARY KEY, "ca_certificate" text NOT NULL);
+
+CREATE TABLE "file_filecontent" ("content_ptr_id" uuid NOT NULL PRIMARY KEY, "relative_path" text NOT NULL, "digest" varchar(64) NOT NULL, "_pulp_domain_id" uuid NOT NULL);
+
+CREATE TABLE "file_fileremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY);
+
+CREATE TABLE "file_filegitremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY, "git_ref" text NOT NULL);
+
+CREATE TABLE "file_filerepository" ("repository_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "sha256sums" text NOT NULL, "autopublish" boolean NOT NULL, "last_sync_details" jsonb NOT NULL);
+
+CREATE TABLE "file_filepublication" ("publication_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "sha256sums" text NOT NULL);
+
+CREATE TABLE "file_filedistribution" ("distribution_ptr_id" uuid NOT NULL PRIMARY KEY);
+
+CREATE TABLE "file_filealternatecontentsource" ("alternatecontentsource_ptr_id" uuid NOT NULL PRIMARY KEY);
+
 CREATE TABLE "container_blob" ("content_ptr_id" uuid NOT NULL PRIMARY KEY, "digest" text NOT NULL, "_pulp_domain_id" uuid NOT NULL);
 
 CREATE TABLE "container_manifest" ("content_ptr_id" uuid NOT NULL PRIMARY KEY, "digest" text NOT NULL, "schema_version" integer NOT NULL, "media_type" text NOT NULL, "type" varchar NULL, "data" text NULL, "annotations" jsonb NOT NULL, "labels" jsonb NOT NULL, "architecture" text NULL, "os" text NULL, "compressed_image_size" bigint NULL, "is_bootable" boolean NOT NULL, "is_flatpak" boolean NOT NULL, "config_blob_id" uuid NULL, "_pulp_domain_id" uuid NOT NULL);
@@ -195,24 +213,6 @@ CREATE TABLE "container_containerpullthroughdistribution" ("distribution_ptr_id"
 CREATE TABLE "container_containerdistribution" ("distribution_ptr_id" uuid NOT NULL PRIMARY KEY, "namespace_id" uuid NULL, "private" boolean NOT NULL, "description" text NULL, "pull_through_distribution_id" uuid NULL);
 
 CREATE TABLE "container_upload" ("upload_ptr_id" uuid NOT NULL PRIMARY KEY, "repository_id" uuid NOT NULL, "artifact_id" uuid NULL);
-
-CREATE TABLE "certguard_rhsmcertguard" ("contentguard_ptr_id" uuid NOT NULL PRIMARY KEY, "ca_certificate" text NOT NULL);
-
-CREATE TABLE "certguard_x509certguard" ("contentguard_ptr_id" uuid NOT NULL PRIMARY KEY, "ca_certificate" text NOT NULL);
-
-CREATE TABLE "file_filecontent" ("content_ptr_id" uuid NOT NULL PRIMARY KEY, "relative_path" text NOT NULL, "digest" varchar(64) NOT NULL, "_pulp_domain_id" uuid NOT NULL);
-
-CREATE TABLE "file_fileremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY);
-
-CREATE TABLE "file_filegitremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY, "git_ref" text NOT NULL);
-
-CREATE TABLE "file_filerepository" ("repository_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "autopublish" boolean NOT NULL, "last_sync_details" jsonb NOT NULL);
-
-CREATE TABLE "file_filepublication" ("publication_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL);
-
-CREATE TABLE "file_filedistribution" ("distribution_ptr_id" uuid NOT NULL PRIMARY KEY);
-
-CREATE TABLE "file_filealternatecontentsource" ("alternatecontentsource_ptr_id" uuid NOT NULL PRIMARY KEY);
 
 CREATE TABLE "ansible_role" ("content_ptr_id" uuid NOT NULL PRIMARY KEY, "namespace" varchar(64) NOT NULL, "name" varchar(64) NOT NULL, "version" varchar(128) COLLATE "pulp_ansible_semver" NOT NULL, "_pulp_domain_id" uuid NOT NULL);
 
@@ -407,6 +407,8 @@ CREATE INDEX "core_contentartifact_artifact_id_f5d9a66b" ON "core_contentartifac
 CREATE INDEX "core_contentartifact_content_id_04d8a3d5" ON "core_contentartifact" ("content_id");
 
 CREATE INDEX "core_conten_relativ_ca1ae5_idx" ON "core_contentartifact" ("relative_path");
+
+CREATE INDEX "core_ca_relpath_pattern_idx" ON "core_contentartifact" ("relative_path" text_pattern_ops);
 
 ALTER TABLE "core_remoteartifact" ADD CONSTRAINT "core_remoteartifact_content_artifact_id_remo_f11e4ef2_uniq" UNIQUE ("content_artifact_id", "remote_id", "pulp_domain_id");
 
@@ -926,6 +928,30 @@ ALTER TABLE "core_openpgpkeyring" ADD CONSTRAINT "core_openpgpkeyring_repository
 
 ALTER TABLE "core_openpgpdistribution" ADD CONSTRAINT "core_openpgpdistribu_distribution_ptr_id_d1b336ea_fk_core_dist" FOREIGN KEY ("distribution_ptr_id") REFERENCES "core_distribution" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
 
+ALTER TABLE "certguard_rhsmcertguard" ADD CONSTRAINT "certguard_rhsmcertgu_contentguard_ptr_id_248b230c_fk_core_cont" FOREIGN KEY ("contentguard_ptr_id") REFERENCES "core_contentguard" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "certguard_x509certguard" ADD CONSTRAINT "certguard_x509certgu_contentguard_ptr_id_73fdff9d_fk_core_cont" FOREIGN KEY ("contentguard_ptr_id") REFERENCES "core_contentguard" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent_relative_path_digest__pu_b4bae2c2_uniq" UNIQUE ("relative_path", "digest", "_pulp_domain_id");
+
+ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent_content_ptr_id_e2cf0ec0_fk_core_cont" FOREIGN KEY ("content_ptr_id") REFERENCES "core_content" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent__pulp_domain_id_1714b2e9_fk_core_doma" FOREIGN KEY ("_pulp_domain_id") REFERENCES "core_domain" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+CREATE INDEX "file_filecontent__pulp_domain_id_1714b2e9" ON "file_filecontent" ("_pulp_domain_id");
+
+ALTER TABLE "file_fileremote" ADD CONSTRAINT "file_fileremote_remote_ptr_id_1ae95761_fk_core_remote_pulp_id" FOREIGN KEY ("remote_ptr_id") REFERENCES "core_remote" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filegitremote" ADD CONSTRAINT "file_filegitremote_remote_ptr_id_de9fb963_fk_core_remo" FOREIGN KEY ("remote_ptr_id") REFERENCES "core_remote" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filerepository" ADD CONSTRAINT "file_filerepository_repository_ptr_id_8eb5facc_fk_core_repo" FOREIGN KEY ("repository_ptr_id") REFERENCES "core_repository" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filepublication" ADD CONSTRAINT "file_filepublication_publication_ptr_id_66b2442f_fk_core_publ" FOREIGN KEY ("publication_ptr_id") REFERENCES "core_publication" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filedistribution" ADD CONSTRAINT "file_filedistributio_distribution_ptr_id_5ce5564b_fk_core_dist" FOREIGN KEY ("distribution_ptr_id") REFERENCES "core_distribution" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE "file_filealternatecontentsource" ADD CONSTRAINT "file_filealternateco_alternatecontentsour_fc2efa59_fk_core_alte" FOREIGN KEY ("alternatecontentsource_ptr_id") REFERENCES "core_alternatecontentsource" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
+
 ALTER TABLE "container_blob" ADD CONSTRAINT "container_blob_digest__pulp_domain_id_b6e4dc87_uniq" UNIQUE ("digest", "_pulp_domain_id");
 
 ALTER TABLE "container_blob" ADD CONSTRAINT "container_blob_content_ptr_id_1dc9aa83_fk_core_content_pulp_id" FOREIGN KEY ("content_ptr_id") REFERENCES "core_content" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
@@ -1111,30 +1137,6 @@ ALTER TABLE "container_upload" ADD CONSTRAINT "container_upload_artifact_id_d1e9
 CREATE INDEX "container_upload_repository_id_df854aa2" ON "container_upload" ("repository_id");
 
 CREATE INDEX "container_upload_artifact_id_d1e92ba6" ON "container_upload" ("artifact_id");
-
-ALTER TABLE "certguard_rhsmcertguard" ADD CONSTRAINT "certguard_rhsmcertgu_contentguard_ptr_id_248b230c_fk_core_cont" FOREIGN KEY ("contentguard_ptr_id") REFERENCES "core_contentguard" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "certguard_x509certguard" ADD CONSTRAINT "certguard_x509certgu_contentguard_ptr_id_73fdff9d_fk_core_cont" FOREIGN KEY ("contentguard_ptr_id") REFERENCES "core_contentguard" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent_relative_path_digest__pu_b4bae2c2_uniq" UNIQUE ("relative_path", "digest", "_pulp_domain_id");
-
-ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent_content_ptr_id_e2cf0ec0_fk_core_cont" FOREIGN KEY ("content_ptr_id") REFERENCES "core_content" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filecontent" ADD CONSTRAINT "file_filecontent__pulp_domain_id_1714b2e9_fk_core_doma" FOREIGN KEY ("_pulp_domain_id") REFERENCES "core_domain" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-CREATE INDEX "file_filecontent__pulp_domain_id_1714b2e9" ON "file_filecontent" ("_pulp_domain_id");
-
-ALTER TABLE "file_fileremote" ADD CONSTRAINT "file_fileremote_remote_ptr_id_1ae95761_fk_core_remote_pulp_id" FOREIGN KEY ("remote_ptr_id") REFERENCES "core_remote" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filegitremote" ADD CONSTRAINT "file_filegitremote_remote_ptr_id_de9fb963_fk_core_remo" FOREIGN KEY ("remote_ptr_id") REFERENCES "core_remote" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filerepository" ADD CONSTRAINT "file_filerepository_repository_ptr_id_8eb5facc_fk_core_repo" FOREIGN KEY ("repository_ptr_id") REFERENCES "core_repository" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filepublication" ADD CONSTRAINT "file_filepublication_publication_ptr_id_66b2442f_fk_core_publ" FOREIGN KEY ("publication_ptr_id") REFERENCES "core_publication" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filedistribution" ADD CONSTRAINT "file_filedistributio_distribution_ptr_id_5ce5564b_fk_core_dist" FOREIGN KEY ("distribution_ptr_id") REFERENCES "core_distribution" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "file_filealternatecontentsource" ADD CONSTRAINT "file_filealternateco_alternatecontentsour_fc2efa59_fk_core_alte" FOREIGN KEY ("alternatecontentsource_ptr_id") REFERENCES "core_alternatecontentsource" ("pulp_id") DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE "ansible_role" ADD CONSTRAINT "ansible_role_version_name_namespace___8aeabb32_uniq" UNIQUE ("version", "name", "namespace", "_pulp_domain_id");
 
@@ -1648,12 +1650,12 @@ Relations:
 - [VulnerabilityReport](#vulnerabilityreport).`pulp_domain_id` → `pulp_id`, on delete cascade
 - [UpstreamPulp](#upstreampulp).`pulp_domain_id` → `pulp_id`, on delete protect
 - [OpenPGPPublicKey](#openpgppublickey).`_pulp_domain_id` → `pulp_id`, on delete protect
+- [FileContent](#filecontent).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [Blob](#blob).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [Manifest](#manifest).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [Tag](#tag).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [ManifestSignature](#manifestsignature).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [ContainerNamespace](#containernamespace).`pulp_domain_id` → `pulp_id`, on delete protect
-- [FileContent](#filecontent).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [ansible.Role](#ansiblerole).`_pulp_domain_id` → `pulp_id`, on delete protect
 - [Collection](#collection).`pulp_domain_id` → `pulp_id`, on delete protect
 - [AnsibleNamespace](#ansiblenamespace).`pulp_domain_id` → `pulp_id`, on delete protect
@@ -1883,7 +1885,7 @@ Relations:
 
 Table `core_content`, app `core`.
 
-Subclasses (multi-table): [PublishedMetadata](#publishedmetadata), [OpenPGPPublicKey](#openpgppublickey), [OpenPGPPublicSubkey](#openpgppublicsubkey), [OpenPGPUserID](#openpgpuserid), [OpenPGPUserAttribute](#openpgpuserattribute), [OpenPGPSignature](#openpgpsignature), [Blob](#blob), [Manifest](#manifest), [Tag](#tag), [ManifestSignature](#manifestsignature), [FileContent](#filecontent), [ansible.Role](#ansiblerole), [CollectionVersion](#collectionversion), [CollectionVersionMark](#collectionversionmark), [CollectionVersionSignature](#collectionversionsignature), [AnsibleNamespaceMetadata](#ansiblenamespacemetadata), [AnsibleCollectionDeprecated](#ansiblecollectiondeprecated), [PythonPackageContent](#pythonpackagecontent), [PackageProvenance](#packageprovenance), [PackageYank](#packageyank).
+Subclasses (multi-table): [PublishedMetadata](#publishedmetadata), [OpenPGPPublicKey](#openpgppublickey), [OpenPGPPublicSubkey](#openpgppublicsubkey), [OpenPGPUserID](#openpgpuserid), [OpenPGPUserAttribute](#openpgpuserattribute), [OpenPGPSignature](#openpgpsignature), [FileContent](#filecontent), [Blob](#blob), [Manifest](#manifest), [Tag](#tag), [ManifestSignature](#manifestsignature), [ansible.Role](#ansiblerole), [CollectionVersion](#collectionversion), [CollectionVersionMark](#collectionversionmark), [CollectionVersionSignature](#collectionversionsignature), [AnsibleNamespaceMetadata](#ansiblenamespacemetadata), [AnsibleCollectionDeprecated](#ansiblecollectiondeprecated), [PythonPackageContent](#pythonpackagecontent), [PackageProvenance](#packageprovenance), [PackageYank](#packageyank).
 
 Columns from `MasterModel` (abstract): `pulp_type`.
 
@@ -1938,11 +1940,11 @@ Relations:
 - [OpenPGPUserAttribute](#openpgpuserattribute).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [OpenPGPSignature](#openpgpsignature).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [OpenPGPSignature](#openpgpsignature).`signed_content_id` → `pulp_id`, on delete protect
+- [FileContent](#filecontent).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [Blob](#blob).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [Manifest](#manifest).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [Tag](#tag).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ManifestSignature](#manifestsignature).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
-- [FileContent](#filecontent).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ansible.Role](#ansiblerole).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [CollectionVersion](#collectionversion).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [CollectionVersionMark](#collectionversionmark).`content_ptr_id` → `pulp_id`, parent link, on delete cascade
@@ -1982,6 +1984,7 @@ Indexes:
 - index `core_contentartifact_content_id_04d8a3d5` on `content_id`
 - unique `core_contentartifact_content_id_relative_path_d2ef8231_uniq` on `content_id`, `relative_path`
 - index `core_conten_relativ_ca1ae5_idx` on `relative_path`
+- index `core_ca_relpath_pattern_idx` on `relative_path` (`text_pattern_ops`)
 
 Relations:
 
@@ -2308,6 +2311,15 @@ Relations:
 - `object_id` → [OpenPGPSignature](#openpgpsignature).`content_ptr_id` where `content_type_id` is OpenPGPSignature (generic, `OpenPGPSignature.user_roles`)
 - `object_id` → [OpenPGPKeyring](#openpgpkeyring).`repository_ptr_id` where `content_type_id` is OpenPGPKeyring (generic, `OpenPGPKeyring.user_roles`)
 - `object_id` → [OpenPGPDistribution](#openpgpdistribution).`distribution_ptr_id` where `content_type_id` is OpenPGPDistribution (generic, `OpenPGPDistribution.user_roles`)
+- `object_id` → [RHSMCertGuard](#rhsmcertguard).`contentguard_ptr_id` where `content_type_id` is RHSMCertGuard (generic, `RHSMCertGuard.user_roles`)
+- `object_id` → [X509CertGuard](#x509certguard).`contentguard_ptr_id` where `content_type_id` is X509CertGuard (generic, `X509CertGuard.user_roles`)
+- `object_id` → [FileContent](#filecontent).`content_ptr_id` where `content_type_id` is FileContent (generic, `FileContent.user_roles`)
+- `object_id` → [FileRemote](#fileremote).`remote_ptr_id` where `content_type_id` is FileRemote (generic, `FileRemote.user_roles`)
+- `object_id` → [FileGitRemote](#filegitremote).`remote_ptr_id` where `content_type_id` is FileGitRemote (generic, `FileGitRemote.user_roles`)
+- `object_id` → [FileRepository](#filerepository).`repository_ptr_id` where `content_type_id` is FileRepository (generic, `FileRepository.user_roles`)
+- `object_id` → [FilePublication](#filepublication).`publication_ptr_id` where `content_type_id` is FilePublication (generic, `FilePublication.user_roles`)
+- `object_id` → [FileDistribution](#filedistribution).`distribution_ptr_id` where `content_type_id` is FileDistribution (generic, `FileDistribution.user_roles`)
+- `object_id` → [FileAlternateContentSource](#filealternatecontentsource).`alternatecontentsource_ptr_id` where `content_type_id` is FileAlternateContentSource (generic, `FileAlternateContentSource.user_roles`)
 - `object_id` → [Blob](#blob).`content_ptr_id` where `content_type_id` is Blob (generic, `Blob.user_roles`)
 - `object_id` → [Manifest](#manifest).`content_ptr_id` where `content_type_id` is Manifest (generic, `Manifest.user_roles`)
 - `object_id` → [Tag](#tag).`content_ptr_id` where `content_type_id` is Tag (generic, `Tag.user_roles`)
@@ -2321,15 +2333,6 @@ Relations:
 - `object_id` → [ContainerPullThroughDistribution](#containerpullthroughdistribution).`distribution_ptr_id` where `content_type_id` is ContainerPullThroughDistribution (generic, `ContainerPullThroughDistribution.user_roles`)
 - `object_id` → [ContainerDistribution](#containerdistribution).`distribution_ptr_id` where `content_type_id` is ContainerDistribution (generic, `ContainerDistribution.user_roles`)
 - `object_id` → [container.Upload](#containerupload).`upload_ptr_id` where `content_type_id` is container.Upload (generic, `container.Upload.user_roles`)
-- `object_id` → [RHSMCertGuard](#rhsmcertguard).`contentguard_ptr_id` where `content_type_id` is RHSMCertGuard (generic, `RHSMCertGuard.user_roles`)
-- `object_id` → [X509CertGuard](#x509certguard).`contentguard_ptr_id` where `content_type_id` is X509CertGuard (generic, `X509CertGuard.user_roles`)
-- `object_id` → [FileContent](#filecontent).`content_ptr_id` where `content_type_id` is FileContent (generic, `FileContent.user_roles`)
-- `object_id` → [FileRemote](#fileremote).`remote_ptr_id` where `content_type_id` is FileRemote (generic, `FileRemote.user_roles`)
-- `object_id` → [FileGitRemote](#filegitremote).`remote_ptr_id` where `content_type_id` is FileGitRemote (generic, `FileGitRemote.user_roles`)
-- `object_id` → [FileRepository](#filerepository).`repository_ptr_id` where `content_type_id` is FileRepository (generic, `FileRepository.user_roles`)
-- `object_id` → [FilePublication](#filepublication).`publication_ptr_id` where `content_type_id` is FilePublication (generic, `FilePublication.user_roles`)
-- `object_id` → [FileDistribution](#filedistribution).`distribution_ptr_id` where `content_type_id` is FileDistribution (generic, `FileDistribution.user_roles`)
-- `object_id` → [FileAlternateContentSource](#filealternatecontentsource).`alternatecontentsource_ptr_id` where `content_type_id` is FileAlternateContentSource (generic, `FileAlternateContentSource.user_roles`)
 - `object_id` → [ansible.Role](#ansiblerole).`content_ptr_id` where `content_type_id` is ansible.Role (generic, `ansible.Role.user_roles`)
 - `object_id` → [Collection](#collection).`pulp_id` where `content_type_id` is Collection (generic, `Collection.user_roles`)
 - `object_id` → [AnsibleNamespace](#ansiblenamespace).`pulp_id` where `content_type_id` is AnsibleNamespace (generic, `AnsibleNamespace.user_roles`)
@@ -2462,6 +2465,15 @@ Relations:
 - `object_id` → [OpenPGPSignature](#openpgpsignature).`content_ptr_id` where `content_type_id` is OpenPGPSignature (generic, `OpenPGPSignature.group_roles`)
 - `object_id` → [OpenPGPKeyring](#openpgpkeyring).`repository_ptr_id` where `content_type_id` is OpenPGPKeyring (generic, `OpenPGPKeyring.group_roles`)
 - `object_id` → [OpenPGPDistribution](#openpgpdistribution).`distribution_ptr_id` where `content_type_id` is OpenPGPDistribution (generic, `OpenPGPDistribution.group_roles`)
+- `object_id` → [RHSMCertGuard](#rhsmcertguard).`contentguard_ptr_id` where `content_type_id` is RHSMCertGuard (generic, `RHSMCertGuard.group_roles`)
+- `object_id` → [X509CertGuard](#x509certguard).`contentguard_ptr_id` where `content_type_id` is X509CertGuard (generic, `X509CertGuard.group_roles`)
+- `object_id` → [FileContent](#filecontent).`content_ptr_id` where `content_type_id` is FileContent (generic, `FileContent.group_roles`)
+- `object_id` → [FileRemote](#fileremote).`remote_ptr_id` where `content_type_id` is FileRemote (generic, `FileRemote.group_roles`)
+- `object_id` → [FileGitRemote](#filegitremote).`remote_ptr_id` where `content_type_id` is FileGitRemote (generic, `FileGitRemote.group_roles`)
+- `object_id` → [FileRepository](#filerepository).`repository_ptr_id` where `content_type_id` is FileRepository (generic, `FileRepository.group_roles`)
+- `object_id` → [FilePublication](#filepublication).`publication_ptr_id` where `content_type_id` is FilePublication (generic, `FilePublication.group_roles`)
+- `object_id` → [FileDistribution](#filedistribution).`distribution_ptr_id` where `content_type_id` is FileDistribution (generic, `FileDistribution.group_roles`)
+- `object_id` → [FileAlternateContentSource](#filealternatecontentsource).`alternatecontentsource_ptr_id` where `content_type_id` is FileAlternateContentSource (generic, `FileAlternateContentSource.group_roles`)
 - `object_id` → [Blob](#blob).`content_ptr_id` where `content_type_id` is Blob (generic, `Blob.group_roles`)
 - `object_id` → [Manifest](#manifest).`content_ptr_id` where `content_type_id` is Manifest (generic, `Manifest.group_roles`)
 - `object_id` → [Tag](#tag).`content_ptr_id` where `content_type_id` is Tag (generic, `Tag.group_roles`)
@@ -2475,15 +2487,6 @@ Relations:
 - `object_id` → [ContainerPullThroughDistribution](#containerpullthroughdistribution).`distribution_ptr_id` where `content_type_id` is ContainerPullThroughDistribution (generic, `ContainerPullThroughDistribution.group_roles`)
 - `object_id` → [ContainerDistribution](#containerdistribution).`distribution_ptr_id` where `content_type_id` is ContainerDistribution (generic, `ContainerDistribution.group_roles`)
 - `object_id` → [container.Upload](#containerupload).`upload_ptr_id` where `content_type_id` is container.Upload (generic, `container.Upload.group_roles`)
-- `object_id` → [RHSMCertGuard](#rhsmcertguard).`contentguard_ptr_id` where `content_type_id` is RHSMCertGuard (generic, `RHSMCertGuard.group_roles`)
-- `object_id` → [X509CertGuard](#x509certguard).`contentguard_ptr_id` where `content_type_id` is X509CertGuard (generic, `X509CertGuard.group_roles`)
-- `object_id` → [FileContent](#filecontent).`content_ptr_id` where `content_type_id` is FileContent (generic, `FileContent.group_roles`)
-- `object_id` → [FileRemote](#fileremote).`remote_ptr_id` where `content_type_id` is FileRemote (generic, `FileRemote.group_roles`)
-- `object_id` → [FileGitRemote](#filegitremote).`remote_ptr_id` where `content_type_id` is FileGitRemote (generic, `FileGitRemote.group_roles`)
-- `object_id` → [FileRepository](#filerepository).`repository_ptr_id` where `content_type_id` is FileRepository (generic, `FileRepository.group_roles`)
-- `object_id` → [FilePublication](#filepublication).`publication_ptr_id` where `content_type_id` is FilePublication (generic, `FilePublication.group_roles`)
-- `object_id` → [FileDistribution](#filedistribution).`distribution_ptr_id` where `content_type_id` is FileDistribution (generic, `FileDistribution.group_roles`)
-- `object_id` → [FileAlternateContentSource](#filealternatecontentsource).`alternatecontentsource_ptr_id` where `content_type_id` is FileAlternateContentSource (generic, `FileAlternateContentSource.group_roles`)
 - `object_id` → [ansible.Role](#ansiblerole).`content_ptr_id` where `content_type_id` is ansible.Role (generic, `ansible.Role.group_roles`)
 - `object_id` → [Collection](#collection).`pulp_id` where `content_type_id` is Collection (generic, `Collection.group_roles`)
 - `object_id` → [AnsibleNamespace](#ansiblenamespace).`pulp_id` where `content_type_id` is AnsibleNamespace (generic, `AnsibleNamespace.group_roles`)
@@ -2757,7 +2760,7 @@ Relations:
 
 Table `core_repository`, app `core`.
 
-Subclasses (multi-table): [OpenPGPKeyring](#openpgpkeyring), [ContainerRepository](#containerrepository), [ContainerPushRepository](#containerpushrepository), [FileRepository](#filerepository), [AnsibleRepository](#ansiblerepository), [PythonRepository](#pythonrepository).
+Subclasses (multi-table): [OpenPGPKeyring](#openpgpkeyring), [FileRepository](#filerepository), [ContainerRepository](#containerrepository), [ContainerPushRepository](#containerpushrepository), [AnsibleRepository](#ansiblerepository), [PythonRepository](#pythonrepository).
 
 Columns from `MasterModel` (abstract): `pulp_type`.
 
@@ -2825,10 +2828,10 @@ Relations:
 - [PulpImporterRepository](#pulpimporterrepository).`repository_id` → `pulp_id`, on delete cascade
 - [Distribution](#distribution).`repository_id` → `pulp_id`, on delete set null
 - [OpenPGPKeyring](#openpgpkeyring).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
+- [FileRepository](#filerepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ContainerRepository](#containerrepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ContainerPushRepository](#containerpushrepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [container.Upload](#containerupload).`repository_id` → `pulp_id`, on delete cascade
-- [FileRepository](#filerepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [DownloadLog](#downloadlog).`repository_id` → `pulp_id`, on delete cascade
 - [AnsibleRepository](#ansiblerepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [PythonRepository](#pythonrepository).`repository_ptr_id` → `pulp_id`, parent link, on delete cascade
@@ -2837,7 +2840,7 @@ Relations:
 
 Table `core_remote`, app `core`.
 
-Subclasses (multi-table): [ContainerRemote](#containerremote), [ContainerPullThroughRemote](#containerpullthroughremote), [FileRemote](#fileremote), [FileGitRemote](#filegitremote), [RoleRemote](#roleremote), [CollectionRemote](#collectionremote), [GitRemote](#gitremote), [PythonRemote](#pythonremote).
+Subclasses (multi-table): [FileRemote](#fileremote), [FileGitRemote](#filegitremote), [ContainerRemote](#containerremote), [ContainerPullThroughRemote](#containerpullthroughremote), [RoleRemote](#roleremote), [CollectionRemote](#collectionremote), [GitRemote](#gitremote), [PythonRemote](#pythonremote).
 
 Columns from `MasterModel` (abstract): `pulp_type`.
 
@@ -2936,10 +2939,10 @@ Relations:
 - `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
 - `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
 - [Distribution](#distribution).`remote_id` → `pulp_id`, on delete set null
-- [ContainerRemote](#containerremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
-- [ContainerPullThroughRemote](#containerpullthroughremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [FileRemote](#fileremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [FileGitRemote](#filegitremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
+- [ContainerRemote](#containerremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
+- [ContainerPullThroughRemote](#containerpullthroughremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [RoleRemote](#roleremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [CollectionRemote](#collectionremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [GitRemote](#gitremote).`remote_ptr_id` → `pulp_id`, parent link, on delete cascade
@@ -3839,7 +3842,7 @@ Relations:
 
 Table `core_distribution`, app `core`.
 
-Subclasses (multi-table): [ArtifactDistribution](#artifactdistribution), [OpenPGPDistribution](#openpgpdistribution), [ContainerPullThroughDistribution](#containerpullthroughdistribution), [ContainerDistribution](#containerdistribution), [FileDistribution](#filedistribution), [AnsibleDistribution](#ansibledistribution), [PythonDistribution](#pythondistribution).
+Subclasses (multi-table): [ArtifactDistribution](#artifactdistribution), [OpenPGPDistribution](#openpgpdistribution), [FileDistribution](#filedistribution), [ContainerPullThroughDistribution](#containerpullthroughdistribution), [ContainerDistribution](#containerdistribution), [AnsibleDistribution](#ansibledistribution), [PythonDistribution](#pythondistribution).
 
 Columns from `MasterModel` (abstract): `pulp_type`.
 
@@ -3925,9 +3928,9 @@ Relations:
 - [ArtifactDistribution](#artifactdistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [DistributedPublication](#distributedpublication).`distribution_id` → `pulp_id`, on delete cascade
 - [OpenPGPDistribution](#openpgpdistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
+- [FileDistribution](#filedistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ContainerPullThroughDistribution](#containerpullthroughdistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [ContainerDistribution](#containerdistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
-- [FileDistribution](#filedistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [AnsibleDistribution](#ansibledistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 - [PythonDistribution](#pythondistribution).`distribution_ptr_id` → `pulp_id`, parent link, on delete cascade
 
@@ -4552,6 +4555,234 @@ Relations:
 - `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
 - `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
 
+## RHSMCertGuard
+
+Table `certguard_rhsmcertguard`, app `certguard`.
+
+Inherits from [ContentGuard](#contentguard) (multi-table): its rows are joined on `contentguard_ptr_id`.
+
+Columns from `BaseCertGuard` (abstract): `contentguard_ptr_id`, `ca_certificate`.
+
+A content-guard validating on a RHSM Certificate validated by `python-rhsm`.
+
+A Certificate Authority certificate to trust is required with each RHSMCertGuard created. With
+each request, the client certificate is first checked if it is signed by this CA cert. If not,
+it's untrusted and denied regardless of its paths.
+
+After determining the client certificate is trusted, the requested path is checked against the
+named paths in the certificate. A request is permitted if the current request path is a prefix
+of a path declared in the trusted RHSM Client Certificate.
+
+Fields:
+    rhsm_certificate (models.TextField): The RHSM Certificate used to validate the client
+        certificate at request time.
+
+![RHSMCertGuard and the models it relates to](tables/RHSMCertGuard.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `contentguard_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `ca_certificate` | `TextField` | `text` |  |  |  |  |
+
+Relations:
+
+- `contentguard_ptr_id` → [ContentGuard](#contentguard).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## X509CertGuard
+
+Table `certguard_x509certguard`, app `certguard`.
+
+Inherits from [ContentGuard](#contentguard) (multi-table): its rows are joined on `contentguard_ptr_id`.
+
+Columns from `BaseCertGuard` (abstract): `contentguard_ptr_id`, `ca_certificate`.
+
+A content-guard that authenticates the request based on a client provided X.509 Certificate.
+
+Fields:
+    ca_certificate (models.FileField): The CA certificate used to
+        validate the client certificate.
+
+![X509CertGuard and the models it relates to](tables/X509CertGuard.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `contentguard_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `ca_certificate` | `TextField` | `text` |  |  |  |  |
+
+Relations:
+
+- `contentguard_ptr_id` → [ContentGuard](#contentguard).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileContent
+
+Table `file_filecontent`, app `file`.
+
+Inherits from [Content](#content) (multi-table): its rows are joined on `content_ptr_id`.
+
+The "file" content type.
+
+Content of this type represents a single file uniquely
+identified by path and SHA256 digest.
+
+Fields:
+    relative_path (str): The file relative path.
+    digest (str): The SHA256 HEX digest.
+
+![FileContent and the models it relates to](tables/FileContent.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `content_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `relative_path` | `TextField` | `text` |  |  |  |  |
+| `digest` | `CharField` | `varchar(64)` |  |  |  |  |
+| `_pulp_domain_id` | `ForeignKey` | `uuid` |  | FK | `get_domain_pk()` |  |
+
+Indexes:
+
+- index `file_filecontent__pulp_domain_id_1714b2e9` on `_pulp_domain_id`
+- unique `file_filecontent_relative_path_digest__pu_b4bae2c2_uniq` on `relative_path`, `digest`, `_pulp_domain_id`
+
+Relations:
+
+- `content_ptr_id` → [Content](#content).`pulp_id`, parent link, on delete cascade
+- `_pulp_domain_id` → [Domain](#domain).`pulp_id`, on delete protect
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileRemote
+
+Table `file_fileremote`, app `file`.
+
+Inherits from [Remote](#remote) (multi-table): its rows are joined on `remote_ptr_id`.
+
+Remote for "file" content.
+
+![FileRemote and the models it relates to](tables/FileRemote.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `remote_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+
+Relations:
+
+- `remote_ptr_id` → [Remote](#remote).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileGitRemote
+
+Table `file_filegitremote`, app `file`.
+
+Inherits from [Remote](#remote) (multi-table): its rows are joined on `remote_ptr_id`.
+
+Remote for syncing files from a Git repository (without PULP_MANIFEST).
+
+The URL should point to a Git repository. The `git_ref` field can be used to specify a
+branch, tag, or commit to sync from (defaults to `HEAD`).
+
+![FileGitRemote and the models it relates to](tables/FileGitRemote.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `remote_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `git_ref` | `TextField` | `text` |  |  | `'HEAD'` |  |
+
+Relations:
+
+- `remote_ptr_id` → [Remote](#remote).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileRepository
+
+Table `file_filerepository`, app `file`.
+
+Inherits from [Repository](#repository) (multi-table): its rows are joined on `repository_ptr_id`.
+
+The "file" repository type.
+
+![FileRepository and the models it relates to](tables/FileRepository.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `repository_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `manifest` | `TextField` | `text` | yes |  | `'PULP_MANIFEST'` |  |
+| `sha256sums` | `FileRepositorySha256Sums` | `text` |  |  | `'disabled'` |  |
+| `autopublish` | `BooleanField` | `boolean` |  |  | `False` |  |
+| `last_sync_details` | `JSONField` | `jsonb` |  |  | `dict()` |  |
+
+Relations:
+
+- `repository_ptr_id` → [Repository](#repository).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FilePublication
+
+Table `file_filepublication`, app `file`.
+
+Inherits from [Publication](#publication) (multi-table): its rows are joined on `publication_ptr_id`.
+
+Publication for 'file' content.
+
+![FilePublication and the models it relates to](tables/FilePublication.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `publication_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+| `manifest` | `TextField` | `text` | yes |  |  |  |
+| `sha256sums` | `FilePublicationSha256Sums` | `text` |  |  | `'disabled'` |  |
+
+Relations:
+
+- `publication_ptr_id` → [Publication](#publication).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileDistribution
+
+Table `file_filedistribution`, app `file`.
+
+Inherits from [Distribution](#distribution) (multi-table): its rows are joined on `distribution_ptr_id`.
+
+Distribution for 'file' content.
+
+![FileDistribution and the models it relates to](tables/FileDistribution.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `distribution_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+
+Relations:
+
+- `distribution_ptr_id` → [Distribution](#distribution).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
+## FileAlternateContentSource
+
+Table `file_filealternatecontentsource`, app `file`.
+
+Inherits from [AlternateContentSource](#alternatecontentsource) (multi-table): its rows are joined on `alternatecontentsource_ptr_id`.
+
+Alternate Content Source for 'file" content.
+
+![FileAlternateContentSource and the models it relates to](tables/FileAlternateContentSource.svg)
+
+| Column | Field | Type | Null | Key | Default | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `alternatecontentsource_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
+
+Relations:
+
+- `alternatecontentsource_ptr_id` → [AlternateContentSource](#alternatecontentsource).`pulp_id`, parent link, on delete cascade
+- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
+- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
+
 ## Blob
 
 Table `container_blob`, app `container`.
@@ -5132,232 +5363,6 @@ Relations:
 - `upload_ptr_id` → [core.Upload](#coreupload).`pulp_id`, parent link, on delete cascade
 - `repository_id` → [Repository](#repository).`pulp_id`, on delete cascade
 - `artifact_id` → [Artifact](#artifact).`pulp_id`, on delete set null
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## RHSMCertGuard
-
-Table `certguard_rhsmcertguard`, app `certguard`.
-
-Inherits from [ContentGuard](#contentguard) (multi-table): its rows are joined on `contentguard_ptr_id`.
-
-Columns from `BaseCertGuard` (abstract): `contentguard_ptr_id`, `ca_certificate`.
-
-A content-guard validating on a RHSM Certificate validated by `python-rhsm`.
-
-A Certificate Authority certificate to trust is required with each RHSMCertGuard created. With
-each request, the client certificate is first checked if it is signed by this CA cert. If not,
-it's untrusted and denied regardless of its paths.
-
-After determining the client certificate is trusted, the requested path is checked against the
-named paths in the certificate. A request is permitted if the current request path is a prefix
-of a path declared in the trusted RHSM Client Certificate.
-
-Fields:
-    rhsm_certificate (models.TextField): The RHSM Certificate used to validate the client
-        certificate at request time.
-
-![RHSMCertGuard and the models it relates to](tables/RHSMCertGuard.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `contentguard_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `ca_certificate` | `TextField` | `text` |  |  |  |  |
-
-Relations:
-
-- `contentguard_ptr_id` → [ContentGuard](#contentguard).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## X509CertGuard
-
-Table `certguard_x509certguard`, app `certguard`.
-
-Inherits from [ContentGuard](#contentguard) (multi-table): its rows are joined on `contentguard_ptr_id`.
-
-Columns from `BaseCertGuard` (abstract): `contentguard_ptr_id`, `ca_certificate`.
-
-A content-guard that authenticates the request based on a client provided X.509 Certificate.
-
-Fields:
-    ca_certificate (models.FileField): The CA certificate used to
-        validate the client certificate.
-
-![X509CertGuard and the models it relates to](tables/X509CertGuard.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `contentguard_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `ca_certificate` | `TextField` | `text` |  |  |  |  |
-
-Relations:
-
-- `contentguard_ptr_id` → [ContentGuard](#contentguard).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileContent
-
-Table `file_filecontent`, app `file`.
-
-Inherits from [Content](#content) (multi-table): its rows are joined on `content_ptr_id`.
-
-The "file" content type.
-
-Content of this type represents a single file uniquely
-identified by path and SHA256 digest.
-
-Fields:
-    relative_path (str): The file relative path.
-    digest (str): The SHA256 HEX digest.
-
-![FileContent and the models it relates to](tables/FileContent.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `content_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `relative_path` | `TextField` | `text` |  |  |  |  |
-| `digest` | `CharField` | `varchar(64)` |  |  |  |  |
-| `_pulp_domain_id` | `ForeignKey` | `uuid` |  | FK | `get_domain_pk()` |  |
-
-Indexes:
-
-- index `file_filecontent__pulp_domain_id_1714b2e9` on `_pulp_domain_id`
-- unique `file_filecontent_relative_path_digest__pu_b4bae2c2_uniq` on `relative_path`, `digest`, `_pulp_domain_id`
-
-Relations:
-
-- `content_ptr_id` → [Content](#content).`pulp_id`, parent link, on delete cascade
-- `_pulp_domain_id` → [Domain](#domain).`pulp_id`, on delete protect
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileRemote
-
-Table `file_fileremote`, app `file`.
-
-Inherits from [Remote](#remote) (multi-table): its rows are joined on `remote_ptr_id`.
-
-Remote for "file" content.
-
-![FileRemote and the models it relates to](tables/FileRemote.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `remote_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-
-Relations:
-
-- `remote_ptr_id` → [Remote](#remote).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileGitRemote
-
-Table `file_filegitremote`, app `file`.
-
-Inherits from [Remote](#remote) (multi-table): its rows are joined on `remote_ptr_id`.
-
-Remote for syncing files from a Git repository (without PULP_MANIFEST).
-
-The URL should point to a Git repository. The `git_ref` field can be used to specify a
-branch, tag, or commit to sync from (defaults to `HEAD`).
-
-![FileGitRemote and the models it relates to](tables/FileGitRemote.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `remote_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `git_ref` | `TextField` | `text` |  |  | `'HEAD'` |  |
-
-Relations:
-
-- `remote_ptr_id` → [Remote](#remote).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileRepository
-
-Table `file_filerepository`, app `file`.
-
-Inherits from [Repository](#repository) (multi-table): its rows are joined on `repository_ptr_id`.
-
-The "file" repository type.
-
-![FileRepository and the models it relates to](tables/FileRepository.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `repository_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `manifest` | `TextField` | `text` | yes |  | `'PULP_MANIFEST'` |  |
-| `autopublish` | `BooleanField` | `boolean` |  |  | `False` |  |
-| `last_sync_details` | `JSONField` | `jsonb` |  |  | `dict()` |  |
-
-Relations:
-
-- `repository_ptr_id` → [Repository](#repository).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FilePublication
-
-Table `file_filepublication`, app `file`.
-
-Inherits from [Publication](#publication) (multi-table): its rows are joined on `publication_ptr_id`.
-
-Publication for 'file' content.
-
-![FilePublication and the models it relates to](tables/FilePublication.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `publication_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-| `manifest` | `TextField` | `text` | yes |  |  |  |
-
-Relations:
-
-- `publication_ptr_id` → [Publication](#publication).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileDistribution
-
-Table `file_filedistribution`, app `file`.
-
-Inherits from [Distribution](#distribution) (multi-table): its rows are joined on `distribution_ptr_id`.
-
-Distribution for 'file' content.
-
-![FileDistribution and the models it relates to](tables/FileDistribution.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `distribution_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-
-Relations:
-
-- `distribution_ptr_id` → [Distribution](#distribution).`pulp_id`, parent link, on delete cascade
-- `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
-- `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
-
-## FileAlternateContentSource
-
-Table `file_filealternatecontentsource`, app `file`.
-
-Inherits from [AlternateContentSource](#alternatecontentsource) (multi-table): its rows are joined on `alternatecontentsource_ptr_id`.
-
-Alternate Content Source for 'file" content.
-
-![FileAlternateContentSource and the models it relates to](tables/FileAlternateContentSource.svg)
-
-| Column | Field | Type | Null | Key | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- |
-| `alternatecontentsource_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
-
-Relations:
-
-- `alternatecontentsource_ptr_id` → [AlternateContentSource](#alternatecontentsource).`pulp_id`, parent link, on delete cascade
 - `user_roles` ← [UserRole](#userrole), by `content_type_id` + `object_id` (generic relation)
 - `group_roles` ← [GroupRole](#grouprole), by `content_type_id` + `object_id` (generic relation)
 
@@ -6299,6 +6304,22 @@ Relations:
 | `Replicate manages ALL local objects within the domain.` | `all` |
 | `Replicate will only manage the objects created from a previous replication, unlabled local objects will be untouched.` | `labeled` |
 | `Replicate will not delete any local object whether they were created by replication or not.` | `nodelete` |
+
+## FileRepositorySha256Sums
+
+| Name | Stored as |
+| --- | --- |
+| `Do not generate SHA256SUMS files.` | `disabled` |
+| `Generate a single SHA256SUMS at the root of the repository, listing every file by its path relative to the root.` | `root` |
+| `Generate a SHA256SUMS in every directory of the repository, each listing every file below it by its path relative to that directory.` | `directory` |
+
+## FilePublicationSha256Sums
+
+| Name | Stored as |
+| --- | --- |
+| `Do not generate SHA256SUMS files.` | `disabled` |
+| `Generate a single SHA256SUMS at the root of the repository, listing every file by its path relative to the root.` | `root` |
+| `Generate a SHA256SUMS in every directory of the repository, each listing every file below it by its path relative to that directory.` | `directory` |
 
 ## ManifestMediaType
 

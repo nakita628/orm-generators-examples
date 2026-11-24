@@ -54,6 +54,18 @@ Enum UpstreamPulpPolicy {
   "nodelete"
 }
 
+Enum FileRepositorySha256Sums {
+  "disabled"
+  "root"
+  "directory"
+}
+
+Enum FilePublicationSha256Sums {
+  "disabled"
+  "root"
+  "directory"
+}
+
 Enum ManifestMediaType {
   "application/vnd.docker.distribution.manifest.v1+json"
   "application/vnd.docker.distribution.manifest.v2+json"
@@ -498,6 +510,7 @@ Table core_contentartifact {
     (content_id) [name: 'core_contentartifact_content_id_04d8a3d5']
     (content_id, relative_path) [unique, name: 'core_contentartifact_content_id_relative_path_d2ef8231_uniq']
     (relative_path) [name: 'core_conten_relativ_ca1ae5_idx']
+    (relative_path) [name: 'core_ca_relpath_pattern_idx', note: 'text_pattern_ops']
   }
 
   Note: '''A relationship between a Content and an Artifact.
@@ -652,7 +665,7 @@ Table core_userrole {
   user_id integer [not null]
   role_id uuid [not null]
   content_type_id integer
-  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.user_roles, Domain.user_roles, AlternateContentSource.user_roles, AlternateContentSourcePath.user_roles, Artifact.user_roles, PulpTemporaryFile.user_roles, Content.user_roles, ContentArtifact.user_roles, RemoteArtifact.user_roles, SigningService.user_roles, AsciiArmoredDetachedSigningService.user_roles, AppStatus.user_roles, core.Role.user_roles, UserRole.user_roles, GroupRole.user_roles, ProfileArtifact.user_roles, Task.user_roles, TaskGroup.user_roles, CreatedResource.user_roles, TaskSchedule.user_roles, Repository.user_roles, Remote.user_roles, RepositoryContent.user_roles, RepositoryVersion.user_roles, Export.user_roles, ExportedResource.user_roles, Exporter.user_roles, FilesystemExport.user_roles, FilesystemExporter.user_roles, PulpExport.user_roles, PulpExporter.user_roles, Import.user_roles, Importer.user_roles, PulpImporter.user_roles, PulpImporterRepository.user_roles, PulpImport.user_roles, Publication.user_roles, PublishedArtifact.user_roles, PublishedMetadata.user_roles, ContentGuard.user_roles, RBACContentGuard.user_roles, ContentRedirectContentGuard.user_roles, HeaderContentGuard.user_roles, EnvVarHeaderContentGuard.user_roles, CompositeContentGuard.user_roles, Distribution.user_roles, ArtifactDistribution.user_roles, DistributedPublication.user_roles, core.Upload.user_roles, UploadChunk.user_roles, VulnerabilityReport.user_roles, ProgressReport.user_roles, GroupProgressReport.user_roles, UpstreamPulp.user_roles, OpenPGPPublicKey.user_roles, OpenPGPPublicSubkey.user_roles, OpenPGPUserID.user_roles, OpenPGPUserAttribute.user_roles, OpenPGPSignature.user_roles, OpenPGPKeyring.user_roles, OpenPGPDistribution.user_roles, Blob.user_roles, Manifest.user_roles, Tag.user_roles, ManifestSignature.user_roles, ContainerNamespace.user_roles, ContainerRemote.user_roles, ContainerPullThroughRemote.user_roles, ManifestSigningService.user_roles, ContainerRepository.user_roles, ContainerPushRepository.user_roles, ContainerPullThroughDistribution.user_roles, ContainerDistribution.user_roles, container.Upload.user_roles, RHSMCertGuard.user_roles, X509CertGuard.user_roles, FileContent.user_roles, FileRemote.user_roles, FileGitRemote.user_roles, FileRepository.user_roles, FilePublication.user_roles, FileDistribution.user_roles, FileAlternateContentSource.user_roles, ansible.Role.user_roles, Collection.user_roles, AnsibleNamespace.user_roles, CollectionVersion.user_roles, CollectionVersionMark.user_roles, CollectionVersionSignature.user_roles, AnsibleNamespaceMetadata.user_roles, DownloadLog.user_roles, CollectionDownloadCount.user_roles, RoleRemote.user_roles, CollectionRemote.user_roles, GitRemote.user_roles, AnsibleCollectionDeprecated.user_roles, AnsibleRepository.user_roles, AnsibleDistribution.user_roles, PythonDistribution.user_roles, PythonPackageContent.user_roles, PackageProvenance.user_roles, PackageYank.user_roles, PythonPublication.user_roles, PythonRemote.user_roles, PythonRepository.user_roles, PythonBlocklistEntry.user_roles)']
+  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.user_roles, Domain.user_roles, AlternateContentSource.user_roles, AlternateContentSourcePath.user_roles, Artifact.user_roles, PulpTemporaryFile.user_roles, Content.user_roles, ContentArtifact.user_roles, RemoteArtifact.user_roles, SigningService.user_roles, AsciiArmoredDetachedSigningService.user_roles, AppStatus.user_roles, core.Role.user_roles, UserRole.user_roles, GroupRole.user_roles, ProfileArtifact.user_roles, Task.user_roles, TaskGroup.user_roles, CreatedResource.user_roles, TaskSchedule.user_roles, Repository.user_roles, Remote.user_roles, RepositoryContent.user_roles, RepositoryVersion.user_roles, Export.user_roles, ExportedResource.user_roles, Exporter.user_roles, FilesystemExport.user_roles, FilesystemExporter.user_roles, PulpExport.user_roles, PulpExporter.user_roles, Import.user_roles, Importer.user_roles, PulpImporter.user_roles, PulpImporterRepository.user_roles, PulpImport.user_roles, Publication.user_roles, PublishedArtifact.user_roles, PublishedMetadata.user_roles, ContentGuard.user_roles, RBACContentGuard.user_roles, ContentRedirectContentGuard.user_roles, HeaderContentGuard.user_roles, EnvVarHeaderContentGuard.user_roles, CompositeContentGuard.user_roles, Distribution.user_roles, ArtifactDistribution.user_roles, DistributedPublication.user_roles, core.Upload.user_roles, UploadChunk.user_roles, VulnerabilityReport.user_roles, ProgressReport.user_roles, GroupProgressReport.user_roles, UpstreamPulp.user_roles, OpenPGPPublicKey.user_roles, OpenPGPPublicSubkey.user_roles, OpenPGPUserID.user_roles, OpenPGPUserAttribute.user_roles, OpenPGPSignature.user_roles, OpenPGPKeyring.user_roles, OpenPGPDistribution.user_roles, RHSMCertGuard.user_roles, X509CertGuard.user_roles, FileContent.user_roles, FileRemote.user_roles, FileGitRemote.user_roles, FileRepository.user_roles, FilePublication.user_roles, FileDistribution.user_roles, FileAlternateContentSource.user_roles, Blob.user_roles, Manifest.user_roles, Tag.user_roles, ManifestSignature.user_roles, ContainerNamespace.user_roles, ContainerRemote.user_roles, ContainerPullThroughRemote.user_roles, ManifestSigningService.user_roles, ContainerRepository.user_roles, ContainerPushRepository.user_roles, ContainerPullThroughDistribution.user_roles, ContainerDistribution.user_roles, container.Upload.user_roles, ansible.Role.user_roles, Collection.user_roles, AnsibleNamespace.user_roles, CollectionVersion.user_roles, CollectionVersionMark.user_roles, CollectionVersionSignature.user_roles, AnsibleNamespaceMetadata.user_roles, DownloadLog.user_roles, CollectionDownloadCount.user_roles, RoleRemote.user_roles, CollectionRemote.user_roles, GitRemote.user_roles, AnsibleCollectionDeprecated.user_roles, AnsibleRepository.user_roles, AnsibleDistribution.user_roles, PythonDistribution.user_roles, PythonPackageContent.user_roles, PackageProvenance.user_roles, PackageYank.user_roles, PythonPublication.user_roles, PythonRemote.user_roles, PythonRepository.user_roles, PythonBlocklistEntry.user_roles)']
   domain_id uuid
 
   indexes {
@@ -685,7 +698,7 @@ Table core_grouprole {
   group_id integer [not null]
   role_id uuid [not null]
   content_type_id integer
-  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.group_roles, Domain.group_roles, AlternateContentSource.group_roles, AlternateContentSourcePath.group_roles, Artifact.group_roles, PulpTemporaryFile.group_roles, Content.group_roles, ContentArtifact.group_roles, RemoteArtifact.group_roles, SigningService.group_roles, AsciiArmoredDetachedSigningService.group_roles, AppStatus.group_roles, core.Role.group_roles, UserRole.group_roles, GroupRole.group_roles, ProfileArtifact.group_roles, Task.group_roles, TaskGroup.group_roles, CreatedResource.group_roles, TaskSchedule.group_roles, Repository.group_roles, Remote.group_roles, RepositoryContent.group_roles, RepositoryVersion.group_roles, Export.group_roles, ExportedResource.group_roles, Exporter.group_roles, FilesystemExport.group_roles, FilesystemExporter.group_roles, PulpExport.group_roles, PulpExporter.group_roles, Import.group_roles, Importer.group_roles, PulpImporter.group_roles, PulpImporterRepository.group_roles, PulpImport.group_roles, Publication.group_roles, PublishedArtifact.group_roles, PublishedMetadata.group_roles, ContentGuard.group_roles, RBACContentGuard.group_roles, ContentRedirectContentGuard.group_roles, HeaderContentGuard.group_roles, EnvVarHeaderContentGuard.group_roles, CompositeContentGuard.group_roles, Distribution.group_roles, ArtifactDistribution.group_roles, DistributedPublication.group_roles, core.Upload.group_roles, UploadChunk.group_roles, VulnerabilityReport.group_roles, ProgressReport.group_roles, GroupProgressReport.group_roles, UpstreamPulp.group_roles, OpenPGPPublicKey.group_roles, OpenPGPPublicSubkey.group_roles, OpenPGPUserID.group_roles, OpenPGPUserAttribute.group_roles, OpenPGPSignature.group_roles, OpenPGPKeyring.group_roles, OpenPGPDistribution.group_roles, Blob.group_roles, Manifest.group_roles, Tag.group_roles, ManifestSignature.group_roles, ContainerNamespace.group_roles, ContainerRemote.group_roles, ContainerPullThroughRemote.group_roles, ManifestSigningService.group_roles, ContainerRepository.group_roles, ContainerPushRepository.group_roles, ContainerPullThroughDistribution.group_roles, ContainerDistribution.group_roles, container.Upload.group_roles, RHSMCertGuard.group_roles, X509CertGuard.group_roles, FileContent.group_roles, FileRemote.group_roles, FileGitRemote.group_roles, FileRepository.group_roles, FilePublication.group_roles, FileDistribution.group_roles, FileAlternateContentSource.group_roles, ansible.Role.group_roles, Collection.group_roles, AnsibleNamespace.group_roles, CollectionVersion.group_roles, CollectionVersionMark.group_roles, CollectionVersionSignature.group_roles, AnsibleNamespaceMetadata.group_roles, DownloadLog.group_roles, CollectionDownloadCount.group_roles, RoleRemote.group_roles, CollectionRemote.group_roles, GitRemote.group_roles, AnsibleCollectionDeprecated.group_roles, AnsibleRepository.group_roles, AnsibleDistribution.group_roles, PythonDistribution.group_roles, PythonPackageContent.group_roles, PackageProvenance.group_roles, PackageYank.group_roles, PythonPublication.group_roles, PythonRemote.group_roles, PythonRepository.group_roles, PythonBlocklistEntry.group_roles)']
+  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.group_roles, Domain.group_roles, AlternateContentSource.group_roles, AlternateContentSourcePath.group_roles, Artifact.group_roles, PulpTemporaryFile.group_roles, Content.group_roles, ContentArtifact.group_roles, RemoteArtifact.group_roles, SigningService.group_roles, AsciiArmoredDetachedSigningService.group_roles, AppStatus.group_roles, core.Role.group_roles, UserRole.group_roles, GroupRole.group_roles, ProfileArtifact.group_roles, Task.group_roles, TaskGroup.group_roles, CreatedResource.group_roles, TaskSchedule.group_roles, Repository.group_roles, Remote.group_roles, RepositoryContent.group_roles, RepositoryVersion.group_roles, Export.group_roles, ExportedResource.group_roles, Exporter.group_roles, FilesystemExport.group_roles, FilesystemExporter.group_roles, PulpExport.group_roles, PulpExporter.group_roles, Import.group_roles, Importer.group_roles, PulpImporter.group_roles, PulpImporterRepository.group_roles, PulpImport.group_roles, Publication.group_roles, PublishedArtifact.group_roles, PublishedMetadata.group_roles, ContentGuard.group_roles, RBACContentGuard.group_roles, ContentRedirectContentGuard.group_roles, HeaderContentGuard.group_roles, EnvVarHeaderContentGuard.group_roles, CompositeContentGuard.group_roles, Distribution.group_roles, ArtifactDistribution.group_roles, DistributedPublication.group_roles, core.Upload.group_roles, UploadChunk.group_roles, VulnerabilityReport.group_roles, ProgressReport.group_roles, GroupProgressReport.group_roles, UpstreamPulp.group_roles, OpenPGPPublicKey.group_roles, OpenPGPPublicSubkey.group_roles, OpenPGPUserID.group_roles, OpenPGPUserAttribute.group_roles, OpenPGPSignature.group_roles, OpenPGPKeyring.group_roles, OpenPGPDistribution.group_roles, RHSMCertGuard.group_roles, X509CertGuard.group_roles, FileContent.group_roles, FileRemote.group_roles, FileGitRemote.group_roles, FileRepository.group_roles, FilePublication.group_roles, FileDistribution.group_roles, FileAlternateContentSource.group_roles, Blob.group_roles, Manifest.group_roles, Tag.group_roles, ManifestSignature.group_roles, ContainerNamespace.group_roles, ContainerRemote.group_roles, ContainerPullThroughRemote.group_roles, ManifestSigningService.group_roles, ContainerRepository.group_roles, ContainerPushRepository.group_roles, ContainerPullThroughDistribution.group_roles, ContainerDistribution.group_roles, container.Upload.group_roles, ansible.Role.group_roles, Collection.group_roles, AnsibleNamespace.group_roles, CollectionVersion.group_roles, CollectionVersionMark.group_roles, CollectionVersionSignature.group_roles, AnsibleNamespaceMetadata.group_roles, DownloadLog.group_roles, CollectionDownloadCount.group_roles, RoleRemote.group_roles, CollectionRemote.group_roles, GitRemote.group_roles, AnsibleCollectionDeprecated.group_roles, AnsibleRepository.group_roles, AnsibleDistribution.group_roles, PythonDistribution.group_roles, PythonPackageContent.group_roles, PackageProvenance.group_roles, PackageYank.group_roles, PythonPublication.group_roles, PythonRemote.group_roles, PythonRepository.group_roles, PythonBlocklistEntry.group_roles)']
   domain_id uuid
 
   indexes {
@@ -2006,6 +2019,107 @@ Table core_openpgpdistribution {
   Note: '''A Distribution to allow downloading OpenPGP keys.'''
 }
 
+Table certguard_rhsmcertguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a RHSMCertGuard is a ContentGuard (multi-table inheritance)']
+  ca_certificate text [not null]
+
+  Note: '''A content-guard validating on a RHSM Certificate validated by `python-rhsm`.
+
+A Certificate Authority certificate to trust is required with each RHSMCertGuard created. With
+each request, the client certificate is first checked if it is signed by this CA cert. If not,
+it\'s untrusted and denied regardless of its paths.
+
+After determining the client certificate is trusted, the requested path is checked against the
+named paths in the certificate. A request is permitted if the current request path is a prefix
+of a path declared in the trusted RHSM Client Certificate.
+
+Fields:
+    rhsm_certificate (models.TextField): The RHSM Certificate used to validate the client
+        certificate at request time.
+
+Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
+}
+
+Table certguard_x509certguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a X509CertGuard is a ContentGuard (multi-table inheritance)']
+  ca_certificate text [not null]
+
+  Note: '''A content-guard that authenticates the request based on a client provided X.509 Certificate.
+
+Fields:
+    ca_certificate (models.FileField): The CA certificate used to
+        validate the client certificate.
+
+Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
+}
+
+Table file_filecontent {
+  content_ptr_id uuid [pk, note: 'parent link: a FileContent is a Content (multi-table inheritance)']
+  relative_path text [not null]
+  digest varchar(64) [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'file_filecontent__pulp_domain_id_1714b2e9']
+    (relative_path, digest, _pulp_domain_id) [unique, name: 'file_filecontent_relative_path_digest__pu_b4bae2c2_uniq']
+  }
+
+  Note: '''The "file" content type.
+
+Content of this type represents a single file uniquely
+identified by path and SHA256 digest.
+
+Fields:
+    relative_path (str): The file relative path.
+    digest (str): The SHA256 HEX digest.'''
+}
+
+Table file_fileremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a FileRemote is a Remote (multi-table inheritance)']
+
+  Note: '''Remote for "file" content.'''
+}
+
+Table file_filegitremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a FileGitRemote is a Remote (multi-table inheritance)']
+  git_ref text [default: 'HEAD', not null]
+
+  Note: '''Remote for syncing files from a Git repository (without PULP_MANIFEST).
+
+The URL should point to a Git repository. The `git_ref` field can be used to specify a
+branch, tag, or commit to sync from (defaults to `HEAD`).'''
+}
+
+Table file_filerepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a FileRepository is a Repository (multi-table inheritance)']
+  manifest text [default: 'PULP_MANIFEST']
+  sha256sums FileRepositorySha256Sums [default: 'disabled', not null]
+  autopublish boolean [default: false, not null]
+  last_sync_details jsonb [not null, note: 'default in Python: dict()']
+
+  Note: '''The "file" repository type.'''
+}
+
+Table file_filepublication {
+  publication_ptr_id uuid [pk, note: 'parent link: a FilePublication is a Publication (multi-table inheritance)']
+  manifest text
+  sha256sums FilePublicationSha256Sums [default: 'disabled', not null]
+
+  Note: '''Publication for \'file\' content.'''
+}
+
+Table file_filedistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a FileDistribution is a Distribution (multi-table inheritance)']
+
+  Note: '''Distribution for \'file\' content.'''
+}
+
+Table file_filealternatecontentsource {
+  alternatecontentsource_ptr_id uuid [pk, note: 'parent link: a FileAlternateContentSource is a AlternateContentSource (multi-table inheritance)']
+
+  Note: '''Alternate Content Source for \'file" content.'''
+}
+
 Table container_blob {
   content_ptr_id uuid [pk, note: 'parent link: a Blob is a Content (multi-table inheritance)']
   digest text [not null]
@@ -2347,105 +2461,6 @@ Table container_upload {
   }
 
   Note: '''Model for tracking Blob uploads.'''
-}
-
-Table certguard_rhsmcertguard {
-  contentguard_ptr_id uuid [pk, note: 'parent link: a RHSMCertGuard is a ContentGuard (multi-table inheritance)']
-  ca_certificate text [not null]
-
-  Note: '''A content-guard validating on a RHSM Certificate validated by `python-rhsm`.
-
-A Certificate Authority certificate to trust is required with each RHSMCertGuard created. With
-each request, the client certificate is first checked if it is signed by this CA cert. If not,
-it\'s untrusted and denied regardless of its paths.
-
-After determining the client certificate is trusted, the requested path is checked against the
-named paths in the certificate. A request is permitted if the current request path is a prefix
-of a path declared in the trusted RHSM Client Certificate.
-
-Fields:
-    rhsm_certificate (models.TextField): The RHSM Certificate used to validate the client
-        certificate at request time.
-
-Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
-}
-
-Table certguard_x509certguard {
-  contentguard_ptr_id uuid [pk, note: 'parent link: a X509CertGuard is a ContentGuard (multi-table inheritance)']
-  ca_certificate text [not null]
-
-  Note: '''A content-guard that authenticates the request based on a client provided X.509 Certificate.
-
-Fields:
-    ca_certificate (models.FileField): The CA certificate used to
-        validate the client certificate.
-
-Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
-}
-
-Table file_filecontent {
-  content_ptr_id uuid [pk, note: 'parent link: a FileContent is a Content (multi-table inheritance)']
-  relative_path text [not null]
-  digest varchar(64) [not null]
-  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
-
-  indexes {
-    (_pulp_domain_id) [name: 'file_filecontent__pulp_domain_id_1714b2e9']
-    (relative_path, digest, _pulp_domain_id) [unique, name: 'file_filecontent_relative_path_digest__pu_b4bae2c2_uniq']
-  }
-
-  Note: '''The "file" content type.
-
-Content of this type represents a single file uniquely
-identified by path and SHA256 digest.
-
-Fields:
-    relative_path (str): The file relative path.
-    digest (str): The SHA256 HEX digest.'''
-}
-
-Table file_fileremote {
-  remote_ptr_id uuid [pk, note: 'parent link: a FileRemote is a Remote (multi-table inheritance)']
-
-  Note: '''Remote for "file" content.'''
-}
-
-Table file_filegitremote {
-  remote_ptr_id uuid [pk, note: 'parent link: a FileGitRemote is a Remote (multi-table inheritance)']
-  git_ref text [default: 'HEAD', not null]
-
-  Note: '''Remote for syncing files from a Git repository (without PULP_MANIFEST).
-
-The URL should point to a Git repository. The `git_ref` field can be used to specify a
-branch, tag, or commit to sync from (defaults to `HEAD`).'''
-}
-
-Table file_filerepository {
-  repository_ptr_id uuid [pk, note: 'parent link: a FileRepository is a Repository (multi-table inheritance)']
-  manifest text [default: 'PULP_MANIFEST']
-  autopublish boolean [default: false, not null]
-  last_sync_details jsonb [not null, note: 'default in Python: dict()']
-
-  Note: '''The "file" repository type.'''
-}
-
-Table file_filepublication {
-  publication_ptr_id uuid [pk, note: 'parent link: a FilePublication is a Publication (multi-table inheritance)']
-  manifest text
-
-  Note: '''Publication for \'file\' content.'''
-}
-
-Table file_filedistribution {
-  distribution_ptr_id uuid [pk, note: 'parent link: a FileDistribution is a Distribution (multi-table inheritance)']
-
-  Note: '''Distribution for \'file\' content.'''
-}
-
-Table file_filealternatecontentsource {
-  alternatecontentsource_ptr_id uuid [pk, note: 'parent link: a FileAlternateContentSource is a AlternateContentSource (multi-table inheritance)']
-
-  Note: '''Alternate Content Source for \'file" content.'''
 }
 
 Table ansible_role {
@@ -3267,6 +3282,26 @@ Ref core_openpgpkeyring_repository_ptr_id_fk: core_openpgpkeyring.repository_ptr
 
 Ref core_openpgpdistribution_distribution_ptr_id_fk: core_openpgpdistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
 
+Ref certguard_rhsmcertguard_contentguard_ptr_id_fk: certguard_rhsmcertguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref certguard_x509certguard_contentguard_ptr_id_fk: certguard_x509certguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref file_filecontent_content_ptr_id_fk: file_filecontent.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref file_filecontent__pulp_domain_id_fk: file_filecontent._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref file_fileremote_remote_ptr_id_fk: file_fileremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref file_filegitremote_remote_ptr_id_fk: file_filegitremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref file_filerepository_repository_ptr_id_fk: file_filerepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref file_filepublication_publication_ptr_id_fk: file_filepublication.publication_ptr_id - core_publication.pulp_id [delete: cascade]
+
+Ref file_filedistribution_distribution_ptr_id_fk: file_filedistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref file_filealternatecontentsource_alternatecontentsource_ptr_id_fk: file_filealternatecontentsource.alternatecontentsource_ptr_id - core_alternatecontentsource.pulp_id [delete: cascade]
+
 Ref container_blob_content_ptr_id_fk: container_blob.content_ptr_id - core_content.pulp_id [delete: cascade]
 
 Ref container_blob__pulp_domain_id_fk: container_blob._pulp_domain_id > core_domain.pulp_id [delete: restrict]
@@ -3392,26 +3427,6 @@ Ref container_upload_upload_ptr_id_fk: container_upload.upload_ptr_id - core_upl
 Ref container_upload_repository_id_fk: container_upload.repository_id > core_repository.pulp_id [delete: cascade]
 
 Ref container_upload_artifact_id_fk: container_upload.artifact_id > core_artifact.pulp_id [delete: set null]
-
-Ref certguard_rhsmcertguard_contentguard_ptr_id_fk: certguard_rhsmcertguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
-
-Ref certguard_x509certguard_contentguard_ptr_id_fk: certguard_x509certguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
-
-Ref file_filecontent_content_ptr_id_fk: file_filecontent.content_ptr_id - core_content.pulp_id [delete: cascade]
-
-Ref file_filecontent__pulp_domain_id_fk: file_filecontent._pulp_domain_id > core_domain.pulp_id [delete: restrict]
-
-Ref file_fileremote_remote_ptr_id_fk: file_fileremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
-
-Ref file_filegitremote_remote_ptr_id_fk: file_filegitremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
-
-Ref file_filerepository_repository_ptr_id_fk: file_filerepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
-
-Ref file_filepublication_publication_ptr_id_fk: file_filepublication.publication_ptr_id - core_publication.pulp_id [delete: cascade]
-
-Ref file_filedistribution_distribution_ptr_id_fk: file_filedistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
-
-Ref file_filealternatecontentsource_alternatecontentsource_ptr_id_fk: file_filealternatecontentsource.alternatecontentsource_ptr_id - core_alternatecontentsource.pulp_id [delete: cascade]
 
 Ref ansible_role_content_ptr_id_fk: ansible_role.content_ptr_id - core_content.pulp_id [delete: cascade]
 
