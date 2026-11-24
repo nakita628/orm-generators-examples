@@ -11,6 +11,10 @@ import {
 import { createInsertSchema } from "drizzle-orm/zod";
 import { nanoid } from "nanoid";
 import { z } from "zod";
+import {
+	STRONG_PASSWORD_MESSAGE,
+	STRONG_PASSWORD_REGEX,
+} from "../../utils/password-validation";
 import { account, apikey, organization } from "./account";
 import { backups } from "./backups";
 import { projects } from "./project";
@@ -82,6 +86,8 @@ export const user = pgTable("user", {
 	trialPlanPromptSubscriptionId: text("trialPlanPromptSubscriptionId"),
 	serverSetupFailedEmailAt: timestamp("serverSetupFailedEmailAt"),
 	serverConnectFailure: text("serverConnectFailure"),
+	lastSessionAt: timestamp("lastSessionAt"),
+	deactivatedAt: timestamp("deactivatedAt"),
 });
 
 export const usersRelations = relations(user, ({ one, many }) => ({
@@ -112,6 +118,8 @@ const createSchema = createInsertSchema(user, {
 	trialPlanPromptSubscriptionId: true,
 	serverSetupFailedEmailAt: true,
 	serverConnectFailure: true,
+	lastSessionAt: true,
+	deactivatedAt: true,
 });
 
 export const apiCreateUserInvitation = createSchema.pick({}).extend({
@@ -255,9 +263,15 @@ export const apiUpdateUser = z.object({
 		.optional(),
 	password: z
 		.string()
-		.min(8, "Password must be at least 8 characters")
+		.regex(STRONG_PASSWORD_REGEX, STRONG_PASSWORD_MESSAGE)
 		.optional(),
 	currentPassword: z.string().optional(),
 	firstName: z.string().optional(),
 	lastName: z.string().optional(),
+});
+
+export const apiCreateUserWithCredentials = z.object({
+	email: z.string().email(),
+	password: z.string().regex(STRONG_PASSWORD_REGEX, STRONG_PASSWORD_MESSAGE),
+	role: z.string().min(1),
 });

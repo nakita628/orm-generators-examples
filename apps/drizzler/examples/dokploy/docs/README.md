@@ -142,6 +142,9 @@ CREATE TABLE "application" (
 	"previewCustomCertResolver" text,
 	"previewLimit" integer DEFAULT 3,
 	"previewForwardAuthEnabled" boolean DEFAULT false NOT NULL,
+	"ssoAllowedEmails" text[],
+	"ssoAllowedGroups" text[],
+	"ssoAllowedEmailDomains" text[],
 	"isPreviewDeploymentsActive" boolean DEFAULT false,
 	"previewRequireCollaboratorPermissions" boolean DEFAULT true,
 	"rollbackActive" boolean DEFAULT false,
@@ -793,6 +796,7 @@ CREATE TABLE "organization" (
 	"created_at" timestamp NOT NULL,
 	"metadata" text,
 	"default_role" text,
+	"require_sensitive_action_verification" boolean DEFAULT false NOT NULL,
 	"owner_id" text NOT NULL
 );
 
@@ -801,6 +805,8 @@ CREATE TABLE "organization_role" (
 	"organization_id" text NOT NULL,
 	"role" text NOT NULL,
 	"permission" text NOT NULL,
+	"allowed_domains" text[],
+	"require_https" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp
 );
@@ -1084,7 +1090,8 @@ CREATE TABLE "session" (
 	"user_agent" text,
 	"user_id" text NOT NULL,
 	"impersonated_by" text,
-	"active_organization_id" text
+	"active_organization_id" text,
+	"sensitive_verified_at" timestamp
 );
 
 CREATE TABLE "slack" (
@@ -1196,7 +1203,9 @@ CREATE TABLE "user" (
 	"onboardingReturnEmails" integer DEFAULT 0 NOT NULL,
 	"trialPlanPromptSubscriptionId" text,
 	"serverSetupFailedEmailAt" timestamp,
-	"serverConnectFailure" text
+	"serverConnectFailure" text,
+	"lastSessionAt" timestamp,
+	"deactivatedAt" timestamp
 );
 
 CREATE TABLE "vault_provider" (
@@ -1259,6 +1268,9 @@ CREATE TABLE "webServerSettings" (
 	"remoteServersOnly" boolean DEFAULT false NOT NULL,
 	"buildsConcurrency" integer DEFAULT 1 NOT NULL,
 	"enforceSSO" boolean DEFAULT false NOT NULL,
+	"instanceOwnerId" text,
+	"pendingOwnerId" text,
+	"pendingOwnerExpiresAt" timestamp,
 	"cleanupCacheApplications" boolean DEFAULT false NOT NULL,
 	"cleanupCacheOnPreviews" boolean DEFAULT false NOT NULL,
 	"cleanupCacheOnCompose" boolean DEFAULT false NOT NULL,
@@ -1557,6 +1569,10 @@ ALTER TABLE "volume_backup" ADD CONSTRAINT "volume_backup_composeId_compose_comp
 ALTER TABLE "volume_backup" ADD CONSTRAINT "volume_backup_destinationId_destination_destinationId_fkey" FOREIGN KEY ("destinationId") REFERENCES "destination"("destinationId") ON DELETE CASCADE;
 
 ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_iJ2mqc8DxI59_fkey" FOREIGN KEY ("vectorAgentOrganizationId") REFERENCES "organization"("id") ON DELETE SET NULL;
+
+ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_instanceOwnerId_user_id_fkey" FOREIGN KEY ("instanceOwnerId") REFERENCES "user"("id") ON DELETE SET NULL;
+
+ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_pendingOwnerId_user_id_fkey" FOREIGN KEY ("pendingOwnerId") REFERENCES "user"("id") ON DELETE SET NULL;
 ```
 
 </details>
@@ -1950,16 +1966,17 @@ where "verification"."id" = $1
 
 ![organization and the tables it relates to](tables/organization.svg)
 
-| Column                         | Type        | Constraints                       | Default         | Description |
-| ------------------------------ | ----------- | --------------------------------- | --------------- | ----------- |
-| `id`                           | `text`      | PK NOT NULL                       | `.$defaultFn()` |             |
-| `name`                         | `text`      | NOT NULL                          |                 |             |
-| `slug`                         | `text`      | UNIQUE NULL                       |                 |             |
-| `logo`                         | `text`      | NULL                              |                 |             |
-| `createdAt` (`created_at`)     | `timestamp` | NOT NULL                          |                 |             |
-| `metadata`                     | `text`      | NULL                              |                 |             |
-| `defaultRole` (`default_role`) | `text`      | NULL                              |                 |             |
-| `ownerId` (`owner_id`)         | `text`      | NOT NULL → [user.id](#table-user) |                 |             |
+| Column                                                                         | Type        | Constraints                       | Default           | Description |
+| ------------------------------------------------------------------------------ | ----------- | --------------------------------- | ----------------- | ----------- |
+| `id`                                                                           | `text`      | PK NOT NULL                       | `.$defaultFn()`   |             |
+| `name`                                                                         | `text`      | NOT NULL                          |                   |             |
+| `slug`                                                                         | `text`      | UNIQUE NULL                       |                   |             |
+| `logo`                                                                         | `text`      | NULL                              |                   |             |
+| `createdAt` (`created_at`)                                                     | `timestamp` | NOT NULL                          |                   |             |
+| `metadata`                                                                     | `text`      | NULL                              |                   |             |
+| `defaultRole` (`default_role`)                                                 | `text`      | NULL                              |                   |             |
+| `requireSensitiveActionVerification` (`require_sensitive_action_verification`) | `boolean`   | NOT NULL                          | `.default(false)` |             |
+| `ownerId` (`owner_id`)                                                         | `text`      | NOT NULL → [user.id](#table-user) |                   |             |
 
 #### Definition
 
@@ -1972,6 +1989,7 @@ CREATE TABLE "organization" (
 	"created_at" timestamp NOT NULL,
 	"metadata" text,
 	"default_role" text,
+	"require_sensitive_action_verification" boolean DEFAULT false NOT NULL,
 	"owner_id" text NOT NULL
 );
 
@@ -2018,7 +2036,7 @@ db.select().from(organization);
 ```
 
 ```sql
-select "id", "name", "slug", "logo", "created_at", "metadata", "default_role", "owner_id"
+select "id", "name", "slug", "logo", "created_at", "metadata", "default_role", "require_sensitive_action_verification", "owner_id"
 from "organization"
 ```
 
@@ -2040,7 +2058,7 @@ db.query.organization.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."name" as "name", "d0"."slug" as "slug", "d0"."logo" as "logo", "d0"."created_at" as "createdAt", "d0"."metadata" as "metadata", "d0"."default_role" as "defaultRole", "d0"."owner_id" as "ownerId"
+select "d0"."id" as "id", "d0"."name" as "name", "d0"."slug" as "slug", "d0"."logo" as "logo", "d0"."created_at" as "createdAt", "d0"."metadata" as "metadata", "d0"."default_role" as "defaultRole", "d0"."require_sensitive_action_verification" as "requireSensitiveActionVerification", "d0"."owner_id" as "ownerId"
 from "organization" as "d0"
 ```
 
@@ -2051,7 +2069,7 @@ db.query.organization.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."name" as "name", "d0"."slug" as "slug", "d0"."logo" as "logo", "d0"."created_at" as "createdAt", "d0"."metadata" as "metadata", "d0"."default_role" as "defaultRole", "d0"."owner_id" as "ownerId"
+select "d0"."id" as "id", "d0"."name" as "name", "d0"."slug" as "slug", "d0"."logo" as "logo", "d0"."created_at" as "createdAt", "d0"."metadata" as "metadata", "d0"."default_role" as "defaultRole", "d0"."require_sensitive_action_verification" as "requireSensitiveActionVerification", "d0"."owner_id" as "ownerId"
 from "organization" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -2069,8 +2087,8 @@ db.insert(organization).values({
 ```
 
 ```sql
-insert into "organization" ("id", "name", "slug", "logo", "created_at", "metadata", "default_role", "owner_id")
-values ($1, $2, default, default, $3, default, default, $4)
+insert into "organization" ("id", "name", "slug", "logo", "created_at", "metadata", "default_role", "require_sensitive_action_verification", "owner_id")
+values ($1, $2, default, default, $3, default, default, default, $4)
 -- params: ["uuuuuuuuuuuuuuuuuuuuu","name","2026-01-01T00:00:00.000Z","ownerId"]
 ```
 
@@ -2109,14 +2127,16 @@ Table `organization_role`.
 
 ![organizationRole and the tables it relates to](tables/organizationRole.svg)
 
-| Column                               | Type        | Constraints                                       | Default         | Description |
-| ------------------------------------ | ----------- | ------------------------------------------------- | --------------- | ----------- |
-| `id`                                 | `text`      | PK NOT NULL                                       | `.$defaultFn()` |             |
-| `organizationId` (`organization_id`) | `text`      | NOT NULL → [organization.id](#table-organization) |                 |             |
-| `role`                               | `text`      | NOT NULL                                          |                 |             |
-| `permission`                         | `text`      | NOT NULL                                          |                 |             |
-| `createdAt` (`created_at`)           | `timestamp` | NOT NULL                                          | `.defaultNow()` |             |
-| `updatedAt` (`updated_at`)           | `timestamp` | NULL                                              | `.$onUpdate()`  |             |
+| Column                               | Type        | Constraints                                       | Default           | Description |
+| ------------------------------------ | ----------- | ------------------------------------------------- | ----------------- | ----------- |
+| `id`                                 | `text`      | PK NOT NULL                                       | `.$defaultFn()`   |             |
+| `organizationId` (`organization_id`) | `text`      | NOT NULL → [organization.id](#table-organization) |                   |             |
+| `role`                               | `text`      | NOT NULL                                          |                   |             |
+| `permission`                         | `text`      | NOT NULL                                          |                   |             |
+| `allowedDomains` (`allowed_domains`) | `text[]`    | NULL                                              |                   |             |
+| `requireHttps` (`require_https`)     | `boolean`   | NOT NULL                                          | `.default(false)` |             |
+| `createdAt` (`created_at`)           | `timestamp` | NOT NULL                                          | `.defaultNow()`   |             |
+| `updatedAt` (`updated_at`)           | `timestamp` | NULL                                              | `.$onUpdate()`    |             |
 
 #### Definition
 
@@ -2126,6 +2146,8 @@ CREATE TABLE "organization_role" (
 	"organization_id" text NOT NULL,
 	"role" text NOT NULL,
 	"permission" text NOT NULL,
+	"allowed_domains" text[],
+	"require_https" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp
 );
@@ -2156,7 +2178,7 @@ db.select().from(organizationRole);
 ```
 
 ```sql
-select "id", "organization_id", "role", "permission", "created_at", "updated_at"
+select "id", "organization_id", "role", "permission", "allowed_domains", "require_https", "created_at", "updated_at"
 from "organization_role"
 ```
 
@@ -2178,7 +2200,7 @@ db.query.organizationRole.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."organization_id" as "organizationId", "d0"."role" as "role", "d0"."permission" as "permission", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."organization_id" as "organizationId", "d0"."role" as "role", "d0"."permission" as "permission", "d0"."allowed_domains" as "allowedDomains", "d0"."require_https" as "requireHttps", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "organization_role" as "d0"
 ```
 
@@ -2189,7 +2211,7 @@ db.query.organizationRole.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."organization_id" as "organizationId", "d0"."role" as "role", "d0"."permission" as "permission", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."organization_id" as "organizationId", "d0"."role" as "role", "d0"."permission" as "permission", "d0"."allowed_domains" as "allowedDomains", "d0"."require_https" as "requireHttps", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "organization_role" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -2207,8 +2229,8 @@ db.insert(organizationRole).values({
 ```
 
 ```sql
-insert into "organization_role" ("id", "organization_id", "role", "permission", "created_at", "updated_at")
-values ($1, $2, $3, $4, default, $5)
+insert into "organization_role" ("id", "organization_id", "role", "permission", "allowed_domains", "require_https", "created_at", "updated_at")
+values ($1, $2, $3, $4, default, default, default, $5)
 -- params: ["uuuuuuuuuuuuuuuuuuuuu","organizationId","role","permission","2026-01-01T00:00:00.000Z"]
 ```
 
@@ -3149,6 +3171,9 @@ Table `application`.
 | `previewCustomCertResolver`                  | `text`                                         | NULL                                                         |                          |                                                                    |
 | `previewLimit`                               | `integer`                                      | NULL                                                         | `.default(3)`            |                                                                    |
 | `previewForwardAuthEnabled`                  | `boolean`                                      | NOT NULL                                                     | `.default(false)`        |                                                                    |
+| `ssoAllowedEmails`                           | `text[]`                                       | NULL                                                         |                          |                                                                    |
+| `ssoAllowedGroups`                           | `text[]`                                       | NULL                                                         |                          |                                                                    |
+| `ssoAllowedEmailDomains`                     | `text[]`                                       | NULL                                                         |                          |                                                                    |
 | `isPreviewDeploymentsActive`                 | `boolean`                                      | NULL                                                         | `.default(false)`        |                                                                    |
 | `previewRequireCollaboratorPermissions`      | `boolean`                                      | NULL                                                         | `.default(true)`         | Security: Require collaborator permissions for preview deployments |
 | `rollbackActive`                             | `boolean`                                      | NULL                                                         | `.default(false)`        |                                                                    |
@@ -3256,6 +3281,9 @@ CREATE TABLE "application" (
 	"previewCustomCertResolver" text,
 	"previewLimit" integer DEFAULT 3,
 	"previewForwardAuthEnabled" boolean DEFAULT false NOT NULL,
+	"ssoAllowedEmails" text[],
+	"ssoAllowedGroups" text[],
+	"ssoAllowedEmailDomains" text[],
 	"isPreviewDeploymentsActive" boolean DEFAULT false,
 	"previewRequireCollaboratorPermissions" boolean DEFAULT true,
 	"rollbackActive" boolean DEFAULT false,
@@ -3402,7 +3430,7 @@ db.select().from(applications);
 ```
 
 ```sql
-select "applicationId", "name", "appName", "description", "env", "previewEnv", "watchPaths", "previewBuildArgs", "previewBuildSecrets", "previewLabels", "previewWildcard", "previewPort", "previewHttps", "previewPath", "certificateType", "previewCustomCertResolver", "previewLimit", "previewForwardAuthEnabled", "isPreviewDeploymentsActive", "previewRequireCollaboratorPermissions", "rollbackActive", "buildArgs", "buildSecrets", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "title", "enabled", "subtitle", "command", "args", "icon", "refreshToken", "sourceType", "cleanCache", "repository", "owner", "branch", "buildPath", "triggerType", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabBuildPath", "gitlabPathNamespace", "giteaRepository", "giteaOwner", "giteaBranch", "giteaBuildPath", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "bitbucketBuildPath", "username", "password", "dockerImage", "registryUrl", "customGitUrl", "customGitBranch", "customGitBuildPath", "customGitSSHKeyId", "enableSubmodules", "dockerfile", "dockerContextPath", "dockerBuildStage", "dropBuildPath", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "applicationStatus", "buildType", "railpackVersion", "herokuVersion", "publishDirectory", "isStaticSpa", "createEnvFile", "createdAt", "registryId", "rollbackRegistryId", "environmentId", "githubId", "gitlabId", "giteaId", "bitbucketId", "serverId", "buildServerId", "buildRegistryId", "networkIds", "detachDokployNetwork"
+select "applicationId", "name", "appName", "description", "env", "previewEnv", "watchPaths", "previewBuildArgs", "previewBuildSecrets", "previewLabels", "previewWildcard", "previewPort", "previewHttps", "previewPath", "certificateType", "previewCustomCertResolver", "previewLimit", "previewForwardAuthEnabled", "ssoAllowedEmails", "ssoAllowedGroups", "ssoAllowedEmailDomains", "isPreviewDeploymentsActive", "previewRequireCollaboratorPermissions", "rollbackActive", "buildArgs", "buildSecrets", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "title", "enabled", "subtitle", "command", "args", "icon", "refreshToken", "sourceType", "cleanCache", "repository", "owner", "branch", "buildPath", "triggerType", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabBuildPath", "gitlabPathNamespace", "giteaRepository", "giteaOwner", "giteaBranch", "giteaBuildPath", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "bitbucketBuildPath", "username", "password", "dockerImage", "registryUrl", "customGitUrl", "customGitBranch", "customGitBuildPath", "customGitSSHKeyId", "enableSubmodules", "dockerfile", "dockerContextPath", "dockerBuildStage", "dropBuildPath", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "applicationStatus", "buildType", "railpackVersion", "herokuVersion", "publishDirectory", "isStaticSpa", "createEnvFile", "createdAt", "registryId", "rollbackRegistryId", "environmentId", "githubId", "gitlabId", "giteaId", "bitbucketId", "serverId", "buildServerId", "buildRegistryId", "networkIds", "detachDokployNetwork"
 from "application"
 ```
 
@@ -3424,7 +3452,7 @@ db.query.applications.findMany();
 ```
 
 ```sql
-select "d0"."applicationId" as "applicationId", "d0"."name" as "name", "d0"."appName" as "appName", "d0"."description" as "description", "d0"."env" as "env", "d0"."previewEnv" as "previewEnv", "d0"."watchPaths" as "watchPaths", "d0"."previewBuildArgs" as "previewBuildArgs", "d0"."previewBuildSecrets" as "previewBuildSecrets", "d0"."previewLabels" as "previewLabels", "d0"."previewWildcard" as "previewWildcard", "d0"."previewPort" as "previewPort", "d0"."previewHttps" as "previewHttps", "d0"."previewPath" as "previewPath", "d0"."certificateType" as "previewCertificateType", "d0"."previewCustomCertResolver" as "previewCustomCertResolver", "d0"."previewLimit" as "previewLimit", "d0"."previewForwardAuthEnabled" as "previewForwardAuthEnabled", "d0"."isPreviewDeploymentsActive" as "isPreviewDeploymentsActive", "d0"."previewRequireCollaboratorPermissions" as "previewRequireCollaboratorPermissions", "d0"."rollbackActive" as "rollbackActive", "d0"."buildArgs" as "buildArgs", "d0"."buildSecrets" as "buildSecrets", "d0"."memoryReservation" as "memoryReservation", "d0"."memoryLimit" as "memoryLimit", "d0"."cpuReservation" as "cpuReservation", "d0"."cpuLimit" as "cpuLimit", "d0"."title" as "title", "d0"."enabled" as "enabled", "d0"."subtitle" as "subtitle", "d0"."command" as "command", "d0"."args" as "args", "d0"."icon" as "icon", "d0"."refreshToken" as "refreshToken", "d0"."sourceType" as "sourceType", "d0"."cleanCache" as "cleanCache", "d0"."repository" as "repository", "d0"."owner" as "owner", "d0"."branch" as "branch", "d0"."buildPath" as "buildPath", "d0"."triggerType" as "triggerType", "d0"."autoDeploy" as "autoDeploy", "d0"."gitlabProjectId" as "gitlabProjectId", "d0"."gitlabRepository" as "gitlabRepository", "d0"."gitlabOwner" as "gitlabOwner", "d0"."gitlabBranch" as "gitlabBranch", "d0"."gitlabBuildPath" as "gitlabBuildPath", "d0"."gitlabPathNamespace" as "gitlabPathNamespace", "d0"."giteaRepository" as "giteaRepository", "d0"."giteaOwner" as "giteaOwner", "d0"."giteaBranch" as "giteaBranch", "d0"."giteaBuildPath" as "giteaBuildPath", "d0"."bitbucketRepository" as "bitbucketRepository", "d0"."bitbucketRepositorySlug" as "bitbucketRepositorySlug", "d0"."bitbucketOwner" as "bitbucketOwner", "d0"."bitbucketBranch" as "bitbucketBranch", "d0"."bitbucketBuildPath" as "bitbucketBuildPath", "d0"."username" as "username", "d0"."password" as "password", "d0"."dockerImage" as "dockerImage", "d0"."registryUrl" as "registryUrl", "d0"."customGitUrl" as "customGitUrl", "d0"."customGitBranch" as "customGitBranch", "d0"."customGitBuildPath" as "customGitBuildPath", "d0"."customGitSSHKeyId" as "customGitSSHKeyId", "d0"."enableSubmodules" as "enableSubmodules", "d0"."dockerfile" as "dockerfile", "d0"."dockerContextPath" as "dockerContextPath", "d0"."dockerBuildStage" as "dockerBuildStage", "d0"."dropBuildPath" as "dropBuildPath", "d0"."healthCheckSwarm" as "healthCheckSwarm", "d0"."restartPolicySwarm" as "restartPolicySwarm", "d0"."placementSwarm" as "placementSwarm", "d0"."updateConfigSwarm" as "updateConfigSwarm", "d0"."rollbackConfigSwarm" as "rollbackConfigSwarm", "d0"."modeSwarm" as "modeSwarm", "d0"."labelsSwarm" as "labelsSwarm", "d0"."networkSwarm" as "networkSwarm", "d0"."stopGracePeriodSwarm" as "stopGracePeriodSwarm", "d0"."endpointSpecSwarm" as "endpointSpecSwarm", "d0"."ulimitsSwarm" as "ulimitsSwarm", "d0"."replicas" as "replicas", "d0"."applicationStatus" as "applicationStatus", "d0"."buildType" as "buildType", "d0"."railpackVersion" as "railpackVersion", "d0"."herokuVersion" as "herokuVersion", "d0"."publishDirectory" as "publishDirectory", "d0"."isStaticSpa" as "isStaticSpa", "d0"."createEnvFile" as "createEnvFile", "d0"."createdAt" as "createdAt", "d0"."registryId" as "registryId", "d0"."rollbackRegistryId" as "rollbackRegistryId", "d0"."environmentId" as "environmentId", "d0"."githubId" as "githubId", "d0"."gitlabId" as "gitlabId", "d0"."giteaId" as "giteaId", "d0"."bitbucketId" as "bitbucketId", "d0"."serverId" as "serverId", "d0"."buildServerId" as "buildServerId", "d0"."buildRegistryId" as "buildRegistryId", "d0"."networkIds" as "networkIds", "d0"."detachDokployNetwork" as "detachDokployNetwork"
+select "d0"."applicationId" as "applicationId", "d0"."name" as "name", "d0"."appName" as "appName", "d0"."description" as "description", "d0"."env" as "env", "d0"."previewEnv" as "previewEnv", "d0"."watchPaths" as "watchPaths", "d0"."previewBuildArgs" as "previewBuildArgs", "d0"."previewBuildSecrets" as "previewBuildSecrets", "d0"."previewLabels" as "previewLabels", "d0"."previewWildcard" as "previewWildcard", "d0"."previewPort" as "previewPort", "d0"."previewHttps" as "previewHttps", "d0"."previewPath" as "previewPath", "d0"."certificateType" as "previewCertificateType", "d0"."previewCustomCertResolver" as "previewCustomCertResolver", "d0"."previewLimit" as "previewLimit", "d0"."previewForwardAuthEnabled" as "previewForwardAuthEnabled", "d0"."ssoAllowedEmails" as "ssoAllowedEmails", "d0"."ssoAllowedGroups" as "ssoAllowedGroups", "d0"."ssoAllowedEmailDomains" as "ssoAllowedEmailDomains", "d0"."isPreviewDeploymentsActive" as "isPreviewDeploymentsActive", "d0"."previewRequireCollaboratorPermissions" as "previewRequireCollaboratorPermissions", "d0"."rollbackActive" as "rollbackActive", "d0"."buildArgs" as "buildArgs", "d0"."buildSecrets" as "buildSecrets", "d0"."memoryReservation" as "memoryReservation", "d0"."memoryLimit" as "memoryLimit", "d0"."cpuReservation" as "cpuReservation", "d0"."cpuLimit" as "cpuLimit", "d0"."title" as "title", "d0"."enabled" as "enabled", "d0"."subtitle" as "subtitle", "d0"."command" as "command", "d0"."args" as "args", "d0"."icon" as "icon", "d0"."refreshToken" as "refreshToken", "d0"."sourceType" as "sourceType", "d0"."cleanCache" as "cleanCache", "d0"."repository" as "repository", "d0"."owner" as "owner", "d0"."branch" as "branch", "d0"."buildPath" as "buildPath", "d0"."triggerType" as "triggerType", "d0"."autoDeploy" as "autoDeploy", "d0"."gitlabProjectId" as "gitlabProjectId", "d0"."gitlabRepository" as "gitlabRepository", "d0"."gitlabOwner" as "gitlabOwner", "d0"."gitlabBranch" as "gitlabBranch", "d0"."gitlabBuildPath" as "gitlabBuildPath", "d0"."gitlabPathNamespace" as "gitlabPathNamespace", "d0"."giteaRepository" as "giteaRepository", "d0"."giteaOwner" as "giteaOwner", "d0"."giteaBranch" as "giteaBranch", "d0"."giteaBuildPath" as "giteaBuildPath", "d0"."bitbucketRepository" as "bitbucketRepository", "d0"."bitbucketRepositorySlug" as "bitbucketRepositorySlug", "d0"."bitbucketOwner" as "bitbucketOwner", "d0"."bitbucketBranch" as "bitbucketBranch", "d0"."bitbucketBuildPath" as "bitbucketBuildPath", "d0"."username" as "username", "d0"."password" as "password", "d0"."dockerImage" as "dockerImage", "d0"."registryUrl" as "registryUrl", "d0"."customGitUrl" as "customGitUrl", "d0"."customGitBranch" as "customGitBranch", "d0"."customGitBuildPath" as "customGitBuildPath", "d0"."customGitSSHKeyId" as "customGitSSHKeyId", "d0"."enableSubmodules" as "enableSubmodules", "d0"."dockerfile" as "dockerfile", "d0"."dockerContextPath" as "dockerContextPath", "d0"."dockerBuildStage" as "dockerBuildStage", "d0"."dropBuildPath" as "dropBuildPath", "d0"."healthCheckSwarm" as "healthCheckSwarm", "d0"."restartPolicySwarm" as "restartPolicySwarm", "d0"."placementSwarm" as "placementSwarm", "d0"."updateConfigSwarm" as "updateConfigSwarm", "d0"."rollbackConfigSwarm" as "rollbackConfigSwarm", "d0"."modeSwarm" as "modeSwarm", "d0"."labelsSwarm" as "labelsSwarm", "d0"."networkSwarm" as "networkSwarm", "d0"."stopGracePeriodSwarm" as "stopGracePeriodSwarm", "d0"."endpointSpecSwarm" as "endpointSpecSwarm", "d0"."ulimitsSwarm" as "ulimitsSwarm", "d0"."replicas" as "replicas", "d0"."applicationStatus" as "applicationStatus", "d0"."buildType" as "buildType", "d0"."railpackVersion" as "railpackVersion", "d0"."herokuVersion" as "herokuVersion", "d0"."publishDirectory" as "publishDirectory", "d0"."isStaticSpa" as "isStaticSpa", "d0"."createEnvFile" as "createEnvFile", "d0"."createdAt" as "createdAt", "d0"."registryId" as "registryId", "d0"."rollbackRegistryId" as "rollbackRegistryId", "d0"."environmentId" as "environmentId", "d0"."githubId" as "githubId", "d0"."gitlabId" as "gitlabId", "d0"."giteaId" as "giteaId", "d0"."bitbucketId" as "bitbucketId", "d0"."serverId" as "serverId", "d0"."buildServerId" as "buildServerId", "d0"."buildRegistryId" as "buildRegistryId", "d0"."networkIds" as "networkIds", "d0"."detachDokployNetwork" as "detachDokployNetwork"
 from "application" as "d0"
 ```
 
@@ -3435,7 +3463,7 @@ db.query.applications.findFirst({ where: { applicationId: "applicationId" } });
 ```
 
 ```sql
-select "d0"."applicationId" as "applicationId", "d0"."name" as "name", "d0"."appName" as "appName", "d0"."description" as "description", "d0"."env" as "env", "d0"."previewEnv" as "previewEnv", "d0"."watchPaths" as "watchPaths", "d0"."previewBuildArgs" as "previewBuildArgs", "d0"."previewBuildSecrets" as "previewBuildSecrets", "d0"."previewLabels" as "previewLabels", "d0"."previewWildcard" as "previewWildcard", "d0"."previewPort" as "previewPort", "d0"."previewHttps" as "previewHttps", "d0"."previewPath" as "previewPath", "d0"."certificateType" as "previewCertificateType", "d0"."previewCustomCertResolver" as "previewCustomCertResolver", "d0"."previewLimit" as "previewLimit", "d0"."previewForwardAuthEnabled" as "previewForwardAuthEnabled", "d0"."isPreviewDeploymentsActive" as "isPreviewDeploymentsActive", "d0"."previewRequireCollaboratorPermissions" as "previewRequireCollaboratorPermissions", "d0"."rollbackActive" as "rollbackActive", "d0"."buildArgs" as "buildArgs", "d0"."buildSecrets" as "buildSecrets", "d0"."memoryReservation" as "memoryReservation", "d0"."memoryLimit" as "memoryLimit", "d0"."cpuReservation" as "cpuReservation", "d0"."cpuLimit" as "cpuLimit", "d0"."title" as "title", "d0"."enabled" as "enabled", "d0"."subtitle" as "subtitle", "d0"."command" as "command", "d0"."args" as "args", "d0"."icon" as "icon", "d0"."refreshToken" as "refreshToken", "d0"."sourceType" as "sourceType", "d0"."cleanCache" as "cleanCache", "d0"."repository" as "repository", "d0"."owner" as "owner", "d0"."branch" as "branch", "d0"."buildPath" as "buildPath", "d0"."triggerType" as "triggerType", "d0"."autoDeploy" as "autoDeploy", "d0"."gitlabProjectId" as "gitlabProjectId", "d0"."gitlabRepository" as "gitlabRepository", "d0"."gitlabOwner" as "gitlabOwner", "d0"."gitlabBranch" as "gitlabBranch", "d0"."gitlabBuildPath" as "gitlabBuildPath", "d0"."gitlabPathNamespace" as "gitlabPathNamespace", "d0"."giteaRepository" as "giteaRepository", "d0"."giteaOwner" as "giteaOwner", "d0"."giteaBranch" as "giteaBranch", "d0"."giteaBuildPath" as "giteaBuildPath", "d0"."bitbucketRepository" as "bitbucketRepository", "d0"."bitbucketRepositorySlug" as "bitbucketRepositorySlug", "d0"."bitbucketOwner" as "bitbucketOwner", "d0"."bitbucketBranch" as "bitbucketBranch", "d0"."bitbucketBuildPath" as "bitbucketBuildPath", "d0"."username" as "username", "d0"."password" as "password", "d0"."dockerImage" as "dockerImage", "d0"."registryUrl" as "registryUrl", "d0"."customGitUrl" as "customGitUrl", "d0"."customGitBranch" as "customGitBranch", "d0"."customGitBuildPath" as "customGitBuildPath", "d0"."customGitSSHKeyId" as "customGitSSHKeyId", "d0"."enableSubmodules" as "enableSubmodules", "d0"."dockerfile" as "dockerfile", "d0"."dockerContextPath" as "dockerContextPath", "d0"."dockerBuildStage" as "dockerBuildStage", "d0"."dropBuildPath" as "dropBuildPath", "d0"."healthCheckSwarm" as "healthCheckSwarm", "d0"."restartPolicySwarm" as "restartPolicySwarm", "d0"."placementSwarm" as "placementSwarm", "d0"."updateConfigSwarm" as "updateConfigSwarm", "d0"."rollbackConfigSwarm" as "rollbackConfigSwarm", "d0"."modeSwarm" as "modeSwarm", "d0"."labelsSwarm" as "labelsSwarm", "d0"."networkSwarm" as "networkSwarm", "d0"."stopGracePeriodSwarm" as "stopGracePeriodSwarm", "d0"."endpointSpecSwarm" as "endpointSpecSwarm", "d0"."ulimitsSwarm" as "ulimitsSwarm", "d0"."replicas" as "replicas", "d0"."applicationStatus" as "applicationStatus", "d0"."buildType" as "buildType", "d0"."railpackVersion" as "railpackVersion", "d0"."herokuVersion" as "herokuVersion", "d0"."publishDirectory" as "publishDirectory", "d0"."isStaticSpa" as "isStaticSpa", "d0"."createEnvFile" as "createEnvFile", "d0"."createdAt" as "createdAt", "d0"."registryId" as "registryId", "d0"."rollbackRegistryId" as "rollbackRegistryId", "d0"."environmentId" as "environmentId", "d0"."githubId" as "githubId", "d0"."gitlabId" as "gitlabId", "d0"."giteaId" as "giteaId", "d0"."bitbucketId" as "bitbucketId", "d0"."serverId" as "serverId", "d0"."buildServerId" as "buildServerId", "d0"."buildRegistryId" as "buildRegistryId", "d0"."networkIds" as "networkIds", "d0"."detachDokployNetwork" as "detachDokployNetwork"
+select "d0"."applicationId" as "applicationId", "d0"."name" as "name", "d0"."appName" as "appName", "d0"."description" as "description", "d0"."env" as "env", "d0"."previewEnv" as "previewEnv", "d0"."watchPaths" as "watchPaths", "d0"."previewBuildArgs" as "previewBuildArgs", "d0"."previewBuildSecrets" as "previewBuildSecrets", "d0"."previewLabels" as "previewLabels", "d0"."previewWildcard" as "previewWildcard", "d0"."previewPort" as "previewPort", "d0"."previewHttps" as "previewHttps", "d0"."previewPath" as "previewPath", "d0"."certificateType" as "previewCertificateType", "d0"."previewCustomCertResolver" as "previewCustomCertResolver", "d0"."previewLimit" as "previewLimit", "d0"."previewForwardAuthEnabled" as "previewForwardAuthEnabled", "d0"."ssoAllowedEmails" as "ssoAllowedEmails", "d0"."ssoAllowedGroups" as "ssoAllowedGroups", "d0"."ssoAllowedEmailDomains" as "ssoAllowedEmailDomains", "d0"."isPreviewDeploymentsActive" as "isPreviewDeploymentsActive", "d0"."previewRequireCollaboratorPermissions" as "previewRequireCollaboratorPermissions", "d0"."rollbackActive" as "rollbackActive", "d0"."buildArgs" as "buildArgs", "d0"."buildSecrets" as "buildSecrets", "d0"."memoryReservation" as "memoryReservation", "d0"."memoryLimit" as "memoryLimit", "d0"."cpuReservation" as "cpuReservation", "d0"."cpuLimit" as "cpuLimit", "d0"."title" as "title", "d0"."enabled" as "enabled", "d0"."subtitle" as "subtitle", "d0"."command" as "command", "d0"."args" as "args", "d0"."icon" as "icon", "d0"."refreshToken" as "refreshToken", "d0"."sourceType" as "sourceType", "d0"."cleanCache" as "cleanCache", "d0"."repository" as "repository", "d0"."owner" as "owner", "d0"."branch" as "branch", "d0"."buildPath" as "buildPath", "d0"."triggerType" as "triggerType", "d0"."autoDeploy" as "autoDeploy", "d0"."gitlabProjectId" as "gitlabProjectId", "d0"."gitlabRepository" as "gitlabRepository", "d0"."gitlabOwner" as "gitlabOwner", "d0"."gitlabBranch" as "gitlabBranch", "d0"."gitlabBuildPath" as "gitlabBuildPath", "d0"."gitlabPathNamespace" as "gitlabPathNamespace", "d0"."giteaRepository" as "giteaRepository", "d0"."giteaOwner" as "giteaOwner", "d0"."giteaBranch" as "giteaBranch", "d0"."giteaBuildPath" as "giteaBuildPath", "d0"."bitbucketRepository" as "bitbucketRepository", "d0"."bitbucketRepositorySlug" as "bitbucketRepositorySlug", "d0"."bitbucketOwner" as "bitbucketOwner", "d0"."bitbucketBranch" as "bitbucketBranch", "d0"."bitbucketBuildPath" as "bitbucketBuildPath", "d0"."username" as "username", "d0"."password" as "password", "d0"."dockerImage" as "dockerImage", "d0"."registryUrl" as "registryUrl", "d0"."customGitUrl" as "customGitUrl", "d0"."customGitBranch" as "customGitBranch", "d0"."customGitBuildPath" as "customGitBuildPath", "d0"."customGitSSHKeyId" as "customGitSSHKeyId", "d0"."enableSubmodules" as "enableSubmodules", "d0"."dockerfile" as "dockerfile", "d0"."dockerContextPath" as "dockerContextPath", "d0"."dockerBuildStage" as "dockerBuildStage", "d0"."dropBuildPath" as "dropBuildPath", "d0"."healthCheckSwarm" as "healthCheckSwarm", "d0"."restartPolicySwarm" as "restartPolicySwarm", "d0"."placementSwarm" as "placementSwarm", "d0"."updateConfigSwarm" as "updateConfigSwarm", "d0"."rollbackConfigSwarm" as "rollbackConfigSwarm", "d0"."modeSwarm" as "modeSwarm", "d0"."labelsSwarm" as "labelsSwarm", "d0"."networkSwarm" as "networkSwarm", "d0"."stopGracePeriodSwarm" as "stopGracePeriodSwarm", "d0"."endpointSpecSwarm" as "endpointSpecSwarm", "d0"."ulimitsSwarm" as "ulimitsSwarm", "d0"."replicas" as "replicas", "d0"."applicationStatus" as "applicationStatus", "d0"."buildType" as "buildType", "d0"."railpackVersion" as "railpackVersion", "d0"."herokuVersion" as "herokuVersion", "d0"."publishDirectory" as "publishDirectory", "d0"."isStaticSpa" as "isStaticSpa", "d0"."createEnvFile" as "createEnvFile", "d0"."createdAt" as "createdAt", "d0"."registryId" as "registryId", "d0"."rollbackRegistryId" as "rollbackRegistryId", "d0"."environmentId" as "environmentId", "d0"."githubId" as "githubId", "d0"."gitlabId" as "gitlabId", "d0"."giteaId" as "giteaId", "d0"."bitbucketId" as "bitbucketId", "d0"."serverId" as "serverId", "d0"."buildServerId" as "buildServerId", "d0"."buildRegistryId" as "buildRegistryId", "d0"."networkIds" as "networkIds", "d0"."detachDokployNetwork" as "detachDokployNetwork"
 from "application" as "d0"
 where "d0"."applicationId" = $1
 limit $2
@@ -3449,8 +3477,8 @@ db.insert(applications).values({ name: "name", environmentId: "environmentId" })
 ```
 
 ```sql
-insert into "application" ("applicationId", "name", "appName", "description", "env", "previewEnv", "watchPaths", "previewBuildArgs", "previewBuildSecrets", "previewLabels", "previewWildcard", "previewPort", "previewHttps", "previewPath", "certificateType", "previewCustomCertResolver", "previewLimit", "previewForwardAuthEnabled", "isPreviewDeploymentsActive", "previewRequireCollaboratorPermissions", "rollbackActive", "buildArgs", "buildSecrets", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "title", "enabled", "subtitle", "command", "args", "icon", "refreshToken", "sourceType", "cleanCache", "repository", "owner", "branch", "buildPath", "triggerType", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabBuildPath", "gitlabPathNamespace", "giteaRepository", "giteaOwner", "giteaBranch", "giteaBuildPath", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "bitbucketBuildPath", "username", "password", "dockerImage", "registryUrl", "customGitUrl", "customGitBranch", "customGitBuildPath", "customGitSSHKeyId", "enableSubmodules", "dockerfile", "dockerContextPath", "dockerBuildStage", "dropBuildPath", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "applicationStatus", "buildType", "railpackVersion", "herokuVersion", "publishDirectory", "isStaticSpa", "createEnvFile", "createdAt", "registryId", "rollbackRegistryId", "environmentId", "githubId", "gitlabId", "giteaId", "bitbucketId", "serverId", "buildServerId", "buildRegistryId", "networkIds", "detachDokployNetwork")
-values ($1, $2, $3, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $4, default, default, default, default, default, default, default, $5, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $6, default, default, $7, default, default, default, default, default, default, default, default, default)
+insert into "application" ("applicationId", "name", "appName", "description", "env", "previewEnv", "watchPaths", "previewBuildArgs", "previewBuildSecrets", "previewLabels", "previewWildcard", "previewPort", "previewHttps", "previewPath", "certificateType", "previewCustomCertResolver", "previewLimit", "previewForwardAuthEnabled", "ssoAllowedEmails", "ssoAllowedGroups", "ssoAllowedEmailDomains", "isPreviewDeploymentsActive", "previewRequireCollaboratorPermissions", "rollbackActive", "buildArgs", "buildSecrets", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "title", "enabled", "subtitle", "command", "args", "icon", "refreshToken", "sourceType", "cleanCache", "repository", "owner", "branch", "buildPath", "triggerType", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabBuildPath", "gitlabPathNamespace", "giteaRepository", "giteaOwner", "giteaBranch", "giteaBuildPath", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "bitbucketBuildPath", "username", "password", "dockerImage", "registryUrl", "customGitUrl", "customGitBranch", "customGitBuildPath", "customGitSSHKeyId", "enableSubmodules", "dockerfile", "dockerContextPath", "dockerBuildStage", "dropBuildPath", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "applicationStatus", "buildType", "railpackVersion", "herokuVersion", "publishDirectory", "isStaticSpa", "createEnvFile", "createdAt", "registryId", "rollbackRegistryId", "environmentId", "githubId", "gitlabId", "giteaId", "bitbucketId", "serverId", "buildServerId", "buildRegistryId", "networkIds", "detachDokployNetwork")
+values ($1, $2, $3, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $4, default, default, default, default, default, default, default, $5, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $6, default, default, $7, default, default, default, default, default, default, default, default, default)
 -- params: ["uuuuuuuuuuuuuuuuuuuuu","name","app-input-optical-microchip-aaaaaa","uuuuuuuuuuuuuuuuuuuuu",true,"2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
@@ -10622,6 +10650,7 @@ OLD TABLE
 | `userId` (`user_id`)                              | `text`      | NOT NULL → [user.id](#table-user) |         |             |
 | `impersonatedBy` (`impersonated_by`)              | `text`      | NULL                              |         |             |
 | `activeOrganizationId` (`active_organization_id`) | `text`      | NULL                              |         |             |
+| `sensitiveVerifiedAt` (`sensitive_verified_at`)   | `timestamp` | NULL                              |         |             |
 
 #### Definition
 
@@ -10636,7 +10665,8 @@ CREATE TABLE "session" (
 	"user_agent" text,
 	"user_id" text NOT NULL,
 	"impersonated_by" text,
-	"active_organization_id" text
+	"active_organization_id" text,
+	"sensitive_verified_at" timestamp
 );
 
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;
@@ -10656,7 +10686,7 @@ db.select().from(session);
 ```
 
 ```sql
-select "id", "expires_at", "token", "created_at", "updated_at", "ip_address", "user_agent", "user_id", "impersonated_by", "active_organization_id"
+select "id", "expires_at", "token", "created_at", "updated_at", "ip_address", "user_agent", "user_id", "impersonated_by", "active_organization_id", "sensitive_verified_at"
 from "session"
 ```
 
@@ -10678,7 +10708,7 @@ db.query.session.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."expires_at" as "expiresAt", "d0"."token" as "token", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."ip_address" as "ipAddress", "d0"."user_agent" as "userAgent", "d0"."user_id" as "userId", "d0"."impersonated_by" as "impersonatedBy", "d0"."active_organization_id" as "activeOrganizationId"
+select "d0"."id" as "id", "d0"."expires_at" as "expiresAt", "d0"."token" as "token", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."ip_address" as "ipAddress", "d0"."user_agent" as "userAgent", "d0"."user_id" as "userId", "d0"."impersonated_by" as "impersonatedBy", "d0"."active_organization_id" as "activeOrganizationId", "d0"."sensitive_verified_at" as "sensitiveVerifiedAt"
 from "session" as "d0"
 ```
 
@@ -10689,7 +10719,7 @@ db.query.session.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."expires_at" as "expiresAt", "d0"."token" as "token", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."ip_address" as "ipAddress", "d0"."user_agent" as "userAgent", "d0"."user_id" as "userId", "d0"."impersonated_by" as "impersonatedBy", "d0"."active_organization_id" as "activeOrganizationId"
+select "d0"."id" as "id", "d0"."expires_at" as "expiresAt", "d0"."token" as "token", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."ip_address" as "ipAddress", "d0"."user_agent" as "userAgent", "d0"."user_id" as "userId", "d0"."impersonated_by" as "impersonatedBy", "d0"."active_organization_id" as "activeOrganizationId", "d0"."sensitive_verified_at" as "sensitiveVerifiedAt"
 from "session" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -10710,8 +10740,8 @@ db.insert(session).values({
 ```
 
 ```sql
-insert into "session" ("id", "expires_at", "token", "created_at", "updated_at", "ip_address", "user_agent", "user_id", "impersonated_by", "active_organization_id")
-values ($1, $2, $3, $4, $5, default, default, $6, default, default)
+insert into "session" ("id", "expires_at", "token", "created_at", "updated_at", "ip_address", "user_agent", "user_id", "impersonated_by", "active_organization_id", "sensitive_verified_at")
+values ($1, $2, $3, $4, $5, default, default, $6, default, default, default)
 -- params: ["id","2026-01-01T00:00:00.000Z","token","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z","userId"]
 ```
 
@@ -11473,6 +11503,8 @@ TEMP
 | `trialPlanPromptSubscriptionId`           | `text`      | NULL            |                                    |                                   |
 | `serverSetupFailedEmailAt`                | `timestamp` | NULL            |                                    |                                   |
 | `serverConnectFailure`                    | `text`      | NULL            |                                    |                                   |
+| `lastSessionAt`                           | `timestamp` | NULL            |                                    |                                   |
+| `deactivatedAt`                           | `timestamp` | NULL            |                                    |                                   |
 
 #### Definition
 
@@ -11511,7 +11543,9 @@ CREATE TABLE "user" (
 	"onboardingReturnEmails" integer DEFAULT 0 NOT NULL,
 	"trialPlanPromptSubscriptionId" text,
 	"serverSetupFailedEmailAt" timestamp,
-	"serverConnectFailure" text
+	"serverConnectFailure" text,
+	"lastSessionAt" timestamp,
+	"deactivatedAt" timestamp
 );
 ```
 
@@ -11529,6 +11563,8 @@ CREATE TABLE "user" (
 - `id` → [gitProvider.userId](#table-gitProvider) (one to many, on delete cascade)
 - `id` → [session.userId](#table-session) (one to many, on delete cascade)
 - `id` → [ssoProvider.userId](#table-ssoProvider) (one to many, on delete set null)
+- `id` → [webServerSettings.instanceOwnerId](#table-webServerSettings) (one to many, on delete set null)
+- `id` → [webServerSettings.pendingOwnerId](#table-webServerSettings) (one to many, on delete set null)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -11540,7 +11576,7 @@ db.select().from(user);
 ```
 
 ```sql
-select "id", "firstName", "lastName", "isRegistered", "expirationDate", "createdAt", "created_at", "two_factor_enabled", "email", "email_verified", "image", "banned", "ban_reason", "ban_expires", "updated_at", "role", "enablePaidFeatures", "allowImpersonation", "enableEnterpriseFeatures", "licenseKey", "isValidEnterpriseLicense", "stripeCustomerId", "stripeSubscriptionId", "serversQuantity", "sendInvoiceNotifications", "isEnterpriseCloud", "trustedOrigins", "bookmarkedTemplates", "onboardingCompletedAt", "onboardingStep", "onboardingReturnEmails", "trialPlanPromptSubscriptionId", "serverSetupFailedEmailAt", "serverConnectFailure"
+select "id", "firstName", "lastName", "isRegistered", "expirationDate", "createdAt", "created_at", "two_factor_enabled", "email", "email_verified", "image", "banned", "ban_reason", "ban_expires", "updated_at", "role", "enablePaidFeatures", "allowImpersonation", "enableEnterpriseFeatures", "licenseKey", "isValidEnterpriseLicense", "stripeCustomerId", "stripeSubscriptionId", "serversQuantity", "sendInvoiceNotifications", "isEnterpriseCloud", "trustedOrigins", "bookmarkedTemplates", "onboardingCompletedAt", "onboardingStep", "onboardingReturnEmails", "trialPlanPromptSubscriptionId", "serverSetupFailedEmailAt", "serverConnectFailure", "lastSessionAt", "deactivatedAt"
 from "user"
 ```
 
@@ -11562,7 +11598,7 @@ db.query.user.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."firstName" as "firstName", "d0"."lastName" as "lastName", "d0"."isRegistered" as "isRegistered", "d0"."expirationDate" as "expirationDate", "d0"."createdAt" as "createdAt2", "d0"."created_at" as "createdAt", "d0"."two_factor_enabled" as "twoFactorEnabled", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expires" as "banExpires", "d0"."updated_at" as "updatedAt", "d0"."role" as "role", "d0"."enablePaidFeatures" as "enablePaidFeatures", "d0"."allowImpersonation" as "allowImpersonation", "d0"."enableEnterpriseFeatures" as "enableEnterpriseFeatures", "d0"."licenseKey" as "licenseKey", "d0"."isValidEnterpriseLicense" as "isValidEnterpriseLicense", "d0"."stripeCustomerId" as "stripeCustomerId", "d0"."stripeSubscriptionId" as "stripeSubscriptionId", "d0"."serversQuantity" as "serversQuantity", "d0"."sendInvoiceNotifications" as "sendInvoiceNotifications", "d0"."isEnterpriseCloud" as "isEnterpriseCloud", "d0"."trustedOrigins" as "trustedOrigins", "d0"."bookmarkedTemplates" as "bookmarkedTemplates", "d0"."onboardingCompletedAt" as "onboardingCompletedAt", "d0"."onboardingStep" as "onboardingStep", "d0"."onboardingReturnEmails" as "onboardingReturnEmails", "d0"."trialPlanPromptSubscriptionId" as "trialPlanPromptSubscriptionId", "d0"."serverSetupFailedEmailAt" as "serverSetupFailedEmailAt", "d0"."serverConnectFailure" as "serverConnectFailure"
+select "d0"."id" as "id", "d0"."firstName" as "firstName", "d0"."lastName" as "lastName", "d0"."isRegistered" as "isRegistered", "d0"."expirationDate" as "expirationDate", "d0"."createdAt" as "createdAt2", "d0"."created_at" as "createdAt", "d0"."two_factor_enabled" as "twoFactorEnabled", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expires" as "banExpires", "d0"."updated_at" as "updatedAt", "d0"."role" as "role", "d0"."enablePaidFeatures" as "enablePaidFeatures", "d0"."allowImpersonation" as "allowImpersonation", "d0"."enableEnterpriseFeatures" as "enableEnterpriseFeatures", "d0"."licenseKey" as "licenseKey", "d0"."isValidEnterpriseLicense" as "isValidEnterpriseLicense", "d0"."stripeCustomerId" as "stripeCustomerId", "d0"."stripeSubscriptionId" as "stripeSubscriptionId", "d0"."serversQuantity" as "serversQuantity", "d0"."sendInvoiceNotifications" as "sendInvoiceNotifications", "d0"."isEnterpriseCloud" as "isEnterpriseCloud", "d0"."trustedOrigins" as "trustedOrigins", "d0"."bookmarkedTemplates" as "bookmarkedTemplates", "d0"."onboardingCompletedAt" as "onboardingCompletedAt", "d0"."onboardingStep" as "onboardingStep", "d0"."onboardingReturnEmails" as "onboardingReturnEmails", "d0"."trialPlanPromptSubscriptionId" as "trialPlanPromptSubscriptionId", "d0"."serverSetupFailedEmailAt" as "serverSetupFailedEmailAt", "d0"."serverConnectFailure" as "serverConnectFailure", "d0"."lastSessionAt" as "lastSessionAt", "d0"."deactivatedAt" as "deactivatedAt"
 from "user" as "d0"
 ```
 
@@ -11573,7 +11609,7 @@ db.query.user.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."firstName" as "firstName", "d0"."lastName" as "lastName", "d0"."isRegistered" as "isRegistered", "d0"."expirationDate" as "expirationDate", "d0"."createdAt" as "createdAt2", "d0"."created_at" as "createdAt", "d0"."two_factor_enabled" as "twoFactorEnabled", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expires" as "banExpires", "d0"."updated_at" as "updatedAt", "d0"."role" as "role", "d0"."enablePaidFeatures" as "enablePaidFeatures", "d0"."allowImpersonation" as "allowImpersonation", "d0"."enableEnterpriseFeatures" as "enableEnterpriseFeatures", "d0"."licenseKey" as "licenseKey", "d0"."isValidEnterpriseLicense" as "isValidEnterpriseLicense", "d0"."stripeCustomerId" as "stripeCustomerId", "d0"."stripeSubscriptionId" as "stripeSubscriptionId", "d0"."serversQuantity" as "serversQuantity", "d0"."sendInvoiceNotifications" as "sendInvoiceNotifications", "d0"."isEnterpriseCloud" as "isEnterpriseCloud", "d0"."trustedOrigins" as "trustedOrigins", "d0"."bookmarkedTemplates" as "bookmarkedTemplates", "d0"."onboardingCompletedAt" as "onboardingCompletedAt", "d0"."onboardingStep" as "onboardingStep", "d0"."onboardingReturnEmails" as "onboardingReturnEmails", "d0"."trialPlanPromptSubscriptionId" as "trialPlanPromptSubscriptionId", "d0"."serverSetupFailedEmailAt" as "serverSetupFailedEmailAt", "d0"."serverConnectFailure" as "serverConnectFailure"
+select "d0"."id" as "id", "d0"."firstName" as "firstName", "d0"."lastName" as "lastName", "d0"."isRegistered" as "isRegistered", "d0"."expirationDate" as "expirationDate", "d0"."createdAt" as "createdAt2", "d0"."created_at" as "createdAt", "d0"."two_factor_enabled" as "twoFactorEnabled", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expires" as "banExpires", "d0"."updated_at" as "updatedAt", "d0"."role" as "role", "d0"."enablePaidFeatures" as "enablePaidFeatures", "d0"."allowImpersonation" as "allowImpersonation", "d0"."enableEnterpriseFeatures" as "enableEnterpriseFeatures", "d0"."licenseKey" as "licenseKey", "d0"."isValidEnterpriseLicense" as "isValidEnterpriseLicense", "d0"."stripeCustomerId" as "stripeCustomerId", "d0"."stripeSubscriptionId" as "stripeSubscriptionId", "d0"."serversQuantity" as "serversQuantity", "d0"."sendInvoiceNotifications" as "sendInvoiceNotifications", "d0"."isEnterpriseCloud" as "isEnterpriseCloud", "d0"."trustedOrigins" as "trustedOrigins", "d0"."bookmarkedTemplates" as "bookmarkedTemplates", "d0"."onboardingCompletedAt" as "onboardingCompletedAt", "d0"."onboardingStep" as "onboardingStep", "d0"."onboardingReturnEmails" as "onboardingReturnEmails", "d0"."trialPlanPromptSubscriptionId" as "trialPlanPromptSubscriptionId", "d0"."serverSetupFailedEmailAt" as "serverSetupFailedEmailAt", "d0"."serverConnectFailure" as "serverConnectFailure", "d0"."lastSessionAt" as "lastSessionAt", "d0"."deactivatedAt" as "deactivatedAt"
 from "user" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -11591,8 +11627,8 @@ db.insert(user).values({
 ```
 
 ```sql
-insert into "user" ("id", "firstName", "lastName", "isRegistered", "expirationDate", "createdAt", "created_at", "two_factor_enabled", "email", "email_verified", "image", "banned", "ban_reason", "ban_expires", "updated_at", "role", "enablePaidFeatures", "allowImpersonation", "enableEnterpriseFeatures", "licenseKey", "isValidEnterpriseLicense", "stripeCustomerId", "stripeSubscriptionId", "serversQuantity", "sendInvoiceNotifications", "isEnterpriseCloud", "trustedOrigins", "bookmarkedTemplates", "onboardingCompletedAt", "onboardingStep", "onboardingReturnEmails", "trialPlanPromptSubscriptionId", "serverSetupFailedEmailAt", "serverConnectFailure")
-values ($1, default, default, default, $2, $3, default, default, $4, $5, default, default, default, default, $6, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
+insert into "user" ("id", "firstName", "lastName", "isRegistered", "expirationDate", "createdAt", "created_at", "two_factor_enabled", "email", "email_verified", "image", "banned", "ban_reason", "ban_expires", "updated_at", "role", "enablePaidFeatures", "allowImpersonation", "enableEnterpriseFeatures", "licenseKey", "isValidEnterpriseLicense", "stripeCustomerId", "stripeSubscriptionId", "serversQuantity", "sendInvoiceNotifications", "isEnterpriseCloud", "trustedOrigins", "bookmarkedTemplates", "onboardingCompletedAt", "onboardingStep", "onboardingReturnEmails", "trialPlanPromptSubscriptionId", "serverSetupFailedEmailAt", "serverConnectFailure", "lastSessionAt", "deactivatedAt")
+values ($1, default, default, default, $2, $3, default, default, $4, $5, default, default, default, default, $6, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
 -- params: ["uuuuuuuuuuuuuuuuuuuuu","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z","email",true,"2026-01-01T00:00:00.000Z"]
 ```
 
@@ -11978,6 +12014,9 @@ where "volume_backup"."volumeBackupId" = $1
 | `remoteServersOnly`         | `boolean`                                  | NOT NULL                                      | `.default(false)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Deployment Configuration (self-hosted only)            |
 | `buildsConcurrency`         | `integer`                                  | NOT NULL                                      | `.default(1)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Concurrent builds on the local web server              |
 | `enforceSSO`                | `boolean`                                  | NOT NULL                                      | `.default(false)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Auth Configuration (self-hosted only)                  |
+| `instanceOwnerId`           | `text`                                     | NULL → [user.id](#table-user)                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                        |
+| `pendingOwnerId`            | `text`                                     | NULL → [user.id](#table-user)                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                        |
+| `pendingOwnerExpiresAt`     | `timestamp`                                | NULL                                          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                        |
 | `cleanupCacheApplications`  | `boolean`                                  | NOT NULL                                      | `.default(false)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Cache Cleanup Configuration                            |
 | `cleanupCacheOnPreviews`    | `boolean`                                  | NOT NULL                                      | `.default(false)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |                                                        |
 | `cleanupCacheOnCompose`     | `boolean`                                  | NOT NULL                                      | `.default(false)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |                                                        |
@@ -12004,6 +12043,9 @@ CREATE TABLE "webServerSettings" (
 	"remoteServersOnly" boolean DEFAULT false NOT NULL,
 	"buildsConcurrency" integer DEFAULT 1 NOT NULL,
 	"enforceSSO" boolean DEFAULT false NOT NULL,
+	"instanceOwnerId" text,
+	"pendingOwnerId" text,
+	"pendingOwnerExpiresAt" timestamp,
 	"cleanupCacheApplications" boolean DEFAULT false NOT NULL,
 	"cleanupCacheOnPreviews" boolean DEFAULT false NOT NULL,
 	"cleanupCacheOnCompose" boolean DEFAULT false NOT NULL,
@@ -12012,11 +12054,17 @@ CREATE TABLE "webServerSettings" (
 );
 
 ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_iJ2mqc8DxI59_fkey" FOREIGN KEY ("vectorAgentOrganizationId") REFERENCES "organization"("id") ON DELETE SET NULL;
+
+ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_instanceOwnerId_user_id_fkey" FOREIGN KEY ("instanceOwnerId") REFERENCES "user"("id") ON DELETE SET NULL;
+
+ALTER TABLE "webServerSettings" ADD CONSTRAINT "webServerSettings_pendingOwnerId_user_id_fkey" FOREIGN KEY ("pendingOwnerId") REFERENCES "user"("id") ON DELETE SET NULL;
 ```
 
 #### References
 
 - `vectorAgentOrganizationId` → [organization.id](#table-organization) (many to one, on delete set null)
+- `instanceOwnerId` → [user.id](#table-user) (many to one, on delete set null)
+- `pendingOwnerId` → [user.id](#table-user) (many to one, on delete set null)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -12028,7 +12076,7 @@ db.select().from(webServerSettings);
 ```
 
 ```sql
-select "id", "serverIp", "certificateType", "https", "host", "letsEncryptEmail", "sshPrivateKey", "enableDockerCleanup", "logCleanupCron", "telemetryProviderIds", "vectorAgentOrganizationId", "metricsConfig", "whitelabelingConfig", "remoteServersOnly", "buildsConcurrency", "enforceSSO", "cleanupCacheApplications", "cleanupCacheOnPreviews", "cleanupCacheOnCompose", "created_at", "updated_at"
+select "id", "serverIp", "certificateType", "https", "host", "letsEncryptEmail", "sshPrivateKey", "enableDockerCleanup", "logCleanupCron", "telemetryProviderIds", "vectorAgentOrganizationId", "metricsConfig", "whitelabelingConfig", "remoteServersOnly", "buildsConcurrency", "enforceSSO", "instanceOwnerId", "pendingOwnerId", "pendingOwnerExpiresAt", "cleanupCacheApplications", "cleanupCacheOnPreviews", "cleanupCacheOnCompose", "created_at", "updated_at"
 from "webServerSettings"
 ```
 
@@ -12050,7 +12098,7 @@ db.query.webServerSettings.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."serverIp" as "serverIp", "d0"."certificateType" as "certificateType", "d0"."https" as "https", "d0"."host" as "host", "d0"."letsEncryptEmail" as "letsEncryptEmail", "d0"."sshPrivateKey" as "sshPrivateKey", "d0"."enableDockerCleanup" as "enableDockerCleanup", "d0"."logCleanupCron" as "logCleanupCron", "d0"."telemetryProviderIds" as "telemetryProviderIds", "d0"."vectorAgentOrganizationId" as "vectorAgentOrganizationId", "d0"."metricsConfig" as "metricsConfig", "d0"."whitelabelingConfig" as "whitelabelingConfig", "d0"."remoteServersOnly" as "remoteServersOnly", "d0"."buildsConcurrency" as "buildsConcurrency", "d0"."enforceSSO" as "enforceSSO", "d0"."cleanupCacheApplications" as "cleanupCacheApplications", "d0"."cleanupCacheOnPreviews" as "cleanupCacheOnPreviews", "d0"."cleanupCacheOnCompose" as "cleanupCacheOnCompose", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."serverIp" as "serverIp", "d0"."certificateType" as "certificateType", "d0"."https" as "https", "d0"."host" as "host", "d0"."letsEncryptEmail" as "letsEncryptEmail", "d0"."sshPrivateKey" as "sshPrivateKey", "d0"."enableDockerCleanup" as "enableDockerCleanup", "d0"."logCleanupCron" as "logCleanupCron", "d0"."telemetryProviderIds" as "telemetryProviderIds", "d0"."vectorAgentOrganizationId" as "vectorAgentOrganizationId", "d0"."metricsConfig" as "metricsConfig", "d0"."whitelabelingConfig" as "whitelabelingConfig", "d0"."remoteServersOnly" as "remoteServersOnly", "d0"."buildsConcurrency" as "buildsConcurrency", "d0"."enforceSSO" as "enforceSSO", "d0"."instanceOwnerId" as "instanceOwnerId", "d0"."pendingOwnerId" as "pendingOwnerId", "d0"."pendingOwnerExpiresAt" as "pendingOwnerExpiresAt", "d0"."cleanupCacheApplications" as "cleanupCacheApplications", "d0"."cleanupCacheOnPreviews" as "cleanupCacheOnPreviews", "d0"."cleanupCacheOnCompose" as "cleanupCacheOnCompose", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "webServerSettings" as "d0"
 ```
 
@@ -12061,7 +12109,7 @@ db.query.webServerSettings.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."serverIp" as "serverIp", "d0"."certificateType" as "certificateType", "d0"."https" as "https", "d0"."host" as "host", "d0"."letsEncryptEmail" as "letsEncryptEmail", "d0"."sshPrivateKey" as "sshPrivateKey", "d0"."enableDockerCleanup" as "enableDockerCleanup", "d0"."logCleanupCron" as "logCleanupCron", "d0"."telemetryProviderIds" as "telemetryProviderIds", "d0"."vectorAgentOrganizationId" as "vectorAgentOrganizationId", "d0"."metricsConfig" as "metricsConfig", "d0"."whitelabelingConfig" as "whitelabelingConfig", "d0"."remoteServersOnly" as "remoteServersOnly", "d0"."buildsConcurrency" as "buildsConcurrency", "d0"."enforceSSO" as "enforceSSO", "d0"."cleanupCacheApplications" as "cleanupCacheApplications", "d0"."cleanupCacheOnPreviews" as "cleanupCacheOnPreviews", "d0"."cleanupCacheOnCompose" as "cleanupCacheOnCompose", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."serverIp" as "serverIp", "d0"."certificateType" as "certificateType", "d0"."https" as "https", "d0"."host" as "host", "d0"."letsEncryptEmail" as "letsEncryptEmail", "d0"."sshPrivateKey" as "sshPrivateKey", "d0"."enableDockerCleanup" as "enableDockerCleanup", "d0"."logCleanupCron" as "logCleanupCron", "d0"."telemetryProviderIds" as "telemetryProviderIds", "d0"."vectorAgentOrganizationId" as "vectorAgentOrganizationId", "d0"."metricsConfig" as "metricsConfig", "d0"."whitelabelingConfig" as "whitelabelingConfig", "d0"."remoteServersOnly" as "remoteServersOnly", "d0"."buildsConcurrency" as "buildsConcurrency", "d0"."enforceSSO" as "enforceSSO", "d0"."instanceOwnerId" as "instanceOwnerId", "d0"."pendingOwnerId" as "pendingOwnerId", "d0"."pendingOwnerExpiresAt" as "pendingOwnerExpiresAt", "d0"."cleanupCacheApplications" as "cleanupCacheApplications", "d0"."cleanupCacheOnPreviews" as "cleanupCacheOnPreviews", "d0"."cleanupCacheOnCompose" as "cleanupCacheOnCompose", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "webServerSettings" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -12075,8 +12123,8 @@ db.insert(webServerSettings).values({});
 ```
 
 ```sql
-insert into "webServerSettings" ("id", "serverIp", "certificateType", "https", "host", "letsEncryptEmail", "sshPrivateKey", "enableDockerCleanup", "logCleanupCron", "telemetryProviderIds", "vectorAgentOrganizationId", "metricsConfig", "whitelabelingConfig", "remoteServersOnly", "buildsConcurrency", "enforceSSO", "cleanupCacheApplications", "cleanupCacheOnPreviews", "cleanupCacheOnCompose", "created_at", "updated_at")
-values ($1, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
+insert into "webServerSettings" ("id", "serverIp", "certificateType", "https", "host", "letsEncryptEmail", "sshPrivateKey", "enableDockerCleanup", "logCleanupCron", "telemetryProviderIds", "vectorAgentOrganizationId", "metricsConfig", "whitelabelingConfig", "remoteServersOnly", "buildsConcurrency", "enforceSSO", "instanceOwnerId", "pendingOwnerId", "pendingOwnerExpiresAt", "cleanupCacheApplications", "cleanupCacheOnPreviews", "cleanupCacheOnCompose", "created_at", "updated_at")
+values ($1, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
 -- params: ["uuuuuuuuuuuuuuuuuuuuu"]
 ```
 

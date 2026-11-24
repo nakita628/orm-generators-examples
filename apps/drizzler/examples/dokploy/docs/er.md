@@ -137,6 +137,8 @@ erDiagram
     compose |o--o{ volume_backup : "(composeId) - (composeId)"
     destination ||--o{ volume_backup : "(destinationId) - (destinationId)"
     organization |o--o{ webServerSettings : "(id) - (vectorAgentOrganizationId)"
+    user |o--o{ webServerSettings : "(id) - (instanceOwnerId)"
+    user |o--o{ webServerSettings : "(id) - (pendingOwnerId)"
     account {
         text id PK
         text account_id
@@ -173,6 +175,7 @@ erDiagram
         timestamp created_at
         text metadata
         text default_role
+        boolean require_sensitive_action_verification
         text owner_id FK
     }
     organization_role {
@@ -180,6 +183,8 @@ erDiagram
         text organization_id FK
         text role
         text permission
+        text allowed_domains
+        boolean require_https
         timestamp created_at
         timestamp updated_at
     }
@@ -294,6 +299,9 @@ erDiagram
         text previewCustomCertResolver
         integer previewLimit
         boolean previewForwardAuthEnabled
+        text ssoAllowedEmails
+        text ssoAllowedGroups
+        text ssoAllowedEmailDomains
         boolean isPreviewDeploymentsActive
         boolean previewRequireCollaboratorPermissions "Security: Require collaborator permissions for preview deployments"
         boolean rollbackActive
@@ -1124,6 +1132,7 @@ erDiagram
         text user_id FK
         text impersonated_by
         text active_organization_id
+        timestamp sensitive_verified_at
     }
     "ssh-key" {
         text sshKeyId PK
@@ -1207,6 +1216,8 @@ erDiagram
         text trialPlanPromptSubscriptionId
         timestamp serverSetupFailedEmailAt
         text serverConnectFailure
+        timestamp lastSessionAt
+        timestamp deactivatedAt
     }
     vault_provider {
         text vaultProviderId PK
@@ -1257,6 +1268,9 @@ erDiagram
         boolean remoteServersOnly "Deployment Configuration (self-hosted only)"
         integer buildsConcurrency "Concurrent builds on the local web server"
         boolean enforceSSO "Auth Configuration (self-hosted only)"
+        text instanceOwnerId FK
+        text pendingOwnerId FK
+        timestamp pendingOwnerExpiresAt
         boolean cleanupCacheApplications "Cache Cleanup Configuration"
         boolean cleanupCacheOnPreviews
         boolean cleanupCacheOnCompose

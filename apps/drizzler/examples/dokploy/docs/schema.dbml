@@ -36,6 +36,7 @@ Table organization {
   created_at timestamp [not null]
   metadata text
   default_role text
+  require_sensitive_action_verification boolean [not null]
   owner_id text [not null]
 }
 
@@ -44,6 +45,8 @@ Table organization_role {
   organization_id text [not null]
   role text [not null]
   permission text [not null]
+  allowed_domains text
+  require_https boolean [not null]
   created_at timestamp [not null]
   updated_at timestamp
   indexes {
@@ -173,6 +176,9 @@ Table application {
   previewCustomCertResolver text
   previewLimit integer
   previewForwardAuthEnabled boolean [not null]
+  ssoAllowedEmails text
+  ssoAllowedGroups text
+  ssoAllowedEmailDomains text
   isPreviewDeploymentsActive boolean
   previewRequireCollaboratorPermissions boolean [note: 'Security: Require collaborator permissions for preview deployments']
   rollbackActive boolean
@@ -1067,6 +1073,7 @@ Table session {
   user_id text [not null]
   impersonated_by text
   active_organization_id text
+  sensitive_verified_at timestamp
   Note: 'OLD TABLE'
 }
 
@@ -1163,6 +1170,8 @@ Table user {
   trialPlanPromptSubscriptionId text
   serverSetupFailedEmailAt timestamp
   serverConnectFailure text
+  lastSessionAt timestamp
+  deactivatedAt timestamp
   Note: 'TEMP'
 }
 
@@ -1220,6 +1229,9 @@ Table webServerSettings {
   remoteServersOnly boolean [not null, note: 'Deployment Configuration (self-hosted only)']
   buildsConcurrency integer [not null, note: 'Concurrent builds on the local web server']
   enforceSSO boolean [not null, note: 'Auth Configuration (self-hosted only)']
+  instanceOwnerId text
+  pendingOwnerId text
+  pendingOwnerExpiresAt timestamp
   cleanupCacheApplications boolean [not null, note: 'Cache Cleanup Configuration']
   cleanupCacheOnPreviews boolean [not null]
   cleanupCacheOnCompose boolean [not null]
@@ -1500,3 +1512,7 @@ Ref volume_backup_composeId_compose_composeId_fk: volume_backup.composeId > comp
 Ref volume_backup_destinationId_destination_destinationId_fk: volume_backup.destinationId > destination.destinationId [delete: cascade]
 
 Ref webServerSettings_vectorAgentOrganizationId_organization_id_fk: webServerSettings.vectorAgentOrganizationId > organization.id [delete: set null]
+
+Ref webServerSettings_instanceOwnerId_user_id_fk: webServerSettings.instanceOwnerId > user.id [delete: set null]
+
+Ref webServerSettings_pendingOwnerId_user_id_fk: webServerSettings.pendingOwnerId > user.id [delete: set null]
