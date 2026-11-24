@@ -82,7 +82,7 @@
   "rallly": {
     "repo": "lukevella/rallly",
     "path": "packages/database/prisma/",
-    "commit": "73f4b6524a3fcfbb2f96a63bb72148839939c9f2",
+    "commit": "48f15a240892ef66b82c63d18be09152e7d935e7",
     "license": "AGPL-3.0",
     "app": "Rallly",
     "description": "Rallly scheduling polls: users, spaces, polls, options, participants and votes."

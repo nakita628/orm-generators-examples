@@ -59,7 +59,5 @@ public partial class Space
 
     public virtual ICollection<SpaceWebhook> Webhooks { get; set; } = new List<SpaceWebhook>();
 
-    public virtual ICollection<ApiUsage> ApiUsage { get; set; } = new List<ApiUsage>();
-
     public virtual ICollection<SpaceUsage> Usage { get; set; } = new List<SpaceUsage>();
 }

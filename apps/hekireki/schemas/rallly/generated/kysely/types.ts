@@ -7,8 +7,6 @@ export type Generated<T> =
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
-export type ApiUsageResource = 'poll'
-
 export type SubscriptionStatus =
   | 'incomplete'
   | 'incomplete_expired'
@@ -56,20 +54,6 @@ export type WebhookDeliveryStatus = 'pending' | 'in_flight' | 'succeeded' | 'fai
 export type TimeFormat = 'hours12' | 'hours24'
 
 export type UserRole = 'admin' | 'user'
-
-/**
- * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
- * deployments keep working during the switch, then dropped.
- */
-export interface ApiUsage {
-  space_id: string
-  resource: ApiUsageResource
-  period: Timestamp
-  count: Generated<number>
-  near_limit_warned_at: Timestamp | null
-  at_limit_warned_at: Timestamp | null
-  updated_at: Timestamp
-}
 
 export interface Subscription {
   id: string
@@ -648,7 +632,6 @@ export interface Verification {
 }
 
 export interface DB {
-  api_usage: ApiUsage
   subscriptions: Subscription
   payment_methods: PaymentMethod
   nonprofit_applications: NonprofitApplication

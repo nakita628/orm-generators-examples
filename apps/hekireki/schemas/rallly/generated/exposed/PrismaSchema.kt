@@ -7,7 +7,6 @@ object PrismaSchema {
     val schemas: List<Schema> = emptyList()
     val enumTypes: List<String> =
         listOf(
-            "CREATE TYPE \"api_usage_resource\" AS ENUM ('poll')",
             "CREATE TYPE \"subscription_status\" AS ENUM ('incomplete', 'incomplete_expired', 'active', 'paused', 'trialing', 'past_due', 'canceled', 'unpaid')",
             "CREATE TYPE \"subscription_interval\" AS ENUM ('month', 'year')",
             "CREATE TYPE \"nonprofit_application_status\" AS ENUM ('approved', 'rejected', 'failed')",
@@ -32,7 +31,6 @@ object PrismaSchema {
         )
     val tables: List<Table> =
         listOf(
-            ApiUsageTable,
             SubscriptionTable,
             PaymentMethodTable,
             NonprofitApplicationTable,

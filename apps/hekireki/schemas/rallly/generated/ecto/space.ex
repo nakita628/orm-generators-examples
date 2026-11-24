@@ -31,7 +31,6 @@ defmodule Rallly.Space do
           api_keys: [Rallly.SpaceApiKey.t()],
           nonprofit_applications: [Rallly.NonprofitApplication.t()],
           webhooks: [Rallly.SpaceWebhook.t()],
-          api_usage: [Rallly.ApiUsage.t()],
           usage: [Rallly.SpaceUsage.t()]
         }
 
@@ -58,7 +57,6 @@ defmodule Rallly.Space do
     has_many(:api_keys, Rallly.SpaceApiKey, foreign_key: :space_id)
     has_many(:nonprofit_applications, Rallly.NonprofitApplication, foreign_key: :space_id)
     has_many(:webhooks, Rallly.SpaceWebhook, foreign_key: :space_id)
-    has_many(:api_usage, Rallly.ApiUsage, foreign_key: :space_id)
     has_many(:usage, Rallly.SpaceUsage, foreign_key: :space_id)
     timestamps(inserted_at_source: :created_at)
   end

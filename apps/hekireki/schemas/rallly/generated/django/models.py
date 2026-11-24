@@ -70,10 +70,6 @@ def now_milliseconds() -> datetime:
     return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
-class ApiUsageResource(models.TextChoices):
-    poll = "poll"
-
-
 class SubscriptionStatus(models.TextChoices):
     incomplete = "incomplete"
     incomplete_expired = "incomplete_expired"
@@ -196,25 +192,6 @@ class TimeFormat(models.TextChoices):
 class UserRole(models.TextChoices):
     admin = "admin"
     user = "user"
-
-
-class ApiUsage(models.Model):
-    """Superseded by SpaceUsage (resource api_poll). Unused; kept so old
-    deployments keep working during the switch, then dropped.
-    """
-
-    pk = models.CompositePrimaryKey("space_id", "resource", "period")
-    space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="api_usage", db_index=False)
-    resource = models.TextField(choices=ApiUsageResource.choices)
-    period = models.DateField()
-    count = models.IntegerField(default=0)
-    near_limit_warned_at = UtcDateTimeField(null=True)
-    at_limit_warned_at = UtcDateTimeField(null=True)
-    updated_at = UtcAutoNowDateTimeField(auto_now=True)
-    objects = AutoNowQuerySet.as_manager()
-
-    class Meta:
-        db_table = "api_usage"
 
 
 class Subscription(models.Model):

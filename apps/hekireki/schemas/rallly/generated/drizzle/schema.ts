@@ -38,8 +38,6 @@ const utcNow = (() => {
   }
 })()
 
-export const apiUsageResourceEnum = pgEnum('api_usage_resource', ['poll'])
-
 export const subscriptionStatusEnum = pgEnum('subscription_status', [
   'incomplete',
   'incomplete_expired',
@@ -112,33 +110,6 @@ export const webhookDeliveryStatusEnum = pgEnum('webhook_delivery_status', [
 export const timeFormatEnum = pgEnum('time_format', ['hours12', 'hours24'])
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'user'])
-
-/**
- * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
- * deployments keep working during the switch, then dropped.
- */
-export const apiUsage = pgTable(
-  'api_usage',
-  {
-    spaceId: text('space_id').notNull(),
-    resource: apiUsageResourceEnum('resource').notNull(),
-    period: utcDate('period').notNull(),
-    count: integer('count').notNull().default(0),
-    nearLimitWarnedAt: timestamp('near_limit_warned_at', { precision: 3 }),
-    atLimitWarnedAt: timestamp('at_limit_warned_at', { precision: 3 }),
-    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
-  },
-  (table) => [
-    primaryKey({ name: 'api_usage_pkey', columns: [table.spaceId, table.resource, table.period] }),
-    foreignKey({
-      name: 'api_usage_space_id_fkey',
-      columns: [table.spaceId],
-      foreignColumns: [spaces.id],
-    })
-      .onDelete('cascade')
-      .onUpdate('cascade'),
-  ],
-)
 
 export const subscriptions = pgTable(
   'subscriptions',
@@ -1581,7 +1552,6 @@ export const verifications = pgTable(
 
 export const relations = defineRelations(
   {
-    apiUsage,
     subscriptions,
     paymentMethods,
     nonprofitApplications,
@@ -1622,9 +1592,6 @@ export const relations = defineRelations(
     verifications,
   },
   (r) => ({
-    apiUsage: {
-      space: r.one.spaces({ from: r.apiUsage.spaceId, to: r.spaces.id, optional: false }),
-    },
     subscriptions: {
       user: r.one.users({ from: r.subscriptions.userId, to: r.users.id, optional: false }),
       space: r.one.spaces({ from: r.subscriptions.spaceId, to: r.spaces.id, optional: false }),
@@ -1798,7 +1765,6 @@ export const relations = defineRelations(
       apiKeys: r.many.spaceApiKeys(),
       nonprofitApplications: r.many.nonprofitApplications(),
       webhooks: r.many.spaceWebhooks(),
-      apiUsage: r.many.apiUsage(),
       usage: r.many.spaceUsage(),
     },
     spaceMembers: {

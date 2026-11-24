@@ -1,7 +1,3 @@
-Enum api_usage_resource {
-  poll
-}
-
 Enum subscription_status {
   incomplete
   incomplete_expired
@@ -124,23 +120,6 @@ Enum time_format {
 Enum user_role {
   admin
   user
-}
-
-Table api_usage {
-  space_id String [not null]
-  resource api_usage_resource [not null]
-  period DateTime [not null]
-  count Int [default: 0, not null]
-  near_limit_warned_at DateTime
-  at_limit_warned_at DateTime
-  updated_at DateTime [not null]
-
-  indexes {
-    (space_id, resource, period) [pk]
-  }
-
-  Note: '''Superseded by SpaceUsage (resource api_poll). Unused; kept so old
-deployments keep working during the switch, then dropped.'''
 }
 
 Table subscriptions {
@@ -727,8 +706,6 @@ Table verifications {
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [default: `now()`, not null]
 }
-
-Ref api_usage_space_id_fk: api_usage.space_id > spaces.id [delete: cascade]
 
 Ref subscriptions_user_id_fk: subscriptions.user_id > users.id [delete: cascade]
 

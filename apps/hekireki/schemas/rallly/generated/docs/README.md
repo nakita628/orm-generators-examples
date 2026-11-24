@@ -8,8 +8,6 @@
 ```sql
 CREATE SCHEMA IF NOT EXISTS "public";
 
-CREATE TYPE "api_usage_resource" AS ENUM ('poll');
-
 CREATE TYPE "subscription_status" AS ENUM ('incomplete', 'incomplete_expired', 'active', 'paused', 'trialing', 'past_due', 'canceled', 'unpaid');
 
 CREATE TYPE "subscription_interval" AS ENUM ('month', 'year');
@@ -51,18 +49,6 @@ CREATE TYPE "webhook_delivery_status" AS ENUM ('pending', 'in_flight', 'succeede
 CREATE TYPE "time_format" AS ENUM ('hours12', 'hours24');
 
 CREATE TYPE "user_role" AS ENUM ('admin', 'user');
-
-CREATE TABLE "api_usage" (
-    "space_id" TEXT NOT NULL,
-    "resource" "api_usage_resource" NOT NULL,
-    "period" DATE NOT NULL,
-    "count" INTEGER NOT NULL DEFAULT 0,
-    "near_limit_warned_at" TIMESTAMP(3),
-    "at_limit_warned_at" TIMESTAMP(3),
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "api_usage_pkey" PRIMARY KEY ("space_id","resource","period")
-);
 
 CREATE TABLE "subscriptions" (
     "id" TEXT NOT NULL,
@@ -822,8 +808,6 @@ CREATE UNIQUE INDEX "verifications_identifier_key" ON "verifications"("identifie
 
 CREATE INDEX "verifications_identifier_idx" ON "verifications"("identifier");
 
-ALTER TABLE "api_usage" ADD CONSTRAINT "api_usage_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -939,7 +923,6 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 
 | Model                                                             | Table                           | Description                                                                                                                                            |
 | ----------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [ApiUsage](#model-ApiUsage)                                       | `api_usage`                     | Superseded by SpaceUsage (resource api_poll). Unused; kept so old deployments keep working during the switch, then dropped.                            |
 | [Subscription](#model-Subscription)                               | `subscriptions`                 |                                                                                                                                                        |
 | [PaymentMethod](#model-PaymentMethod)                             | `payment_methods`               |                                                                                                                                                        |
 | [NonprofitApplication](#model-NonprofitApplication)               | `nonprofit_applications`        |                                                                                                                                                        |
@@ -981,7 +964,6 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 
 | Enum                                                           | Name in the database            | Description |
 | -------------------------------------------------------------- | ------------------------------- | ----------- |
-| [ApiUsageResource](#enum-ApiUsageResource)                     | `api_usage_resource`            |             |
 | [SubscriptionStatus](#enum-SubscriptionStatus)                 | `subscription_status`           |             |
 | [SubscriptionInterval](#enum-SubscriptionInterval)             | `subscription_interval`         |             |
 | [NonprofitApplicationStatus](#enum-NonprofitApplicationStatus) | `nonprofit_application_status`  |             |
@@ -1005,306 +987,6 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 | [UserRole](#enum-UserRole)                                     | `user_role`                     |             |
 
 ## Models
-
-<a id="model-ApiUsage"></a>
-
-### ApiUsage
-
-Table `api_usage`. Superseded by SpaceUsage (resource api_poll). Unused; kept so old
-deployments keep working during the switch, then dropped.
-
-![ApiUsage and the models it relates to](tables/ApiUsage.svg)
-
-| Field                                        | Type                                         | Constraints                            | Default      | Description |
-| -------------------------------------------- | -------------------------------------------- | -------------------------------------- | ------------ | ----------- |
-| `spaceId` (`space_id`)                       | `String`                                     | PK NOT NULL → [Space.id](#model-Space) |              |             |
-| `resource`                                   | [`ApiUsageResource`](#enum-ApiUsageResource) | PK NOT NULL                            |              |             |
-| `period`                                     | `DateTime` `@db.Date`                        | PK NOT NULL                            |              |             |
-| `count`                                      | `Int`                                        | NOT NULL                               | `0`          |             |
-| `nearLimitWarnedAt` (`near_limit_warned_at`) | `DateTime`                                   | NULL                                   |              |             |
-| `atLimitWarnedAt` (`at_limit_warned_at`)     | `DateTime`                                   | NULL                                   |              |             |
-| `updatedAt` (`updated_at`)                   | `DateTime`                                   | NOT NULL                               | `@updatedAt` |             |
-
-#### Indexes
-
-- `@@id([spaceId, resource, period])`
-
-#### References
-
-- `spaceId` → [Space.id](#model-Space) (many-to-one, on delete Cascade)
-
-#### Definition
-
-```sql
-CREATE TABLE "api_usage" (
-    "space_id" TEXT NOT NULL,
-    "resource" "api_usage_resource" NOT NULL,
-    "period" DATE NOT NULL,
-    "count" INTEGER NOT NULL DEFAULT 0,
-    "near_limit_warned_at" TIMESTAMP(3),
-    "at_limit_warned_at" TIMESTAMP(3),
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "api_usage_pkey" PRIMARY KEY ("space_id","resource","period")
-);
-
-ALTER TABLE "api_usage" ADD CONSTRAINT "api_usage_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-```
-
-<details>
-<summary>Queries and their SQL</summary>
-
-**findMany**: Every row
-
-```ts
-await prisma.apiUsage.findMany();
-```
-
-```sql
-SELECT
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
-FROM
-  "public"."api_usage"
-WHERE
-  1 = 1
-OFFSET
-  $1
--- params: ["0"]
-```
-
-**count**: How many rows there are
-
-```ts
-await prisma.apiUsage.count();
-```
-
-```sql
-SELECT
-  COUNT(*) AS "_count$_all"
-FROM
-  (
-    SELECT
-      "public"."api_usage"."space_id",
-      "public"."api_usage"."resource",
-      "public"."api_usage"."period"
-    FROM
-      "public"."api_usage"
-    WHERE
-      1 = 1
-    OFFSET
-      $1
-  ) AS "sub"
--- params: ["0"]
-```
-
-**findMany**: Every row with its relations
-
-```ts
-await prisma.apiUsage.findMany({ include: { space: true } });
-```
-
-```sql
-SELECT
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
-FROM
-  "public"."api_usage"
-WHERE
-  1 = 1
-OFFSET
-  $1
--- params: ["0"]
-
-SELECT
-  "public"."spaces"."id",
-  "public"."spaces"."name",
-  "public"."spaces"."image",
-  "public"."spaces"."owner_id",
-  "public"."spaces"."tier"::text,
-  "public"."spaces"."space_type"::text,
-  "public"."spaces"."industry",
-  "public"."spaces"."primary_color",
-  "public"."spaces"."show_branding",
-  "public"."spaces"."hide_attribution",
-  "public"."spaces"."shared",
-  "public"."spaces"."nonprofit_discount_granted_at",
-  "public"."spaces"."api_poll_quota_override",
-  "public"."spaces"."created_at",
-  "public"."spaces"."updated_at"
-FROM
-  "public"."spaces"
-WHERE
-  "public"."spaces"."id" IN ($1)
-OFFSET
-  $2
--- params: ["<spaceId of the rows above>","0"]
-```
-
-**findUnique**: One row by what is unique to it
-
-```ts
-await prisma.apiUsage.findUnique({
-  where: {
-    spaceId_resource_period: {
-      spaceId: "example",
-      resource: "poll",
-      period: new Date("2026-01-01T00:00:00.000Z"),
-    },
-  },
-});
-```
-
-```sql
-SELECT
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
-FROM
-  "public"."api_usage"
-WHERE
-  (
-    (
-      "public"."api_usage"."space_id" = $1
-      AND "public"."api_usage"."resource" = CAST($2::text AS "public"."api_usage_resource")
-      AND "public"."api_usage"."period" = $3
-    )
-    AND 1 = 1
-  )
-LIMIT
-  $4
-OFFSET
-  $5
--- params: ["example","poll","2026-01-01T00:00:00.000Z","1","0"]
-```
-
-**create**: Create a row
-
-```ts
-await prisma.apiUsage.create({
-  data: { spaceId: "example", resource: "poll", period: new Date("2026-01-01T00:00:00.000Z") },
-});
-```
-
-```sql
-INSERT INTO
-  "public"."api_usage" (
-    "space_id",
-    "resource",
-    "period",
-    "count",
-    "updated_at"
-  )
-VALUES
-  (
-    $1,
-    CAST($2::text AS "public"."api_usage_resource"),
-    $3,
-    $4,
-    $5
-  )
-RETURNING
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
--- params: ["example","poll","2026-01-01T00:00:00.000Z","0","<now()>"]
-```
-
-**update**: Update a row
-
-```ts
-await prisma.apiUsage.update({
-  where: {
-    spaceId_resource_period: {
-      spaceId: "example",
-      resource: "poll",
-      period: new Date("2026-01-01T00:00:00.000Z"),
-    },
-  },
-  data: { count: 1 },
-});
-```
-
-```sql
-UPDATE "public"."api_usage"
-SET
-  "count" = $1,
-  "updated_at" = $2
-WHERE
-  (
-    (
-      "public"."api_usage"."space_id" = $3
-      AND "public"."api_usage"."resource" = CAST($4::text AS "public"."api_usage_resource")
-      AND "public"."api_usage"."period" = $5
-    )
-    AND 1 = 1
-  )
-RETURNING
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
--- params: ["1",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example","poll","2026-01-01T00:00:00.000Z"]
-```
-
-**delete**: Delete a row
-
-```ts
-await prisma.apiUsage.delete({
-  where: {
-    spaceId_resource_period: {
-      spaceId: "example",
-      resource: "poll",
-      period: new Date("2026-01-01T00:00:00.000Z"),
-    },
-  },
-});
-```
-
-```sql
-DELETE FROM "public"."api_usage"
-WHERE
-  (
-    (
-      "public"."api_usage"."space_id" = $1
-      AND "public"."api_usage"."resource" = CAST($2::text AS "public"."api_usage_resource")
-      AND "public"."api_usage"."period" = $3
-    )
-    AND 1 = 1
-  )
-RETURNING
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
--- params: ["example","poll","2026-01-01T00:00:00.000Z"]
-```
-
-</details>
 
 <a id="model-Subscription"></a>
 
@@ -10557,7 +10239,6 @@ Table `spaces`.
 
 #### Referenced by
 
-- `id` ← [ApiUsage.spaceId](#model-ApiUsage) (one-to-many, on delete Cascade)
 - `id` ← [Subscription.spaceId](#model-Subscription) (one-to-many, on delete Cascade)
 - `id` ← [NonprofitApplication.spaceId](#model-NonprofitApplication) (one-to-many, on delete Cascade)
 - `id` ← [EventType.spaceId](#model-EventType) (one-to-many, on delete Cascade)
@@ -10672,7 +10353,6 @@ await prisma.space.findMany({
     apiKeys: true,
     nonprofitApplications: true,
     webhooks: true,
-    apiUsage: true,
     usage: true,
   },
 });
@@ -10959,22 +10639,6 @@ FROM
   "public"."space_webhooks"
 WHERE
   "public"."space_webhooks"."space_id" IN ($1)
-OFFSET
-  $2
--- params: ["<id of the rows above>","0"]
-
-SELECT
-  "public"."api_usage"."space_id",
-  "public"."api_usage"."resource"::text,
-  "public"."api_usage"."period",
-  "public"."api_usage"."count",
-  "public"."api_usage"."near_limit_warned_at",
-  "public"."api_usage"."at_limit_warned_at",
-  "public"."api_usage"."updated_at"
-FROM
-  "public"."api_usage"
-WHERE
-  "public"."api_usage"."space_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -14446,20 +14110,6 @@ RETURNING
 </details>
 
 ## Enums
-
-<a id="enum-ApiUsageResource"></a>
-
-### ApiUsageResource
-
-Type `api_usage_resource`.
-
-- `poll`
-
-#### Definition
-
-```sql
-CREATE TYPE "api_usage_resource" AS ENUM ('poll');
-```
 
 <a id="enum-SubscriptionStatus"></a>
 
