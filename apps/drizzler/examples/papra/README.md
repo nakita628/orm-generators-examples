@@ -2,7 +2,7 @@
 
 The schema of Papra, a self-hosted document management and archiving platform: users and Better Auth, organizations, members and invitations, documents, tags and tagging rules, custom properties, intake emails, share links, webhooks, API keys, plans and subscriptions, AI credits, and a key-value store.
 
-- Source: the `*.table.ts` and `*.tables.ts` files of [papra-hq/papra `apps/papra-server/src/modules`](https://github.com/papra-hq/papra/tree/648c223b807500f0258c822e0321d6ef4964f064/apps/papra-server/src/modules), with the constants, column helpers and id generator they import, and [`packages/webhooks/src/webhooks.constants.ts`](https://github.com/papra-hq/papra/blob/648c223b807500f0258c822e0321d6ef4964f064/packages/webhooks/src/webhooks.constants.ts) (AGPL-3.0)
+- Source: the `*.table.ts` and `*.tables.ts` files of [papra-hq/papra `apps/papra-server/src/modules`](https://github.com/papra-hq/papra/tree/b4539babdae05504e64bcc215f19ded1a211b0db/apps/papra-server/src/modules), with the constants, column helpers and id generator they import, and [`packages/webhooks/src/webhooks.constants.ts`](https://github.com/papra-hq/papra/blob/b4539babdae05504e64bcc215f19ded1a211b0db/packages/webhooks/src/webhooks.constants.ts) (AGPL-3.0)
 - Dialect: SQLite (`dialect: "turso"`)
 - Covers: a `schema` array of two globs spread over feature folders, `dialect: "turso"`, columns spread from helper functions (`...createPrimaryKeyField({ prefix })`, `...createTimestampColumns()`, which spreads two more helpers), `$default` ids with cuid2, `text({ enum })` from imported constant lists, `integer` with `mode: "timestamp_ms"`, an FTS5 table, and a tsconfig `paths` alias for a workspace package (`@papra/webhooks`)
 
