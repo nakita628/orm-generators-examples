@@ -231,34 +231,6 @@ erDiagram
     core_distribution ||--o| core_openpgpdistribution : "is a, by distribution_ptr_id"
     core_openpgpdistribution ||..o{ core_userrole : "(distribution_ptr_id) - (object_id)"
     core_openpgpdistribution ||..o{ core_grouprole : "(distribution_ptr_id) - (object_id)"
-    core_contentguard ||--o| certguard_rhsmcertguard : "is a, by contentguard_ptr_id"
-    certguard_rhsmcertguard ||..o{ core_userrole : "(contentguard_ptr_id) - (object_id)"
-    certguard_rhsmcertguard ||..o{ core_grouprole : "(contentguard_ptr_id) - (object_id)"
-    core_contentguard ||--o| certguard_x509certguard : "is a, by contentguard_ptr_id"
-    certguard_x509certguard ||..o{ core_userrole : "(contentguard_ptr_id) - (object_id)"
-    certguard_x509certguard ||..o{ core_grouprole : "(contentguard_ptr_id) - (object_id)"
-    core_content ||--o| file_filecontent : "is a, by content_ptr_id"
-    core_domain ||--o{ file_filecontent : "(pulp_id) - (_pulp_domain_id)"
-    file_filecontent ||..o{ core_userrole : "(content_ptr_id) - (object_id)"
-    file_filecontent ||..o{ core_grouprole : "(content_ptr_id) - (object_id)"
-    core_remote ||--o| file_fileremote : "is a, by remote_ptr_id"
-    file_fileremote ||..o{ core_userrole : "(remote_ptr_id) - (object_id)"
-    file_fileremote ||..o{ core_grouprole : "(remote_ptr_id) - (object_id)"
-    core_remote ||--o| file_filegitremote : "is a, by remote_ptr_id"
-    file_filegitremote ||..o{ core_userrole : "(remote_ptr_id) - (object_id)"
-    file_filegitremote ||..o{ core_grouprole : "(remote_ptr_id) - (object_id)"
-    core_repository ||--o| file_filerepository : "is a, by repository_ptr_id"
-    file_filerepository ||..o{ core_userrole : "(repository_ptr_id) - (object_id)"
-    file_filerepository ||..o{ core_grouprole : "(repository_ptr_id) - (object_id)"
-    core_publication ||--o| file_filepublication : "is a, by publication_ptr_id"
-    file_filepublication ||..o{ core_userrole : "(publication_ptr_id) - (object_id)"
-    file_filepublication ||..o{ core_grouprole : "(publication_ptr_id) - (object_id)"
-    core_distribution ||--o| file_filedistribution : "is a, by distribution_ptr_id"
-    file_filedistribution ||..o{ core_userrole : "(distribution_ptr_id) - (object_id)"
-    file_filedistribution ||..o{ core_grouprole : "(distribution_ptr_id) - (object_id)"
-    core_alternatecontentsource ||--o| file_filealternatecontentsource : "is a, by alternatecontentsource_ptr_id"
-    file_filealternatecontentsource ||..o{ core_userrole : "(alternatecontentsource_ptr_id) - (object_id)"
-    file_filealternatecontentsource ||..o{ core_grouprole : "(alternatecontentsource_ptr_id) - (object_id)"
     core_content ||--o| container_blob : "is a, by content_ptr_id"
     core_domain ||--o{ container_blob : "(pulp_id) - (_pulp_domain_id)"
     container_blob ||..o{ core_userrole : "(content_ptr_id) - (object_id)"
@@ -412,6 +384,34 @@ erDiagram
     python_pythonrepository ||--o{ python_pythonblocklistentry : "(repository_ptr_id) - (repository_id)"
     python_pythonblocklistentry ||..o{ core_userrole : "(pulp_id) - (object_id)"
     python_pythonblocklistentry ||..o{ core_grouprole : "(pulp_id) - (object_id)"
+    core_contentguard ||--o| certguard_rhsmcertguard : "is a, by contentguard_ptr_id"
+    certguard_rhsmcertguard ||..o{ core_userrole : "(contentguard_ptr_id) - (object_id)"
+    certguard_rhsmcertguard ||..o{ core_grouprole : "(contentguard_ptr_id) - (object_id)"
+    core_contentguard ||--o| certguard_x509certguard : "is a, by contentguard_ptr_id"
+    certguard_x509certguard ||..o{ core_userrole : "(contentguard_ptr_id) - (object_id)"
+    certguard_x509certguard ||..o{ core_grouprole : "(contentguard_ptr_id) - (object_id)"
+    core_content ||--o| file_filecontent : "is a, by content_ptr_id"
+    core_domain ||--o{ file_filecontent : "(pulp_id) - (_pulp_domain_id)"
+    file_filecontent ||..o{ core_userrole : "(content_ptr_id) - (object_id)"
+    file_filecontent ||..o{ core_grouprole : "(content_ptr_id) - (object_id)"
+    core_remote ||--o| file_fileremote : "is a, by remote_ptr_id"
+    file_fileremote ||..o{ core_userrole : "(remote_ptr_id) - (object_id)"
+    file_fileremote ||..o{ core_grouprole : "(remote_ptr_id) - (object_id)"
+    core_remote ||--o| file_filegitremote : "is a, by remote_ptr_id"
+    file_filegitremote ||..o{ core_userrole : "(remote_ptr_id) - (object_id)"
+    file_filegitremote ||..o{ core_grouprole : "(remote_ptr_id) - (object_id)"
+    core_repository ||--o| file_filerepository : "is a, by repository_ptr_id"
+    file_filerepository ||..o{ core_userrole : "(repository_ptr_id) - (object_id)"
+    file_filerepository ||..o{ core_grouprole : "(repository_ptr_id) - (object_id)"
+    core_publication ||--o| file_filepublication : "is a, by publication_ptr_id"
+    file_filepublication ||..o{ core_userrole : "(publication_ptr_id) - (object_id)"
+    file_filepublication ||..o{ core_grouprole : "(publication_ptr_id) - (object_id)"
+    core_distribution ||--o| file_filedistribution : "is a, by distribution_ptr_id"
+    file_filedistribution ||..o{ core_userrole : "(distribution_ptr_id) - (object_id)"
+    file_filedistribution ||..o{ core_grouprole : "(distribution_ptr_id) - (object_id)"
+    core_alternatecontentsource ||--o| file_filealternatecontentsource : "is a, by alternatecontentsource_ptr_id"
+    file_filealternatecontentsource ||..o{ core_userrole : "(alternatecontentsource_ptr_id) - (object_id)"
+    file_filealternatecontentsource ||..o{ core_grouprole : "(alternatecontentsource_ptr_id) - (object_id)"
     auth_permission {
         AutoField id PK
         CharField name
@@ -1001,45 +1001,6 @@ erDiagram
     core_openpgpdistribution {
         OneToOneField distribution_ptr_id PK
     }
-    certguard_rhsmcertguard {
-        OneToOneField contentguard_ptr_id PK
-        TextField ca_certificate
-    }
-    certguard_x509certguard {
-        OneToOneField contentguard_ptr_id PK
-        TextField ca_certificate
-    }
-    file_filecontent {
-        OneToOneField content_ptr_id PK
-        TextField relative_path
-        CharField digest
-        ForeignKey _pulp_domain_id FK
-    }
-    file_fileremote {
-        OneToOneField remote_ptr_id PK
-    }
-    file_filegitremote {
-        OneToOneField remote_ptr_id PK
-        TextField git_ref
-    }
-    file_filerepository {
-        OneToOneField repository_ptr_id PK
-        TextField manifest
-        FileRepositorySha256Sums sha256sums
-        BooleanField autopublish
-        JSONField last_sync_details
-    }
-    file_filepublication {
-        OneToOneField publication_ptr_id PK
-        TextField manifest
-        FilePublicationSha256Sums sha256sums
-    }
-    file_filedistribution {
-        OneToOneField distribution_ptr_id PK
-    }
-    file_filealternatecontentsource {
-        OneToOneField alternatecontentsource_ptr_id PK
-    }
     container_blob {
         OneToOneField content_ptr_id PK
         TextField digest
@@ -1380,5 +1341,44 @@ erDiagram
         TextField filename
         TextField added_by
         ForeignKey repository_id FK
+    }
+    certguard_rhsmcertguard {
+        OneToOneField contentguard_ptr_id PK
+        TextField ca_certificate
+    }
+    certguard_x509certguard {
+        OneToOneField contentguard_ptr_id PK
+        TextField ca_certificate
+    }
+    file_filecontent {
+        OneToOneField content_ptr_id PK
+        TextField relative_path
+        CharField digest
+        ForeignKey _pulp_domain_id FK
+    }
+    file_fileremote {
+        OneToOneField remote_ptr_id PK
+    }
+    file_filegitremote {
+        OneToOneField remote_ptr_id PK
+        TextField git_ref
+    }
+    file_filerepository {
+        OneToOneField repository_ptr_id PK
+        TextField manifest
+        FileRepositorySha256Sums sha256sums
+        BooleanField autopublish
+        JSONField last_sync_details
+    }
+    file_filepublication {
+        OneToOneField publication_ptr_id PK
+        TextField manifest
+        FilePublicationSha256Sums sha256sums
+    }
+    file_filedistribution {
+        OneToOneField distribution_ptr_id PK
+    }
+    file_filealternatecontentsource {
+        OneToOneField alternatecontentsource_ptr_id PK
     }
 ```

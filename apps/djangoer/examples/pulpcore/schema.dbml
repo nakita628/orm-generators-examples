@@ -257,7 +257,7 @@ Fields:
     name (models.SlugField): Unique name of domain
     pulp_labels (HStoreField): Dictionary of string values
     description (models.TextField): Optional description of domain
-    storage_class (models.TextField): Required storage class for backend
+    storage_class (models.TextField): Historical class-path identifier for the backend
     storage_settings (EncryptedJSONField): Settings needed to configure storage backend
     redirect_to_object_storage (models.BooleanField): Redirect to object storage in content app
     hide_guarded_distributions (models.BooleanField): Hide guarded distributions in content app
