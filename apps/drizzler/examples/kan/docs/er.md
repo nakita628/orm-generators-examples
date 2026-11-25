@@ -14,6 +14,7 @@ erDiagram
     user |o--o{ board_members : "(id) - (createdBy)"
     user |o--o{ card : "(id) - (createdBy)"
     user |o--o{ card : "(id) - (deletedBy)"
+    user |o--o{ card : "(id) - (archivedBy)"
     list ||--o{ card : "(id) - (listId)"
     import |o--o{ card : "(id) - (importId)"
     card ||--o{ card_activity : "(id) - (cardId)"
@@ -172,6 +173,8 @@ erDiagram
         timestamp updatedAt
         timestamp deletedAt
         uuid deletedBy FK
+        timestamp archivedAt
+        uuid archivedBy FK
         bigint listId FK
         bigint importId FK
         timestamp dueDate

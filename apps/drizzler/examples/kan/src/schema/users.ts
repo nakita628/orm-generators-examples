@@ -37,6 +37,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   boards: many(boards, {
     relationName: "boardCreatedByUser",
   }),
+  archivedCards: many(cards, {
+    relationName: "cardsArchivedByUser",
+  }),
   deletedCards: many(cards, {
     relationName: "cardsDeletedByUser",
   }),

@@ -12,7 +12,7 @@ CREATE TYPE "board_type" AS ENUM('regular', 'template');
 
 CREATE TYPE "board_visibility" AS ENUM('private', 'public');
 
-CREATE TYPE "card_activity_type" AS ENUM('card.created', 'card.updated.title', 'card.updated.description', 'card.updated.index', 'card.updated.list', 'card.updated.label.added', 'card.updated.label.removed', 'card.updated.member.added', 'card.updated.member.removed', 'card.updated.comment.added', 'card.updated.comment.updated', 'card.updated.comment.deleted', 'card.updated.checklist.added', 'card.updated.checklist.renamed', 'card.updated.checklist.deleted', 'card.updated.checklist.item.added', 'card.updated.checklist.item.updated', 'card.updated.checklist.item.completed', 'card.updated.checklist.item.uncompleted', 'card.updated.checklist.item.deleted', 'card.updated.attachment.added', 'card.updated.attachment.removed', 'card.updated.dueDate.added', 'card.updated.dueDate.updated', 'card.updated.dueDate.removed', 'card.archived');
+CREATE TYPE "card_activity_type" AS ENUM('card.created', 'card.updated.title', 'card.updated.description', 'card.updated.index', 'card.updated.list', 'card.updated.label.added', 'card.updated.label.removed', 'card.updated.member.added', 'card.updated.member.removed', 'card.updated.comment.added', 'card.updated.comment.updated', 'card.updated.comment.deleted', 'card.updated.checklist.added', 'card.updated.checklist.renamed', 'card.updated.checklist.deleted', 'card.updated.checklist.item.added', 'card.updated.checklist.item.updated', 'card.updated.checklist.item.completed', 'card.updated.checklist.item.uncompleted', 'card.updated.checklist.item.deleted', 'card.updated.attachment.added', 'card.updated.attachment.removed', 'card.updated.dueDate.added', 'card.updated.dueDate.updated', 'card.updated.dueDate.removed', 'card.archived', 'card.unarchived', 'card.deleted');
 
 CREATE TYPE "source" AS ENUM('trello', 'github');
 
@@ -202,6 +202,8 @@ CREATE TABLE "card" (
 	"updatedAt" timestamp,
 	"deletedAt" timestamp,
 	"deletedBy" uuid,
+	"archivedAt" timestamp,
+	"archivedBy" uuid,
 	"listId" bigint NOT NULL,
 	"importId" bigint,
 	"dueDate" timestamp
@@ -529,6 +531,8 @@ CREATE INDEX "card_attachment_card_created_at_idx" ON "card_attachment" ("cardId
 
 CREATE INDEX "card_list_number_idx" ON "card" ("listId","cardNumber");
 
+CREATE INDEX "card_archived_at_idx" ON "card" ("archivedAt") WHERE "archivedAt" is not null;
+
 CREATE INDEX "card_comments_card_id_idx" ON "card_comments" ("cardId");
 
 CREATE INDEX "card_checklist_item_checklist_index_idx" ON "card_checklist_item" ("checklistId","index");
@@ -614,6 +618,8 @@ ALTER TABLE "_card_workspace_members" ADD CONSTRAINT "_card_workspace_members_tM
 ALTER TABLE "card" ADD CONSTRAINT "card_createdBy_user_id_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id") ON DELETE SET NULL;
 
 ALTER TABLE "card" ADD CONSTRAINT "card_deletedBy_user_id_fkey" FOREIGN KEY ("deletedBy") REFERENCES "user"("id") ON DELETE SET NULL;
+
+ALTER TABLE "card" ADD CONSTRAINT "card_archivedBy_user_id_fkey" FOREIGN KEY ("archivedBy") REFERENCES "user"("id") ON DELETE SET NULL;
 
 ALTER TABLE "card" ADD CONSTRAINT "card_listId_list_id_fkey" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE;
 
@@ -1825,6 +1831,8 @@ Table `card`.
 | `updatedAt`   | `timestamp` | NULL                                |                 |             |
 | `deletedAt`   | `timestamp` | NULL                                |                 |             |
 | `deletedBy`   | `uuid`      | NULL → [users.id](#table-users)     |                 |             |
+| `archivedAt`  | `timestamp` | NULL                                |                 |             |
+| `archivedBy`  | `uuid`      | NULL → [users.id](#table-users)     |                 |             |
 | `listId`      | `bigint`    | NOT NULL → [lists.id](#table-lists) |                 |             |
 | `importId`    | `bigint`    | NULL → [imports.id](#table-imports) |                 |             |
 | `dueDate`     | `timestamp` | NULL                                |                 |             |
@@ -1844,6 +1852,8 @@ CREATE TABLE "card" (
 	"updatedAt" timestamp,
 	"deletedAt" timestamp,
 	"deletedBy" uuid,
+	"archivedAt" timestamp,
+	"archivedBy" uuid,
 	"listId" bigint NOT NULL,
 	"importId" bigint,
 	"dueDate" timestamp
@@ -1853,9 +1863,13 @@ ALTER TABLE "card" ENABLE ROW LEVEL SECURITY;
 
 CREATE INDEX "card_list_number_idx" ON "card" ("listId","cardNumber");
 
+CREATE INDEX "card_archived_at_idx" ON "card" ("archivedAt") WHERE "archivedAt" is not null;
+
 ALTER TABLE "card" ADD CONSTRAINT "card_createdBy_user_id_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id") ON DELETE SET NULL;
 
 ALTER TABLE "card" ADD CONSTRAINT "card_deletedBy_user_id_fkey" FOREIGN KEY ("deletedBy") REFERENCES "user"("id") ON DELETE SET NULL;
+
+ALTER TABLE "card" ADD CONSTRAINT "card_archivedBy_user_id_fkey" FOREIGN KEY ("archivedBy") REFERENCES "user"("id") ON DELETE SET NULL;
 
 ALTER TABLE "card" ADD CONSTRAINT "card_listId_list_id_fkey" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE;
 
@@ -1865,11 +1879,13 @@ ALTER TABLE "card" ADD CONSTRAINT "card_importId_import_id_fkey" FOREIGN KEY ("i
 #### Indexes
 
 - INDEX `listId`, `cardNumber`
+- INDEX `archivedAt`
 
 #### References
 
 - `createdBy` → [users.id](#table-users) (many to one, on delete set null)
 - `deletedBy` → [users.id](#table-users) (many to one, on delete set null)
+- `archivedBy` → [users.id](#table-users) (many to one, on delete set null)
 - `listId` → [lists.id](#table-lists) (many to one, on delete cascade)
 - `importId` → [imports.id](#table-imports) (many to one)
 
@@ -1893,7 +1909,7 @@ db.select().from(cards);
 ```
 
 ```sql
-select "id", "publicId", "title", "description", "index", "cardNumber", "createdBy", "createdAt", "updatedAt", "deletedAt", "deletedBy", "listId", "importId", "dueDate"
+select "id", "publicId", "title", "description", "index", "cardNumber", "createdBy", "createdAt", "updatedAt", "deletedAt", "deletedBy", "archivedAt", "archivedBy", "listId", "importId", "dueDate"
 from "card"
 ```
 
@@ -1915,7 +1931,7 @@ db.query.cards.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."publicId" as "publicId", "d0"."title" as "title", "d0"."description" as "description", "d0"."index" as "index", "d0"."cardNumber" as "cardNumber", "d0"."createdBy" as "createdBy", "d0"."createdAt" as "createdAt", "d0"."updatedAt" as "updatedAt", "d0"."deletedAt" as "deletedAt", "d0"."deletedBy" as "deletedBy", "d0"."listId" as "listId", "d0"."importId" as "importId", "d0"."dueDate" as "dueDate"
+select "d0"."id" as "id", "d0"."publicId" as "publicId", "d0"."title" as "title", "d0"."description" as "description", "d0"."index" as "index", "d0"."cardNumber" as "cardNumber", "d0"."createdBy" as "createdBy", "d0"."createdAt" as "createdAt", "d0"."updatedAt" as "updatedAt", "d0"."deletedAt" as "deletedAt", "d0"."deletedBy" as "deletedBy", "d0"."archivedAt" as "archivedAt", "d0"."archivedBy" as "archivedBy", "d0"."listId" as "listId", "d0"."importId" as "importId", "d0"."dueDate" as "dueDate"
 from "card" as "d0"
 ```
 
@@ -1926,7 +1942,7 @@ db.query.cards.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."publicId" as "publicId", "d0"."title" as "title", "d0"."description" as "description", "d0"."index" as "index", "d0"."cardNumber" as "cardNumber", "d0"."createdBy" as "createdBy", "d0"."createdAt" as "createdAt", "d0"."updatedAt" as "updatedAt", "d0"."deletedAt" as "deletedAt", "d0"."deletedBy" as "deletedBy", "d0"."listId" as "listId", "d0"."importId" as "importId", "d0"."dueDate" as "dueDate"
+select "d0"."id" as "id", "d0"."publicId" as "publicId", "d0"."title" as "title", "d0"."description" as "description", "d0"."index" as "index", "d0"."cardNumber" as "cardNumber", "d0"."createdBy" as "createdBy", "d0"."createdAt" as "createdAt", "d0"."updatedAt" as "updatedAt", "d0"."deletedAt" as "deletedAt", "d0"."deletedBy" as "deletedBy", "d0"."archivedAt" as "archivedAt", "d0"."archivedBy" as "archivedBy", "d0"."listId" as "listId", "d0"."importId" as "importId", "d0"."dueDate" as "dueDate"
 from "card" as "d0"
 where "d0"."id" = $1
 limit $2
@@ -1940,8 +1956,8 @@ db.insert(cards).values({ publicId: "publicId", title: "title", index: 1, listId
 ```
 
 ```sql
-insert into "card" ("id", "publicId", "title", "description", "index", "cardNumber", "createdBy", "createdAt", "updatedAt", "deletedAt", "deletedBy", "listId", "importId", "dueDate")
-values (default, $1, $2, default, $3, default, default, default, default, default, default, $4, default, default)
+insert into "card" ("id", "publicId", "title", "description", "index", "cardNumber", "createdBy", "createdAt", "updatedAt", "deletedAt", "deletedBy", "archivedAt", "archivedBy", "listId", "importId", "dueDate")
+values (default, $1, $2, default, $3, default, default, default, default, default, default, default, default, $4, default, default)
 -- params: ["publicId","title",1,1]
 ```
 
@@ -4519,6 +4535,7 @@ ALTER TABLE "user" ENABLE ROW LEVEL SECURITY;
 - `id` → [boardMembers.createdBy](#table-boardMembers) (one to many, on delete set null)
 - `id` → [cards.createdBy](#table-cards) (one to many, on delete set null)
 - `id` → [cards.deletedBy](#table-cards) (one to many, on delete set null)
+- `id` → [cards.archivedBy](#table-cards) (one to many, on delete set null)
 - `id` → [cardActivities.createdBy](#table-cardActivities) (one to many, on delete set null)
 - `id` → [comments.createdBy](#table-comments) (one to many, on delete set null)
 - `id` → [comments.deletedBy](#table-comments) (one to many, on delete set null)
@@ -5540,11 +5557,13 @@ Type `card_activity_type`.
 - `card.updated.dueDate.updated`
 - `card.updated.dueDate.removed`
 - `card.archived`
+- `card.unarchived`
+- `card.deleted`
 
 #### Definition
 
 ```sql
-CREATE TYPE "card_activity_type" AS ENUM('card.created', 'card.updated.title', 'card.updated.description', 'card.updated.index', 'card.updated.list', 'card.updated.label.added', 'card.updated.label.removed', 'card.updated.member.added', 'card.updated.member.removed', 'card.updated.comment.added', 'card.updated.comment.updated', 'card.updated.comment.deleted', 'card.updated.checklist.added', 'card.updated.checklist.renamed', 'card.updated.checklist.deleted', 'card.updated.checklist.item.added', 'card.updated.checklist.item.updated', 'card.updated.checklist.item.completed', 'card.updated.checklist.item.uncompleted', 'card.updated.checklist.item.deleted', 'card.updated.attachment.added', 'card.updated.attachment.removed', 'card.updated.dueDate.added', 'card.updated.dueDate.updated', 'card.updated.dueDate.removed', 'card.archived');
+CREATE TYPE "card_activity_type" AS ENUM('card.created', 'card.updated.title', 'card.updated.description', 'card.updated.index', 'card.updated.list', 'card.updated.label.added', 'card.updated.label.removed', 'card.updated.member.added', 'card.updated.member.removed', 'card.updated.comment.added', 'card.updated.comment.updated', 'card.updated.comment.deleted', 'card.updated.checklist.added', 'card.updated.checklist.renamed', 'card.updated.checklist.deleted', 'card.updated.checklist.item.added', 'card.updated.checklist.item.updated', 'card.updated.checklist.item.completed', 'card.updated.checklist.item.uncompleted', 'card.updated.checklist.item.deleted', 'card.updated.attachment.added', 'card.updated.attachment.removed', 'card.updated.dueDate.added', 'card.updated.dueDate.updated', 'card.updated.dueDate.removed', 'card.archived', 'card.unarchived', 'card.deleted');
 ```
 
 <a id="enum-importSourceEnum"></a>

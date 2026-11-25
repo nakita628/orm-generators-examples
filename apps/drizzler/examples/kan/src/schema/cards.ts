@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm/_relations";
 import {
   bigint,
@@ -48,6 +49,8 @@ export const activityTypes = [
   "card.updated.dueDate.updated",
   "card.updated.dueDate.removed",
   "card.archived",
+  "card.unarchived",
+  "card.deleted",
 ] as const;
 
 export type ActivityType = (typeof activityTypes)[number];
@@ -72,6 +75,10 @@ export const cards = pgTable(
     deletedBy: uuid("deletedBy").references(() => users.id, {
       onDelete: "set null",
     }),
+    archivedAt: timestamp("archivedAt"),
+    archivedBy: uuid("archivedBy").references(() => users.id, {
+      onDelete: "set null",
+    }),
     listId: bigint("listId", { mode: "number" })
       .notNull()
       .references(() => lists.id, { onDelete: "cascade" }),
@@ -82,6 +89,9 @@ export const cards = pgTable(
   },
   (table) => [
     index("card_list_number_idx").on(table.listId, table.cardNumber),
+    index("card_archived_at_idx")
+      .on(table.archivedAt)
+      .where(sql`${table.archivedAt} is not null`),
   ],
 ).enableRLS();
 
@@ -100,6 +110,11 @@ export const cardsRelations = relations(cards, ({ one, many }) => ({
     fields: [cards.deletedBy],
     references: [users.id],
     relationName: "cardsDeletedByUser",
+  }),
+  archivedBy: one(users, {
+    fields: [cards.archivedBy],
+    references: [users.id],
+    relationName: "cardsArchivedByUser",
   }),
   labels: many(cardsToLabels),
   members: many(cardToWorkspaceMembers),

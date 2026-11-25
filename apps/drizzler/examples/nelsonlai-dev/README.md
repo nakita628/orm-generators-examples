@@ -1,16 +1,15 @@
 # nelsonlai-dev
 
-The schema of nelsonlai.dev, Nelson Lai's popular open-source personal website: Better Auth users, sessions, accounts and verifications, posts, likes, comments and their votes, guestbook messages, settings and unsubscribes.
+The schema of nelsonlai.dev, Nelson Lai's popular open-source personal website: Better Auth users (with the admin plugin's role and ban columns), sessions, accounts and verifications, posts and their likes, comments and their votes, guestbook messages, comment notification preferences and comment reply unsubscribes, with drizzle-orm 1.0 relations.
 
-- Source: [nelsonlaidev/nelsonlai.dev `src/db/schemas`](https://github.com/nelsonlaidev/nelsonlai.dev/tree/c0d625e37123f57703ef94977d92b08c0f8ed4ac/src/db/schemas) and [`src/db/constants.ts`](https://github.com/nelsonlaidev/nelsonlai.dev/blob/c0d625e37123f57703ef94977d92b08c0f8ed4ac/src/db/constants.ts) (MIT)
+- Source: [nelsonlaidev/nelsonlai.dev `packages/db/src/schema`](https://github.com/nelsonlaidev/nelsonlai.dev/tree/3cf0c572d3d6b20ebf0092435efb70901d18af8f/packages/db/src/schema) and [`relations.ts`](https://github.com/nelsonlaidev/nelsonlai.dev/blob/3cf0c572d3d6b20ebf0092435efb70901d18af8f/packages/db/src/relations.ts) (MIT)
 - Dialect: PostgreSQL
-- Covers: indexes on `.desc()` columns and partial indexes (`.where()`), a gin index on `to_tsvector(...)`, `pgEnum`, `check` constraints, `$defaultFn(() => createId())` with cuid2, self-referencing comments, and v1 `relations`
+- Covers: `defineRelations` in its own file (one-to-one, one-to-many, and an `alias` for the self-referencing comments), indexes on `.desc().nullsFirst()` columns, a `check` constraint, composite primary keys, a self-referencing `foreignKey` with `onDelete('restrict')`, `$defaultFn(() => createId())` with cuid2, and column helpers that wrap `timestamp` (`timestamptz`, `createdAt`, `updatedAt` with `$onUpdateFn`)
 
 ## Changes from upstream
 
-- `relations` is imported from `drizzle-orm/_relations` instead of `drizzle-orm`, because drizzle-orm 1.0 moved the v1 relational API there.
-- `src/db/constants.ts` is copied as it is, with `@paralleldrive/cuid2` at upstream's version.
-- `drizzle.config.ts` drops the env loading and the database URL.
+- `schema/` and `relations.ts` are copied as they are, into `src/`.
+- `drizzle.config.ts` lists `relations.ts` next to `schema/index.ts` in `schema`, so drizzler reads the relations too, and drops the env loading and the database URL.
 
 ## Generate
 

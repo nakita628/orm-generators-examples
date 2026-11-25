@@ -1,26 +1,41 @@
 ```mermaid
 erDiagram
-    users ||--o{ accounts : "(id) - (user_id)"
     users ||--o{ sessions : "(id) - (user_id)"
-    users ||--o{ comments : "(id) - (user_id)"
-    posts ||--o{ comments : "(slug) - (post_id)"
+    users ||--o{ accounts : "(id) - (user_id)"
+    posts ||--o{ comments : "(slug) - (post_slug)"
+    users |o--o{ comments : "(id) - (user_id)"
     comments |o--o{ comments : "(id) - (parent_id)"
-    users ||--o{ votes : "(id) - (user_id)"
-    comments ||--o{ votes : "(id) - (comment_id)"
-    users ||--o{ messages : "(id) - (user_id)"
-    posts ||--o{ post_likes : "(slug) - (post_id)"
-    users ||--o| settings : "(id) - (user_id)"
-    users ||--o{ unsubscribes : "(id) - (user_id)"
-    comments |o--o{ unsubscribes : "(id) - (comment_id)"
+    users ||--o{ comment_votes : "(id) - (user_id)"
+    comments ||--o{ comment_votes : "(id) - (comment_id)"
+    users ||--o| comment_notification_preferences : "(id) - (user_id)"
+    users ||--o{ comment_reply_unsubscribes : "(id) - (user_id)"
+    comments ||--o{ comment_reply_unsubscribes : "(id) - (comment_id)"
+    users ||--o{ guestbook_messages : "(id) - (user_id)"
+    posts ||--o{ post_likes : "(slug) - (post_slug)"
     users {
         text id PK
         text name
         text email
         boolean email_verified
         text image
+        text role
+        boolean banned
+        text ban_reason
+        timestamptz ban_expires
+        text last_login_method
         timestamptz created_at
         timestamptz updated_at
-        role role "Extra columns"
+    }
+    sessions {
+        text id PK
+        timestamptz expires_at
+        text token
+        text ip_address
+        text user_agent
+        text user_id FK
+        text impersonated_by
+        timestamptz created_at
+        timestamptz updated_at
     }
     accounts {
         text id PK
@@ -37,16 +52,6 @@ erDiagram
         timestamptz created_at
         timestamptz updated_at
     }
-    sessions {
-        text id PK
-        timestamptz expires_at
-        text token
-        timestamptz created_at
-        timestamptz updated_at
-        text ip_address
-        text user_agent
-        text user_id FK
-    }
     verifications {
         text id PK
         text identifier
@@ -58,22 +63,27 @@ erDiagram
     comments {
         text id PK
         text body
+        text post_slug FK
         text user_id FK
-        timestamptz created_at
-        timestamptz updated_at
-        text post_id FK
         text parent_id FK
         boolean is_deleted
-        integer reply_count
-        integer like_count
-        integer dislike_count
+        timestamptz created_at
+        timestamptz updated_at
     }
-    votes {
+    comment_votes {
         text user_id PK, FK
         text comment_id PK, FK
         boolean is_like
     }
-    messages {
+    comment_notification_preferences {
+        text user_id PK, FK
+        boolean comment_replies_enabled
+    }
+    comment_reply_unsubscribes {
+        text user_id PK, FK
+        text comment_id PK, FK
+    }
+    guestbook_messages {
         text id PK
         text body
         text user_id FK
@@ -81,30 +91,15 @@ erDiagram
         timestamptz updated_at
     }
     posts {
-        timestamptz created_at
         text slug PK
         integer likes
         integer views
+        timestamptz created_at
     }
     post_likes {
-        text post_id PK, FK
+        text post_slug PK, FK
         text anon_key PK
         integer like_count
         timestamptz created_at
-        timestamptz updated_at
-    }
-    settings {
-        text user_id PK, FK
-        boolean reply_notifications_enabled
-        timestamptz created_at
-        timestamptz updated_at
-    }
-    unsubscribes {
-        text id PK
-        text user_id FK
-        unsubscribe_type type
-        text comment_id FK
-        timestamptz created_at
-        timestamptz updated_at
     }
 ```

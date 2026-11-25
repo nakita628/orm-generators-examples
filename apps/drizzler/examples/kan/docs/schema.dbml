@@ -120,11 +120,14 @@ Table card {
   updatedAt timestamp
   deletedAt timestamp
   deletedBy uuid
+  archivedAt timestamp
+  archivedBy uuid
   listId bigint [not null]
   importId bigint
   dueDate timestamp
   indexes {
     (listId, cardNumber) [name: 'card_list_number_idx']
+    (archivedAt) [name: 'card_archived_at_idx']
   }
 }
 
@@ -505,6 +508,8 @@ Ref board_members_createdBy_user_id_fk: board_members.createdBy > user.id [delet
 Ref card_createdBy_user_id_fk: card.createdBy > user.id [delete: set null]
 
 Ref card_deletedBy_user_id_fk: card.deletedBy > user.id [delete: set null]
+
+Ref card_archivedBy_user_id_fk: card.archivedBy > user.id [delete: set null]
 
 Ref card_listId_list_id_fk: card.listId > list.id [delete: cascade]
 

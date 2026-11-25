@@ -4,7 +4,7 @@
     "name": "onlook",
     "target": "*",
     "issue": null,
-    "reason": "onlook-dev/onlook rewrote the project as a local-first desktop app (apps/studio); packages/db, packages/models and packages/stripe, and every Drizzle/Supabase schema file, are gone at HEAD 03e3f0b9, so the example stays at its last Drizzle schema (993068a8)"
+    "reason": "onlook-dev/onlook rewrote the project as a local-first desktop app (apps/studio); packages/db, packages/models and packages/stripe, and every Drizzle/Supabase schema file, are gone at HEAD 20e374e0, so the example stays at its last Drizzle schema (993068a8)"
   },
   {
     "app": "djangoer",
