@@ -33,6 +33,12 @@ object DashboardsV2Table : IdTable<String>("\"DashboardsV2\"") {
     val organizationId = text("organizationId").nullable()
 
     /**
+     * The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+     * decision 8). Every board made before homes existed is llm-ops.
+     */
+    val homeProduct = text("homeProduct").default("llm-ops")
+
+    /**
      * Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
      * 2026-10-28); dropped in a later migration, once no serving release reads it.
      */

@@ -470,6 +470,8 @@ CREATE TABLE "Recipient" (
 CREATE TABLE "Field" (
     "id" SERIAL NOT NULL,
     "secondaryId" TEXT NOT NULL,
+    "externalId" VARCHAR(255),
+    "groupId" VARCHAR(255),
     "envelopeId" TEXT NOT NULL,
     "envelopeItemId" TEXT NOT NULL,
     "recipientId" INTEGER NOT NULL,
@@ -7179,6 +7181,8 @@ OFFSET
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -7771,6 +7775,8 @@ OFFSET
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9297,6 +9303,8 @@ OFFSET
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9566,6 +9574,8 @@ RETURNING
 | ---------------- | ------------------------------ | ------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------ |
 | `id`             | `Int`                          | PK NOT NULL                                       | `autoincrement()` |                                                                                      |
 | `secondaryId`    | `String`                       | UNIQUE NOT NULL                                   | `cuid(1)`         |                                                                                      |
+| `externalId`     | `String` `@db.VarChar(255)`    | NULL                                              |                   |                                                                                      |
+| `groupId`        | `String` `@db.VarChar(255)`    | NULL                                              |                   |                                                                                      |
 | `envelopeId`     | `String`                       | NOT NULL → [Envelope.id](#model-Envelope)         |                   |                                                                                      |
 | `envelopeItemId` | `String`                       | NOT NULL → [EnvelopeItem.id](#model-EnvelopeItem) |                   |                                                                                      |
 | `recipientId`    | `Int`                          | NOT NULL → [Recipient.id](#model-Recipient)       |                   |                                                                                      |
@@ -9601,6 +9611,8 @@ RETURNING
 CREATE TABLE "Field" (
     "id" SERIAL NOT NULL,
     "secondaryId" TEXT NOT NULL,
+    "externalId" VARCHAR(255),
+    "groupId" VARCHAR(255),
     "envelopeId" TEXT NOT NULL,
     "envelopeItemId" TEXT NOT NULL,
     "recipientId" INTEGER NOT NULL,
@@ -9645,6 +9657,8 @@ await prisma.field.findMany();
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9701,6 +9715,8 @@ await prisma.field.findMany({
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9826,6 +9842,8 @@ await prisma.field.findUnique({ where: { id: 1 } });
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9902,6 +9920,8 @@ VALUES
 RETURNING
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9935,6 +9955,8 @@ WHERE
 RETURNING
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -9966,6 +9988,8 @@ WHERE
 RETURNING
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",
@@ -10635,6 +10659,8 @@ OFFSET
 SELECT
   "public"."Field"."id",
   "public"."Field"."secondaryId",
+  "public"."Field"."externalId",
+  "public"."Field"."groupId",
   "public"."Field"."envelopeId",
   "public"."Field"."envelopeItemId",
   "public"."Field"."recipientId",

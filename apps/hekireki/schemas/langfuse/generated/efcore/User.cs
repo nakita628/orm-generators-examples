@@ -75,6 +75,8 @@ public partial class User
 
     public virtual ICollection<TracingReadinessSettings> TracingReadinessUpdated { get; set; } = new List<TracingReadinessSettings>();
 
+    public virtual ICollection<GatewayGuardrail> GatewayGuardrailsCreated { get; set; } = new List<GatewayGuardrail>();
+
     public virtual ICollection<AnnotationQueueAssignment> AnnotationQueueAssignment { get; set; } = new List<AnnotationQueueAssignment>();
 
     public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
@@ -104,4 +106,6 @@ public partial class User
     public virtual ICollection<GatewaySpendLimit> GatewaySpendLimitsOwned { get; set; } = new List<GatewaySpendLimit>();
 
     public virtual ICollection<GatewaySpendLimit> GatewaySpendLimits { get; set; } = new List<GatewaySpendLimit>();
+
+    public virtual ICollection<GatewayGuardrailAssignment> GatewayGuardrailAssignments { get; set; } = new List<GatewayGuardrailAssignment>();
 }

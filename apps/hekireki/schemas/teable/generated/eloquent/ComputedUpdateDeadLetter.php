@@ -46,6 +46,7 @@ class ComputedUpdateDeadLetter extends Model
         'predecessor_task_id',
         'trace_data',
         'failed_at',
+        'delete_authorized_txid',
     ];
 
     protected $attributes = [
@@ -78,6 +79,7 @@ class ComputedUpdateDeadLetter extends Model
         'stage_depth' => 'integer',
         'trace_data' => 'array',
         'failed_at' => 'datetime',
+        'delete_authorized_txid' => 'integer',
     ];
 
     public function seeds(): HasMany

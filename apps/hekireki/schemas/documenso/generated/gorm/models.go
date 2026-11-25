@@ -885,12 +885,14 @@ func (Recipient) TableName() string {
 
 // @zod.import(["import { ZFieldMetaNotOptionalSchema } from '@documenso/lib/types/field-meta';"])
 type Field struct {
-	ID             int    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	SecondaryID    string `gorm:"column:secondaryId;uniqueIndex:Field_secondaryId_key;not null" json:"secondaryId"`
-	EnvelopeID     string `gorm:"column:envelopeId;index:Field_envelopeId_idx;not null" json:"envelopeId"`
-	EnvelopeItemID string `gorm:"column:envelopeItemId;index:Field_envelopeItemId_idx;not null" json:"envelopeItemId"`
-	RecipientID    int    `gorm:"column:recipientId;index:Field_recipientId_idx;size:32;not null" json:"recipientId"`
-	Type           string `gorm:"column:type;not null" json:"type"`
+	ID             int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	SecondaryID    string  `gorm:"column:secondaryId;uniqueIndex:Field_secondaryId_key;not null" json:"secondaryId"`
+	ExternalID     *string `gorm:"column:externalId;type:varchar(255)" json:"externalId"`
+	GroupID        *string `gorm:"column:groupId;type:varchar(255)" json:"groupId"`
+	EnvelopeID     string  `gorm:"column:envelopeId;index:Field_envelopeId_idx;not null" json:"envelopeId"`
+	EnvelopeItemID string  `gorm:"column:envelopeItemId;index:Field_envelopeItemId_idx;not null" json:"envelopeItemId"`
+	RecipientID    int     `gorm:"column:recipientId;index:Field_recipientId_idx;size:32;not null" json:"recipientId"`
+	Type           string  `gorm:"column:type;not null" json:"type"`
 	// @zod.number.describe("The page number of the field on the document. Starts from 1.")
 	Page       int      `gorm:"column:page;size:32;not null" json:"page"`
 	PositionX  float64  `gorm:"column:positionX;type:decimal(65,30);default:0;not null" json:"positionX"`

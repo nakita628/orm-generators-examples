@@ -29,6 +29,8 @@ public partial class TableMeta
 
     public ProvisionState ProvisionState { get; set; } = ProvisionState.Ready;
 
+    public int ActorStorageVersion { get; set; } = 0;
+
     public int Version { get; set; }
 
     public double Order { get; set; }

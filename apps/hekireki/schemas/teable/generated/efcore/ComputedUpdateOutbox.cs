@@ -63,6 +63,8 @@ public partial class ComputedUpdateOutbox
 
     public string? PredecessorTaskId { get; set; }
 
+    public int? DeadLetterRestoreVersion { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

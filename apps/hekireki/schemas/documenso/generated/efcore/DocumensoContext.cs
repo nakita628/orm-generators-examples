@@ -1411,6 +1411,12 @@ public partial class DocumensoContext : DbContext
             entity.Property(e => e.SecondaryId)
                 .HasValueGenerator<CuidGenerator>()
                 .HasColumnName("secondaryId");
+            entity.Property(e => e.ExternalId)
+                .HasMaxLength(255)
+                .HasColumnName("externalId");
+            entity.Property(e => e.GroupId)
+                .HasMaxLength(255)
+                .HasColumnName("groupId");
             entity.Property(e => e.EnvelopeId).HasColumnName("envelopeId");
             entity.Property(e => e.EnvelopeItemId).HasColumnName("envelopeItemId");
             entity.Property(e => e.RecipientId).HasColumnName("recipientId");

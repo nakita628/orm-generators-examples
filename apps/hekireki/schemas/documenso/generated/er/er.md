@@ -398,6 +398,8 @@ erDiagram
     Field {
         int id PK
         string secondaryId UK
+        string externalId
+        string groupId
         string envelopeId FK
         string envelopeItemId FK
         int recipientId FK

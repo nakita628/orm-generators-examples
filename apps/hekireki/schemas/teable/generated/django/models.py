@@ -320,6 +320,7 @@ class TableMeta(models.Model):
     search_index_policy = models.JSONField(null=True)
     query_index_policy = models.JSONField(null=True)
     provision_state = models.TextField(choices=ProvisionState.choices, default=ProvisionState.ready)
+    actor_storage_version = models.IntegerField(default=0)
     version = models.IntegerField()
     order = models.FloatField()
     created_time = UtcDateTimeField(default=now_milliseconds)
@@ -426,6 +427,8 @@ class Field(models.Model):
     is_conditional_lookup = models.BooleanField(null=True)
     is_pending = models.BooleanField(null=True)
     has_error = models.BooleanField(null=True)
+    needs_periodic_refresh = models.BooleanField(default=False)
+    refresh_cadence = models.CharField(max_length=16, null=True)
     lookup_linked_field_id = models.TextField(null=True)
     lookup_options = models.TextField(null=True)
     table = models.ForeignKey("TableMeta", on_delete=models.RESTRICT, related_name="fields", db_index=False)
@@ -504,6 +507,35 @@ class DomainEventInbox(models.Model):
         ]
 
 
+class FieldPeriodicRefreshState(models.Model):
+    field = models.OneToOneField("Field", on_delete=models.CASCADE, related_name="periodic_refresh_state", primary_key=True)
+    table_id = models.TextField()
+    base_id = models.TextField()
+    enabled = models.BooleanField(default=True)
+    time_zone = models.CharField(max_length=64, default="UTC")
+    contains_now_precision = models.BooleanField(default=False)
+    last_refreshed_at = models.DateTimeField(null=True)
+    last_refreshed_local_date = models.CharField(max_length=16, null=True)
+    last_range_hash = models.CharField(max_length=128, null=True)
+    last_status = models.CharField(max_length=32, default="idle")
+    last_error = models.TextField(null=True)
+    pending_task_id = models.CharField(max_length=64, null=True)
+    pending_local_date = models.CharField(max_length=16, null=True)
+    pending_range_hash = models.CharField(max_length=128, null=True)
+    pending_started_at = models.DateTimeField(null=True)
+    created_time = models.DateTimeField(default=now_milliseconds)
+    last_modified_time = AutoNowDateTimeField(null=True, auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "field_periodic_refresh_state"
+        indexes = [
+            models.Index(fields=["base_id", "enabled"]),
+            models.Index(fields=["table_id"]),
+            models.Index(fields=["enabled", "last_refreshed_local_date"]),
+        ]
+
+
 class ComputedUpdateOutbox(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField()
@@ -533,6 +565,7 @@ class ComputedUpdateOutbox(models.Model):
     source_changed_at = UtcDateTimeField(null=True)
     stage_depth = models.IntegerField(default=0)
     predecessor_task_id = models.TextField(null=True)
+    dead_letter_restore_version = models.IntegerField(null=True)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -637,6 +670,7 @@ class ComputedUpdateDeadLetter(models.Model):
     failed_at = UtcDateTimeField()
     created_at = UtcDateTimeField()
     updated_at = UtcDateTimeField()
+    delete_authorized_txid = models.BigIntegerField(null=True)
 
     class Meta:
         db_table = "computed_update_dead_letter"
@@ -1146,6 +1180,8 @@ class RecordHistory(models.Model):
     after = models.TextField()
     created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
+    actor_type = models.TextField(null=True)
+    actor_id = models.TextField(null=True)
 
     class Meta:
         db_table = "record_history"

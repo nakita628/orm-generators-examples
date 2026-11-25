@@ -39,6 +39,7 @@ class ComputedUpdateOutboxEntity(
     var sourceChangedAt by ComputedUpdateOutboxTable.sourceChangedAt
     var stageDepth by ComputedUpdateOutboxTable.stageDepth
     var predecessorTaskId by ComputedUpdateOutboxTable.predecessorTaskId
+    var deadLetterRestoreVersion by ComputedUpdateOutboxTable.deadLetterRestoreVersion
     var createdAt by ComputedUpdateOutboxTable.createdAt
     var updatedAt by ComputedUpdateOutboxTable.updatedAt
     val seeds by ComputedUpdateOutboxSeedEntity referrersOn ComputedUpdateOutboxSeedTable.taskId

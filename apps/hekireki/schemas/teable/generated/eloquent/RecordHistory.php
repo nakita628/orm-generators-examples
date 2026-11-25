@@ -25,6 +25,8 @@ class RecordHistory extends Model
         'after',
         'created_time',
         'created_by',
+        'actor_type',
+        'actor_id',
     ];
 
     protected $casts = [

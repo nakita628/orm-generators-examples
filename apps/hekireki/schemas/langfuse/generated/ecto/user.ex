@@ -39,6 +39,7 @@ defmodule Langfuse.User do
           topic_configs_updated: [Langfuse.TopicConfig.t()],
           tracing_readiness_created: [Langfuse.TracingReadinessSettings.t()],
           tracing_readiness_updated: [Langfuse.TracingReadinessSettings.t()],
+          gateway_guardrails_created: [Langfuse.GatewayGuardrail.t()],
           annotation_queue_assignment: [Langfuse.AnnotationQueueAssignment.t()],
           surveys: [Langfuse.Survey.t()],
           comment_reactions: [Langfuse.CommentReaction.t()],
@@ -53,7 +54,8 @@ defmodule Langfuse.User do
           evaluator_versions_created: [Langfuse.EvaluatorVersion.t()],
           evaluation_rules_created: [Langfuse.EvaluationRule.t()],
           gateway_spend_limits_owned: [Langfuse.GatewaySpendLimit.t()],
-          gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()]
+          gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()],
+          gateway_guardrail_assignments: [Langfuse.GatewayGuardrailAssignment.t()]
         }
 
   schema "users" do
@@ -89,6 +91,7 @@ defmodule Langfuse.User do
     has_many(:topic_configs_updated, Langfuse.TopicConfig, foreign_key: :updated_by, references: :id)
     has_many(:tracing_readiness_created, Langfuse.TracingReadinessSettings, foreign_key: :created_by, references: :id)
     has_many(:tracing_readiness_updated, Langfuse.TracingReadinessSettings, foreign_key: :updated_by, references: :id)
+    has_many(:gateway_guardrails_created, Langfuse.GatewayGuardrail, foreign_key: :created_by, references: :id)
     has_many(:annotation_queue_assignment, Langfuse.AnnotationQueueAssignment, foreign_key: :user_id, references: :id)
     has_many(:surveys, Langfuse.Survey, foreign_key: :user_id, references: :id)
     has_many(:comment_reactions, Langfuse.CommentReaction, foreign_key: :user_id, references: :id)
@@ -104,6 +107,7 @@ defmodule Langfuse.User do
     has_many(:evaluation_rules_created, Langfuse.EvaluationRule, foreign_key: :created_by_user_id, references: :id)
     has_many(:gateway_spend_limits_owned, Langfuse.GatewaySpendLimit, foreign_key: :owner_user_id, references: :id)
     has_many(:gateway_spend_limits, Langfuse.GatewaySpendLimit, foreign_key: :user_id, references: :id)
+    has_many(:gateway_guardrail_assignments, Langfuse.GatewayGuardrailAssignment, foreign_key: :user_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end
 end

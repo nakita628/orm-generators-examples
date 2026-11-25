@@ -31,6 +31,7 @@ pub mod domain_event_delivery;
 pub mod domain_event_inbox;
 pub mod domain_event_outbox;
 pub mod field;
+pub mod field_periodic_refresh_state;
 pub mod integration;
 pub mod invitation;
 pub mod invitation_record;

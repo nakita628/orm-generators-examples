@@ -47,6 +47,8 @@ pub struct Model {
     pub coding_first_days: Vec<i32>,
     #[sea_orm(column_name = "lastTraceAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_trace_at: Option<DateTime>,
+    #[sea_orm(column_name = "adminAt", column_type = "custom(\"timestamp(3)\")")]
+    pub admin_at: Option<DateTime>,
     #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }

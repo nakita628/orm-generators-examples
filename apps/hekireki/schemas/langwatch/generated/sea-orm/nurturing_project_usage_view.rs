@@ -3,15 +3,16 @@ use serde::{Deserialize, Serialize};
 
 /// Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
 /// and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-/// organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+/// organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "NurturingProjectUsageView")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    /// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-    /// or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+    /// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+    /// Evaluation days are not kept here: the evaluation-days map and its replay write them to
+    /// NurturingProjectEvaluationDay.
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_type = "Text")]
     pub owner: String,

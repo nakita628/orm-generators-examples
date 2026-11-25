@@ -1,4 +1,5 @@
 class TableMeta < ApplicationRecord
+  attribute :actor_storage_version, default: 0
   alias_attribute :updated_at, :last_modified_time
 
   enum :provision_state, { pending: "pending", ready: "ready", error: "error", deleting: "deleting" }, default: :ready,

@@ -49,6 +49,12 @@ export type GatewaySpendLimitInterval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'TOTAL'
 
 export type GatewaySpendLimitAlertType = 'WARNING' | 'EXCEEDED'
 
+export type GatewayGuardrailType = 'REGEX' | 'BEDROCK'
+
+export type GatewayGuardrailAction = 'BLOCK' | 'LOG' | 'REDACT'
+
+export type GatewayGuardrailAssignmentScope = 'ORGANIZATION' | 'API_KEY' | 'USER'
+
 export type InAppAgentConversationVisibilityScope = 'PERSONAL' | 'PROJECT'
 
 export type Role = 'OWNER' | 'ADMIN' | 'MEMBER' | 'VIEWER' | 'NONE' | 'AI_GATEWAY'
@@ -331,6 +337,29 @@ export interface GatewaySpendLimitAlert {
   threshold_percent: Generated<number>
   counting_started_at: Timestamp
   window_start: Timestamp
+  created_at: Generated<Timestamp>
+}
+
+export interface GatewayGuardrail {
+  id: string
+  organization_id: string
+  name: string
+  type: Generated<GatewayGuardrailType>
+  action: GatewayGuardrailAction
+  config: Generated<unknown>
+  encrypted_credentials: string | null
+  created_by: string | null
+  created_at: Generated<Timestamp>
+  updated_at: Generated<Timestamp>
+}
+
+export interface GatewayGuardrailAssignment {
+  id: string
+  guardrail_id: string
+  organization_id: string
+  scope: GatewayGuardrailAssignmentScope
+  api_key_id: string | null
+  user_id: string | null
   created_at: Generated<Timestamp>
 }
 
@@ -1350,6 +1379,8 @@ export interface DB {
   gateway_api_key_associations: GatewayApiKeyAssociation
   gateway_spend_limits: GatewaySpendLimit
   gateway_spend_limit_alerts: GatewaySpendLimitAlert
+  gateway_guardrails: GatewayGuardrail
+  gateway_guardrail_assignments: GatewayGuardrailAssignment
   in_app_agent_conversations: InAppAgentConversation
   in_app_agent_events: InAppAgentEvent
   in_app_agent_runs: InAppAgentRun

@@ -23,6 +23,7 @@ defmodule LangWatch.NurturingOrganization do
           coding_repository_keys: [String.t()],
           coding_first_days: [integer()],
           last_trace_at: DateTime.t() | nil,
+          admin_at: DateTime.t() | nil,
           updated_at: DateTime.t()
         }
 
@@ -40,6 +41,7 @@ defmodule LangWatch.NurturingOrganization do
     field(:coding_repository_keys, {:array, :string}, source: :codingRepositoryKeys)
     field(:coding_first_days, {:array, :integer}, source: :codingFirstDays)
     field(:last_trace_at, LangWatch.PrismaDateTime, source: :lastTraceAt)
+    field(:admin_at, LangWatch.PrismaDateTime, source: :adminAt)
     timestamps(inserted_at: false, updated_at_source: :updatedAt)
   end
 end

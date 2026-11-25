@@ -5,9 +5,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 /**
- * A project nurturing saw traces of with no placement copy, and when it first did: every worker
- * retries its trace batches only within one window from then, across restarts. Deleted when the
- * copy lands.
+ * retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+ * retry clock reads or writes this table; an operator step may drop it once old writers are gone.
  */
 object NurturingUncopiedProjectTable : IdTable<String>("\"NurturingUncopiedProject\"") {
     override val id = text("projectId").entityId()

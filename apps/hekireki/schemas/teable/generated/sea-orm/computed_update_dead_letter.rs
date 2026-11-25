@@ -68,6 +68,7 @@ pub struct Model {
     pub created_at: DateTime,
     #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    pub delete_authorized_txid: Option<i64>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

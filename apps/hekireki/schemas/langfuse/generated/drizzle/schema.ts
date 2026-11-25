@@ -93,6 +93,20 @@ export const gatewaySpendLimitAlertTypeEnum = pgEnum('GatewaySpendLimitAlertType
   'EXCEEDED',
 ])
 
+export const gatewayGuardrailTypeEnum = pgEnum('GatewayGuardrailType', ['REGEX', 'BEDROCK'])
+
+export const gatewayGuardrailActionEnum = pgEnum('GatewayGuardrailAction', [
+  'BLOCK',
+  'LOG',
+  'REDACT',
+])
+
+export const gatewayGuardrailAssignmentScopeEnum = pgEnum('GatewayGuardrailAssignmentScope', [
+  'ORGANIZATION',
+  'API_KEY',
+  'USER',
+])
+
 export const inAppAgentConversationVisibilityScopeEnum = pgEnum(
   'InAppAgentConversationVisibilityScope',
   ['PERSONAL', 'PROJECT'],
@@ -804,6 +818,105 @@ export const gatewaySpendLimitAlerts = pgTable(
       name: 'gateway_spend_limit_alerts_spend_limit_id_fkey',
       columns: [table.spendLimitId],
       foreignColumns: [gatewaySpendLimits.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const gatewayGuardrails = pgTable(
+  'gateway_guardrails',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    organizationId: text('organization_id').notNull(),
+    name: text('name').notNull(),
+    type: gatewayGuardrailTypeEnum('type').notNull().default('REGEX'),
+    action: gatewayGuardrailActionEnum('action').notNull(),
+    config: jsonb('config').notNull().default({}),
+    encryptedCredential: text('encrypted_credentials'),
+    createdBy: text('created_by'),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    uniqueIndex('gateway_guardrails_organization_id_name_key').on(table.organizationId, table.name),
+    foreignKey({
+      name: 'gateway_guardrails_organization_id_fkey',
+      columns: [table.organizationId],
+      foreignColumns: [organizations.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_guardrails_created_by_fkey',
+      columns: [table.createdBy],
+      foreignColumns: [users.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const gatewayGuardrailAssignments = pgTable(
+  'gateway_guardrail_assignments',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    guardrailId: text('guardrail_id').notNull(),
+    organizationId: text('organization_id').notNull(),
+    scope: gatewayGuardrailAssignmentScopeEnum('scope').notNull(),
+    apiKeyId: text('api_key_id'),
+    userId: text('user_id'),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    index('gateway_guardrail_assignments_organization_id_scope_idx').on(
+      table.organizationId,
+      table.scope,
+    ),
+    index('gateway_guardrail_assignments_api_key_id_idx').on(table.apiKeyId),
+    index('gateway_guardrail_assignments_user_id_organization_id_idx').on(
+      table.userId,
+      table.organizationId,
+    ),
+    foreignKey({
+      name: 'gateway_guardrail_assignments_guardrail_id_fkey',
+      columns: [table.guardrailId],
+      foreignColumns: [gatewayGuardrails.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_guardrail_assignments_organization_id_fkey',
+      columns: [table.organizationId],
+      foreignColumns: [organizations.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_guardrail_assignments_api_key_id_fkey',
+      columns: [table.apiKeyId],
+      foreignColumns: [apiKeys.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_guardrail_assignments_user_id_fkey',
+      columns: [table.userId],
+      foreignColumns: [users.id],
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -3985,6 +4098,8 @@ export const relations = defineRelations(
     gatewayApiKeyAssociations,
     gatewaySpendLimits,
     gatewaySpendLimitAlerts,
+    gatewayGuardrails,
+    gatewayGuardrailAssignments,
     inAppAgentConversations,
     inAppAgentEvents,
     inAppAgentRuns,
@@ -4085,6 +4200,7 @@ export const relations = defineRelations(
       topicConfigsUpdated: r.many.topicConfigs({ alias: 'UpdatedByUser' }),
       tracingReadinessCreated: r.many.tracingReadinessSettings({ alias: 'CreatedByUser' }),
       tracingReadinessUpdated: r.many.tracingReadinessSettings({ alias: 'UpdatedByUser' }),
+      gatewayGuardrailsCreated: r.many.gatewayGuardrails(),
       annotationQueueAssignment: r.many.annotationQueueAssignments(),
       surveys: r.many.surveys(),
       commentReactions: r.many.commentReactions(),
@@ -4100,6 +4216,7 @@ export const relations = defineRelations(
       evaluationRulesCreated: r.many.evaluationRules(),
       gatewaySpendLimitsOwned: r.many.gatewaySpendLimits({ alias: 'GatewaySpendLimitOwner' }),
       gatewaySpendLimits: r.many.gatewaySpendLimits({ alias: 'GatewaySpendLimitUser' }),
+      gatewayGuardrailAssignments: r.many.gatewayGuardrailAssignments(),
     },
     organizations: {
       organizationMemberships: r.many.organizationMemberships(),
@@ -4115,6 +4232,8 @@ export const relations = defineRelations(
       }),
       gatewayAiConnections: r.many.gatewayAiConnections(),
       gatewaySpendLimits: r.many.gatewaySpendLimits(),
+      gatewayGuardrails: r.many.gatewayGuardrails(),
+      gatewayGuardrailAssignments: r.many.gatewayGuardrailAssignments(),
       organizationLlmApiKeys: r.many.llmApiKeys(),
       models: r.many.models(),
       roleAssignments: r.many.roleAssignments(),
@@ -4220,6 +4339,7 @@ export const relations = defineRelations(
         to: r.gatewayApiKeyAssociations.apiKeyId,
       }),
       gatewaySpendLimits: r.many.gatewaySpendLimits(),
+      gatewayGuardrailAssignments: r.many.gatewayGuardrailAssignments(),
       roleAssignments: r.many.roleAssignments(),
     },
     roleAssignments: {
@@ -4282,6 +4402,29 @@ export const relations = defineRelations(
         to: r.gatewaySpendLimits.id,
         optional: false,
       }),
+    },
+    gatewayGuardrails: {
+      organization: r.one.organizations({
+        from: r.gatewayGuardrails.organizationId,
+        to: r.organizations.id,
+        optional: false,
+      }),
+      createdByUser: r.one.users({ from: r.gatewayGuardrails.createdBy, to: r.users.id }),
+      assignments: r.many.gatewayGuardrailAssignments(),
+    },
+    gatewayGuardrailAssignments: {
+      guardrail: r.one.gatewayGuardrails({
+        from: r.gatewayGuardrailAssignments.guardrailId,
+        to: r.gatewayGuardrails.id,
+        optional: false,
+      }),
+      organization: r.one.organizations({
+        from: r.gatewayGuardrailAssignments.organizationId,
+        to: r.organizations.id,
+        optional: false,
+      }),
+      apiKey: r.one.apiKeys({ from: r.gatewayGuardrailAssignments.apiKeyId, to: r.apiKeys.id }),
+      user: r.one.users({ from: r.gatewayGuardrailAssignments.userId, to: r.users.id }),
     },
     inAppAgentConversations: {
       project: r.one.projects({

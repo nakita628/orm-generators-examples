@@ -36,6 +36,8 @@ class OrganizationEntity(
     val gatewayConfig by GatewayConfigEntity optionalBackReferencedOn GatewayConfigTable.id
     val gatewayAiConnections by GatewayAiConnectionEntity referrersOn GatewayAiConnectionTable.organizationId
     val gatewaySpendLimits by GatewaySpendLimitEntity referrersOn GatewaySpendLimitTable.organizationId
+    val gatewayGuardrails by GatewayGuardrailEntity referrersOn GatewayGuardrailTable.organizationId
+    val gatewayGuardrailAssignments by GatewayGuardrailAssignmentEntity referrersOn GatewayGuardrailAssignmentTable.organizationId
     val organizationLlmApiKeys by LlmApiKeysEntity optionalReferrersOn LlmApiKeysTable.organizationId
     val models by ModelEntity optionalReferrersOn ModelTable.organizationId
     val roleAssignments by RoleAssignmentEntity referrersOn RoleAssignmentTable.orgId

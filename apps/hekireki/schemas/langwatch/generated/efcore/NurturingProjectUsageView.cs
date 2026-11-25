@@ -8,15 +8,16 @@ namespace LangWatch.Models;
 /// <summary>
 /// Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
 /// and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-/// organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+/// organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
 /// </summary>
 public partial class NurturingProjectUsageView
 {
     public string ProjectId { get; set; } = null!;
 
     /// <summary>
-    /// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-    /// or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+    /// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+    /// Evaluation days are not kept here: the evaluation-days map and its replay write them to
+    /// NurturingProjectEvaluationDay.
     /// </summary>
     public string Owner { get; set; } = null!;
 

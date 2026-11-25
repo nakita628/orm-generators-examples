@@ -52,6 +52,10 @@ public partial class LangfuseContext : DbContext
 
     public virtual DbSet<GatewaySpendLimitAlert> GatewaySpendLimitAlerts { get; set; }
 
+    public virtual DbSet<GatewayGuardrail> GatewayGuardrails { get; set; }
+
+    public virtual DbSet<GatewayGuardrailAssignment> GatewayGuardrailAssignments { get; set; }
+
     public virtual DbSet<InAppAgentConversation> InAppAgentConversations { get; set; }
 
     public virtual DbSet<InAppAgentEvent> InAppAgentEvents { get; set; }
@@ -210,6 +214,9 @@ public partial class LangfuseContext : DbContext
         npgsql.MapEnum<GatewaySpendLimitScope>("GatewaySpendLimitScope");
         npgsql.MapEnum<GatewaySpendLimitInterval>("GatewaySpendLimitInterval");
         npgsql.MapEnum<GatewaySpendLimitAlertType>("GatewaySpendLimitAlertType");
+        npgsql.MapEnum<GatewayGuardrailType>("GatewayGuardrailType");
+        npgsql.MapEnum<GatewayGuardrailAction>("GatewayGuardrailAction");
+        npgsql.MapEnum<GatewayGuardrailAssignmentScope>("GatewayGuardrailAssignmentScope");
         npgsql.MapEnum<InAppAgentConversationVisibilityScope>("InAppAgentConversationVisibilityScope");
         npgsql.MapEnum<Role>("Role");
         npgsql.MapEnum<ScoreConfigDataType>("ScoreConfigDataType");
@@ -273,6 +280,9 @@ public partial class LangfuseContext : DbContext
         dataSource.MapEnum<GatewaySpendLimitScope>("GatewaySpendLimitScope");
         dataSource.MapEnum<GatewaySpendLimitInterval>("GatewaySpendLimitInterval");
         dataSource.MapEnum<GatewaySpendLimitAlertType>("GatewaySpendLimitAlertType");
+        dataSource.MapEnum<GatewayGuardrailType>("GatewayGuardrailType");
+        dataSource.MapEnum<GatewayGuardrailAction>("GatewayGuardrailAction");
+        dataSource.MapEnum<GatewayGuardrailAssignmentScope>("GatewayGuardrailAssignmentScope");
         dataSource.MapEnum<InAppAgentConversationVisibilityScope>("InAppAgentConversationVisibilityScope");
         dataSource.MapEnum<Role>("Role");
         dataSource.MapEnum<ScoreConfigDataType>("ScoreConfigDataType");
@@ -334,6 +344,9 @@ public partial class LangfuseContext : DbContext
         modelBuilder.HasPostgresEnum<GatewaySpendLimitScope>(name: "GatewaySpendLimitScope");
         modelBuilder.HasPostgresEnum<GatewaySpendLimitInterval>(name: "GatewaySpendLimitInterval");
         modelBuilder.HasPostgresEnum<GatewaySpendLimitAlertType>(name: "GatewaySpendLimitAlertType");
+        modelBuilder.HasPostgresEnum<GatewayGuardrailType>(name: "GatewayGuardrailType");
+        modelBuilder.HasPostgresEnum<GatewayGuardrailAction>(name: "GatewayGuardrailAction");
+        modelBuilder.HasPostgresEnum<GatewayGuardrailAssignmentScope>(name: "GatewayGuardrailAssignmentScope");
         modelBuilder.HasPostgresEnum<InAppAgentConversationVisibilityScope>(name: "InAppAgentConversationVisibilityScope");
         modelBuilder.HasPostgresEnum<Role>(name: "Role");
         modelBuilder.HasPostgresEnum<ScoreConfigDataType>(name: "ScoreConfigDataType");
@@ -1000,6 +1013,103 @@ public partial class LangfuseContext : DbContext
                 .HasForeignKey(d => d.SpendLimitId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("gateway_spend_limit_alerts_spend_limit_id_fkey");
+        });
+
+        modelBuilder.Entity<GatewayGuardrail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gateway_guardrails_pkey");
+
+            entity.ToTable("gateway_guardrails");
+
+            entity.HasIndex(e => new { e.OrganizationId, e.Name }, "gateway_guardrails_organization_id_name_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Type)
+                .ValueGeneratedNever()
+                .HasDefaultValue(GatewayGuardrailType.Regex)
+                .HasColumnName("type");
+            entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.Config)
+                .ValueGeneratedNever()
+                .HasDefaultValue("{}")
+                .HasColumnType("jsonb")
+                .HasColumnName("config");
+            entity.Property(e => e.EncryptedCredential).HasColumnName("encrypted_credentials");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.GatewayGuardrails)
+                .HasForeignKey(d => d.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_guardrails_organization_id_fkey");
+
+            entity.HasOne(d => d.CreatedByUser).WithMany(p => p.GatewayGuardrailsCreated)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("gateway_guardrails_created_by_fkey");
+        });
+
+        modelBuilder.Entity<GatewayGuardrailAssignment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gateway_guardrail_assignments_pkey");
+
+            entity.ToTable("gateway_guardrail_assignments");
+
+            entity.HasIndex(e => new { e.OrganizationId, e.Scope }, "gateway_guardrail_assignments_organization_id_scope_idx");
+
+            entity.HasIndex(e => e.ApiKeyId, "gateway_guardrail_assignments_api_key_id_idx");
+
+            entity.HasIndex(e => new { e.UserId, e.OrganizationId }, "gateway_guardrail_assignments_user_id_organization_id_idx");
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.GuardrailId).HasColumnName("guardrail_id");
+            entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
+            entity.Property(e => e.Scope).HasColumnName("scope");
+            entity.Property(e => e.ApiKeyId).HasColumnName("api_key_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.Guardrail).WithMany(p => p.Assignments)
+                .HasForeignKey(d => d.GuardrailId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_guardrail_assignments_guardrail_id_fkey");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.GatewayGuardrailAssignments)
+                .HasForeignKey(d => d.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_guardrail_assignments_organization_id_fkey");
+
+            entity.HasOne(d => d.ApiKey).WithMany(p => p.GatewayGuardrailAssignments)
+                .HasForeignKey(d => d.ApiKeyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_guardrail_assignments_api_key_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.GatewayGuardrailAssignments)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_guardrail_assignments_user_id_fkey");
         });
 
         modelBuilder.Entity<InAppAgentConversation>(entity =>
@@ -4676,6 +4786,15 @@ public partial class LangfuseContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<GatewaySpendLimit>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<GatewayGuardrail>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

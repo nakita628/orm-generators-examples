@@ -11,7 +11,9 @@ defmodule Teable.RecordHistory do
           before: String.t(),
           after: String.t(),
           created_time: DateTime.t(),
-          created_by: String.t()
+          created_by: String.t(),
+          actor_type: String.t() | nil,
+          actor_id: String.t() | nil
         }
 
   schema "record_history" do
@@ -23,5 +25,7 @@ defmodule Teable.RecordHistory do
     field(:after, :string)
     field(:created_time, Teable.PrismaDateTime, autogenerate: true)
     field(:created_by, :string)
+    field(:actor_type, :string)
+    field(:actor_id, :string)
   end
 end

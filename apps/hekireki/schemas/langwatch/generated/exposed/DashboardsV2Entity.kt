@@ -37,6 +37,12 @@ class DashboardsV2Entity(
     var organizationId by DashboardsV2Table.organizationId
 
     /**
+     * The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+     * decision 8). Every board made before homes existed is llm-ops.
+     */
+    var homeProduct by DashboardsV2Table.homeProduct
+
+    /**
      * Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
      * 2026-10-28); dropped in a later migration, once no serving release reads it.
      */

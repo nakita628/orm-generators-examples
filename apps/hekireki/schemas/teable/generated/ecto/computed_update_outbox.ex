@@ -33,6 +33,7 @@ defmodule Teable.ComputedUpdateOutbox do
           source_changed_at: DateTime.t() | nil,
           stage_depth: integer(),
           predecessor_task_id: String.t() | nil,
+          dead_letter_restore_version: integer() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           seeds: [Teable.ComputedUpdateOutboxSeed.t()]
@@ -67,6 +68,7 @@ defmodule Teable.ComputedUpdateOutbox do
     field(:source_changed_at, Teable.PrismaDateTime)
     field(:stage_depth, :integer, default: 0)
     field(:predecessor_task_id, :string)
+    field(:dead_letter_restore_version, :integer)
     has_many(:seeds, Teable.ComputedUpdateOutboxSeed, foreign_key: :task_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end

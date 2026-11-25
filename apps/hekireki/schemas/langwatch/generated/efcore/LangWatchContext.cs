@@ -325,11 +325,21 @@ public partial class LangWatchContext : DbContext
 
     public virtual DbSet<NurturingOrganizationCreated> NurturingOrganizationCreateds { get; set; }
 
+    public virtual DbSet<NurturingOrganizationPlan> NurturingOrganizationPlans { get; set; }
+
+    public virtual DbSet<NurturingVirtualKey> NurturingVirtualKeys { get; set; }
+
+    public virtual DbSet<NurturingErasedUser> NurturingErasedUsers { get; set; }
+
     public virtual DbSet<NurturingOrganization> NurturingOrganizations { get; set; }
 
     public virtual DbSet<NurturingProjectUsageView> NurturingProjectUsageViews { get; set; }
 
     public virtual DbSet<NurturingProjectTraceDay> NurturingProjectTraceDays { get; set; }
+
+    public virtual DbSet<NurturingProjectTraceDayCount> NurturingProjectTraceDayCounts { get; set; }
+
+    public virtual DbSet<NurturingProjectEvaluationDay> NurturingProjectEvaluationDays { get; set; }
 
     public virtual DbSet<NurturingPersonalProject> NurturingPersonalProjects { get; set; }
 
@@ -417,11 +427,15 @@ public partial class LangWatchContext : DbContext
 
     public virtual DbSet<DiscoveredAgent> DiscoveredAgents { get; set; }
 
+    public virtual DbSet<DiscoveredAgentListing> DiscoveredAgentListings { get; set; }
+
     public virtual DbSet<AgentRegistryEntry> AgentRegistryEntries { get; set; }
 
     public virtual DbSet<AgentRegistryEvent> AgentRegistryEvents { get; set; }
 
     public virtual DbSet<AgentRegistryBaseline> AgentRegistryBaselines { get; set; }
+
+    public virtual DbSet<AgentRegistrySettings> AgentRegistrySettings { get; set; }
 
     public virtual DbSet<AgentStopPlanTarget> AgentStopPlanTargets { get; set; }
 
@@ -464,6 +478,18 @@ public partial class LangWatchContext : DbContext
     public virtual DbSet<WebPushVapidKey> WebPushVapidKeys { get; set; }
 
     public virtual DbSet<SignInProviderMount> SignInProviderMounts { get; set; }
+
+    public virtual DbSet<DigestCohortOrganization> DigestCohortOrganizations { get; set; }
+
+    public virtual DbSet<DigestSubscription> DigestSubscriptions { get; set; }
+
+    public virtual DbSet<DigestProjectWeek> DigestProjectWeeks { get; set; }
+
+    public virtual DbSet<DigestUserWeek> DigestUserWeeks { get; set; }
+
+    public virtual DbSet<DigestSend> DigestSends { get; set; }
+
+    public virtual DbSet<DigestSettings> DigestSettings { get; set; }
 
     public static void MapEnums(NpgsqlDbContextOptionsBuilder npgsql)
     {
@@ -1737,6 +1763,10 @@ public partial class LangWatchContext : DbContext
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updatedAt");
             entity.Property(e => e.DepartmentId).HasColumnName("departmentId");
+            entity.Property(e => e.BillingOnly)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("billingOnly");
             entity.Property(e => e.DisabledAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
@@ -3008,6 +3038,10 @@ public partial class LangWatchContext : DbContext
             entity.Property(e => e.SubscriptionId).HasColumnName("subscriptionId");
             entity.Property(e => e.AcceptedByUserId).HasColumnName("acceptedByUserId");
             entity.Property(e => e.AcceptedViaIdentifierId).HasColumnName("acceptedViaIdentifierId");
+            entity.Property(e => e.BillingOnly)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("billingOnly");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -3487,6 +3521,10 @@ public partial class LangWatchContext : DbContext
                 .HasDefaultValue(DashboardScope.Project)
                 .HasColumnName("scope");
             entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.HomeProduct)
+                .ValueGeneratedNever()
+                .HasDefaultValue("llm-ops")
+                .HasColumnName("homeProduct");
             entity.Property(e => e.ExcludedOrigins)
                 .HasColumnType("jsonb")
                 .HasColumnName("excludedOrigins");
@@ -7401,6 +7439,87 @@ public partial class LangWatchContext : DbContext
                 .HasColumnName("createdAt");
         });
 
+        modelBuilder.Entity<NurturingOrganizationPlan>(entity =>
+        {
+            entity.HasKey(e => e.OrganizationId).HasName("NurturingOrganizationPlan_pkey");
+
+            entity.ToTable("NurturingOrganizationPlan");
+
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.Plan).HasColumnName("plan");
+            entity.Property(e => e.OccurredAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("occurredAt");
+            entity.Property(e => e.FromCatchUp).HasColumnName("fromCatchUp");
+            entity.Property(e => e.AppliedEventIds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("appliedEventIds");
+            entity.Property(e => e.WinnerEventId).HasColumnName("winnerEventId");
+        });
+
+        modelBuilder.Entity<NurturingVirtualKey>(entity =>
+        {
+            entity.HasKey(e => e.VirtualKeyId).HasName("NurturingVirtualKey_pkey");
+
+            entity.ToTable("NurturingVirtualKey");
+
+            entity.HasIndex(e => e.CreatorUserId, "NurturingVirtualKey_creatorUserId_idx");
+
+            entity.HasIndex(e => e.PrincipalUserId, "NurturingVirtualKey_principalUserId_idx");
+
+            entity.Property(e => e.VirtualKeyId).HasColumnName("virtualKeyId");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.OccurredAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("occurredAt");
+            entity.Property(e => e.KeyCreatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("keyCreatedAt");
+            entity.Property(e => e.CreatorUserId).HasColumnName("creatorUserId");
+            entity.Property(e => e.PrincipalUserId).HasColumnName("principalUserId");
+            entity.Property(e => e.PrincipalUserIdAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("principalUserIdAt");
+            entity.Property(e => e.Purpose).HasColumnName("purpose");
+            entity.Property(e => e.PurposeAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("purposeAt");
+            entity.Property(e => e.DisabledAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("disabledAt");
+            entity.Property(e => e.EnabledAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("enabledAt");
+            entity.Property(e => e.RevokedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("revokedAt");
+        });
+
+        modelBuilder.Entity<NurturingErasedUser>(entity =>
+        {
+            entity.HasKey(e => e.UserIdHash).HasName("NurturingErasedUser_pkey");
+
+            entity.ToTable("NurturingErasedUser");
+
+            entity.Property(e => e.UserIdHash).HasColumnName("userIdHash");
+            entity.Property(e => e.ErasedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("erasedAt");
+        });
+
         modelBuilder.Entity<NurturingOrganization>(entity =>
         {
             entity.HasKey(e => e.OrganizationId).HasName("NurturingOrganization_pkey");
@@ -7450,6 +7569,10 @@ public partial class LangWatchContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("lastTraceAt");
+            entity.Property(e => e.AdminAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("adminAt");
             entity.Property(e => e.UpdatedAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
@@ -7502,6 +7625,50 @@ public partial class LangWatchContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("lastFailedTraceAt");
+        });
+
+        modelBuilder.Entity<NurturingProjectTraceDayCount>(entity =>
+        {
+            entity.HasKey(e => new { e.ProjectId, e.Day, e.Source }).HasName("NurturingProjectTraceDayCount_pkey");
+
+            entity.ToTable("NurturingProjectTraceDayCount");
+
+            entity.HasIndex(e => e.Day, "NurturingProjectTraceDayCount_day_idx");
+
+            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.Day).HasColumnName("day");
+            entity.Property(e => e.Source).HasColumnName("source");
+            entity.Property(e => e.TraceCount)
+                .ValueGeneratedNever()
+                .HasDefaultValue(0)
+                .HasColumnName("traceCount");
+            entity.Property(e => e.ErrorCount)
+                .ValueGeneratedNever()
+                .HasDefaultValue(0)
+                .HasColumnName("errorCount");
+            entity.Property(e => e.LastTraceAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("lastTraceAt");
+            entity.Property(e => e.LastFailedTraceAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("lastFailedTraceAt");
+            entity.Property(e => e.AppliedEventIds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("appliedEventIds");
+            entity.Property(e => e.ProjectionVersion).HasColumnName("projectionVersion");
+        });
+
+        modelBuilder.Entity<NurturingProjectEvaluationDay>(entity =>
+        {
+            entity.HasKey(e => new { e.ProjectId, e.Day }).HasName("NurturingProjectEvaluationDay_pkey");
+
+            entity.ToTable("NurturingProjectEvaluationDay");
+
+            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.Day).HasColumnName("day");
         });
 
         modelBuilder.Entity<NurturingPersonalProject>(entity =>
@@ -9445,6 +9612,44 @@ public partial class LangWatchContext : DbContext
                 .HasColumnName("updatedAt");
         });
 
+        modelBuilder.Entity<DiscoveredAgentListing>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DiscoveredAgentListing_pkey");
+
+            entity.ToTable("DiscoveredAgentListing");
+
+            entity.HasIndex(e => new { e.OrganizationId, e.DiscoveredAgentId }, "DiscoveredAgentListing_organizationId_discoveredAgentId_idx");
+
+            entity.HasIndex(e => new { e.IngestionSourceId, e.DiscoveredAgentId }, "DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<Nanoid21Generator>()
+                .HasColumnName("id");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.IngestionSourceId).HasColumnName("ingestionSourceId");
+            entity.Property(e => e.DiscoveredAgentId).HasColumnName("discoveredAgentId");
+            entity.Property(e => e.LastListedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("lastListedAt");
+            entity.Property(e => e.GoneAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("goneAt");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
         modelBuilder.Entity<AgentRegistryEntry>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("AgentRegistryEntry_pkey");
@@ -9541,6 +9746,25 @@ public partial class LangWatchContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("baselinedAt");
+        });
+
+        modelBuilder.Entity<AgentRegistrySettings>(entity =>
+        {
+            entity.HasKey(e => e.OrganizationId).HasName("AgentRegistrySettings_pkey");
+
+            entity.ToTable("AgentRegistrySettings");
+
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.DormantAfterDays)
+                .ValueGeneratedNever()
+                .HasDefaultValue(30)
+                .HasColumnName("dormantAfterDays");
+            entity.Property(e => e.UpdatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
         });
 
         modelBuilder.Entity<AgentStopPlanTarget>(entity =>
@@ -10201,6 +10425,162 @@ public partial class LangWatchContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
+        modelBuilder.Entity<DigestCohortOrganization>(entity =>
+        {
+            entity.HasKey(e => e.OrganizationId).HasName("DigestCohortOrganization_pkey");
+
+            entity.ToTable("DigestCohortOrganization");
+
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.EnrolledBy).HasColumnName("enrolledBy");
+            entity.Property(e => e.EnrolledAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("enrolledAt");
+        });
+
+        modelBuilder.Entity<DigestSubscription>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("DigestSubscription_pkey");
+
+            entity.ToTable("DigestSubscription");
+
+            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UnsubscribedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("unsubscribedAt");
+            entity.Property(e => e.UnsubscribedFromSendId).HasColumnName("unsubscribedFromSendId");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
+        modelBuilder.Entity<DigestProjectWeek>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DigestProjectWeek_pkey");
+
+            entity.ToTable("DigestProjectWeek");
+
+            entity.HasIndex(e => new { e.OrganizationId, e.IsoWeek }, "DigestProjectWeek_organizationId_isoWeek_idx");
+
+            entity.HasIndex(e => e.IsoWeek, "DigestProjectWeek_isoWeek_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.IsoWeek).HasColumnName("isoWeek");
+            entity.Property(e => e.State)
+                .HasColumnType("jsonb")
+                .HasColumnName("state");
+            entity.Property(e => e.OccurredAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("occurredAt");
+            entity.Property(e => e.LastEventId).HasColumnName("lastEventId");
+            entity.Property(e => e.AcceptedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("acceptedAt");
+            entity.Property(e => e.ProjectionVersion).HasColumnName("projectionVersion");
+            entity.Property(e => e.CreatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
+        modelBuilder.Entity<DigestUserWeek>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DigestUserWeek_pkey");
+
+            entity.ToTable("DigestUserWeek");
+
+            entity.HasIndex(e => new { e.OrganizationId, e.IsoWeek }, "DigestUserWeek_organizationId_isoWeek_idx");
+
+            entity.HasIndex(e => e.IsoWeek, "DigestUserWeek_isoWeek_idx");
+
+            entity.HasIndex(e => e.UserId, "DigestUserWeek_userId_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.IsoWeek).HasColumnName("isoWeek");
+            entity.Property(e => e.State)
+                .HasColumnType("jsonb")
+                .HasColumnName("state");
+            entity.Property(e => e.OccurredAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("occurredAt");
+            entity.Property(e => e.LastEventId).HasColumnName("lastEventId");
+            entity.Property(e => e.AcceptedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("acceptedAt");
+            entity.Property(e => e.ProjectionVersion).HasColumnName("projectionVersion");
+            entity.Property(e => e.CreatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
+        modelBuilder.Entity<DigestSend>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DigestSend_pkey");
+
+            entity.ToTable("DigestSend");
+
+            entity.HasIndex(e => e.UserId, "DigestSend_userId_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+            entity.Property(e => e.IsoWeek).HasColumnName("isoWeek");
+            entity.Property(e => e.TemplateId).HasColumnName("templateId");
+            entity.Property(e => e.SentAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("sentAt");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+        });
+
+        modelBuilder.Entity<DigestSettings>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DigestSettings_pkey");
+
+            entity.ToTable("DigestSettings");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasDefaultValue("singleton")
+                .HasColumnName("id");
+            entity.Property(e => e.Armed)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("armed");
+            entity.Property(e => e.LastPlannedWeek).HasColumnName("lastPlannedWeek");
+            entity.Property(e => e.UpdatedAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updatedAt");
@@ -11243,7 +11623,25 @@ public partial class LangWatchContext : DbContext
             }
         }
 
+        foreach (var entry in ChangeTracker.Entries<DiscoveredAgentListing>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
         foreach (var entry in ChangeTracker.Entries<AgentRegistryEntry>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<AgentRegistrySettings>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
@@ -11316,6 +11714,24 @@ public partial class LangWatchContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<SignInProviderMount>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<DigestSubscription>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<DigestSettings>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

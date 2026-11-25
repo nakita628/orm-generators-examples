@@ -20,6 +20,8 @@ class Field extends Model
 
     protected $fillable = [
         'secondaryId',
+        'externalId',
+        'groupId',
         'envelopeId',
         'envelopeItemId',
         'recipientId',

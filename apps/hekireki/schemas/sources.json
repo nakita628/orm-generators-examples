@@ -26,7 +26,7 @@
   "langfuse": {
     "repo": "langfuse/langfuse",
     "path": "packages/shared/prisma/schema.prisma",
-    "commit": "ce10c769e064eaae46b3886e314fa75a26cc8e44",
+    "commit": "c2557ba42437a947026bcfa29570df4f075350db",
     "license": "MIT",
     "app": "Langfuse",
     "description": "Langfuse LLM observability: organizations, projects, traces, prompts, datasets and evaluations."
@@ -90,7 +90,7 @@
   "documenso": {
     "repo": "documenso/documenso",
     "path": "packages/prisma/schema.prisma",
-    "commit": "e745c9ec339f1b16d2f8d181b6457323fb33ebe5",
+    "commit": "cc491f1ec224bda8d3e09338e291ca11fe47641a",
     "license": "AGPL-3.0",
     "app": "Documenso",
     "description": "Documenso document signing: users, teams, documents, recipients, fields and signatures."
@@ -98,7 +98,7 @@
   "teable": {
     "repo": "teableio/teable",
     "path": "packages/db-main-prisma/prisma/postgres/schema.prisma",
-    "commit": "b20edcd136a3641ae25a32e8e8ffe2d30ebea8b6",
+    "commit": "42d9ac581538936ebb47d48c8f09c9e4ef73bdad",
     "license": "MIT",
     "app": "Teable",
     "description": "Teable no-code database: spaces, bases, tables, fields, views and records."
@@ -240,7 +240,7 @@
   "langwatch": {
     "repo": "langwatch/langwatch",
     "path": "packages/prisma-client/prisma/schema.prisma",
-    "commit": "d86b90e23eb550f1952d72e7aca8e709c1c57bea",
+    "commit": "0a9c1a3f22711ba5a72bc4289bfbe0e1ed6b59ea",
     "license": "Apache-2.0",
     "app": "LangWatch",
     "description": "LangWatch LLM observability: organizations, projects, traces, prompts, datasets, evaluations and annotations.",

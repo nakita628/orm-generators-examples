@@ -15,6 +15,7 @@ defmodule Teable.TableMeta do
           search_index_policy: map() | list() | String.t() | number() | boolean() | nil,
           query_index_policy: map() | list() | String.t() | number() | boolean() | nil,
           provision_state: atom(),
+          actor_storage_version: integer(),
           version: integer(),
           order: float(),
           created_time: DateTime.t(),
@@ -40,6 +41,7 @@ defmodule Teable.TableMeta do
     field(:search_index_policy, Teable.PrismaJson)
     field(:query_index_policy, Teable.PrismaJson)
     field(:provision_state, Ecto.Enum, values: [:pending, :ready, :error, :deleting], default: :ready)
+    field(:actor_storage_version, :integer, default: 0)
     field(:version, :integer)
     field(:order, :float)
     field(:created_time, Teable.PrismaDateTime, autogenerate: true)

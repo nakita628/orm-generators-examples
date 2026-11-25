@@ -45,6 +45,7 @@ class UserEntity(
     val topicConfigsUpdated by TopicConfigEntity optionalReferrersOn TopicConfigTable.updatedBy
     val tracingReadinessCreated by TracingReadinessSettingsEntity optionalReferrersOn TracingReadinessSettingsTable.createdBy
     val tracingReadinessUpdated by TracingReadinessSettingsEntity optionalReferrersOn TracingReadinessSettingsTable.updatedBy
+    val gatewayGuardrailsCreated by GatewayGuardrailEntity optionalReferrersOn GatewayGuardrailTable.createdBy
     val annotationQueueAssignment by AnnotationQueueAssignmentEntity referrersOn AnnotationQueueAssignmentTable.userId
     val surveys by SurveyEntity optionalReferrersOn SurveyTable.userId
     val commentReactions by CommentReactionEntity referrersOn CommentReactionTable.userId
@@ -60,6 +61,7 @@ class UserEntity(
     val evaluationRulesCreated by EvaluationRuleEntity optionalReferrersOn EvaluationRuleTable.createdByUserId
     val gatewaySpendLimitsOwned by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.ownerUserId
     val gatewaySpendLimits by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.userId
+    val gatewayGuardrailAssignments by GatewayGuardrailAssignmentEntity optionalReferrersOn GatewayGuardrailAssignmentTable.userId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

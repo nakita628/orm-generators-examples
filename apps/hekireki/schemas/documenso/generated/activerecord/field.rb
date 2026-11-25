@@ -16,6 +16,8 @@ class Field < ApplicationRecord
        prefix: true, validate: true
 
   validates :secondaryId, uniqueness: true
+  validates :externalId, length: { maximum: 255 }
+  validates :groupId, length: { maximum: 255 }
   validates :page, presence: true
   validates :customText, presence: true
   validates :inserted, inclusion: { in: [ true, false ] }

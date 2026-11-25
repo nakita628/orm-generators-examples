@@ -24,6 +24,12 @@ CREATE TYPE "GatewaySpendLimitInterval" AS ENUM ('DAILY', 'WEEKLY', 'MONTHLY', '
 
 CREATE TYPE "GatewaySpendLimitAlertType" AS ENUM ('WARNING', 'EXCEEDED');
 
+CREATE TYPE "GatewayGuardrailType" AS ENUM ('REGEX', 'BEDROCK');
+
+CREATE TYPE "GatewayGuardrailAction" AS ENUM ('BLOCK', 'LOG', 'REDACT');
+
+CREATE TYPE "GatewayGuardrailAssignmentScope" AS ENUM ('ORGANIZATION', 'API_KEY', 'USER');
+
 CREATE TYPE "InAppAgentConversationVisibilityScope" AS ENUM ('PERSONAL', 'PROJECT');
 
 CREATE TYPE "Role" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER', 'NONE', 'AI_GATEWAY');
@@ -297,6 +303,33 @@ CREATE TABLE "gateway_spend_limit_alerts" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "gateway_spend_limit_alerts_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "gateway_guardrails" (
+    "id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "type" "GatewayGuardrailType" NOT NULL DEFAULT 'REGEX',
+    "action" "GatewayGuardrailAction" NOT NULL,
+    "config" JSONB NOT NULL DEFAULT '{}',
+    "encrypted_credentials" TEXT,
+    "created_by" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_guardrails_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "gateway_guardrail_assignments" (
+    "id" TEXT NOT NULL,
+    "guardrail_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "scope" "GatewayGuardrailAssignmentScope" NOT NULL,
+    "api_key_id" TEXT,
+    "user_id" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_guardrail_assignments_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "in_app_agent_conversations" (
@@ -1522,6 +1555,14 @@ CREATE UNIQUE INDEX "gateway_spend_limits_organization_id_user_id_interval_key" 
 
 CREATE UNIQUE INDEX "gateway_spend_limit_alerts_limit_type_counting_window_key" ON "gateway_spend_limit_alerts"("spend_limit_id", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start");
 
+CREATE UNIQUE INDEX "gateway_guardrails_organization_id_name_key" ON "gateway_guardrails"("organization_id", "name");
+
+CREATE INDEX "gateway_guardrail_assignments_organization_id_scope_idx" ON "gateway_guardrail_assignments"("organization_id", "scope");
+
+CREATE INDEX "gateway_guardrail_assignments_api_key_id_idx" ON "gateway_guardrail_assignments"("api_key_id");
+
+CREATE INDEX "gateway_guardrail_assignments_user_id_organization_id_idx" ON "gateway_guardrail_assignments"("user_id", "organization_id");
+
 CREATE INDEX "in_app_agent_conversations_project_user_list_idx" ON "in_app_agent_conversations"("project_id", "created_by_user_id", "deleted_at", "updated_at", "id");
 
 CREATE INDEX "in_app_agent_conversations_project_updated_at_idx" ON "in_app_agent_conversations"("project_id", "updated_at");
@@ -1870,6 +1911,18 @@ ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_owner_us
 
 ALTER TABLE "gateway_spend_limit_alerts" ADD CONSTRAINT "gateway_spend_limit_alerts_spend_limit_id_fkey" FOREIGN KEY ("spend_limit_id") REFERENCES "gateway_spend_limits"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "gateway_guardrails" ADD CONSTRAINT "gateway_guardrails_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrails" ADD CONSTRAINT "gateway_guardrails_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_guardrail_id_fkey" FOREIGN KEY ("guardrail_id") REFERENCES "gateway_guardrails"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_api_key_id_fkey" FOREIGN KEY ("api_key_id") REFERENCES "api_keys"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "in_app_agent_conversations" ADD CONSTRAINT "in_app_agent_conversations_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "in_app_agent_conversations" ADD CONSTRAINT "in_app_agent_conversations_created_by_user_id_fkey" FOREIGN KEY ("created_by_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -2140,6 +2193,8 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 | [GatewayApiKeyAssociation](#model-GatewayApiKeyAssociation)                   | `gateway_api_key_associations`          |                                                                                                                                               |
 | [GatewaySpendLimit](#model-GatewaySpendLimit)                                 | `gateway_spend_limits`                  |                                                                                                                                               |
 | [GatewaySpendLimitAlert](#model-GatewaySpendLimitAlert)                       | `gateway_spend_limit_alerts`            | One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times. |
+| [GatewayGuardrail](#model-GatewayGuardrail)                                   | `gateway_guardrails`                    |                                                                                                                                               |
+| [GatewayGuardrailAssignment](#model-GatewayGuardrailAssignment)               | `gateway_guardrail_assignments`         |                                                                                                                                               |
 | [InAppAgentConversation](#model-InAppAgentConversation)                       | `in_app_agent_conversations`            |                                                                                                                                               |
 | [InAppAgentEvent](#model-InAppAgentEvent)                                     | `in_app_agent_events`                   |                                                                                                                                               |
 | [InAppAgentRun](#model-InAppAgentRun)                                         | `in_app_agent_runs`                     |                                                                                                                                               |
@@ -2225,6 +2280,9 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 | [GatewaySpendLimitScope](#enum-GatewaySpendLimitScope)                               | `GatewaySpendLimitScope`                |             |
 | [GatewaySpendLimitInterval](#enum-GatewaySpendLimitInterval)                         | `GatewaySpendLimitInterval`             |             |
 | [GatewaySpendLimitAlertType](#enum-GatewaySpendLimitAlertType)                       | `GatewaySpendLimitAlertType`            |             |
+| [GatewayGuardrailType](#enum-GatewayGuardrailType)                                   | `GatewayGuardrailType`                  |             |
+| [GatewayGuardrailAction](#enum-GatewayGuardrailAction)                               | `GatewayGuardrailAction`                |             |
+| [GatewayGuardrailAssignmentScope](#enum-GatewayGuardrailAssignmentScope)             | `GatewayGuardrailAssignmentScope`       |             |
 | [InAppAgentConversationVisibilityScope](#enum-InAppAgentConversationVisibilityScope) | `InAppAgentConversationVisibilityScope` |             |
 | [Role](#enum-Role)                                                                   | `Role`                                  |             |
 | [ScoreConfigDataType](#enum-ScoreConfigDataType)                                     | `ScoreConfigDataType`                   |             |
@@ -2845,6 +2903,8 @@ Table `users`.
 - `id` ← [RoleAssignment.userId](#model-RoleAssignment) (one-to-many, on delete Cascade)
 - `id` ← [GatewaySpendLimit.userId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
 - `id` ← [GatewaySpendLimit.ownerUserId](#model-GatewaySpendLimit) (one-to-many, on delete SetNull)
+- `id` ← [GatewayGuardrail.createdBy](#model-GatewayGuardrail) (one-to-many, on delete SetNull)
+- `id` ← [GatewayGuardrailAssignment.userId](#model-GatewayGuardrailAssignment) (one-to-many, on delete Cascade)
 - `id` ← [InAppAgentConversation.createdByUserId](#model-InAppAgentConversation) (one-to-many, on delete SetNull)
 - `id` ← [InAppAgentRun.triggeredByUserId](#model-InAppAgentRun) (one-to-many, on delete SetNull)
 - `id` ← [OrganizationMembership.userId](#model-OrganizationMembership) (one-to-many, on delete Cascade)
@@ -2981,6 +3041,7 @@ await prisma.user.findMany({
     topicConfigsUpdated: true,
     tracingReadinessCreated: true,
     tracingReadinessUpdated: true,
+    gatewayGuardrailsCreated: true,
     annotationQueueAssignment: true,
     surveys: true,
     commentReactions: true,
@@ -2996,6 +3057,7 @@ await prisma.user.findMany({
     evaluationRulesCreated: true,
     gatewaySpendLimitsOwned: true,
     gatewaySpendLimits: true,
+    gatewayGuardrailAssignments: true,
   },
 });
 ```
@@ -3473,6 +3535,25 @@ OFFSET
 -- params: ["<id of the rows above>","0"]
 
 SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  "public"."gateway_guardrails"."created_by" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
   "public"."annotation_queue_assignments"."id",
   "public"."annotation_queue_assignments"."project_id",
   "public"."annotation_queue_assignments"."user_id",
@@ -3775,6 +3856,22 @@ FROM
   "public"."gateway_spend_limits"
 WHERE
   "public"."gateway_spend_limits"."user_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  "public"."gateway_guardrail_assignments"."user_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -4117,6 +4214,8 @@ Table `organizations`.
 - `id` ← [GatewayConfig.organizationId](#model-GatewayConfig) (one-to-one, on delete Cascade)
 - `id` ← [GatewayAiConnection.organizationId](#model-GatewayAiConnection) (one-to-many, on delete Cascade)
 - `id` ← [GatewaySpendLimit.organizationId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
+- `id` ← [GatewayGuardrail.organizationId](#model-GatewayGuardrail) (one-to-many, on delete Cascade)
+- `id` ← [GatewayGuardrailAssignment.organizationId](#model-GatewayGuardrailAssignment) (one-to-many, on delete Cascade)
 - `id` ← [LlmApiKeys.organizationId](#model-LlmApiKeys) (one-to-many, on delete Cascade)
 - `id` ← [OrganizationMembership.orgId](#model-OrganizationMembership) (one-to-many, on delete Cascade)
 - `id` ← [MembershipInvitation.orgId](#model-MembershipInvitation) (one-to-many, on delete Cascade)
@@ -4222,6 +4321,8 @@ await prisma.organization.findMany({
     gatewayConfig: true,
     gatewayAiConnections: true,
     gatewaySpendLimits: true,
+    gatewayGuardrails: true,
+    gatewayGuardrailAssignments: true,
     organizationLlmApiKeys: true,
     models: true,
     roleAssignments: true,
@@ -4436,6 +4537,41 @@ FROM
   "public"."gateway_spend_limits"
 WHERE
   "public"."gateway_spend_limits"."organization_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  "public"."gateway_guardrails"."organization_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  "public"."gateway_guardrail_assignments"."organization_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -6343,6 +6479,7 @@ Table `api_keys`.
 - `id` ← [RoleAssignment.apiKeyId](#model-RoleAssignment) (one-to-many, on delete Cascade)
 - `id` ← [GatewayApiKeyAssociation.apiKeyId](#model-GatewayApiKeyAssociation) (one-to-one, on delete Cascade)
 - `id` ← [GatewaySpendLimit.apiKeyId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
+- `id` ← [GatewayGuardrailAssignment.apiKeyId](#model-GatewayGuardrailAssignment) (one-to-many, on delete Cascade)
 
 #### Definition
 
@@ -6473,6 +6610,7 @@ await prisma.apiKey.findMany({
     apiKeysCreated: true,
     gatewayAssociation: true,
     gatewaySpendLimits: true,
+    gatewayGuardrailAssignments: true,
     roleAssignments: true,
   },
 });
@@ -6670,6 +6808,22 @@ FROM
   "public"."gateway_spend_limits"
 WHERE
   "public"."gateway_spend_limits"."api_key_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  "public"."gateway_guardrail_assignments"."api_key_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -8841,6 +8995,696 @@ RETURNING
   "public"."gateway_spend_limit_alerts"."counting_started_at",
   "public"."gateway_spend_limit_alerts"."window_start",
   "public"."gateway_spend_limit_alerts"."created_at"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-GatewayGuardrail"></a>
+
+### GatewayGuardrail
+
+Table `gateway_guardrails`.
+
+![GatewayGuardrail and the models it relates to](tables/GatewayGuardrail.svg)
+
+| Field                                           | Type                                                     | Constraints                                       | Default              | Description |
+| ----------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------- | -------------------- | ----------- |
+| `id`                                            | `String`                                                 | PK NOT NULL                                       | `cuid(1)`            |             |
+| `organizationId` (`organization_id`)            | `String`                                                 | NOT NULL → [Organization.id](#model-Organization) |                      |             |
+| `name`                                          | `String`                                                 | NOT NULL                                          |                      |             |
+| `type`                                          | [`GatewayGuardrailType`](#enum-GatewayGuardrailType)     | NOT NULL                                          | `REGEX`              |             |
+| `action`                                        | [`GatewayGuardrailAction`](#enum-GatewayGuardrailAction) | NOT NULL                                          |                      |             |
+| `config`                                        | `Json` `@db.JsonB`                                       | NOT NULL                                          | `"{}"`               |             |
+| `encryptedCredential` (`encrypted_credentials`) | `String`                                                 | NULL                                              |                      |             |
+| `createdBy` (`created_by`)                      | `String`                                                 | NULL → [User.id](#model-User)                     |                      |             |
+| `createdAt` (`created_at`)                      | `DateTime`                                               | NOT NULL                                          | `now()`              |             |
+| `updatedAt` (`updated_at`)                      | `DateTime`                                               | NOT NULL                                          | `now()` `@updatedAt` |             |
+
+#### Indexes
+
+- `@@unique([organizationId, name])`
+
+#### References
+
+- `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade)
+- `createdBy` → [User.id](#model-User) (many-to-one, on delete SetNull)
+
+#### Referenced by
+
+- `id` ← [GatewayGuardrailAssignment.guardrailId](#model-GatewayGuardrailAssignment) (one-to-many, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "gateway_guardrails" (
+    "id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "type" "GatewayGuardrailType" NOT NULL DEFAULT 'REGEX',
+    "action" "GatewayGuardrailAction" NOT NULL,
+    "config" JSONB NOT NULL DEFAULT '{}',
+    "encrypted_credentials" TEXT,
+    "created_by" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_guardrails_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "gateway_guardrails_organization_id_name_key" ON "gateway_guardrails"("organization_id", "name");
+
+ALTER TABLE "gateway_guardrails" ADD CONSTRAINT "gateway_guardrails_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrails" ADD CONSTRAINT "gateway_guardrails_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.gatewayGuardrail.findMany();
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.gatewayGuardrail.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."gateway_guardrails"."id"
+    FROM
+      "public"."gateway_guardrails"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.gatewayGuardrail.findMany({
+  include: { organization: true, createdByUser: true, assignments: true },
+});
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."organizations"."id",
+  "public"."organizations"."name",
+  "public"."organizations"."created_at",
+  "public"."organizations"."updated_at",
+  "public"."organizations"."cloud_config",
+  "public"."organizations"."metadata",
+  "public"."organizations"."cloud_billing_cycle_anchor",
+  "public"."organizations"."cloud_billing_cycle_updated_at",
+  "public"."organizations"."cloud_current_cycle_usage",
+  "public"."organizations"."cloud_free_tier_usage_threshold_state",
+  "public"."organizations"."ai_features_enabled",
+  "public"."organizations"."ai_telemetry_enabled",
+  "public"."organizations"."access_audit_log_enabled",
+  "public"."organizations"."feature_flag_org_defaults",
+  "public"."organizations"."sfdc_org_id"
+FROM
+  "public"."organizations"
+WHERE
+  "public"."organizations"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organizationId of the rows above>","0"]
+
+SELECT
+  "public"."users"."id",
+  "public"."users"."name",
+  "public"."users"."email",
+  "public"."users"."email_verified",
+  "public"."users"."password",
+  "public"."users"."sessions_expired_at",
+  "public"."users"."image",
+  "public"."users"."admin",
+  "public"."users"."v4_beta_enabled",
+  "public"."users"."support_access",
+  "public"."users"."created_at",
+  "public"."users"."updated_at",
+  "public"."users"."feature_flags"
+FROM
+  "public"."users"
+WHERE
+  "public"."users"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<createdBy of the rows above>","0"]
+
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  "public"."gateway_guardrail_assignments"."guardrail_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.gatewayGuardrail.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  (
+    "public"."gateway_guardrails"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.gatewayGuardrail.create({
+  data: { organizationId: "example", name: "example", action: "BLOCK" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."gateway_guardrails" (
+    "id",
+    "organization_id",
+    "name",
+    "type",
+    "action",
+    "config",
+    "created_at",
+    "updated_at"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    CAST($4::text AS "public"."GatewayGuardrailType"),
+    CAST($5::text AS "public"."GatewayGuardrailAction"),
+    $6,
+    $7,
+    $8
+  )
+RETURNING
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+-- params: ["<cuid(1)>","example","example","REGEX","BLOCK","{}","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.gatewayGuardrail.update({ where: { id: "example" }, data: { name: "example" } });
+```
+
+```sql
+UPDATE "public"."gateway_guardrails"
+SET
+  "name" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    "public"."gateway_guardrails"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.gatewayGuardrail.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."gateway_guardrails"
+WHERE
+  (
+    "public"."gateway_guardrails"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-GatewayGuardrailAssignment"></a>
+
+### GatewayGuardrailAssignment
+
+Table `gateway_guardrail_assignments`.
+
+![GatewayGuardrailAssignment and the models it relates to](tables/GatewayGuardrailAssignment.svg)
+
+| Field                                | Type                                                                       | Constraints                                               | Default   | Description |
+| ------------------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------------- | --------- | ----------- |
+| `id`                                 | `String`                                                                   | PK NOT NULL                                               | `cuid(1)` |             |
+| `guardrailId` (`guardrail_id`)       | `String`                                                                   | NOT NULL → [GatewayGuardrail.id](#model-GatewayGuardrail) |           |             |
+| `organizationId` (`organization_id`) | `String`                                                                   | NOT NULL → [Organization.id](#model-Organization)         |           |             |
+| `scope`                              | [`GatewayGuardrailAssignmentScope`](#enum-GatewayGuardrailAssignmentScope) | NOT NULL                                                  |           |             |
+| `apiKeyId` (`api_key_id`)            | `String`                                                                   | NULL → [ApiKey.id](#model-ApiKey)                         |           |             |
+| `userId` (`user_id`)                 | `String`                                                                   | NULL → [User.id](#model-User)                             |           |             |
+| `createdAt` (`created_at`)           | `DateTime`                                                                 | NOT NULL                                                  | `now()`   |             |
+
+#### Indexes
+
+- `@@index([organizationId, scope])`
+- `@@index([apiKeyId])`
+- `@@index([userId, organizationId])`
+
+#### References
+
+- `guardrailId` → [GatewayGuardrail.id](#model-GatewayGuardrail) (many-to-one, on delete Cascade)
+- `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade)
+- `apiKeyId` → [ApiKey.id](#model-ApiKey) (many-to-one, on delete Cascade)
+- `userId` → [User.id](#model-User) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "gateway_guardrail_assignments" (
+    "id" TEXT NOT NULL,
+    "guardrail_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "scope" "GatewayGuardrailAssignmentScope" NOT NULL,
+    "api_key_id" TEXT,
+    "user_id" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_guardrail_assignments_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "gateway_guardrail_assignments_organization_id_scope_idx" ON "gateway_guardrail_assignments"("organization_id", "scope");
+
+CREATE INDEX "gateway_guardrail_assignments_api_key_id_idx" ON "gateway_guardrail_assignments"("api_key_id");
+
+CREATE INDEX "gateway_guardrail_assignments_user_id_organization_id_idx" ON "gateway_guardrail_assignments"("user_id", "organization_id");
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_guardrail_id_fkey" FOREIGN KEY ("guardrail_id") REFERENCES "gateway_guardrails"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_api_key_id_fkey" FOREIGN KEY ("api_key_id") REFERENCES "api_keys"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_guardrail_assignments" ADD CONSTRAINT "gateway_guardrail_assignments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.gatewayGuardrailAssignment.findMany();
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.gatewayGuardrailAssignment.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."gateway_guardrail_assignments"."id"
+    FROM
+      "public"."gateway_guardrail_assignments"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.gatewayGuardrailAssignment.findMany({
+  include: { guardrail: true, organization: true, apiKey: true, user: true },
+});
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."gateway_guardrails"."id",
+  "public"."gateway_guardrails"."organization_id",
+  "public"."gateway_guardrails"."name",
+  "public"."gateway_guardrails"."type"::text,
+  "public"."gateway_guardrails"."action"::text,
+  "public"."gateway_guardrails"."config",
+  "public"."gateway_guardrails"."encrypted_credentials",
+  "public"."gateway_guardrails"."created_by",
+  "public"."gateway_guardrails"."created_at",
+  "public"."gateway_guardrails"."updated_at"
+FROM
+  "public"."gateway_guardrails"
+WHERE
+  "public"."gateway_guardrails"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<guardrailId of the rows above>","0"]
+
+SELECT
+  "public"."organizations"."id",
+  "public"."organizations"."name",
+  "public"."organizations"."created_at",
+  "public"."organizations"."updated_at",
+  "public"."organizations"."cloud_config",
+  "public"."organizations"."metadata",
+  "public"."organizations"."cloud_billing_cycle_anchor",
+  "public"."organizations"."cloud_billing_cycle_updated_at",
+  "public"."organizations"."cloud_current_cycle_usage",
+  "public"."organizations"."cloud_free_tier_usage_threshold_state",
+  "public"."organizations"."ai_features_enabled",
+  "public"."organizations"."ai_telemetry_enabled",
+  "public"."organizations"."access_audit_log_enabled",
+  "public"."organizations"."feature_flag_org_defaults",
+  "public"."organizations"."sfdc_org_id"
+FROM
+  "public"."organizations"
+WHERE
+  "public"."organizations"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organizationId of the rows above>","0"]
+
+SELECT
+  "public"."api_keys"."id",
+  "public"."api_keys"."created_at",
+  "public"."api_keys"."note",
+  "public"."api_keys"."public_key",
+  "public"."api_keys"."hashed_secret_key",
+  "public"."api_keys"."fast_hashed_secret_key",
+  "public"."api_keys"."display_secret_key",
+  "public"."api_keys"."last_used_at",
+  "public"."api_keys"."expires_at",
+  "public"."api_keys"."is_in_app_agent_key",
+  "public"."api_keys"."project_id",
+  "public"."api_keys"."organization_id",
+  "public"."api_keys"."scope"::text,
+  "public"."api_keys"."created_by_user_id",
+  "public"."api_keys"."user_id",
+  "public"."api_keys"."created_by_api_key_id"
+FROM
+  "public"."api_keys"
+WHERE
+  "public"."api_keys"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<apiKeyId of the rows above>","0"]
+
+SELECT
+  "public"."users"."id",
+  "public"."users"."name",
+  "public"."users"."email",
+  "public"."users"."email_verified",
+  "public"."users"."password",
+  "public"."users"."sessions_expired_at",
+  "public"."users"."image",
+  "public"."users"."admin",
+  "public"."users"."v4_beta_enabled",
+  "public"."users"."support_access",
+  "public"."users"."created_at",
+  "public"."users"."updated_at",
+  "public"."users"."feature_flags"
+FROM
+  "public"."users"
+WHERE
+  "public"."users"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<userId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.gatewayGuardrailAssignment.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+FROM
+  "public"."gateway_guardrail_assignments"
+WHERE
+  (
+    "public"."gateway_guardrail_assignments"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.gatewayGuardrailAssignment.create({
+  data: { guardrailId: "example", organizationId: "example", scope: "ORGANIZATION" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."gateway_guardrail_assignments" (
+    "id",
+    "guardrail_id",
+    "organization_id",
+    "scope",
+    "created_at"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    CAST(
+      $4::text AS "public"."GatewayGuardrailAssignmentScope"
+    ),
+    $5
+  )
+RETURNING
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+-- params: ["<cuid(1)>","example","example","ORGANIZATION","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.gatewayGuardrailAssignment.update({
+  where: { id: "example" },
+  data: { scope: "ORGANIZATION" },
+});
+```
+
+```sql
+UPDATE "public"."gateway_guardrail_assignments"
+SET
+  "scope" = CAST(
+    $1::text AS "public"."GatewayGuardrailAssignmentScope"
+  )
+WHERE
+  (
+    "public"."gateway_guardrail_assignments"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
+-- params: ["ORGANIZATION","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.gatewayGuardrailAssignment.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."gateway_guardrail_assignments"
+WHERE
+  (
+    "public"."gateway_guardrail_assignments"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_guardrail_assignments"."id",
+  "public"."gateway_guardrail_assignments"."guardrail_id",
+  "public"."gateway_guardrail_assignments"."organization_id",
+  "public"."gateway_guardrail_assignments"."scope"::text,
+  "public"."gateway_guardrail_assignments"."api_key_id",
+  "public"."gateway_guardrail_assignments"."user_id",
+  "public"."gateway_guardrail_assignments"."created_at"
 -- params: ["example"]
 ```
 
@@ -32691,6 +33535,47 @@ CREATE TYPE "GatewaySpendLimitInterval" AS ENUM ('DAILY', 'WEEKLY', 'MONTHLY', '
 
 ```sql
 CREATE TYPE "GatewaySpendLimitAlertType" AS ENUM ('WARNING', 'EXCEEDED');
+```
+
+<a id="enum-GatewayGuardrailType"></a>
+
+### GatewayGuardrailType
+
+- `REGEX`
+- `BEDROCK`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewayGuardrailType" AS ENUM ('REGEX', 'BEDROCK');
+```
+
+<a id="enum-GatewayGuardrailAction"></a>
+
+### GatewayGuardrailAction
+
+- `BLOCK`
+- `LOG`
+- `REDACT`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewayGuardrailAction" AS ENUM ('BLOCK', 'LOG', 'REDACT');
+```
+
+<a id="enum-GatewayGuardrailAssignmentScope"></a>
+
+### GatewayGuardrailAssignmentScope
+
+- `ORGANIZATION`
+- `API_KEY`
+- `USER`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewayGuardrailAssignmentScope" AS ENUM ('ORGANIZATION', 'API_KEY', 'USER');
 ```
 
 <a id="enum-InAppAgentConversationVisibilityScope"></a>

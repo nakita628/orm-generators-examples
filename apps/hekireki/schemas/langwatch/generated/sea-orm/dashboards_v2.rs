@@ -31,6 +31,14 @@ pub struct Model {
     /// ORGANIZATION; null before.
     #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
+    /// The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+    /// decision 8). Every board made before homes existed is llm-ops.
+    #[sea_orm(
+        column_name = "homeProduct",
+        column_type = "Text",
+        default_value = "llm-ops"
+    )]
+    pub home_product: String,
     /// Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
     /// 2026-10-28); dropped in a later migration, once no serving release reads it.
     #[sea_orm(column_name = "excludedOrigins", column_type = "JsonBinary")]

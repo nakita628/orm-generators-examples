@@ -36,6 +36,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
           failed_at: DateTime.t(),
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
+          delete_authorized_txid: integer() | nil,
           seeds: [Teable.ComputedUpdateDeadLetterSeed.t()]
         }
 
@@ -72,6 +73,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
     field(:failed_at, Teable.PrismaDateTime)
     field(:created_at, Teable.PrismaDateTime)
     field(:updated_at, Teable.PrismaDateTime)
+    field(:delete_authorized_txid, :integer)
     has_many(:seeds, Teable.ComputedUpdateDeadLetterSeed, foreign_key: :task_id, references: :id)
   end
 end

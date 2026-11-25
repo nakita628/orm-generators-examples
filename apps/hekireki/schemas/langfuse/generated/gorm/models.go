@@ -66,55 +66,57 @@ func (m *Session) BeforeCreate(_ *gorm.DB) error {
 }
 
 type User struct {
-	ID                        string                      `gorm:"column:id;primaryKey" json:"id"`
-	Name                      *string                     `gorm:"column:name" json:"name"`
-	Email                     *string                     `gorm:"column:email;uniqueIndex:users_email_key" json:"email"`
-	EmailVerified             *DateTime                   `gorm:"column:email_verified;type:timestamp(3)" json:"email_verified"`
-	Password                  *string                     `gorm:"column:password" json:"password"`
-	SessionsExpiredAt         *DateTime                   `gorm:"column:sessions_expired_at;type:timestamp(3)" json:"sessions_expired_at"`
-	Image                     *string                     `gorm:"column:image" json:"image"`
-	Admin                     bool                        `gorm:"column:admin;default:false;not null" json:"admin"`
-	V4BetaEnabled             bool                        `gorm:"column:v4_beta_enabled;default:false;not null" json:"v4_beta_enabled"`
-	SupportAccess             datatypes.JSON              `gorm:"column:support_access" json:"support_access"`
-	CreatedAt                 DateTime                    `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt                 DateTime                    `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
-	FeatureFlags              ScalarList[string]          `gorm:"column:feature_flags;type:text[]" json:"feature_flags"`
-	Accounts                  []Account                   `gorm:"foreignKey:UserID;constraint:Account_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Sessions                  []Session                   `gorm:"foreignKey:UserID;constraint:Session_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	OrganizationMemberships   []OrganizationMembership    `gorm:"foreignKey:UserID;constraint:organization_memberships_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	ProjectMemberships        []ProjectMembership         `gorm:"foreignKey:UserID;constraint:project_memberships_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Invitations               []MembershipInvitation      `gorm:"foreignKey:InvitedByUserID;constraint:membership_invitations_invited_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	AnnotatedLockedItem       []AnnotationQueueItem       `gorm:"foreignKey:LockedByUserID;constraint:annotation_queue_items_locked_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	AnnotatedCompletedItem    []AnnotationQueueItem       `gorm:"foreignKey:AnnotatorUserID;constraint:annotation_queue_items_annotator_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	DashboardWidgetsCreated   []DashboardWidget           `gorm:"foreignKey:CreatedBy;constraint:dashboard_widgets_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	DashboardWidgetsUpdated   []DashboardWidget           `gorm:"foreignKey:UpdatedBy;constraint:dashboard_widgets_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	DashboardCreated          []Dashboard                 `gorm:"foreignKey:CreatedBy;constraint:dashboards_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	DashboardUpdated          []Dashboard                 `gorm:"foreignKey:UpdatedBy;constraint:dashboards_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TableViewPresetCreated    []TableViewPreset           `gorm:"foreignKey:CreatedBy;constraint:table_view_presets_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TableViewPresetUpdated    []TableViewPreset           `gorm:"foreignKey:UpdatedBy;constraint:table_view_presets_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	SessionViewsCreated       []SessionView               `gorm:"foreignKey:CreatedBy;constraint:session_views_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	SessionViewPinOverrides   []SessionViewPinOverride    `gorm:"foreignKey:UserID;constraint:session_view_pin_overrides_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	MonitorsCreated           []Monitor                   `gorm:"foreignKey:CreatedBy;constraint:monitors_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	MonitorsUpdated           []Monitor                   `gorm:"foreignKey:UpdatedBy;constraint:monitors_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TopicConfigsCreated       []TopicConfig               `gorm:"foreignKey:CreatedBy;constraint:topic_configs_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TopicConfigsUpdated       []TopicConfig               `gorm:"foreignKey:UpdatedBy;constraint:topic_configs_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TracingReadinessCreated   []TracingReadinessSettings  `gorm:"foreignKey:CreatedBy;constraint:tracing_readiness_settings_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	TracingReadinessUpdated   []TracingReadinessSettings  `gorm:"foreignKey:UpdatedBy;constraint:tracing_readiness_settings_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	AnnotationQueueAssignment []AnnotationQueueAssignment `gorm:"foreignKey:UserID;constraint:annotation_queue_assignments_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Surveys                   []Survey                    `gorm:"foreignKey:UserID;constraint:surveys_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	CommentReactions          []CommentReaction           `gorm:"foreignKey:UserID;constraint:comment_reactions_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	NotificationPreferences   []NotificationPreference    `gorm:"foreignKey:UserID;constraint:notification_preferences_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	DefaultViews              []DefaultView               `gorm:"foreignKey:UserID;constraint:default_views_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	InAppAgentConversations   []InAppAgentConversation    `gorm:"foreignKey:CreatedByUserID;constraint:in_app_agent_conversations_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	InAppAgentRuns            []InAppAgentRun             `gorm:"foreignKey:TriggeredByUserID;constraint:in_app_agent_runs_triggered_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	APIKeysCreated            []APIKey                    `gorm:"foreignKey:CreatedByUserID;constraint:api_keys_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	APIKeys                   []APIKey                    `gorm:"foreignKey:UserID;constraint:api_keys_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RoleAssignments           []RoleAssignment            `gorm:"foreignKey:UserID;constraint:role_assignments_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	EvaluatorsCreated         []Evaluator                 `gorm:"foreignKey:CreatedByUserID;constraint:evaluators_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	EvaluatorVersionsCreated  []EvaluatorVersion          `gorm:"foreignKey:CreatedByUserID;constraint:evaluator_versions_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	EvaluationRulesCreated    []EvaluationRule            `gorm:"foreignKey:CreatedByUserID;constraint:evaluation_rules_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	GatewaySpendLimitsOwned   []GatewaySpendLimit         `gorm:"foreignKey:OwnerUserID;constraint:gateway_spend_limits_owner_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	GatewaySpendLimits        []GatewaySpendLimit         `gorm:"foreignKey:UserID;constraint:gateway_spend_limits_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID                          string                       `gorm:"column:id;primaryKey" json:"id"`
+	Name                        *string                      `gorm:"column:name" json:"name"`
+	Email                       *string                      `gorm:"column:email;uniqueIndex:users_email_key" json:"email"`
+	EmailVerified               *DateTime                    `gorm:"column:email_verified;type:timestamp(3)" json:"email_verified"`
+	Password                    *string                      `gorm:"column:password" json:"password"`
+	SessionsExpiredAt           *DateTime                    `gorm:"column:sessions_expired_at;type:timestamp(3)" json:"sessions_expired_at"`
+	Image                       *string                      `gorm:"column:image" json:"image"`
+	Admin                       bool                         `gorm:"column:admin;default:false;not null" json:"admin"`
+	V4BetaEnabled               bool                         `gorm:"column:v4_beta_enabled;default:false;not null" json:"v4_beta_enabled"`
+	SupportAccess               datatypes.JSON               `gorm:"column:support_access" json:"support_access"`
+	CreatedAt                   DateTime                     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt                   DateTime                     `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	FeatureFlags                ScalarList[string]           `gorm:"column:feature_flags;type:text[]" json:"feature_flags"`
+	Accounts                    []Account                    `gorm:"foreignKey:UserID;constraint:Account_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Sessions                    []Session                    `gorm:"foreignKey:UserID;constraint:Session_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	OrganizationMemberships     []OrganizationMembership     `gorm:"foreignKey:UserID;constraint:organization_memberships_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ProjectMemberships          []ProjectMembership          `gorm:"foreignKey:UserID;constraint:project_memberships_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Invitations                 []MembershipInvitation       `gorm:"foreignKey:InvitedByUserID;constraint:membership_invitations_invited_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AnnotatedLockedItem         []AnnotationQueueItem        `gorm:"foreignKey:LockedByUserID;constraint:annotation_queue_items_locked_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AnnotatedCompletedItem      []AnnotationQueueItem        `gorm:"foreignKey:AnnotatorUserID;constraint:annotation_queue_items_annotator_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	DashboardWidgetsCreated     []DashboardWidget            `gorm:"foreignKey:CreatedBy;constraint:dashboard_widgets_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	DashboardWidgetsUpdated     []DashboardWidget            `gorm:"foreignKey:UpdatedBy;constraint:dashboard_widgets_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	DashboardCreated            []Dashboard                  `gorm:"foreignKey:CreatedBy;constraint:dashboards_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	DashboardUpdated            []Dashboard                  `gorm:"foreignKey:UpdatedBy;constraint:dashboards_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TableViewPresetCreated      []TableViewPreset            `gorm:"foreignKey:CreatedBy;constraint:table_view_presets_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TableViewPresetUpdated      []TableViewPreset            `gorm:"foreignKey:UpdatedBy;constraint:table_view_presets_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	SessionViewsCreated         []SessionView                `gorm:"foreignKey:CreatedBy;constraint:session_views_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	SessionViewPinOverrides     []SessionViewPinOverride     `gorm:"foreignKey:UserID;constraint:session_view_pin_overrides_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MonitorsCreated             []Monitor                    `gorm:"foreignKey:CreatedBy;constraint:monitors_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	MonitorsUpdated             []Monitor                    `gorm:"foreignKey:UpdatedBy;constraint:monitors_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TopicConfigsCreated         []TopicConfig                `gorm:"foreignKey:CreatedBy;constraint:topic_configs_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TopicConfigsUpdated         []TopicConfig                `gorm:"foreignKey:UpdatedBy;constraint:topic_configs_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TracingReadinessCreated     []TracingReadinessSettings   `gorm:"foreignKey:CreatedBy;constraint:tracing_readiness_settings_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TracingReadinessUpdated     []TracingReadinessSettings   `gorm:"foreignKey:UpdatedBy;constraint:tracing_readiness_settings_updated_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewayGuardrailsCreated    []GatewayGuardrail           `gorm:"foreignKey:CreatedBy;constraint:gateway_guardrails_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AnnotationQueueAssignment   []AnnotationQueueAssignment  `gorm:"foreignKey:UserID;constraint:annotation_queue_assignments_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Surveys                     []Survey                     `gorm:"foreignKey:UserID;constraint:surveys_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	CommentReactions            []CommentReaction            `gorm:"foreignKey:UserID;constraint:comment_reactions_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	NotificationPreferences     []NotificationPreference     `gorm:"foreignKey:UserID;constraint:notification_preferences_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	DefaultViews                []DefaultView                `gorm:"foreignKey:UserID;constraint:default_views_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	InAppAgentConversations     []InAppAgentConversation     `gorm:"foreignKey:CreatedByUserID;constraint:in_app_agent_conversations_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	InAppAgentRuns              []InAppAgentRun              `gorm:"foreignKey:TriggeredByUserID;constraint:in_app_agent_runs_triggered_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	APIKeysCreated              []APIKey                     `gorm:"foreignKey:CreatedByUserID;constraint:api_keys_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	APIKeys                     []APIKey                     `gorm:"foreignKey:UserID;constraint:api_keys_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleAssignments             []RoleAssignment             `gorm:"foreignKey:UserID;constraint:role_assignments_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	EvaluatorsCreated           []Evaluator                  `gorm:"foreignKey:CreatedByUserID;constraint:evaluators_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	EvaluatorVersionsCreated    []EvaluatorVersion           `gorm:"foreignKey:CreatedByUserID;constraint:evaluator_versions_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	EvaluationRulesCreated      []EvaluationRule             `gorm:"foreignKey:CreatedByUserID;constraint:evaluation_rules_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimitsOwned     []GatewaySpendLimit          `gorm:"foreignKey:OwnerUserID;constraint:gateway_spend_limits_owner_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimits          []GatewaySpendLimit          `gorm:"foreignKey:UserID;constraint:gateway_spend_limits_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayGuardrailAssignments []GatewayGuardrailAssignment `gorm:"foreignKey:UserID;constraint:gateway_guardrail_assignments_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (User) TableName() string {
@@ -154,34 +156,36 @@ func (VerificationToken) TableName() string {
 }
 
 type Organization struct {
-	ID                               string                   `gorm:"column:id;primaryKey" json:"id"`
-	Name                             string                   `gorm:"column:name;not null" json:"name"`
-	CreatedAt                        DateTime                 `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt                        DateTime                 `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
-	CloudConfig                      datatypes.JSON           `gorm:"column:cloud_config" json:"cloud_config"`
-	Metadata                         datatypes.JSON           `gorm:"column:metadata" json:"metadata"`
-	CloudBillingCycleAnchor          *DateTime                `gorm:"column:cloud_billing_cycle_anchor;type:timestamp(3);default:CURRENT_TIMESTAMP" json:"cloud_billing_cycle_anchor"`
-	CloudBillingCycleUpdatedAt       *DateTime                `gorm:"column:cloud_billing_cycle_updated_at;type:timestamp(3)" json:"cloud_billing_cycle_updated_at"`
-	CloudCurrentCycleUsage           *int                     `gorm:"column:cloud_current_cycle_usage;size:32" json:"cloud_current_cycle_usage"`
-	CloudFreeTierUsageThresholdState *string                  `gorm:"column:cloud_free_tier_usage_threshold_state" json:"cloud_free_tier_usage_threshold_state"`
-	AiFeaturesEnabled                bool                     `gorm:"column:ai_features_enabled;default:false;not null" json:"ai_features_enabled"`
-	AiTelemetryEnabled               *bool                    `gorm:"column:ai_telemetry_enabled;default:true;not null" json:"ai_telemetry_enabled"`
-	AccessAuditLogEnabled            bool                     `gorm:"column:access_audit_log_enabled;default:false;not null" json:"access_audit_log_enabled"`
-	FeatureFlagOrgDefaults           ScalarList[string]       `gorm:"column:feature_flag_org_defaults;type:text[]" json:"feature_flag_org_defaults"`
-	SfdcOrgID                        *string                  `gorm:"column:sfdc_org_id" json:"sfdc_org_id"`
-	OrganizationMemberships          []OrganizationMembership `gorm:"foreignKey:OrgID;constraint:organization_memberships_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Projects                         []Project                `gorm:"foreignKey:OrgID;constraint:projects_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	MembershipInvitation             []MembershipInvitation   `gorm:"foreignKey:OrgID;constraint:membership_invitations_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	APIKey                           []APIKey                 `gorm:"foreignKey:OrgID;constraint:api_keys_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Surveys                          []Survey                 `gorm:"foreignKey:OrgID;constraint:surveys_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	CloudSpendAlerts                 []CloudSpendAlert        `gorm:"foreignKey:OrgID;constraint:cloud_spend_alerts_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	VerifiedDomains                  []VerifiedDomain         `gorm:"foreignKey:OrganizationID;constraint:verified_domains_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	GatewayAiConnections             []GatewayAiConnection    `gorm:"foreignKey:OrganizationID;constraint:gateway_ai_connections_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	GatewaySpendLimits               []GatewaySpendLimit      `gorm:"foreignKey:OrganizationID;constraint:gateway_spend_limits_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	OrganizationLlmAPIKeys           []LlmAPIKeys             `gorm:"foreignKey:OrganizationID;constraint:llm_api_keys_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Models                           []Model                  `gorm:"foreignKey:OrganizationID;constraint:models_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RoleAssignments                  []RoleAssignment         `gorm:"foreignKey:OrgID;constraint:role_assignments_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	GatewayConfig                    *GatewayConfig           `gorm:"foreignKey:OrganizationID;constraint:gateway_configs_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID                               string                       `gorm:"column:id;primaryKey" json:"id"`
+	Name                             string                       `gorm:"column:name;not null" json:"name"`
+	CreatedAt                        DateTime                     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt                        DateTime                     `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	CloudConfig                      datatypes.JSON               `gorm:"column:cloud_config" json:"cloud_config"`
+	Metadata                         datatypes.JSON               `gorm:"column:metadata" json:"metadata"`
+	CloudBillingCycleAnchor          *DateTime                    `gorm:"column:cloud_billing_cycle_anchor;type:timestamp(3);default:CURRENT_TIMESTAMP" json:"cloud_billing_cycle_anchor"`
+	CloudBillingCycleUpdatedAt       *DateTime                    `gorm:"column:cloud_billing_cycle_updated_at;type:timestamp(3)" json:"cloud_billing_cycle_updated_at"`
+	CloudCurrentCycleUsage           *int                         `gorm:"column:cloud_current_cycle_usage;size:32" json:"cloud_current_cycle_usage"`
+	CloudFreeTierUsageThresholdState *string                      `gorm:"column:cloud_free_tier_usage_threshold_state" json:"cloud_free_tier_usage_threshold_state"`
+	AiFeaturesEnabled                bool                         `gorm:"column:ai_features_enabled;default:false;not null" json:"ai_features_enabled"`
+	AiTelemetryEnabled               *bool                        `gorm:"column:ai_telemetry_enabled;default:true;not null" json:"ai_telemetry_enabled"`
+	AccessAuditLogEnabled            bool                         `gorm:"column:access_audit_log_enabled;default:false;not null" json:"access_audit_log_enabled"`
+	FeatureFlagOrgDefaults           ScalarList[string]           `gorm:"column:feature_flag_org_defaults;type:text[]" json:"feature_flag_org_defaults"`
+	SfdcOrgID                        *string                      `gorm:"column:sfdc_org_id" json:"sfdc_org_id"`
+	OrganizationMemberships          []OrganizationMembership     `gorm:"foreignKey:OrgID;constraint:organization_memberships_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Projects                         []Project                    `gorm:"foreignKey:OrgID;constraint:projects_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MembershipInvitation             []MembershipInvitation       `gorm:"foreignKey:OrgID;constraint:membership_invitations_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIKey                           []APIKey                     `gorm:"foreignKey:OrgID;constraint:api_keys_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Surveys                          []Survey                     `gorm:"foreignKey:OrgID;constraint:surveys_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	CloudSpendAlerts                 []CloudSpendAlert            `gorm:"foreignKey:OrgID;constraint:cloud_spend_alerts_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	VerifiedDomains                  []VerifiedDomain             `gorm:"foreignKey:OrganizationID;constraint:verified_domains_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayAiConnections             []GatewayAiConnection        `gorm:"foreignKey:OrganizationID;constraint:gateway_ai_connections_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewaySpendLimits               []GatewaySpendLimit          `gorm:"foreignKey:OrganizationID;constraint:gateway_spend_limits_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayGuardrails                []GatewayGuardrail           `gorm:"foreignKey:OrganizationID;constraint:gateway_guardrails_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayGuardrailAssignments      []GatewayGuardrailAssignment `gorm:"foreignKey:OrganizationID;constraint:gateway_guardrail_assignments_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	OrganizationLlmAPIKeys           []LlmAPIKeys                 `gorm:"foreignKey:OrganizationID;constraint:llm_api_keys_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Models                           []Model                      `gorm:"foreignKey:OrganizationID;constraint:models_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleAssignments                  []RoleAssignment             `gorm:"foreignKey:OrgID;constraint:role_assignments_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayConfig                    *GatewayConfig               `gorm:"foreignKey:OrganizationID;constraint:gateway_configs_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Organization) TableName() string {
@@ -315,31 +319,32 @@ func (*Project) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type APIKey struct {
-	ID                  string                    `gorm:"column:id;primaryKey;uniqueIndex:api_keys_id_key" json:"id"`
-	CreatedAt           DateTime                  `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	Note                *string                   `gorm:"column:note" json:"note"`
-	PublicKey           string                    `gorm:"column:public_key;uniqueIndex:api_keys_public_key_key;index:api_keys_public_key_idx;not null" json:"public_key"`
-	HashedSecretKey     string                    `gorm:"column:hashed_secret_key;uniqueIndex:api_keys_hashed_secret_key_key;index:api_keys_hashed_secret_key_idx;not null" json:"hashed_secret_key"`
-	FastHashedSecretKey *string                   `gorm:"column:fast_hashed_secret_key;uniqueIndex:api_keys_fast_hashed_secret_key_key;index:api_keys_fast_hashed_secret_key_idx" json:"fast_hashed_secret_key"`
-	DisplaySecretKey    string                    `gorm:"column:display_secret_key;not null" json:"display_secret_key"`
-	LastUsedAt          *DateTime                 `gorm:"column:last_used_at;type:timestamp(3)" json:"last_used_at"`
-	ExpiresAt           *DateTime                 `gorm:"column:expires_at;type:timestamp(3)" json:"expires_at"`
-	IsInAppAgentKey     bool                      `gorm:"column:is_in_app_agent_key;default:false;not null" json:"is_in_app_agent_key"`
-	ProjectID           *string                   `gorm:"column:project_id;index:api_keys_project_id_idx" json:"project_id"`
-	OrgID               *string                   `gorm:"column:organization_id;index:api_keys_organization_id_idx;index:api_keys_user_id_organization_id_idx,priority:2" json:"organization_id"`
-	Scope               string                    `gorm:"column:scope;default:'PROJECT';not null" json:"scope"`
-	CreatedByUserID     *string                   `gorm:"column:created_by_user_id" json:"created_by_user_id"`
-	UserID              *string                   `gorm:"column:user_id;index:api_keys_user_id_organization_id_idx,priority:1" json:"user_id"`
-	CreatedByAPIKeyID   *string                   `gorm:"column:created_by_api_key_id;index:api_keys_created_by_api_key_id_idx" json:"created_by_api_key_id"`
-	Project             *Project                  `gorm:"belongsTo"`
-	Organization        *Organization             `gorm:"foreignKey:OrgID;belongsTo"`
-	CreatedByUser       *User                     `gorm:"foreignKey:CreatedByUserID;belongsTo"`
-	User                *User                     `gorm:"foreignKey:UserID;belongsTo"`
-	CreatedByAPIKey     *APIKey                   `gorm:"foreignKey:CreatedByAPIKeyID;belongsTo"`
-	APIKeysCreated      []APIKey                  `gorm:"foreignKey:CreatedByAPIKeyID;constraint:api_keys_created_by_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
-	GatewaySpendLimits  []GatewaySpendLimit       `gorm:"foreignKey:APIKeyID;constraint:gateway_spend_limits_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RoleAssignments     []RoleAssignment          `gorm:"foreignKey:APIKeyID;constraint:role_assignments_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	GatewayAssociation  *GatewayAPIKeyAssociation `gorm:"foreignKey:APIKeyID;constraint:gateway_api_key_associations_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID                          string                       `gorm:"column:id;primaryKey;uniqueIndex:api_keys_id_key" json:"id"`
+	CreatedAt                   DateTime                     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	Note                        *string                      `gorm:"column:note" json:"note"`
+	PublicKey                   string                       `gorm:"column:public_key;uniqueIndex:api_keys_public_key_key;index:api_keys_public_key_idx;not null" json:"public_key"`
+	HashedSecretKey             string                       `gorm:"column:hashed_secret_key;uniqueIndex:api_keys_hashed_secret_key_key;index:api_keys_hashed_secret_key_idx;not null" json:"hashed_secret_key"`
+	FastHashedSecretKey         *string                      `gorm:"column:fast_hashed_secret_key;uniqueIndex:api_keys_fast_hashed_secret_key_key;index:api_keys_fast_hashed_secret_key_idx" json:"fast_hashed_secret_key"`
+	DisplaySecretKey            string                       `gorm:"column:display_secret_key;not null" json:"display_secret_key"`
+	LastUsedAt                  *DateTime                    `gorm:"column:last_used_at;type:timestamp(3)" json:"last_used_at"`
+	ExpiresAt                   *DateTime                    `gorm:"column:expires_at;type:timestamp(3)" json:"expires_at"`
+	IsInAppAgentKey             bool                         `gorm:"column:is_in_app_agent_key;default:false;not null" json:"is_in_app_agent_key"`
+	ProjectID                   *string                      `gorm:"column:project_id;index:api_keys_project_id_idx" json:"project_id"`
+	OrgID                       *string                      `gorm:"column:organization_id;index:api_keys_organization_id_idx;index:api_keys_user_id_organization_id_idx,priority:2" json:"organization_id"`
+	Scope                       string                       `gorm:"column:scope;default:'PROJECT';not null" json:"scope"`
+	CreatedByUserID             *string                      `gorm:"column:created_by_user_id" json:"created_by_user_id"`
+	UserID                      *string                      `gorm:"column:user_id;index:api_keys_user_id_organization_id_idx,priority:1" json:"user_id"`
+	CreatedByAPIKeyID           *string                      `gorm:"column:created_by_api_key_id;index:api_keys_created_by_api_key_id_idx" json:"created_by_api_key_id"`
+	Project                     *Project                     `gorm:"belongsTo"`
+	Organization                *Organization                `gorm:"foreignKey:OrgID;belongsTo"`
+	CreatedByUser               *User                        `gorm:"foreignKey:CreatedByUserID;belongsTo"`
+	User                        *User                        `gorm:"foreignKey:UserID;belongsTo"`
+	CreatedByAPIKey             *APIKey                      `gorm:"foreignKey:CreatedByAPIKeyID;belongsTo"`
+	APIKeysCreated              []APIKey                     `gorm:"foreignKey:CreatedByAPIKeyID;constraint:api_keys_created_by_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimits          []GatewaySpendLimit          `gorm:"foreignKey:APIKeyID;constraint:gateway_spend_limits_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayGuardrailAssignments []GatewayGuardrailAssignment `gorm:"foreignKey:APIKeyID;constraint:gateway_guardrail_assignments_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleAssignments             []RoleAssignment             `gorm:"foreignKey:APIKeyID;constraint:role_assignments_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayAssociation          *GatewayAPIKeyAssociation    `gorm:"foreignKey:APIKeyID;constraint:gateway_api_key_associations_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (APIKey) TableName() string {
@@ -557,6 +562,77 @@ func (GatewaySpendLimitAlert) TableName() string {
 }
 
 func (m *GatewaySpendLimitAlert) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+type GatewayGuardrail struct {
+	ID                  string                       `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID      string                       `gorm:"column:organization_id;uniqueIndex:gateway_guardrails_organization_id_name_key,priority:1;not null" json:"organization_id"`
+	Name                string                       `gorm:"column:name;uniqueIndex:gateway_guardrails_organization_id_name_key,priority:2;not null" json:"name"`
+	Type                string                       `gorm:"column:type;default:'REGEX';not null" json:"type"`
+	Action              string                       `gorm:"column:action;not null" json:"action"`
+	Config              datatypes.JSON               `gorm:"column:config;type:jsonb;default:'{}';not null" json:"config"`
+	EncryptedCredential *string                      `gorm:"column:encrypted_credentials" json:"encrypted_credentials"`
+	CreatedBy           *string                      `gorm:"column:created_by" json:"created_by"`
+	CreatedAt           DateTime                     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt           DateTime                     `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	Organization        *Organization                `gorm:"belongsTo"`
+	CreatedByUser       *User                        `gorm:"foreignKey:CreatedBy;belongsTo"`
+	Assignments         []GatewayGuardrailAssignment `gorm:"foreignKey:GuardrailID;constraint:gateway_guardrail_assignments_guardrail_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+func (GatewayGuardrail) TableName() string {
+	return "gateway_guardrails"
+}
+
+func (m *GatewayGuardrail) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*GatewayGuardrail) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+type GatewayGuardrailAssignment struct {
+	ID             string            `gorm:"column:id;primaryKey" json:"id"`
+	GuardrailID    string            `gorm:"column:guardrail_id;not null" json:"guardrail_id"`
+	OrganizationID string            `gorm:"column:organization_id;index:gateway_guardrail_assignments_organization_id_scope_idx,priority:1;index:gateway_guardrail_assignments_user_id_organization_id_idx,priority:2;not null" json:"organization_id"`
+	Scope          string            `gorm:"column:scope;index:gateway_guardrail_assignments_organization_id_scope_idx,priority:2;not null" json:"scope"`
+	APIKeyID       *string           `gorm:"column:api_key_id;index:gateway_guardrail_assignments_api_key_id_idx" json:"api_key_id"`
+	UserID         *string           `gorm:"column:user_id;index:gateway_guardrail_assignments_user_id_organization_id_idx,priority:1" json:"user_id"`
+	CreatedAt      DateTime          `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	Guardrail      *GatewayGuardrail `gorm:"foreignKey:GuardrailID;belongsTo"`
+	Organization   *Organization     `gorm:"belongsTo"`
+	APIKey         *APIKey           `gorm:"belongsTo"`
+	User           *User             `gorm:"belongsTo"`
+}
+
+func (GatewayGuardrailAssignment) TableName() string {
+	return "gateway_guardrail_assignments"
+}
+
+func (m *GatewayGuardrailAssignment) BeforeCreate(tx *gorm.DB) error {
 	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
 	if m.ID == "" {
 		m.ID = cuid.New()

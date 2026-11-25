@@ -24,6 +24,7 @@ object NurturingOrganizationTable : IdTable<String>("\"NurturingOrganization\"")
     val codingRepositoryKeys = array("codingRepositoryKeys", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val codingFirstDays = array("codingFirstDays", IntegerColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val lastTraceAt = pgTimestamp("lastTraceAt", 3).nullable()
+    val adminAt = pgTimestamp("adminAt", 3).nullable()
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"NurturingOrganization_pkey\"")
 }

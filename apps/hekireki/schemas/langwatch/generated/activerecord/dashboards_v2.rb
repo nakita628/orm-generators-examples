@@ -8,6 +8,8 @@
 # scope:: Who sees it. Only the author changes it; a board with no author stays PROJECT.
 # organizationId:: The owning project's organization, stamped when the board is first set to
 #   ORGANIZATION; null before.
+# homeProduct:: The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+#   decision 8). Every board made before homes existed is llm-ops.
 # excludedOrigins:: Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
 #   2026-10-28); dropped in a later migration, once no serving release reads it.
 class DashboardsV2 < ApplicationRecord
@@ -15,6 +17,7 @@ class DashboardsV2 < ApplicationRecord
   self.implicit_order_column = "createdAt"
 
   attribute :id, default: -> { Nanoid.generate }
+  attribute :homeProduct, default: "llm-ops"
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
 

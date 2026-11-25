@@ -20,5 +20,6 @@ class ApiKey < ApplicationRecord
   has_many :api_keys_created, class_name: "ApiKey", foreign_key: "created_by_api_key_id",
                               inverse_of: :created_by_api_key, dependent: :nullify
   has_many :gateway_spend_limits, dependent: :destroy
+  has_many :gateway_guardrail_assignments, dependent: :destroy
   has_many :role_assignments, dependent: :destroy
 end

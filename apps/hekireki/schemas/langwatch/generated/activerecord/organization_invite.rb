@@ -1,8 +1,10 @@
+# billingOnly:: Invites the person who pays with the Billing grant and no seat (ADR-205).
 class OrganizationInvite < ApplicationRecord
   self.table_name = "OrganizationInvite"
   self.implicit_order_column = "createdAt"
 
   attribute :id, default: -> { Nanoid.generate }
+  attribute :billingOnly, default: false
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
 

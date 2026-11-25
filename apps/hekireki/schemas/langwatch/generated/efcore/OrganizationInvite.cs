@@ -36,6 +36,11 @@ public partial class OrganizationInvite
 
     public string? AcceptedViaIdentifierId { get; set; }
 
+    /// <summary>
+    /// Invites the person who pays with the Billing grant and no seat (ADR-205).
+    /// </summary>
+    public bool BillingOnly { get; set; } = false;
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

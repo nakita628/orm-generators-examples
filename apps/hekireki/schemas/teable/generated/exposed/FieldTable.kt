@@ -27,6 +27,8 @@ object FieldTable : IdTable<String>("field") {
     val isConditionalLookup = bool("is_conditional_lookup").nullable()
     val isPending = bool("is_pending").nullable()
     val hasError = bool("has_error").nullable()
+    val needsPeriodicRefresh = bool("needs_periodic_refresh").default(false)
+    val refreshCadence = varchar("refresh_cadence", 16).nullable()
     val lookupLinkedFieldId = text("lookup_linked_field_id").nullable()
     val lookupOptions = text("lookup_options").nullable()
     val tableId =

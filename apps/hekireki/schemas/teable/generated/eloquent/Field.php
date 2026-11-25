@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Field extends Model
 {
@@ -39,6 +40,8 @@ class Field extends Model
         'is_conditional_lookup',
         'is_pending',
         'has_error',
+        'needs_periodic_refresh',
+        'refresh_cadence',
         'lookup_linked_field_id',
         'lookup_options',
         'table_id',
@@ -52,6 +55,7 @@ class Field extends Model
 
     protected $attributes = [
         'provision_state' => 'ready',
+        'needs_periodic_refresh' => false,
     ];
 
     protected $casts = [
@@ -65,6 +69,7 @@ class Field extends Model
         'is_conditional_lookup' => 'boolean',
         'is_pending' => 'boolean',
         'has_error' => 'boolean',
+        'needs_periodic_refresh' => 'boolean',
         'order' => 'float',
         'version' => 'integer',
         'created_time' => 'datetime',
@@ -85,5 +90,10 @@ class Field extends Model
     public function table(): BelongsTo
     {
         return $this->belongsTo(TableMeta::class, 'table_id');
+    }
+
+    public function periodicRefreshState(): HasOne
+    {
+        return $this->hasOne(FieldPeriodicRefreshState::class, 'field_id');
     }
 }

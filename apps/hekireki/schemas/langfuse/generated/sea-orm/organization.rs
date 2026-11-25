@@ -67,6 +67,10 @@ pub enum Relation {
     GatewayAiConnections,
     #[sea_orm(has_many = "super::gateway_spend_limit::Entity")]
     GatewaySpendLimits,
+    #[sea_orm(has_many = "super::gateway_guardrail::Entity")]
+    GatewayGuardrails,
+    #[sea_orm(has_many = "super::gateway_guardrail_assignment::Entity")]
+    GatewayGuardrailAssignments,
     #[sea_orm(has_many = "super::llm_api_keys::Entity")]
     OrganizationLlmApiKeys,
     #[sea_orm(has_many = "super::model::Entity")]
@@ -128,6 +132,18 @@ impl Related<super::gateway_ai_connection::Entity> for Entity {
 impl Related<super::gateway_spend_limit::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::GatewaySpendLimits.def()
+    }
+}
+
+impl Related<super::gateway_guardrail::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewayGuardrails.def()
+    }
+}
+
+impl Related<super::gateway_guardrail_assignment::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewayGuardrailAssignments.def()
     }
 }
 

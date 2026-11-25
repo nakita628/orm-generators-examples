@@ -46,6 +46,10 @@ public partial class Field
 
     public bool? HasError { get; set; }
 
+    public bool NeedsPeriodicRefresh { get; set; } = false;
+
+    public string? RefreshCadence { get; set; }
+
     public string? LookupLinkedFieldId { get; set; }
 
     public string? LookupOptions { get; set; }
@@ -67,4 +71,6 @@ public partial class Field
     public string? LastModifiedBy { get; set; }
 
     public virtual TableMeta Table { get; set; } = null!;
+
+    public virtual FieldPeriodicRefreshState? PeriodicRefreshState { get; set; }
 }

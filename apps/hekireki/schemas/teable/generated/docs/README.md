@@ -164,6 +164,7 @@ CREATE TABLE "table_meta" (
     "search_index_policy" JSONB,
     "query_index_policy" JSONB,
     "provision_state" "ProvisionState" NOT NULL DEFAULT 'ready',
+    "actor_storage_version" INTEGER NOT NULL DEFAULT 0,
     "version" INTEGER NOT NULL,
     "order" DOUBLE PRECISION NOT NULL,
     "created_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -247,6 +248,8 @@ CREATE TABLE "field" (
     "is_conditional_lookup" BOOLEAN,
     "is_pending" BOOLEAN,
     "has_error" BOOLEAN,
+    "needs_periodic_refresh" BOOLEAN NOT NULL DEFAULT false,
+    "refresh_cadence" VARCHAR(16),
     "lookup_linked_field_id" TEXT,
     "lookup_options" TEXT,
     "table_id" TEXT NOT NULL,
@@ -306,6 +309,28 @@ CREATE TABLE "domain_event_inbox" (
     CONSTRAINT "domain_event_inbox_pkey" PRIMARY KEY ("consumer_id","event_id")
 );
 
+CREATE TABLE "field_periodic_refresh_state" (
+    "field_id" TEXT NOT NULL,
+    "table_id" TEXT NOT NULL,
+    "base_id" TEXT NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+    "time_zone" VARCHAR(64) NOT NULL DEFAULT 'UTC',
+    "contains_now_precision" BOOLEAN NOT NULL DEFAULT false,
+    "last_refreshed_at" TIMESTAMPTZ(6),
+    "last_refreshed_local_date" VARCHAR(16),
+    "last_range_hash" VARCHAR(128),
+    "last_status" VARCHAR(32) NOT NULL DEFAULT 'idle',
+    "last_error" TEXT,
+    "pending_task_id" VARCHAR(64),
+    "pending_local_date" VARCHAR(16),
+    "pending_range_hash" VARCHAR(128),
+    "pending_started_at" TIMESTAMPTZ(6),
+    "created_time" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_modified_time" TIMESTAMPTZ(6),
+
+    CONSTRAINT "field_periodic_refresh_state_pkey" PRIMARY KEY ("field_id")
+);
+
 CREATE TABLE "computed_update_outbox" (
     "id" TEXT NOT NULL,
     "base_id" TEXT NOT NULL,
@@ -335,6 +360,7 @@ CREATE TABLE "computed_update_outbox" (
     "source_changed_at" TIMESTAMP(3),
     "stage_depth" INTEGER NOT NULL DEFAULT 0,
     "predecessor_task_id" TEXT,
+    "dead_letter_restore_version" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -403,6 +429,7 @@ CREATE TABLE "computed_update_dead_letter" (
     "failed_at" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "delete_authorized_txid" BIGINT,
 
     CONSTRAINT "computed_update_dead_letter_pkey" PRIMARY KEY ("id")
 );
@@ -774,6 +801,8 @@ CREATE TABLE "record_history" (
     "after" TEXT NOT NULL,
     "created_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT NOT NULL,
+    "actor_type" TEXT,
+    "actor_id" TEXT,
 
     CONSTRAINT "record_history_pkey" PRIMARY KEY ("id")
 );
@@ -1176,6 +1205,12 @@ CREATE UNIQUE INDEX "domain_event_delivery_event_id_consumer_id_key" ON "domain_
 
 CREATE INDEX "domain_event_inbox_event_id_idx" ON "domain_event_inbox"("event_id");
 
+CREATE INDEX "field_periodic_refresh_state_base_id_enabled_idx" ON "field_periodic_refresh_state"("base_id", "enabled");
+
+CREATE INDEX "field_periodic_refresh_state_table_id_idx" ON "field_periodic_refresh_state"("table_id");
+
+CREATE INDEX "field_periodic_refresh_state_enabled_local_date_idx" ON "field_periodic_refresh_state"("enabled", "last_refreshed_local_date");
+
 CREATE INDEX "computed_update_outbox_status_next_run_at_idx" ON "computed_update_outbox"("status", "next_run_at");
 
 CREATE INDEX "computed_update_outbox_worker_lane_status_next_run_at_idx" ON "computed_update_outbox"("worker_lane", "status", "next_run_at");
@@ -1392,6 +1427,8 @@ ALTER TABLE "table_meta" ADD CONSTRAINT "table_meta_base_id_fkey" FOREIGN KEY ("
 
 ALTER TABLE "field" ADD CONSTRAINT "field_table_id_fkey" FOREIGN KEY ("table_id") REFERENCES "table_meta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+ALTER TABLE "field_periodic_refresh_state" ADD CONSTRAINT "field_periodic_refresh_state_field_id_fkey" FOREIGN KEY ("field_id") REFERENCES "field"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "computed_update_outbox_seed" ADD CONSTRAINT "computed_update_outbox_seed_task_id_fkey" FOREIGN KEY ("task_id") REFERENCES "computed_update_outbox"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "computed_update_dead_letter_seed" ADD CONSTRAINT "computed_update_dead_letter_seed_task_id_fkey" FOREIGN KEY ("task_id") REFERENCES "computed_update_dead_letter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1443,6 +1480,7 @@ ALTER TABLE "base_node" ADD CONSTRAINT "base_node_parent_id_fkey" FOREIGN KEY ("
 | [DomainEventOutbox](#model-DomainEventOutbox)                       | `domain_event_outbox`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [DomainEventDelivery](#model-DomainEventDelivery)                   | `domain_event_delivery`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [DomainEventInbox](#model-DomainEventInbox)                         | `domain_event_inbox`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [FieldPeriodicRefreshState](#model-FieldPeriodicRefreshState)       | `field_periodic_refresh_state`     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateOutbox](#model-ComputedUpdateOutbox)                 | `computed_update_outbox`           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateOutboxSeed](#model-ComputedUpdateOutboxSeed)         | `computed_update_outbox_seed`      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateChangeFrontier](#model-ComputedUpdateChangeFrontier) | `computed_update_change_frontier`  | Actual output-value evidence; independent from continuation progress.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -3854,6 +3892,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4064,26 +4103,27 @@ Table `table_meta`.
 
 ![TableMeta and the models it relates to](tables/TableMeta.svg)
 
-| Field                                       | Type                                     | Constraints                       | Default      | Description |
-| ------------------------------------------- | ---------------------------------------- | --------------------------------- | ------------ | ----------- |
-| `id`                                        | `String`                                 | PK NOT NULL                       |              |             |
-| `baseId` (`base_id`)                        | `String`                                 | NOT NULL → [Base.id](#model-Base) |              |             |
-| `name`                                      | `String`                                 | NOT NULL                          |              |             |
-| `description`                               | `String`                                 | NULL                              |              |             |
-| `icon`                                      | `String`                                 | NULL                              |              |             |
-| `dbTableName` (`db_table_name`)             | `String`                                 | NOT NULL                          |              |             |
-| `dbViewName` (`db_view_name`)               | `String`                                 | NULL                              |              |             |
-| `searchIndex` (`search_index`)              | `Json` `@db.JsonB`                       | NULL                              |              |             |
-| `searchIndexPolicy` (`search_index_policy`) | `Json` `@db.JsonB`                       | NULL                              |              |             |
-| `queryIndexPolicy` (`query_index_policy`)   | `Json` `@db.JsonB`                       | NULL                              |              |             |
-| `provisionState` (`provision_state`)        | [`ProvisionState`](#enum-ProvisionState) | NOT NULL                          | `ready`      |             |
-| `version`                                   | `Int`                                    | NOT NULL                          |              |             |
-| `order`                                     | `Float`                                  | NOT NULL                          |              |             |
-| `createdTime` (`created_time`)              | `DateTime`                               | NOT NULL                          | `now()`      |             |
-| `lastModifiedTime` (`last_modified_time`)   | `DateTime`                               | NULL                              | `@updatedAt` |             |
-| `deletedTime` (`deleted_time`)              | `DateTime`                               | NULL                              |              |             |
-| `createdBy` (`created_by`)                  | `String`                                 | NOT NULL                          |              |             |
-| `lastModifiedBy` (`last_modified_by`)       | `String`                                 | NULL                              |              |             |
+| Field                                           | Type                                     | Constraints                       | Default      | Description |
+| ----------------------------------------------- | ---------------------------------------- | --------------------------------- | ------------ | ----------- |
+| `id`                                            | `String`                                 | PK NOT NULL                       |              |             |
+| `baseId` (`base_id`)                            | `String`                                 | NOT NULL → [Base.id](#model-Base) |              |             |
+| `name`                                          | `String`                                 | NOT NULL                          |              |             |
+| `description`                                   | `String`                                 | NULL                              |              |             |
+| `icon`                                          | `String`                                 | NULL                              |              |             |
+| `dbTableName` (`db_table_name`)                 | `String`                                 | NOT NULL                          |              |             |
+| `dbViewName` (`db_view_name`)                   | `String`                                 | NULL                              |              |             |
+| `searchIndex` (`search_index`)                  | `Json` `@db.JsonB`                       | NULL                              |              |             |
+| `searchIndexPolicy` (`search_index_policy`)     | `Json` `@db.JsonB`                       | NULL                              |              |             |
+| `queryIndexPolicy` (`query_index_policy`)       | `Json` `@db.JsonB`                       | NULL                              |              |             |
+| `provisionState` (`provision_state`)            | [`ProvisionState`](#enum-ProvisionState) | NOT NULL                          | `ready`      |             |
+| `actorStorageVersion` (`actor_storage_version`) | `Int`                                    | NOT NULL                          | `0`          |             |
+| `version`                                       | `Int`                                    | NOT NULL                          |              |             |
+| `order`                                         | `Float`                                  | NOT NULL                          |              |             |
+| `createdTime` (`created_time`)                  | `DateTime`                               | NOT NULL                          | `now()`      |             |
+| `lastModifiedTime` (`last_modified_time`)       | `DateTime`                               | NULL                              | `@updatedAt` |             |
+| `deletedTime` (`deleted_time`)                  | `DateTime`                               | NULL                              |              |             |
+| `createdBy` (`created_by`)                      | `String`                                 | NOT NULL                          |              |             |
+| `lastModifiedBy` (`last_modified_by`)           | `String`                                 | NULL                              |              |             |
 
 #### Indexes
 
@@ -4117,6 +4157,7 @@ CREATE TABLE "table_meta" (
     "search_index_policy" JSONB,
     "query_index_policy" JSONB,
     "provision_state" "ProvisionState" NOT NULL DEFAULT 'ready',
+    "actor_storage_version" INTEGER NOT NULL DEFAULT 0,
     "version" INTEGER NOT NULL,
     "order" DOUBLE PRECISION NOT NULL,
     "created_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -4159,6 +4200,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4219,6 +4261,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4277,6 +4320,8 @@ SELECT
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -4379,6 +4424,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4424,6 +4470,7 @@ INSERT INTO
     "name",
     "db_table_name",
     "provision_state",
+    "actor_storage_version",
     "version",
     "order",
     "created_time",
@@ -4441,7 +4488,8 @@ VALUES
     $7,
     $8,
     $9,
-    $10
+    $10,
+    $11
   )
 RETURNING
   "public"."table_meta"."id",
@@ -4455,6 +4503,7 @@ RETURNING
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4462,7 +4511,7 @@ RETURNING
   "public"."table_meta"."deleted_time",
   "public"."table_meta"."created_by",
   "public"."table_meta"."last_modified_by"
--- params: ["example","example","example","example","ready","1","1.5","<now()>","<now()>","example"]
+-- params: ["example","example","example","example","ready","0","1","1.5","<now()>","<now()>","example"]
 ```
 
 **update**: Update a row
@@ -4493,6 +4542,7 @@ RETURNING
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -4528,6 +4578,7 @@ RETURNING
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -5282,38 +5333,40 @@ Table `field`.
 
 ![Field and the models it relates to](tables/Field.svg)
 
-| Field                                            | Type                                     | Constraints                                 | Default      | Description |
-| ------------------------------------------------ | ---------------------------------------- | ------------------------------------------- | ------------ | ----------- |
-| `id`                                             | `String`                                 | PK NOT NULL                                 |              |             |
-| `name`                                           | `String`                                 | NOT NULL                                    |              |             |
-| `description`                                    | `String`                                 | NULL                                        |              |             |
-| `options`                                        | `String`                                 | NULL                                        |              |             |
-| `meta`                                           | `String`                                 | NULL                                        |              |             |
-| `aiConfig` (`ai_config`)                         | `String`                                 | NULL                                        |              |             |
-| `type`                                           | `String`                                 | NOT NULL                                    |              |             |
-| `cellValueType` (`cell_value_type`)              | `String`                                 | NOT NULL                                    |              |             |
-| `isMultipleCellValue` (`is_multiple_cell_value`) | `Boolean`                                | NULL                                        |              |             |
-| `dbFieldType` (`db_field_type`)                  | `String`                                 | NOT NULL                                    |              |             |
-| `dbFieldName` (`db_field_name`)                  | `String`                                 | NOT NULL                                    |              |             |
-| `provisionState` (`provision_state`)             | [`ProvisionState`](#enum-ProvisionState) | NOT NULL                                    | `ready`      |             |
-| `notNull` (`not_null`)                           | `Boolean`                                | NULL                                        |              |             |
-| `unique`                                         | `Boolean`                                | NULL                                        |              |             |
-| `isPrimary` (`is_primary`)                       | `Boolean`                                | NULL                                        |              |             |
-| `isComputed` (`is_computed`)                     | `Boolean`                                | NULL                                        |              |             |
-| `isLookup` (`is_lookup`)                         | `Boolean`                                | NULL                                        |              |             |
-| `isConditionalLookup` (`is_conditional_lookup`)  | `Boolean`                                | NULL                                        |              |             |
-| `isPending` (`is_pending`)                       | `Boolean`                                | NULL                                        |              |             |
-| `hasError` (`has_error`)                         | `Boolean`                                | NULL                                        |              |             |
-| `lookupLinkedFieldId` (`lookup_linked_field_id`) | `String`                                 | NULL                                        |              |             |
-| `lookupOptions` (`lookup_options`)               | `String`                                 | NULL                                        |              |             |
-| `tableId` (`table_id`)                           | `String`                                 | NOT NULL → [TableMeta.id](#model-TableMeta) |              |             |
-| `order`                                          | `Float`                                  | NOT NULL                                    |              |             |
-| `version`                                        | `Int`                                    | NOT NULL                                    |              |             |
-| `createdTime` (`created_time`)                   | `DateTime`                               | NOT NULL                                    | `now()`      |             |
-| `lastModifiedTime` (`last_modified_time`)        | `DateTime`                               | NULL                                        | `@updatedAt` |             |
-| `deletedTime` (`deleted_time`)                   | `DateTime`                               | NULL                                        |              |             |
-| `createdBy` (`created_by`)                       | `String`                                 | NOT NULL                                    |              |             |
-| `lastModifiedBy` (`last_modified_by`)            | `String`                                 | NULL                                        |              |             |
+| Field                                             | Type                                     | Constraints                                 | Default      | Description |
+| ------------------------------------------------- | ---------------------------------------- | ------------------------------------------- | ------------ | ----------- |
+| `id`                                              | `String`                                 | PK NOT NULL                                 |              |             |
+| `name`                                            | `String`                                 | NOT NULL                                    |              |             |
+| `description`                                     | `String`                                 | NULL                                        |              |             |
+| `options`                                         | `String`                                 | NULL                                        |              |             |
+| `meta`                                            | `String`                                 | NULL                                        |              |             |
+| `aiConfig` (`ai_config`)                          | `String`                                 | NULL                                        |              |             |
+| `type`                                            | `String`                                 | NOT NULL                                    |              |             |
+| `cellValueType` (`cell_value_type`)               | `String`                                 | NOT NULL                                    |              |             |
+| `isMultipleCellValue` (`is_multiple_cell_value`)  | `Boolean`                                | NULL                                        |              |             |
+| `dbFieldType` (`db_field_type`)                   | `String`                                 | NOT NULL                                    |              |             |
+| `dbFieldName` (`db_field_name`)                   | `String`                                 | NOT NULL                                    |              |             |
+| `provisionState` (`provision_state`)              | [`ProvisionState`](#enum-ProvisionState) | NOT NULL                                    | `ready`      |             |
+| `notNull` (`not_null`)                            | `Boolean`                                | NULL                                        |              |             |
+| `unique`                                          | `Boolean`                                | NULL                                        |              |             |
+| `isPrimary` (`is_primary`)                        | `Boolean`                                | NULL                                        |              |             |
+| `isComputed` (`is_computed`)                      | `Boolean`                                | NULL                                        |              |             |
+| `isLookup` (`is_lookup`)                          | `Boolean`                                | NULL                                        |              |             |
+| `isConditionalLookup` (`is_conditional_lookup`)   | `Boolean`                                | NULL                                        |              |             |
+| `isPending` (`is_pending`)                        | `Boolean`                                | NULL                                        |              |             |
+| `hasError` (`has_error`)                          | `Boolean`                                | NULL                                        |              |             |
+| `needsPeriodicRefresh` (`needs_periodic_refresh`) | `Boolean`                                | NOT NULL                                    | `false`      |             |
+| `refreshCadence` (`refresh_cadence`)              | `String` `@db.VarChar(16)`               | NULL                                        |              |             |
+| `lookupLinkedFieldId` (`lookup_linked_field_id`)  | `String`                                 | NULL                                        |              |             |
+| `lookupOptions` (`lookup_options`)                | `String`                                 | NULL                                        |              |             |
+| `tableId` (`table_id`)                            | `String`                                 | NOT NULL → [TableMeta.id](#model-TableMeta) |              |             |
+| `order`                                           | `Float`                                  | NOT NULL                                    |              |             |
+| `version`                                         | `Int`                                    | NOT NULL                                    |              |             |
+| `createdTime` (`created_time`)                    | `DateTime`                               | NOT NULL                                    | `now()`      |             |
+| `lastModifiedTime` (`last_modified_time`)         | `DateTime`                               | NULL                                        | `@updatedAt` |             |
+| `deletedTime` (`deleted_time`)                    | `DateTime`                               | NULL                                        |              |             |
+| `createdBy` (`created_by`)                        | `String`                                 | NOT NULL                                    |              |             |
+| `lastModifiedBy` (`last_modified_by`)             | `String`                                 | NULL                                        |              |             |
 
 #### Indexes
 
@@ -5323,6 +5376,10 @@ Table `field`.
 #### References
 
 - `tableId` → [TableMeta.id](#model-TableMeta) (many-to-one)
+
+#### Referenced by
+
+- `id` ← [FieldPeriodicRefreshState.fieldId](#model-FieldPeriodicRefreshState) (one-to-one, on delete Cascade)
 
 #### Definition
 
@@ -5348,6 +5405,8 @@ CREATE TABLE "field" (
     "is_conditional_lookup" BOOLEAN,
     "is_pending" BOOLEAN,
     "has_error" BOOLEAN,
+    "needs_periodic_refresh" BOOLEAN NOT NULL DEFAULT false,
+    "refresh_cadence" VARCHAR(16),
     "lookup_linked_field_id" TEXT,
     "lookup_options" TEXT,
     "table_id" TEXT NOT NULL,
@@ -5400,6 +5459,8 @@ SELECT
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -5445,7 +5506,7 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.field.findMany({ include: { table: true } });
+await prisma.field.findMany({ include: { table: true, periodicRefreshState: true } });
 ```
 
 ```sql
@@ -5470,6 +5531,8 @@ SELECT
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -5500,6 +5563,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -5514,6 +5578,32 @@ WHERE
 OFFSET
   $2
 -- params: ["<tableId of the rows above>","0"]
+
+SELECT
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+FROM
+  "public"."field_periodic_refresh_state"
+WHERE
+  "public"."field_periodic_refresh_state"."field_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
 ```
 
 **findUnique**: One row by what is unique to it
@@ -5544,6 +5634,8 @@ SELECT
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -5597,6 +5689,7 @@ INSERT INTO
     "db_field_type",
     "db_field_name",
     "provision_state",
+    "needs_periodic_refresh",
     "table_id",
     "order",
     "version",
@@ -5618,7 +5711,8 @@ VALUES
     $10,
     $11,
     $12,
-    $13
+    $13,
+    $14
   )
 RETURNING
   "public"."field"."id",
@@ -5641,6 +5735,8 @@ RETURNING
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -5651,7 +5747,7 @@ RETURNING
   "public"."field"."deleted_time",
   "public"."field"."created_by",
   "public"."field"."last_modified_by"
--- params: ["example","example","example","example","example","example","ready","example","1.5","1","<now()>","<now()>","example"]
+-- params: ["example","example","example","example","example","example","ready",false,"example","1.5","1","<now()>","<now()>","example"]
 ```
 
 **update**: Update a row
@@ -5691,6 +5787,8 @@ RETURNING
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -5738,6 +5836,8 @@ RETURNING
   "public"."field"."is_conditional_lookup",
   "public"."field"."is_pending",
   "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
   "public"."field"."lookup_linked_field_id",
   "public"."field"."lookup_options",
   "public"."field"."table_id",
@@ -6440,6 +6540,372 @@ RETURNING
 
 </details>
 
+<a id="model-FieldPeriodicRefreshState"></a>
+
+### FieldPeriodicRefreshState
+
+Table `field_periodic_refresh_state`.
+
+![FieldPeriodicRefreshState and the models it relates to](tables/FieldPeriodicRefreshState.svg)
+
+| Field                                                  | Type                            | Constraints                            | Default      | Description |
+| ------------------------------------------------------ | ------------------------------- | -------------------------------------- | ------------ | ----------- |
+| `fieldId` (`field_id`)                                 | `String`                        | PK NOT NULL → [Field.id](#model-Field) |              |             |
+| `tableId` (`table_id`)                                 | `String`                        | NOT NULL                               |              |             |
+| `baseId` (`base_id`)                                   | `String`                        | NOT NULL                               |              |             |
+| `enabled`                                              | `Boolean`                       | NOT NULL                               | `true`       |             |
+| `timeZone` (`time_zone`)                               | `String` `@db.VarChar(64)`      | NOT NULL                               | `"UTC"`      |             |
+| `containsNowPrecision` (`contains_now_precision`)      | `Boolean`                       | NOT NULL                               | `false`      |             |
+| `lastRefreshedAt` (`last_refreshed_at`)                | `DateTime` `@db.Timestamptz(6)` | NULL                                   |              |             |
+| `lastRefreshedLocalDate` (`last_refreshed_local_date`) | `String` `@db.VarChar(16)`      | NULL                                   |              |             |
+| `lastRangeHash` (`last_range_hash`)                    | `String` `@db.VarChar(128)`     | NULL                                   |              |             |
+| `lastStatus` (`last_status`)                           | `String` `@db.VarChar(32)`      | NOT NULL                               | `"idle"`     |             |
+| `lastError` (`last_error`)                             | `String`                        | NULL                                   |              |             |
+| `pendingTaskId` (`pending_task_id`)                    | `String` `@db.VarChar(64)`      | NULL                                   |              |             |
+| `pendingLocalDate` (`pending_local_date`)              | `String` `@db.VarChar(16)`      | NULL                                   |              |             |
+| `pendingRangeHash` (`pending_range_hash`)              | `String` `@db.VarChar(128)`     | NULL                                   |              |             |
+| `pendingStartedAt` (`pending_started_at`)              | `DateTime` `@db.Timestamptz(6)` | NULL                                   |              |             |
+| `createdTime` (`created_time`)                         | `DateTime` `@db.Timestamptz(6)` | NOT NULL                               | `now()`      |             |
+| `lastModifiedTime` (`last_modified_time`)              | `DateTime` `@db.Timestamptz(6)` | NULL                                   | `@updatedAt` |             |
+
+#### Indexes
+
+- `@@index([baseId, enabled])`
+- `@@index([tableId])`
+- `@@index([enabled, lastRefreshedLocalDate], map: "field_periodic_refresh_state_enabled_local_date_idx")`
+
+#### References
+
+- `fieldId` → [Field.id](#model-Field) (one-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "field_periodic_refresh_state" (
+    "field_id" TEXT NOT NULL,
+    "table_id" TEXT NOT NULL,
+    "base_id" TEXT NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+    "time_zone" VARCHAR(64) NOT NULL DEFAULT 'UTC',
+    "contains_now_precision" BOOLEAN NOT NULL DEFAULT false,
+    "last_refreshed_at" TIMESTAMPTZ(6),
+    "last_refreshed_local_date" VARCHAR(16),
+    "last_range_hash" VARCHAR(128),
+    "last_status" VARCHAR(32) NOT NULL DEFAULT 'idle',
+    "last_error" TEXT,
+    "pending_task_id" VARCHAR(64),
+    "pending_local_date" VARCHAR(16),
+    "pending_range_hash" VARCHAR(128),
+    "pending_started_at" TIMESTAMPTZ(6),
+    "created_time" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_modified_time" TIMESTAMPTZ(6),
+
+    CONSTRAINT "field_periodic_refresh_state_pkey" PRIMARY KEY ("field_id")
+);
+
+CREATE INDEX "field_periodic_refresh_state_base_id_enabled_idx" ON "field_periodic_refresh_state"("base_id", "enabled");
+
+CREATE INDEX "field_periodic_refresh_state_table_id_idx" ON "field_periodic_refresh_state"("table_id");
+
+CREATE INDEX "field_periodic_refresh_state_enabled_local_date_idx" ON "field_periodic_refresh_state"("enabled", "last_refreshed_local_date");
+
+ALTER TABLE "field_periodic_refresh_state" ADD CONSTRAINT "field_periodic_refresh_state_field_id_fkey" FOREIGN KEY ("field_id") REFERENCES "field"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.fieldPeriodicRefreshState.findMany();
+```
+
+```sql
+SELECT
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+FROM
+  "public"."field_periodic_refresh_state"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.fieldPeriodicRefreshState.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."field_periodic_refresh_state"."field_id"
+    FROM
+      "public"."field_periodic_refresh_state"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.fieldPeriodicRefreshState.findMany({ include: { field: true } });
+```
+
+```sql
+SELECT
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+FROM
+  "public"."field_periodic_refresh_state"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."field"."id",
+  "public"."field"."name",
+  "public"."field"."description",
+  "public"."field"."options",
+  "public"."field"."meta",
+  "public"."field"."ai_config",
+  "public"."field"."type",
+  "public"."field"."cell_value_type",
+  "public"."field"."is_multiple_cell_value",
+  "public"."field"."db_field_type",
+  "public"."field"."db_field_name",
+  "public"."field"."provision_state"::text,
+  "public"."field"."not_null",
+  "public"."field"."unique",
+  "public"."field"."is_primary",
+  "public"."field"."is_computed",
+  "public"."field"."is_lookup",
+  "public"."field"."is_conditional_lookup",
+  "public"."field"."is_pending",
+  "public"."field"."has_error",
+  "public"."field"."needs_periodic_refresh",
+  "public"."field"."refresh_cadence",
+  "public"."field"."lookup_linked_field_id",
+  "public"."field"."lookup_options",
+  "public"."field"."table_id",
+  "public"."field"."order",
+  "public"."field"."version",
+  "public"."field"."created_time",
+  "public"."field"."last_modified_time",
+  "public"."field"."deleted_time",
+  "public"."field"."created_by",
+  "public"."field"."last_modified_by"
+FROM
+  "public"."field"
+WHERE
+  "public"."field"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<fieldId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.fieldPeriodicRefreshState.findUnique({ where: { fieldId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+FROM
+  "public"."field_periodic_refresh_state"
+WHERE
+  (
+    "public"."field_periodic_refresh_state"."field_id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.fieldPeriodicRefreshState.create({
+  data: { fieldId: "example", tableId: "example", baseId: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."field_periodic_refresh_state" (
+    "field_id",
+    "table_id",
+    "base_id",
+    "enabled",
+    "time_zone",
+    "contains_now_precision",
+    "last_status",
+    "created_time",
+    "last_modified_time"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+-- params: ["example","example","example",true,"UTC",false,"idle","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.fieldPeriodicRefreshState.update({
+  where: { fieldId: "example" },
+  data: { tableId: "example" },
+});
+```
+
+```sql
+UPDATE "public"."field_periodic_refresh_state"
+SET
+  "table_id" = $1,
+  "last_modified_time" = $2
+WHERE
+  (
+    "public"."field_periodic_refresh_state"."field_id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.fieldPeriodicRefreshState.delete({ where: { fieldId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."field_periodic_refresh_state"
+WHERE
+  (
+    "public"."field_periodic_refresh_state"."field_id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."field_periodic_refresh_state"."field_id",
+  "public"."field_periodic_refresh_state"."table_id",
+  "public"."field_periodic_refresh_state"."base_id",
+  "public"."field_periodic_refresh_state"."enabled",
+  "public"."field_periodic_refresh_state"."time_zone",
+  "public"."field_periodic_refresh_state"."contains_now_precision",
+  "public"."field_periodic_refresh_state"."last_refreshed_at",
+  "public"."field_periodic_refresh_state"."last_refreshed_local_date",
+  "public"."field_periodic_refresh_state"."last_range_hash",
+  "public"."field_periodic_refresh_state"."last_status",
+  "public"."field_periodic_refresh_state"."last_error",
+  "public"."field_periodic_refresh_state"."pending_task_id",
+  "public"."field_periodic_refresh_state"."pending_local_date",
+  "public"."field_periodic_refresh_state"."pending_range_hash",
+  "public"."field_periodic_refresh_state"."pending_started_at",
+  "public"."field_periodic_refresh_state"."created_time",
+  "public"."field_periodic_refresh_state"."last_modified_time"
+-- params: ["example"]
+```
+
+</details>
+
 <a id="model-ComputedUpdateOutbox"></a>
 
 ### ComputedUpdateOutbox
@@ -6448,38 +6914,39 @@ Table `computed_update_outbox`.
 
 ![ComputedUpdateOutbox and the models it relates to](tables/ComputedUpdateOutbox.svg)
 
-| Field                                                    | Type       | Constraints | Default        | Description |
-| -------------------------------------------------------- | ---------- | ----------- | -------------- | ----------- |
-| `id`                                                     | `String`   | PK NOT NULL | `cuid(1)`      |             |
-| `baseId` (`base_id`)                                     | `String`   | NOT NULL    |                |             |
-| `workerLane` (`worker_lane`)                             | `String`   | NOT NULL    | `"production"` |             |
-| `seedTableId` (`seed_table_id`)                          | `String`   | NOT NULL    |                |             |
-| `seedRecordIds` (`seed_record_ids`)                      | `Json`     | NULL        |                |             |
-| `changeType` (`change_type`)                             | `String`   | NOT NULL    |                |             |
-| `steps`                                                  | `Json`     | NULL        |                |             |
-| `edges`                                                  | `Json`     | NULL        |                |             |
-| `status`                                                 | `String`   | NOT NULL    |                |             |
-| `attempts`                                               | `Int`      | NOT NULL    | `0`            |             |
-| `maxAttempts` (`max_attempts`)                           | `Int`      | NOT NULL    | `8`            |             |
-| `nextRunAt` (`next_run_at`)                              | `DateTime` | NOT NULL    | `now()`        |             |
-| `lockedAt` (`locked_at`)                                 | `DateTime` | NULL        |                |             |
-| `lockedBy` (`locked_by`)                                 | `String`   | NULL        |                |             |
-| `lastError` (`last_error`)                               | `String`   | NULL        |                |             |
-| `estimatedComplexity` (`estimated_complexity`)           | `Int`      | NOT NULL    | `0`            |             |
-| `planHash` (`plan_hash`)                                 | `String`   | NOT NULL    |                |             |
-| `dirtyStats` (`dirty_stats`)                             | `Json`     | NULL        |                |             |
-| `runId` (`run_id`)                                       | `String`   | NOT NULL    |                |             |
-| `originRunIds` (`origin_run_ids`)                        | `String[]` | NOT NULL    | `[]`           |             |
-| `runTotalSteps` (`run_total_steps`)                      | `Int`      | NOT NULL    | `0`            |             |
-| `runCompletedStepsBefore` (`run_completed_steps_before`) | `Int`      | NOT NULL    | `0`            |             |
-| `affectedTableIds` (`affected_table_ids`)                | `String[]` | NOT NULL    | `[]`           |             |
-| `affectedFieldIds` (`affected_field_ids`)                | `String[]` | NOT NULL    | `[]`           |             |
-| `syncMaxLevel` (`sync_max_level`)                        | `Int`      | NULL        |                |             |
-| `sourceChangedAt` (`source_changed_at`)                  | `DateTime` | NULL        |                |             |
-| `stageDepth` (`stage_depth`)                             | `Int`      | NOT NULL    | `0`            |             |
-| `predecessorTaskId` (`predecessor_task_id`)              | `String`   | NULL        |                |             |
-| `createdAt` (`created_at`)                               | `DateTime` | NOT NULL    | `now()`        |             |
-| `updatedAt` (`updated_at`)                               | `DateTime` | NOT NULL    | `@updatedAt`   |             |
+| Field                                                      | Type       | Constraints | Default        | Description |
+| ---------------------------------------------------------- | ---------- | ----------- | -------------- | ----------- |
+| `id`                                                       | `String`   | PK NOT NULL | `cuid(1)`      |             |
+| `baseId` (`base_id`)                                       | `String`   | NOT NULL    |                |             |
+| `workerLane` (`worker_lane`)                               | `String`   | NOT NULL    | `"production"` |             |
+| `seedTableId` (`seed_table_id`)                            | `String`   | NOT NULL    |                |             |
+| `seedRecordIds` (`seed_record_ids`)                        | `Json`     | NULL        |                |             |
+| `changeType` (`change_type`)                               | `String`   | NOT NULL    |                |             |
+| `steps`                                                    | `Json`     | NULL        |                |             |
+| `edges`                                                    | `Json`     | NULL        |                |             |
+| `status`                                                   | `String`   | NOT NULL    |                |             |
+| `attempts`                                                 | `Int`      | NOT NULL    | `0`            |             |
+| `maxAttempts` (`max_attempts`)                             | `Int`      | NOT NULL    | `8`            |             |
+| `nextRunAt` (`next_run_at`)                                | `DateTime` | NOT NULL    | `now()`        |             |
+| `lockedAt` (`locked_at`)                                   | `DateTime` | NULL        |                |             |
+| `lockedBy` (`locked_by`)                                   | `String`   | NULL        |                |             |
+| `lastError` (`last_error`)                                 | `String`   | NULL        |                |             |
+| `estimatedComplexity` (`estimated_complexity`)             | `Int`      | NOT NULL    | `0`            |             |
+| `planHash` (`plan_hash`)                                   | `String`   | NOT NULL    |                |             |
+| `dirtyStats` (`dirty_stats`)                               | `Json`     | NULL        |                |             |
+| `runId` (`run_id`)                                         | `String`   | NOT NULL    |                |             |
+| `originRunIds` (`origin_run_ids`)                          | `String[]` | NOT NULL    | `[]`           |             |
+| `runTotalSteps` (`run_total_steps`)                        | `Int`      | NOT NULL    | `0`            |             |
+| `runCompletedStepsBefore` (`run_completed_steps_before`)   | `Int`      | NOT NULL    | `0`            |             |
+| `affectedTableIds` (`affected_table_ids`)                  | `String[]` | NOT NULL    | `[]`           |             |
+| `affectedFieldIds` (`affected_field_ids`)                  | `String[]` | NOT NULL    | `[]`           |             |
+| `syncMaxLevel` (`sync_max_level`)                          | `Int`      | NULL        |                |             |
+| `sourceChangedAt` (`source_changed_at`)                    | `DateTime` | NULL        |                |             |
+| `stageDepth` (`stage_depth`)                               | `Int`      | NOT NULL    | `0`            |             |
+| `predecessorTaskId` (`predecessor_task_id`)                | `String`   | NULL        |                |             |
+| `deadLetterRestoreVersion` (`dead_letter_restore_version`) | `Int`      | NULL        |                |             |
+| `createdAt` (`created_at`)                                 | `DateTime` | NOT NULL    | `now()`        |             |
+| `updatedAt` (`updated_at`)                                 | `DateTime` | NOT NULL    | `@updatedAt`   |             |
 
 #### Indexes
 
@@ -6525,6 +6992,7 @@ CREATE TABLE "computed_update_outbox" (
     "source_changed_at" TIMESTAMP(3),
     "stage_depth" INTEGER NOT NULL DEFAULT 0,
     "predecessor_task_id" TEXT,
+    "dead_letter_restore_version" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -6581,6 +7049,7 @@ SELECT
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 FROM
@@ -6651,6 +7120,7 @@ SELECT
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 FROM
@@ -6711,6 +7181,7 @@ SELECT
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 FROM
@@ -6818,6 +7289,7 @@ RETURNING
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 -- params: ["<cuid(1)>","example","production","example","example","example","0","8","<now()>","0","example","example",[],"0","0",[],[],"0","<now()>","<now()>"]
@@ -6868,6 +7340,7 @@ RETURNING
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
@@ -6915,6 +7388,7 @@ RETURNING
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 -- params: ["example"]
@@ -7061,6 +7535,7 @@ SELECT
   "public"."computed_update_outbox"."source_changed_at",
   "public"."computed_update_outbox"."stage_depth",
   "public"."computed_update_outbox"."predecessor_task_id",
+  "public"."computed_update_outbox"."dead_letter_restore_version",
   "public"."computed_update_outbox"."created_at",
   "public"."computed_update_outbox"."updated_at"
 FROM
@@ -7652,6 +8127,7 @@ Table `computed_update_dead_letter`.
 | `failedAt` (`failed_at`)                                 | `DateTime` | NOT NULL    |                |             |
 | `createdAt` (`created_at`)                               | `DateTime` | NOT NULL    |                |             |
 | `updatedAt` (`updated_at`)                               | `DateTime` | NOT NULL    |                |             |
+| `deleteAuthorizedTxid` (`delete_authorized_txid`)        | `BigInt`   | NULL        |                |             |
 
 #### Indexes
 
@@ -7699,6 +8175,7 @@ CREATE TABLE "computed_update_dead_letter" (
     "failed_at" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "delete_authorized_txid" BIGINT,
 
     CONSTRAINT "computed_update_dead_letter_pkey" PRIMARY KEY ("id")
 );
@@ -7752,7 +8229,8 @@ SELECT
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 FROM
   "public"."computed_update_dead_letter"
 WHERE
@@ -7824,7 +8302,8 @@ SELECT
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 FROM
   "public"."computed_update_dead_letter"
 WHERE
@@ -7885,7 +8364,8 @@ SELECT
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 FROM
   "public"."computed_update_dead_letter"
 WHERE
@@ -8001,7 +8481,8 @@ RETURNING
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 -- params: ["example","example","production","example","example","example","0","8","2026-01-01T00:00:00.000Z","0","example","example",[],"0","0",[],[],"0","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z"]
 ```
 
@@ -8055,7 +8536,8 @@ RETURNING
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 -- params: ["example","example"]
 ```
 
@@ -8104,7 +8586,8 @@ RETURNING
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 -- params: ["example"]
 ```
 
@@ -8245,7 +8728,8 @@ SELECT
   "public"."computed_update_dead_letter"."trace_data",
   "public"."computed_update_dead_letter"."failed_at",
   "public"."computed_update_dead_letter"."created_at",
-  "public"."computed_update_dead_letter"."updated_at"
+  "public"."computed_update_dead_letter"."updated_at",
+  "public"."computed_update_dead_letter"."delete_authorized_txid"
 FROM
   "public"."computed_update_dead_letter"
 WHERE
@@ -9859,6 +10343,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -14069,6 +14554,8 @@ Table `record_history`.
 | `after` (`after`)              | `String`   | NOT NULL    |           |             |
 | `createdTime` (`created_time`) | `DateTime` | NOT NULL    | `now()`   |             |
 | `createdBy` (`created_by`)     | `String`   | NOT NULL    |           |             |
+| `actorType` (`actor_type`)     | `String`   | NULL        |           |             |
+| `actorId` (`actor_id`)         | `String`   | NULL        |           |             |
 
 #### Indexes
 
@@ -14087,6 +14574,8 @@ CREATE TABLE "record_history" (
     "after" TEXT NOT NULL,
     "created_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT NOT NULL,
+    "actor_type" TEXT,
+    "actor_id" TEXT,
 
     CONSTRAINT "record_history_pkey" PRIMARY KEY ("id")
 );
@@ -14114,7 +14603,9 @@ SELECT
   "public"."record_history"."before",
   "public"."record_history"."after",
   "public"."record_history"."created_time",
-  "public"."record_history"."created_by"
+  "public"."record_history"."created_by",
+  "public"."record_history"."actor_type",
+  "public"."record_history"."actor_id"
 FROM
   "public"."record_history"
 WHERE
@@ -14162,7 +14653,9 @@ SELECT
   "public"."record_history"."before",
   "public"."record_history"."after",
   "public"."record_history"."created_time",
-  "public"."record_history"."created_by"
+  "public"."record_history"."created_by",
+  "public"."record_history"."actor_type",
+  "public"."record_history"."actor_id"
 FROM
   "public"."record_history"
 WHERE
@@ -14214,7 +14707,9 @@ RETURNING
   "public"."record_history"."before",
   "public"."record_history"."after",
   "public"."record_history"."created_time",
-  "public"."record_history"."created_by"
+  "public"."record_history"."created_by",
+  "public"."record_history"."actor_type",
+  "public"."record_history"."actor_id"
 -- params: ["<cuid(1)>","example","example","example","example","example","<now()>","example"]
 ```
 
@@ -14241,7 +14736,9 @@ RETURNING
   "public"."record_history"."before",
   "public"."record_history"."after",
   "public"."record_history"."created_time",
-  "public"."record_history"."created_by"
+  "public"."record_history"."created_by",
+  "public"."record_history"."actor_type",
+  "public"."record_history"."actor_id"
 -- params: ["example","example"]
 ```
 
@@ -14266,7 +14763,9 @@ RETURNING
   "public"."record_history"."before",
   "public"."record_history"."after",
   "public"."record_history"."created_time",
-  "public"."record_history"."created_by"
+  "public"."record_history"."created_by",
+  "public"."record_history"."actor_type",
+  "public"."record_history"."actor_id"
 -- params: ["example"]
 ```
 
@@ -16690,6 +17189,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",
@@ -16954,6 +17454,7 @@ SELECT
   "public"."table_meta"."search_index_policy",
   "public"."table_meta"."query_index_policy",
   "public"."table_meta"."provision_state"::text,
+  "public"."table_meta"."actor_storage_version",
   "public"."table_meta"."version",
   "public"."table_meta"."order",
   "public"."table_meta"."created_time",

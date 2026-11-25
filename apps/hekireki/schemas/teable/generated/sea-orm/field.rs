@@ -39,6 +39,10 @@ pub struct Model {
     pub is_conditional_lookup: Option<bool>,
     pub is_pending: Option<bool>,
     pub has_error: Option<bool>,
+    #[sea_orm(default_value = false)]
+    pub needs_periodic_refresh: bool,
+    #[sea_orm(column_type = "String(StringLen::N(16))")]
+    pub refresh_cadence: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub lookup_linked_field_id: Option<String>,
     #[sea_orm(column_type = "Text")]
@@ -71,11 +75,19 @@ pub enum Relation {
         fk_name = "field_table_id_fkey"
     )]
     Table,
+    #[sea_orm(has_one = "super::field_periodic_refresh_state::Entity")]
+    PeriodicRefreshState,
 }
 
 impl Related<super::table_meta::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Table.def()
+    }
+}
+
+impl Related<super::field_periodic_refresh_state::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PeriodicRefreshState.def()
     }
 }
 

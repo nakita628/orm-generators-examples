@@ -110,6 +110,16 @@ class Organization extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(GatewaySpendLimit::class, 'organization_id');
     }
 
+    public function gatewayGuardrails(): HasMany
+    {
+        return $this->hasMany(GatewayGuardrail::class, 'organization_id');
+    }
+
+    public function gatewayGuardrailAssignments(): HasMany
+    {
+        return $this->hasMany(GatewayGuardrailAssignment::class, 'organization_id');
+    }
+
     public function organizationLlmApiKeys(): HasMany
     {
         return $this->hasMany(LlmApiKeys::class, 'organization_id');

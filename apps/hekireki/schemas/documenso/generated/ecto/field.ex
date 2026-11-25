@@ -10,6 +10,8 @@ defmodule Documenso.Field do
   @type t :: %__MODULE__{
           id: integer(),
           secondary_id: String.t(),
+          external_id: String.t() | nil,
+          group_id: String.t() | nil,
           type: atom(),
           page: integer(),
           position_x: Decimal.t(),
@@ -27,6 +29,8 @@ defmodule Documenso.Field do
 
   schema "Field" do
     field(:secondary_id, :string, source: :secondaryId)
+    field(:external_id, :string, source: :externalId)
+    field(:group_id, :string, source: :groupId)
     field(:type, Ecto.Enum, values: [:SIGNATURE, :FREE_SIGNATURE, :INITIALS, :NAME, :EMAIL, :DATE, :TEXT, :NUMBER, :RADIO, :CHECKBOX, :DROPDOWN])
     # @zod.number.describe("The page number of the field on the document. Starts from 1.")
     field(:page, :integer)

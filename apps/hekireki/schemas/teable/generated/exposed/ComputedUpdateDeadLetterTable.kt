@@ -37,6 +37,7 @@ object ComputedUpdateDeadLetterTable : IdTable<String>("computed_update_dead_let
     val failedAt = pgTimestamp("failed_at", 3)
     val createdAt = pgTimestamp("created_at", 3)
     val updatedAt = pgTimestamp("updated_at", 3)
+    val deleteAuthorizedTxid = long("delete_authorized_txid").nullable()
     override val primaryKey = PrimaryKey(id, name = "computed_update_dead_letter_pkey")
 
     init {

@@ -11,6 +11,10 @@ pub struct Model {
     #[sea_orm(unique)]
     #[sea_orm(column_name = "secondaryId", column_type = "Text")]
     pub secondary_id: String,
+    #[sea_orm(column_name = "externalId", column_type = "String(StringLen::N(255))")]
+    pub external_id: Option<String>,
+    #[sea_orm(column_name = "groupId", column_type = "String(StringLen::N(255))")]
+    pub group_id: Option<String>,
     #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: String,
     #[sea_orm(column_name = "envelopeItemId", column_type = "Text")]

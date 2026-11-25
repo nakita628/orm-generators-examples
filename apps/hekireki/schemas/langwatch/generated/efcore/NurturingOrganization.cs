@@ -37,5 +37,7 @@ public partial class NurturingOrganization
 
     public DateTime? LastTraceAt { get; set; }
 
+    public DateTime? AdminAt { get; set; }
+
     public DateTime UpdatedAt { get; set; }
 }

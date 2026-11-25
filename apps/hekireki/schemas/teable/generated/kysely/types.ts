@@ -181,6 +181,7 @@ export interface TableMeta {
   search_index_policy: unknown
   query_index_policy: unknown
   provision_state: Generated<ProvisionState>
+  actor_storage_version: Generated<number>
   version: number
   order: number
   created_time: Generated<Timestamp>
@@ -258,6 +259,8 @@ export interface Field {
   is_conditional_lookup: boolean | null
   is_pending: boolean | null
   has_error: boolean | null
+  needs_periodic_refresh: Generated<boolean>
+  refresh_cadence: string | null
   lookup_linked_field_id: string | null
   lookup_options: string | null
   table_id: string
@@ -309,6 +312,26 @@ export interface DomainEventInbox {
   created_at: Generated<Timestamp>
 }
 
+export interface FieldPeriodicRefreshState {
+  field_id: string
+  table_id: string
+  base_id: string
+  enabled: Generated<boolean>
+  time_zone: Generated<string>
+  contains_now_precision: Generated<boolean>
+  last_refreshed_at: Timestamp | null
+  last_refreshed_local_date: string | null
+  last_range_hash: string | null
+  last_status: Generated<string>
+  last_error: string | null
+  pending_task_id: string | null
+  pending_local_date: string | null
+  pending_range_hash: string | null
+  pending_started_at: Timestamp | null
+  created_time: Generated<Timestamp>
+  last_modified_time: ColumnType<Date | null, Date | string, Date | string | null>
+}
+
 export interface ComputedUpdateOutbox {
   id: string
   base_id: string
@@ -338,6 +361,7 @@ export interface ComputedUpdateOutbox {
   source_changed_at: Timestamp | null
   stage_depth: Generated<number>
   predecessor_task_id: string | null
+  dead_letter_restore_version: number | null
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -410,6 +434,11 @@ export interface ComputedUpdateDeadLetter {
   failed_at: Timestamp
   created_at: Timestamp
   updated_at: Timestamp
+  delete_authorized_txid: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
 }
 
 export interface ComputedUpdateDeadLetterSeed {
@@ -757,6 +786,8 @@ export interface RecordHistory {
   after: string
   created_time: Generated<Timestamp>
   created_by: string
+  actor_type: string | null
+  actor_id: string | null
 }
 
 export interface Trash {
@@ -1064,6 +1095,7 @@ export interface DB {
   domain_event_outbox: DomainEventOutbox
   domain_event_delivery: DomainEventDelivery
   domain_event_inbox: DomainEventInbox
+  field_periodic_refresh_state: FieldPeriodicRefreshState
   computed_update_outbox: ComputedUpdateOutbox
   computed_update_outbox_seed: ComputedUpdateOutboxSeed
   computed_update_change_frontier: ComputedUpdateChangeFrontier

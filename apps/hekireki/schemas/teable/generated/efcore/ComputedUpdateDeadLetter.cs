@@ -71,5 +71,7 @@ public partial class ComputedUpdateDeadLetter
 
     public DateTime UpdatedAt { get; set; }
 
+    public long? DeleteAuthorizedTxid { get; set; }
+
     public virtual ICollection<ComputedUpdateDeadLetterSeed> Seeds { get; set; } = new List<ComputedUpdateDeadLetterSeed>();
 }

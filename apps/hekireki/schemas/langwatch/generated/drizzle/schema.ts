@@ -1643,6 +1643,11 @@ export const organizationUser = pgTable(
      */
     departmentId: text('departmentId'),
     /**
+     * A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+     * no seat. Any role change clears it. See billing-only-invite.feature.
+     */
+    billingOnly: boolean('billingOnly').notNull().default(false),
+    /**
      * Set when an admin disables this membership to stay within the licensed
      * seat count. The person loses access to this organization only, keeps
      * their role, department and everything they did, and frees their seat.
@@ -3119,6 +3124,8 @@ export const organizationInvite = pgTable(
     subscriptionId: text('subscriptionId'),
     acceptedByUserId: text('acceptedByUserId'),
     acceptedViaIdentifierId: text('acceptedViaIdentifierId'),
+    /** Invites the person who pays with the Billing grant and no seat (ADR-205). */
+    billingOnly: boolean('billingOnly').notNull().default(false),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -3588,6 +3595,11 @@ export const dashboardsV2 = pgTable(
      * ORGANIZATION; null before.
      */
     organizationId: text('organizationId'),
+    /**
+     * The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+     * decision 8). Every board made before homes existed is llm-ops.
+     */
+    homeProduct: text('homeProduct').notNull().default('llm-ops'),
     /**
      * Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
      * 2026-10-28); dropped in a later migration, once no serving release reads it.
@@ -7294,9 +7306,8 @@ export const nurturingProject = pgTable(
 )
 
 /**
- * A project nurturing saw traces of with no placement copy, and when it first did: every worker
- * retries its trace batches only within one window from then, across restarts. Deleted when the
- * copy lands.
+ * retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+ * retry clock reads or writes this table; an operator step may drop it once old writers are gone.
  */
 export const nurturingUncopiedProject = pgTable('NurturingUncopiedProject', {
   projectId: text('projectId').primaryKey(),
@@ -7344,6 +7355,62 @@ export const nurturingOrganizationCreated = pgTable(
 )
 
 /**
+ * Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+ * copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+ * fact only when it changes this row.
+ */
+export const nurturingOrganizationPlan = pgTable('NurturingOrganizationPlan', {
+  organizationId: text('organizationId').primaryKey(),
+  plan: text('plan'),
+  occurredAt: timestamp('occurredAt', { precision: 3 }).notNull(),
+  fromCatchUp: boolean('fromCatchUp').notNull(),
+  /** The event ids folded in, so a redelivery folds once. */
+  appliedEventIds: text('appliedEventIds').array().default([]),
+  /** The fact that last changed the row; only it may tell Customer.io. */
+  winnerEventId: text('winnerEventId'),
+})
+
+/**
+ * Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+ * creator comes from the created fact alone; the holder and purpose are each the latest non-null
+ * value by the fact's time (stamped beside them); the state times keep their latest.
+ */
+export const nurturingVirtualKey = pgTable(
+  'NurturingVirtualKey',
+  {
+    virtualKeyId: text('virtualKeyId').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    name: text('name').notNull(),
+    occurredAt: timestamp('occurredAt', { precision: 3 }).notNull(),
+    keyCreatedAt: timestamp('keyCreatedAt', { precision: 3 }),
+    creatorUserId: text('creatorUserId'),
+    principalUserId: text('principalUserId'),
+    principalUserIdAt: timestamp('principalUserIdAt', { precision: 3 }),
+    purpose: text('purpose'),
+    purposeAt: timestamp('purposeAt', { precision: 3 }),
+    disabledAt: timestamp('disabledAt', { precision: 3 }),
+    enabledAt: timestamp('enabledAt', { precision: 3 }),
+    revokedAt: timestamp('revokedAt', { precision: 3 }),
+  },
+  (table) => [
+    index('NurturingVirtualKey_creatorUserId_idx').on(table.creatorUserId),
+    index('NurturingVirtualKey_principalUserId_idx').on(table.principalUserId),
+  ],
+)
+
+/**
+ * Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+ * naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+ */
+export const nurturingErasedUser = pgTable('NurturingErasedUser', {
+  userIdHash: text('userIdHash').primaryKey(),
+  erasedAt: timestamp('erasedAt', { precision: 3 })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$defaultFn(utcNow),
+})
+
+/**
  * Nurturing's read model per organization: its admin and its milestone counts.
  * `seeded` marks an organization learned from the project backfill: its first_* already happened.
  */
@@ -7361,21 +7428,23 @@ export const nurturingOrganization = pgTable('NurturingOrganization', {
   codingRepositoryKeys: text('codingRepositoryKeys').array().default([]),
   codingFirstDays: integer('codingFirstDays').array().default([]),
   lastTraceAt: timestamp('lastTraceAt', { precision: 3 }),
+  adminAt: timestamp('adminAt', { precision: 3 }),
   updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
 })
 
 /**
  * Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
  * and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
- * organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+ * organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
  */
 export const nurturingProjectUsageView = pgTable(
   'NurturingProjectUsageView',
   {
     projectId: text('projectId').notNull(),
     /**
-     * The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-     * or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+     * The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+     * Evaluation days are not kept here: the evaluation-days map and its replay write them to
+     * NurturingProjectEvaluationDay.
      */
     owner: text('owner').notNull(),
     /** The project's usage as the fold folded it (NurturingProjectUsageState). */
@@ -7393,9 +7462,8 @@ export const nurturingProjectUsageView = pgTable(
 )
 
 /**
- * Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
- * root span being one trace, one row per project and UTC day of append time, incremented in place
- * by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+ * retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+ * peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
  */
 export const nurturingProjectTraceDay = pgTable(
   'NurturingProjectTraceDay',
@@ -7413,6 +7481,59 @@ export const nurturingProjectTraceDay = pgTable(
   },
   (table) => [
     primaryKey({ name: 'NurturingProjectTraceDay_pkey', columns: [table.projectId, table.day] }),
+  ],
+)
+
+/**
+ * Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+ * source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+ * `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+ * readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+ */
+export const nurturingProjectTraceDayCount = pgTable(
+  'NurturingProjectTraceDayCount',
+  {
+    projectId: text('projectId').notNull(),
+    /** UTC `YYYY-MM-DD` of the facts' append time. */
+    day: text('day').notNull(),
+    /** The peer fold that wrote the row: `spans` or `failures`. */
+    source: text('source').notNull(),
+    traceCount: integer('traceCount').notNull().default(0),
+    errorCount: integer('errorCount').notNull().default(0),
+    /** Append time of the newest root span. */
+    lastTraceAt: timestamp('lastTraceAt', { precision: 3 }),
+    /** Append time of the newest trace_failed. */
+    lastFailedTraceAt: timestamp('lastFailedTraceAt', { precision: 3 }),
+    /** The event ids of the last delivery folded in, so a redelivery folds once. */
+    appliedEventIds: text('appliedEventIds').array().default([]),
+    /** A row of another version reads as undecodable and is left out of the read. */
+    projectionVersion: text('projectionVersion').notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'NurturingProjectTraceDayCount_pkey',
+      columns: [table.projectId, table.day, table.source],
+    }),
+    index('NurturingProjectTraceDayCount_day_idx').on(table.day),
+  ],
+)
+
+/**
+ * Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+ * written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+ */
+export const nurturingProjectEvaluationDay = pgTable(
+  'NurturingProjectEvaluationDay',
+  {
+    projectId: text('projectId').notNull(),
+    /** UTC `YYYY-MM-DD`. */
+    day: text('day').notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'NurturingProjectEvaluationDay_pkey',
+      columns: [table.projectId, table.day],
+    }),
   ],
 )
 
@@ -9482,6 +9603,44 @@ export const discoveredAgent = pgTable(
 )
 
 /**
+ * One source's presence fact for one discovered agent. An agent is gone only when every
+ * source that listed it marked it gone; an agent no source listed (older sightings) never is.
+ */
+export const discoveredAgentListing = pgTable(
+  'DiscoveredAgentListing',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    organizationId: text('organizationId').notNull(),
+    ingestionSourceId: text('ingestionSourceId').notNull(),
+    discoveredAgentId: text('discoveredAgentId').notNull(),
+    lastListedAt: timestamp('lastListedAt', { precision: 3 }).notNull(),
+    /** Set when this source's listing stopped naming the agent; cleared when it names it again. */
+    goneAt: timestamp('goneAt', { precision: 3 }),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    index('DiscoveredAgentListing_organizationId_discoveredAgentId_idx').on(
+      table.organizationId,
+      table.discoveredAgentId,
+    ),
+    uniqueIndex('DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key').on(
+      table.ingestionSourceId,
+      table.discoveredAgentId,
+    ),
+  ],
+)
+
+/**
  * One agent in the organisation's governance registry, from any source governance reads
  * (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest
  * machine-readable snapshot; `version` grows by one on every material change.
@@ -9566,6 +9725,18 @@ export const agentRegistryEvent = pgTable(
 export const agentRegistryBaseline = pgTable('AgentRegistryBaseline', {
   organizationId: text('organizationId').primaryKey(),
   baselinedAt: timestamp('baselinedAt', { precision: 3 }).notNull(),
+})
+
+/** An organisation's agent registry settings. No row reads as the defaults. */
+export const agentRegistrySettings = pgTable('AgentRegistrySettings', {
+  organizationId: text('organizationId').primaryKey(),
+  /** Days without traffic after which a listed agent reads as dormant. */
+  dormantAfterDays: integer('dormantAfterDays').notNull().default(30),
+  updatedAt: timestamp('updatedAt', { precision: 3 })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$defaultFn(utcNow)
+    .$onUpdate(utcNow),
 })
 
 /**
@@ -10339,6 +10510,98 @@ export const signInProviderMount = pgTable('SignInProviderMount', {
     .$onUpdate(utcNow),
 })
 
+/** An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends. */
+export const digestCohortOrganization = pgTable('DigestCohortOrganization', {
+  organizationId: text('organizationId').primaryKey(),
+  enrolledBy: text('enrolledBy').notNull(),
+  enrolledAt: timestamp('enrolledAt', { precision: 3 })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$defaultFn(utcNow),
+})
+
+/** A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed. */
+export const digestSubscription = pgTable('DigestSubscription', {
+  userId: text('userId').primaryKey(),
+  unsubscribedAt: timestamp('unsubscribedAt', { precision: 3 }),
+  /** The send whose unsubscribe link or one-click header the person used. */
+  unsubscribedFromSendId: text('unsubscribedFromSendId'),
+  updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+})
+
+/** A project's ISO week, folded from its owners' events. The id is the fold's aggregate key. */
+export const digestProjectWeek = pgTable(
+  'DigestProjectWeek',
+  {
+    id: text('id').primaryKey(),
+    projectId: text('projectId').notNull(),
+    organizationId: text('organizationId').notNull(),
+    isoWeek: text('isoWeek').notNull(),
+    /** The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps. */
+    state: jsonb('state').notNull(),
+    occurredAt: timestamp('occurredAt', { precision: 3 }).notNull(),
+    lastEventId: text('lastEventId').notNull(),
+    acceptedAt: timestamp('acceptedAt', { precision: 3 }).notNull(),
+    projectionVersion: text('projectionVersion').notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 }).notNull(),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull(),
+  },
+  (table) => [
+    index('DigestProjectWeek_organizationId_isoWeek_idx').on(table.organizationId, table.isoWeek),
+    index('DigestProjectWeek_isoWeek_idx').on(table.isoWeek),
+  ],
+)
+
+/** A person's ISO week of coding-agent activity in one organization, folded from the agents' facts. */
+export const digestUserWeek = pgTable(
+  'DigestUserWeek',
+  {
+    id: text('id').primaryKey(),
+    userId: text('userId').notNull(),
+    organizationId: text('organizationId').notNull(),
+    isoWeek: text('isoWeek').notNull(),
+    /** Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins. */
+    state: jsonb('state').notNull(),
+    occurredAt: timestamp('occurredAt', { precision: 3 }).notNull(),
+    lastEventId: text('lastEventId').notNull(),
+    acceptedAt: timestamp('acceptedAt', { precision: 3 }).notNull(),
+    projectionVersion: text('projectionVersion').notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 }).notNull(),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull(),
+  },
+  (table) => [
+    index('DigestUserWeek_organizationId_isoWeek_idx').on(table.organizationId, table.isoWeek),
+    index('DigestUserWeek_isoWeek_idx').on(table.isoWeek),
+    index('DigestUserWeek_userId_idx').on(table.userId),
+  ],
+)
+
+/** One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`. */
+export const digestSend = pgTable(
+  'DigestSend',
+  {
+    id: text('id').primaryKey(),
+    userId: text('userId').notNull(),
+    organizationId: text('organizationId').notNull(),
+    isoWeek: text('isoWeek').notNull(),
+    templateId: text('templateId').notNull(),
+    sentAt: timestamp('sentAt', { precision: 3 }).notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [index('DigestSend_userId_idx').on(table.userId)],
+)
+
+/** The digest's one settings row. `armed` is the weekly send's master switch; it starts off. */
+export const digestSettings = pgTable('DigestSettings', {
+  id: text('id').primaryKey().default('singleton'),
+  armed: boolean('armed').notNull().default(false),
+  lastPlannedWeek: text('lastPlannedWeek'),
+  updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+})
+
 export const relations = defineRelations(
   {
     account,
@@ -10492,9 +10755,14 @@ export const relations = defineRelations(
     nurturingUncopiedProject,
     nurturingOrganizationMember,
     nurturingOrganizationCreated,
+    nurturingOrganizationPlan,
+    nurturingVirtualKey,
+    nurturingErasedUser,
     nurturingOrganization,
     nurturingProjectUsageView,
     nurturingProjectTraceDay,
+    nurturingProjectTraceDayCount,
+    nurturingProjectEvaluationDay,
     nurturingPersonalProject,
     nurturingTracedProject,
     billingMeterCheckpoint,
@@ -10538,9 +10806,11 @@ export const relations = defineRelations(
     storedObject,
     discoveredPerson,
     discoveredAgent,
+    discoveredAgentListing,
     agentRegistryEntry,
     agentRegistryEvent,
     agentRegistryBaseline,
+    agentRegistrySettings,
     agentStopPlanTarget,
     agentStopPlan,
     governanceAwsConnection,
@@ -10562,6 +10832,12 @@ export const relations = defineRelations(
     webPushSubscription,
     webPushVapidKey,
     signInProviderMount,
+    digestCohortOrganization,
+    digestSubscription,
+    digestProjectWeek,
+    digestUserWeek,
+    digestSend,
+    digestSettings,
   },
   (r) => ({
     account: { user: r.one.user({ from: r.account.userId, to: r.user.id, optional: false }) },

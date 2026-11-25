@@ -45,6 +45,8 @@ class User < ApplicationRecord
                                        inverse_of: :created_by_user, dependent: :nullify
   has_many :tracing_readiness_updated, class_name: "TracingReadinessSettings", foreign_key: "updated_by",
                                        inverse_of: :updated_by_user, dependent: :nullify
+  has_many :gateway_guardrails_created, class_name: "GatewayGuardrail", foreign_key: "created_by",
+                                        inverse_of: :created_by_user, dependent: :nullify
   has_many :annotation_queue_assignment, dependent: :destroy
   has_many :surveys, dependent: :destroy
   has_many :comment_reactions, dependent: :destroy
@@ -66,4 +68,5 @@ class User < ApplicationRecord
   has_many :gateway_spend_limits_owned, class_name: "GatewaySpendLimit", foreign_key: "owner_user_id",
                                         inverse_of: :owner_user, dependent: :nullify
   has_many :gateway_spend_limits, dependent: :destroy
+  has_many :gateway_guardrail_assignments, dependent: :destroy
 end

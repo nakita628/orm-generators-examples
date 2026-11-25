@@ -16,6 +16,7 @@ defmodule LangWatch.OrganizationInvite do
           subscription_id: String.t() | nil,
           accepted_by_user_id: String.t() | nil,
           accepted_via_identifier_id: String.t() | nil,
+          billing_only: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: LangWatch.Organization.t() | nil,
@@ -34,6 +35,8 @@ defmodule LangWatch.OrganizationInvite do
     field(:subscription_id, :string, source: :subscriptionId)
     field(:accepted_by_user_id, :string, source: :acceptedByUserId)
     field(:accepted_via_identifier_id, :string, source: :acceptedViaIdentifierId)
+    # Invites the person who pays with the Billing grant and no seat (ADR-205).
+    field(:billing_only, :boolean, default: false, source: :billingOnly)
     field(:organization_id, :string, source: :organizationId)
     field(:requested_by, :string, source: :requestedBy)
     belongs_to(:organization, LangWatch.Organization, foreign_key: :organization_id, define_field: false, type: :string)

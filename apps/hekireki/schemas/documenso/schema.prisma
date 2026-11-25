@@ -1,6 +1,6 @@
 // Documenso: Documenso document signing: users, teams, documents, recipients, fields and signatures.
 //
-// Imported from https://github.com/documenso/documenso/blob/e745c9ec339f1b16d2f8d181b6457323fb33ebe5/packages/prisma/schema.prisma
+// Imported from https://github.com/documenso/documenso/blob/cc491f1ec224bda8d3e09338e291ca11fe47641a/packages/prisma/schema.prisma
 // (AGPL-3.0 license) by tools/import/import-schema.mjs, which dropped the original
 // generator blocks and the datasource's connection URLs and added the hekireki generators below.
 // The models, enums and `///` comments are the project's own, as they are at that commit.
@@ -773,6 +773,8 @@ enum FieldType {
 model Field {
   id             Int          @id @default(autoincrement())
   secondaryId    String       @unique @default(cuid())
+  externalId     String?      @db.VarChar(255)
+  groupId        String?      @db.VarChar(255)
   envelopeId     String
   envelopeItemId String
   recipientId    Int

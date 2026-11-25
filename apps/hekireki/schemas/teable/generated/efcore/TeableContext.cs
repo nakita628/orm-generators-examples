@@ -49,6 +49,8 @@ public partial class TeableContext : DbContext
 
     public virtual DbSet<DomainEventInbox> DomainEventInboxes { get; set; }
 
+    public virtual DbSet<FieldPeriodicRefreshState> FieldPeriodicRefreshStates { get; set; }
+
     public virtual DbSet<ComputedUpdateOutbox> ComputedUpdateOutboxes { get; set; }
 
     public virtual DbSet<ComputedUpdateOutboxSeed> ComputedUpdateOutboxSeeds { get; set; }
@@ -602,6 +604,10 @@ public partial class TeableContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(ProvisionState.Ready)
                 .HasColumnName("provision_state");
+            entity.Property(e => e.ActorStorageVersion)
+                .ValueGeneratedNever()
+                .HasDefaultValue(0)
+                .HasColumnName("actor_storage_version");
             entity.Property(e => e.Version).HasColumnName("version");
             entity.Property(e => e.Order).HasColumnName("order");
             entity.Property(e => e.CreatedTime)
@@ -776,6 +782,13 @@ public partial class TeableContext : DbContext
             entity.Property(e => e.IsConditionalLookup).HasColumnName("is_conditional_lookup");
             entity.Property(e => e.IsPending).HasColumnName("is_pending");
             entity.Property(e => e.HasError).HasColumnName("has_error");
+            entity.Property(e => e.NeedsPeriodicRefresh)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("needs_periodic_refresh");
+            entity.Property(e => e.RefreshCadence)
+                .HasMaxLength(16)
+                .HasColumnName("refresh_cadence");
             entity.Property(e => e.LookupLinkedFieldId).HasColumnName("lookup_linked_field_id");
             entity.Property(e => e.LookupOptions).HasColumnName("lookup_options");
             entity.Property(e => e.TableId).HasColumnName("table_id");
@@ -903,6 +916,80 @@ public partial class TeableContext : DbContext
                 .HasColumnName("created_at");
         });
 
+        modelBuilder.Entity<FieldPeriodicRefreshState>(entity =>
+        {
+            entity.HasKey(e => e.FieldId).HasName("field_periodic_refresh_state_pkey");
+
+            entity.ToTable("field_periodic_refresh_state");
+
+            entity.HasIndex(e => new { e.BaseId, e.Enabled }, "field_periodic_refresh_state_base_id_enabled_idx");
+
+            entity.HasIndex(e => e.TableId, "field_periodic_refresh_state_table_id_idx");
+
+            entity.HasIndex(e => new { e.Enabled, e.LastRefreshedLocalDate }, "field_periodic_refresh_state_enabled_local_date_idx");
+
+            entity.Property(e => e.FieldId).HasColumnName("field_id");
+            entity.Property(e => e.TableId).HasColumnName("table_id");
+            entity.Property(e => e.BaseId).HasColumnName("base_id");
+            entity.Property(e => e.Enabled)
+                .ValueGeneratedNever()
+                .HasDefaultValue(true)
+                .HasColumnName("enabled");
+            entity.Property(e => e.TimeZone)
+                .ValueGeneratedNever()
+                .HasMaxLength(64)
+                .HasDefaultValue("UTC")
+                .HasColumnName("time_zone");
+            entity.Property(e => e.ContainsNowPrecision)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("contains_now_precision");
+            entity.Property(e => e.LastRefreshedAt)
+                .HasPrecision(6)
+                .HasConversion<UtcConverter>()
+                .HasColumnName("last_refreshed_at");
+            entity.Property(e => e.LastRefreshedLocalDate)
+                .HasMaxLength(16)
+                .HasColumnName("last_refreshed_local_date");
+            entity.Property(e => e.LastRangeHash)
+                .HasMaxLength(128)
+                .HasColumnName("last_range_hash");
+            entity.Property(e => e.LastStatus)
+                .ValueGeneratedNever()
+                .HasMaxLength(32)
+                .HasDefaultValue("idle")
+                .HasColumnName("last_status");
+            entity.Property(e => e.LastError).HasColumnName("last_error");
+            entity.Property(e => e.PendingTaskId)
+                .HasMaxLength(64)
+                .HasColumnName("pending_task_id");
+            entity.Property(e => e.PendingLocalDate)
+                .HasMaxLength(16)
+                .HasColumnName("pending_local_date");
+            entity.Property(e => e.PendingRangeHash)
+                .HasMaxLength(128)
+                .HasColumnName("pending_range_hash");
+            entity.Property(e => e.PendingStartedAt)
+                .HasPrecision(6)
+                .HasConversion<UtcConverter>()
+                .HasColumnName("pending_started_at");
+            entity.Property(e => e.CreatedTime)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasPrecision(6)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcConverter>()
+                .HasColumnName("created_time");
+            entity.Property(e => e.LastModifiedTime)
+                .HasPrecision(6)
+                .HasConversion<UtcConverter>()
+                .HasColumnName("last_modified_time");
+
+            entity.HasOne(d => d.Field).WithOne(p => p.PeriodicRefreshState)
+                .HasForeignKey<FieldPeriodicRefreshState>(d => d.FieldId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("field_periodic_refresh_state_field_id_fkey");
+        });
+
         modelBuilder.Entity<ComputedUpdateOutbox>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("computed_update_outbox_pkey");
@@ -998,6 +1085,7 @@ public partial class TeableContext : DbContext
                 .HasDefaultValue(0)
                 .HasColumnName("stage_depth");
             entity.Property(e => e.PredecessorTaskId).HasColumnName("predecessor_task_id");
+            entity.Property(e => e.DeadLetterRestoreVersion).HasColumnName("dead_letter_restore_version");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -1166,6 +1254,7 @@ public partial class TeableContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updated_at");
+            entity.Property(e => e.DeleteAuthorizedTxid).HasColumnName("delete_authorized_txid");
         });
 
         modelBuilder.Entity<ComputedUpdateDeadLetterSeed>(entity =>
@@ -2064,6 +2153,8 @@ public partial class TeableContext : DbContext
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("created_time");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ActorType).HasColumnName("actor_type");
+            entity.Property(e => e.ActorId).HasColumnName("actor_id");
         });
 
         modelBuilder.Entity<Trash>(entity =>
@@ -2948,6 +3039,15 @@ public partial class TeableContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<Field>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.LastModifiedTime == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.LastModifiedTime).IsModified))
+            {
+                entry.Entity.LastModifiedTime = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<FieldPeriodicRefreshState>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.LastModifiedTime == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.LastModifiedTime).IsModified))

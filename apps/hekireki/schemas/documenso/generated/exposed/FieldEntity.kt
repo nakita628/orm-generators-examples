@@ -11,6 +11,8 @@ class FieldEntity(
     companion object : EntityClass<Int, FieldEntity>(FieldTable)
 
     var secondaryId by FieldTable.secondaryId
+    var externalId by FieldTable.externalId
+    var groupId by FieldTable.groupId
     var envelopeId by FieldTable.envelopeId
     var envelopeItemId by FieldTable.envelopeItemId
     var recipientId by FieldTable.recipientId

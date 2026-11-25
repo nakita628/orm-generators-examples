@@ -42,6 +42,12 @@ public partial class DashboardsV2
     public string? OrganizationId { get; set; }
 
     /// <summary>
+    /// The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+    /// decision 8). Every board made before homes existed is llm-ops.
+    /// </summary>
+    public string HomeProduct { get; set; } = "llm-ops";
+
+    /// <summary>
     /// Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
     /// 2026-10-28); dropped in a later migration, once no serving release reads it.
     /// </summary>

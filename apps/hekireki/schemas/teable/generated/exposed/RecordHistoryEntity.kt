@@ -16,4 +16,6 @@ class RecordHistoryEntity(
     var after by RecordHistoryTable.after
     var createdTime by RecordHistoryTable.createdTime
     var createdBy by RecordHistoryTable.createdBy
+    var actorType by RecordHistoryTable.actorType
+    var actorId by RecordHistoryTable.actorId
 }

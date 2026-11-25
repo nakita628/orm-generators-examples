@@ -63,6 +63,23 @@ Enum GatewaySpendLimitAlertType {
   EXCEEDED
 }
 
+Enum GatewayGuardrailType {
+  REGEX
+  BEDROCK
+}
+
+Enum GatewayGuardrailAction {
+  BLOCK
+  LOG
+  REDACT
+}
+
+Enum GatewayGuardrailAssignmentScope {
+  ORGANIZATION
+  API_KEY
+  USER
+}
+
 Enum InAppAgentConversationVisibilityScope {
   PERSONAL
   PROJECT
@@ -501,6 +518,33 @@ Table gateway_spend_limit_alerts {
   }
 
   Note: 'One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times.'
+}
+
+Table gateway_guardrails {
+  id String [pk]
+  organization_id String [not null]
+  name String [not null]
+  type GatewayGuardrailType [default: 'REGEX', not null]
+  action GatewayGuardrailAction [not null]
+  config Json [default: '{}', not null]
+  encrypted_credentials String
+  created_by String
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (organization_id, name) [unique]
+  }
+}
+
+Table gateway_guardrail_assignments {
+  id String [pk]
+  guardrail_id String [not null]
+  organization_id String [not null]
+  scope GatewayGuardrailAssignmentScope [not null]
+  api_key_id String
+  user_id String
+  created_at DateTime [default: `now()`, not null]
 }
 
 Table in_app_agent_conversations {
@@ -1708,6 +1752,18 @@ Ref gateway_spend_limits_user_id_fk: gateway_spend_limits.user_id > users.id [de
 Ref gateway_spend_limits_owner_user_id_fk: gateway_spend_limits.owner_user_id > users.id [delete: set null]
 
 Ref gateway_spend_limit_alerts_spend_limit_id_fk: gateway_spend_limit_alerts.spend_limit_id > gateway_spend_limits.id [delete: cascade]
+
+Ref gateway_guardrails_organization_id_fk: gateway_guardrails.organization_id > organizations.id [delete: cascade]
+
+Ref gateway_guardrails_created_by_fk: gateway_guardrails.created_by > users.id [delete: set null]
+
+Ref gateway_guardrail_assignments_guardrail_id_fk: gateway_guardrail_assignments.guardrail_id > gateway_guardrails.id [delete: cascade]
+
+Ref gateway_guardrail_assignments_organization_id_fk: gateway_guardrail_assignments.organization_id > organizations.id [delete: cascade]
+
+Ref gateway_guardrail_assignments_api_key_id_fk: gateway_guardrail_assignments.api_key_id > api_keys.id [delete: cascade]
+
+Ref gateway_guardrail_assignments_user_id_fk: gateway_guardrail_assignments.user_id > users.id [delete: cascade]
 
 Ref in_app_agent_conversations_project_id_fk: in_app_agent_conversations.project_id > projects.id [delete: cascade]
 

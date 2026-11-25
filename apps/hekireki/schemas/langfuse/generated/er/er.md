@@ -22,6 +22,12 @@ erDiagram
     users |o--o{ gateway_spend_limits : "(id) - (userId)"
     users |o--o{ gateway_spend_limits : "(id) - (ownerUserId)"
     gateway_spend_limits ||--o{ gateway_spend_limit_alerts : "(id) - (spendLimitId)"
+    organizations ||--o{ gateway_guardrails : "(id) - (organizationId)"
+    users |o--o{ gateway_guardrails : "(id) - (createdBy)"
+    gateway_guardrails ||--o{ gateway_guardrail_assignments : "(id) - (guardrailId)"
+    organizations ||--o{ gateway_guardrail_assignments : "(id) - (organizationId)"
+    api_keys |o--o{ gateway_guardrail_assignments : "(id) - (apiKeyId)"
+    users |o--o{ gateway_guardrail_assignments : "(id) - (userId)"
     projects ||--o{ in_app_agent_conversations : "(id) - (projectId)"
     users |o--o{ in_app_agent_conversations : "(id) - (createdByUserId)"
     projects ||--o{ in_app_agent_events : "(id) - (projectId)"
@@ -305,6 +311,27 @@ erDiagram
         int thresholdPercent UK
         datetime countingStartedAt UK
         datetime windowStart UK
+        datetime createdAt
+    }
+    gateway_guardrails {
+        string id PK
+        string organizationId FK, UK
+        string name UK
+        gatewayguardrailtype type
+        gatewayguardrailaction action
+        json config
+        string encryptedCredential
+        string createdBy FK
+        datetime createdAt
+        datetime updatedAt
+    }
+    gateway_guardrail_assignments {
+        string id PK
+        string guardrailId FK
+        string organizationId FK
+        gatewayguardrailassignmentscope scope
+        string apiKeyId FK
+        string userId FK
         datetime createdAt
     }
     in_app_agent_conversations {

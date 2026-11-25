@@ -177,6 +177,23 @@ class GatewaySpendLimitAlertType(models.TextChoices):
     EXCEEDED = "EXCEEDED"
 
 
+class GatewayGuardrailType(models.TextChoices):
+    REGEX = "REGEX"
+    BEDROCK = "BEDROCK"
+
+
+class GatewayGuardrailAction(models.TextChoices):
+    BLOCK = "BLOCK"
+    LOG = "LOG"
+    REDACT = "REDACT"
+
+
+class GatewayGuardrailAssignmentScope(models.TextChoices):
+    ORGANIZATION = "ORGANIZATION"
+    API_KEY = "API_KEY"
+    USER = "USER"
+
+
 class InAppAgentConversationVisibilityScope(models.TextChoices):
     PERSONAL = "PERSONAL"
     PROJECT = "PROJECT"
@@ -681,6 +698,44 @@ class GatewaySpendLimitAlert(models.Model):
         db_table = "gateway_spend_limit_alerts"
         constraints = [
             models.UniqueConstraint(fields=["spend_limit", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start"], name="gateway_spend_limit_alerts_limit_type_counting_window_key"),
+        ]
+
+
+class GatewayGuardrail(models.Model):
+    id = models.TextField(primary_key=True, default=cuid_str)
+    organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="gateway_guardrails", db_index=False)
+    name = models.TextField()
+    type = models.TextField(choices=GatewayGuardrailType.choices, default=GatewayGuardrailType.REGEX)
+    action = models.TextField(choices=GatewayGuardrailAction.choices)
+    config = models.JSONField(default=dict)
+    encrypted_credential = models.TextField(null=True, db_column="encrypted_credentials")
+    created_by_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="gateway_guardrails_created", db_column="created_by", null=True, db_index=False)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "gateway_guardrails"
+        constraints = [
+            models.UniqueConstraint(fields=["organization", "name"], name="gateway_guardrails_organization_id_name_key"),
+        ]
+
+
+class GatewayGuardrailAssignment(models.Model):
+    id = models.TextField(primary_key=True, default=cuid_str)
+    guardrail = models.ForeignKey("GatewayGuardrail", on_delete=models.CASCADE, related_name="assignments", db_index=False)
+    organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="gateway_guardrail_assignments", db_index=False)
+    scope = models.TextField(choices=GatewayGuardrailAssignmentScope.choices)
+    api_key = models.ForeignKey("ApiKey", on_delete=models.CASCADE, related_name="gateway_guardrail_assignments", null=True, db_index=False)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="gateway_guardrail_assignments", null=True, db_index=False)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+
+    class Meta:
+        db_table = "gateway_guardrail_assignments"
+        indexes = [
+            models.Index(fields=["organization", "scope"]),
+            models.Index(fields=["api_key"]),
+            models.Index(fields=["user", "organization"]),
         ]
 
 

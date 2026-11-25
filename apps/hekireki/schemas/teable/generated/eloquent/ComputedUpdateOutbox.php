@@ -44,6 +44,7 @@ class ComputedUpdateOutbox extends Model
         'source_changed_at',
         'stage_depth',
         'predecessor_task_id',
+        'dead_letter_restore_version',
     ];
 
     protected $attributes = [
@@ -74,6 +75,7 @@ class ComputedUpdateOutbox extends Model
         'sync_max_level' => 'integer',
         'source_changed_at' => 'datetime',
         'stage_depth' => 'integer',
+        'dead_letter_restore_version' => 'integer',
     ];
 
     public function save(array $options = [])

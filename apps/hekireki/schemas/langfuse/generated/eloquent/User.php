@@ -147,6 +147,11 @@ class User extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(TracingReadinessSettings::class, 'updated_by');
     }
 
+    public function gatewayGuardrailsCreated(): HasMany
+    {
+        return $this->hasMany(GatewayGuardrail::class, 'created_by');
+    }
+
     public function annotationQueueAssignment(): HasMany
     {
         return $this->hasMany(AnnotationQueueAssignment::class, 'user_id');
@@ -220,5 +225,10 @@ class User extends \Illuminate\Database\Eloquent\Model
     public function gatewaySpendLimits(): HasMany
     {
         return $this->hasMany(GatewaySpendLimit::class, 'user_id');
+    }
+
+    public function gatewayGuardrailAssignments(): HasMany
+    {
+        return $this->hasMany(GatewayGuardrailAssignment::class, 'user_id');
     }
 }

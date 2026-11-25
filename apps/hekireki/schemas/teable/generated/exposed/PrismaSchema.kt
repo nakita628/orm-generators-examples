@@ -32,6 +32,7 @@ object PrismaSchema {
             DomainEventOutboxTable,
             DomainEventDeliveryTable,
             DomainEventInboxTable,
+            FieldPeriodicRefreshStateTable,
             ComputedUpdateOutboxTable,
             ComputedUpdateOutboxSeedTable,
             ComputedUpdateChangeFrontierTable,

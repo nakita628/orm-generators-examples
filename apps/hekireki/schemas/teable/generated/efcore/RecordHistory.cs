@@ -21,4 +21,8 @@ public partial class RecordHistory
     public DateTime CreatedTime { get; set; }
 
     public string CreatedBy { get; set; } = null!;
+
+    public string? ActorType { get; set; }
+
+    public string? ActorId { get; set; }
 }

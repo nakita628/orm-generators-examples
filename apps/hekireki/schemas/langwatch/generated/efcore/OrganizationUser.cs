@@ -29,6 +29,12 @@ public partial class OrganizationUser
     public string? DepartmentId { get; set; }
 
     /// <summary>
+    /// A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+    /// no seat. Any role change clears it. See billing-only-invite.feature.
+    /// </summary>
+    public bool BillingOnly { get; set; } = false;
+
+    /// <summary>
     /// Set when an admin disables this membership to stay within the licensed
     /// seat count. The person loses access to this organization only, keeps
     /// their role, department and everything they did, and frees their seat.

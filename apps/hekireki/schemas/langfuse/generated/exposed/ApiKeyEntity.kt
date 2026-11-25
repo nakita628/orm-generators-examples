@@ -32,5 +32,6 @@ class ApiKeyEntity(
     val apiKeysCreated by ApiKeyEntity optionalReferrersOn ApiKeyTable.createdByApiKeyId
     val gatewayAssociation by GatewayApiKeyAssociationEntity optionalBackReferencedOn GatewayApiKeyAssociationTable.id
     val gatewaySpendLimits by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.apiKeyId
+    val gatewayGuardrailAssignments by GatewayGuardrailAssignmentEntity optionalReferrersOn GatewayGuardrailAssignmentTable.apiKeyId
     val roleAssignments by RoleAssignmentEntity optionalReferrersOn RoleAssignmentTable.apiKeyId
 }

@@ -1538,6 +1538,10 @@ class OrganizationUser(models.Model):
     Plain column ref (relationMode="prisma"); the service validates the
     id belongs to this org. See departments.feature.
     """
+    billing_only = models.BooleanField(db_column="billingOnly", default=False)
+    """A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+    no seat. Any role change clears it. See billing-only-invite.feature.
+    """
     disabled_at = UtcDateTimeField(null=True, db_column="disabledAt")
     """Set when an admin disables this membership to stay within the licensed
     seat count. The person loses access to this organization only, keeps
@@ -2719,6 +2723,8 @@ class OrganizationInvite(models.Model):
     subscription_id = models.TextField(null=True, db_column="subscriptionId")
     accepted_by_user_id = models.TextField(null=True, db_column="acceptedByUserId")
     accepted_via_identifier_id = models.TextField(null=True, db_column="acceptedViaIdentifierId")
+    billing_only = models.BooleanField(db_column="billingOnly", default=False)
+    """Invites the person who pays with the Billing grant and no seat (ADR-205)."""
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -3024,6 +3030,10 @@ class DashboardsV2(models.Model):
     organization_id = models.TextField(null=True, db_column="organizationId")
     """The owning project's organization, stamped when the board is first set to
     ORGANIZATION; null before.
+    """
+    home_product = models.TextField(db_column="homeProduct", default="llm-ops")
+    """The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+    decision 8). Every board made before homes existed is llm-ops.
     """
     excluded_origins = models.JSONField(null=True, db_column="excludedOrigins")
     """Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
@@ -5457,9 +5467,8 @@ class NurturingProject(models.Model):
 
 
 class NurturingUncopiedProject(models.Model):
-    """A project nurturing saw traces of with no placement copy, and when it first did: every worker
-    retries its trace batches only within one window from then, across restarts. Deleted when the
-    copy lands.
+    """retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+    retry clock reads or writes this table; an operator step may drop it once old writers are gone.
     """
 
     project_id = models.TextField(primary_key=True, db_column="projectId", default=None)
@@ -5505,6 +5514,65 @@ class NurturingOrganizationCreated(models.Model):
         ]
 
 
+class NurturingOrganizationPlan(models.Model):
+    """Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+    copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+    fact only when it changes this row.
+    """
+
+    organization_id = models.TextField(primary_key=True, db_column="organizationId", default=None)
+    plan = models.TextField(null=True)
+    occurred_at = UtcDateTimeField(db_column="occurredAt")
+    from_catch_up = models.BooleanField(db_column="fromCatchUp")
+    applied_event_ids = ArrayField(models.TextField(), db_column="appliedEventIds", default=list)
+    """The event ids folded in, so a redelivery folds once."""
+    winner_event_id = models.TextField(null=True, db_column="winnerEventId")
+    """The fact that last changed the row; only it may tell Customer.io."""
+
+    class Meta:
+        db_table = "NurturingOrganizationPlan"
+
+
+class NurturingVirtualKey(models.Model):
+    """Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+    creator comes from the created fact alone; the holder and purpose are each the latest non-null
+    value by the fact's time (stamped beside them); the state times keep their latest.
+    """
+
+    virtual_key_id = models.TextField(primary_key=True, db_column="virtualKeyId", default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    name = models.TextField()
+    occurred_at = UtcDateTimeField(db_column="occurredAt")
+    key_created_at = UtcDateTimeField(null=True, db_column="keyCreatedAt")
+    creator_user_id = models.TextField(null=True, db_column="creatorUserId")
+    principal_user_id = models.TextField(null=True, db_column="principalUserId")
+    principal_user_id_at = UtcDateTimeField(null=True, db_column="principalUserIdAt")
+    purpose = models.TextField(null=True)
+    purpose_at = UtcDateTimeField(null=True, db_column="purposeAt")
+    disabled_at = UtcDateTimeField(null=True, db_column="disabledAt")
+    enabled_at = UtcDateTimeField(null=True, db_column="enabledAt")
+    revoked_at = UtcDateTimeField(null=True, db_column="revokedAt")
+
+    class Meta:
+        db_table = "NurturingVirtualKey"
+        indexes = [
+            models.Index(fields=["creator_user_id"]),
+            models.Index(fields=["principal_user_id"]),
+        ]
+
+
+class NurturingErasedUser(models.Model):
+    """Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+    naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+    """
+
+    user_id_hash = models.TextField(primary_key=True, db_column="userIdHash", default=None)
+    erased_at = UtcDateTimeField(db_column="erasedAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "NurturingErasedUser"
+
+
 class NurturingOrganization(models.Model):
     """Nurturing's read model per organization: its admin and its milestone counts.
     `seeded` marks an organization learned from the project backfill: its first_* already happened.
@@ -5523,6 +5591,7 @@ class NurturingOrganization(models.Model):
     coding_repository_keys = ArrayField(models.TextField(), db_column="codingRepositoryKeys", default=list)
     coding_first_days = ArrayField(models.IntegerField(), db_column="codingFirstDays", default=list)
     last_trace_at = UtcDateTimeField(null=True, db_column="lastTraceAt")
+    admin_at = UtcDateTimeField(null=True, db_column="adminAt")
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -5533,14 +5602,15 @@ class NurturingOrganization(models.Model):
 class NurturingProjectUsageView(models.Model):
     """Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
     and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-    organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+    organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
     """
 
     pk = models.CompositePrimaryKey("project_id", "owner")
     project_id = models.TextField(db_column="projectId")
     owner = models.TextField()
-    """The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-    or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+    """The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+    Evaluation days are not kept here: the evaluation-days map and its replay write them to
+    NurturingProjectEvaluationDay.
     """
     folded = models.JSONField()
     """The project's usage as the fold folded it (NurturingProjectUsageState)."""
@@ -5556,9 +5626,8 @@ class NurturingProjectUsageView(models.Model):
 
 
 class NurturingProjectTraceDay(models.Model):
-    """Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
-    root span being one trace, one row per project and UTC day of append time, incremented in place
-    by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+    """retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+    peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
     """
 
     pk = models.CompositePrimaryKey("project_id", "day")
@@ -5575,6 +5644,51 @@ class NurturingProjectTraceDay(models.Model):
 
     class Meta:
         db_table = "NurturingProjectTraceDay"
+
+
+class NurturingProjectTraceDayCount(models.Model):
+    """Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+    source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+    `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+    readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+    """
+
+    pk = models.CompositePrimaryKey("project_id", "day", "source")
+    project_id = models.TextField(db_column="projectId")
+    day = models.TextField()
+    """UTC `YYYY-MM-DD` of the facts' append time."""
+    source = models.TextField()
+    """The peer fold that wrote the row: `spans` or `failures`."""
+    trace_count = models.IntegerField(db_column="traceCount", default=0)
+    error_count = models.IntegerField(db_column="errorCount", default=0)
+    last_trace_at = UtcDateTimeField(null=True, db_column="lastTraceAt")
+    """Append time of the newest root span."""
+    last_failed_trace_at = UtcDateTimeField(null=True, db_column="lastFailedTraceAt")
+    """Append time of the newest trace_failed."""
+    applied_event_ids = ArrayField(models.TextField(), db_column="appliedEventIds", default=list)
+    """The event ids of the last delivery folded in, so a redelivery folds once."""
+    projection_version = models.TextField(db_column="projectionVersion")
+    """A row of another version reads as undecodable and is left out of the read."""
+
+    class Meta:
+        db_table = "NurturingProjectTraceDayCount"
+        indexes = [
+            models.Index(fields=["day"]),
+        ]
+
+
+class NurturingProjectEvaluationDay(models.Model):
+    """Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+    written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+    """
+
+    pk = models.CompositePrimaryKey("project_id", "day")
+    project_id = models.TextField(db_column="projectId")
+    day = models.TextField()
+    """UTC `YYYY-MM-DD`."""
+
+    class Meta:
+        db_table = "NurturingProjectEvaluationDay"
 
 
 class NurturingPersonalProject(models.Model):
@@ -7103,6 +7217,32 @@ class DiscoveredAgent(models.Model):
         ]
 
 
+class DiscoveredAgentListing(models.Model):
+    """One source's presence fact for one discovered agent. An agent is gone only when every
+    source that listed it marked it gone; an agent no source listed (older sightings) never is.
+    """
+
+    id = models.TextField(primary_key=True, default=nanoid_str)
+    organization_id = models.TextField(db_column="organizationId")
+    ingestion_source_id = models.TextField(db_column="ingestionSourceId")
+    discovered_agent_id = models.TextField(db_column="discoveredAgentId")
+    last_listed_at = UtcDateTimeField(db_column="lastListedAt")
+    gone_at = UtcDateTimeField(null=True, db_column="goneAt")
+    """Set when this source's listing stopped naming the agent; cleared when it names it again."""
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "DiscoveredAgentListing"
+        constraints = [
+            models.UniqueConstraint(fields=["ingestion_source_id", "discovered_agent_id"], name="DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key"),
+        ]
+        indexes = [
+            models.Index(fields=["organization_id", "discovered_agent_id"]),
+        ]
+
+
 class AgentRegistryEntry(models.Model):
     """One agent in the organisation's governance registry, from any source governance reads
     (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest
@@ -7173,6 +7313,19 @@ class AgentRegistryBaseline(models.Model):
 
     class Meta:
         db_table = "AgentRegistryBaseline"
+
+
+class AgentRegistrySettings(models.Model):
+    """An organisation's agent registry settings. No row reads as the defaults."""
+
+    organization_id = models.TextField(primary_key=True, db_column="organizationId", default=None)
+    dormant_after_days = models.IntegerField(db_column="dormantAfterDays", default=30)
+    """Days without traffic after which a listed agent reads as dormant."""
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AgentRegistrySettings"
 
 
 class AgentStopPlanTarget(models.Model):
@@ -7841,3 +7994,108 @@ class SignInProviderMount(models.Model):
 
     class Meta:
         db_table = "SignInProviderMount"
+
+
+class DigestCohortOrganization(models.Model):
+    """An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends."""
+
+    organization_id = models.TextField(primary_key=True, db_column="organizationId", default=None)
+    enrolled_by = models.TextField(db_column="enrolledBy")
+    enrolled_at = UtcDateTimeField(db_column="enrolledAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "DigestCohortOrganization"
+
+
+class DigestSubscription(models.Model):
+    """A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed."""
+
+    user_id = models.TextField(primary_key=True, db_column="userId", default=None)
+    unsubscribed_at = UtcDateTimeField(null=True, db_column="unsubscribedAt")
+    unsubscribed_from_send_id = models.TextField(null=True, db_column="unsubscribedFromSendId")
+    """The send whose unsubscribe link or one-click header the person used."""
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "DigestSubscription"
+
+
+class DigestProjectWeek(models.Model):
+    """A project's ISO week, folded from its owners' events. The id is the fold's aggregate key."""
+
+    id = models.TextField(primary_key=True, default=None)
+    project_id = models.TextField(db_column="projectId")
+    organization_id = models.TextField(db_column="organizationId")
+    iso_week = models.TextField(db_column="isoWeek")
+    state = models.JSONField()
+    """The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps."""
+    occurred_at = UtcDateTimeField(db_column="occurredAt")
+    last_event_id = models.TextField(db_column="lastEventId")
+    accepted_at = UtcDateTimeField(db_column="acceptedAt")
+    projection_version = models.TextField(db_column="projectionVersion")
+    created_at = UtcDateTimeField(db_column="createdAt")
+    updated_at = UtcDateTimeField(db_column="updatedAt")
+
+    class Meta:
+        db_table = "DigestProjectWeek"
+        indexes = [
+            models.Index(fields=["organization_id", "iso_week"]),
+            models.Index(fields=["iso_week"]),
+        ]
+
+
+class DigestUserWeek(models.Model):
+    """A person's ISO week of coding-agent activity in one organization, folded from the agents' facts."""
+
+    id = models.TextField(primary_key=True, default=None)
+    user_id = models.TextField(db_column="userId")
+    organization_id = models.TextField(db_column="organizationId")
+    iso_week = models.TextField(db_column="isoWeek")
+    state = models.JSONField()
+    """Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins."""
+    occurred_at = UtcDateTimeField(db_column="occurredAt")
+    last_event_id = models.TextField(db_column="lastEventId")
+    accepted_at = UtcDateTimeField(db_column="acceptedAt")
+    projection_version = models.TextField(db_column="projectionVersion")
+    created_at = UtcDateTimeField(db_column="createdAt")
+    updated_at = UtcDateTimeField(db_column="updatedAt")
+
+    class Meta:
+        db_table = "DigestUserWeek"
+        indexes = [
+            models.Index(fields=["organization_id", "iso_week"]),
+            models.Index(fields=["iso_week"]),
+            models.Index(fields=["user_id"]),
+        ]
+
+
+class DigestSend(models.Model):
+    """One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`."""
+
+    id = models.TextField(primary_key=True, default=None)
+    user_id = models.TextField(db_column="userId")
+    organization_id = models.TextField(db_column="organizationId")
+    iso_week = models.TextField(db_column="isoWeek")
+    template_id = models.TextField(db_column="templateId")
+    sent_at = UtcDateTimeField(db_column="sentAt")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "DigestSend"
+        indexes = [
+            models.Index(fields=["user_id"]),
+        ]
+
+
+class DigestSettings(models.Model):
+    """The digest's one settings row. `armed` is the weekly send's master switch; it starts off."""
+
+    id = models.TextField(primary_key=True, default="singleton")
+    armed = models.BooleanField(default=False)
+    last_planned_week = models.TextField(null=True, db_column="lastPlannedWeek")
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "DigestSettings"

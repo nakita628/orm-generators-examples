@@ -492,6 +492,8 @@ export interface Recipient {
 export interface Field {
   id: Generated<number>
   secondaryId: string
+  externalId: string | null
+  groupId: string | null
   envelopeId: string
   envelopeItemId: string
   recipientId: number

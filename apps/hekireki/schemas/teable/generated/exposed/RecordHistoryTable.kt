@@ -14,6 +14,8 @@ object RecordHistoryTable : IdTable<String>("record_history") {
     val after = text("after")
     val createdTime = pgTimestamp("created_time", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val createdBy = text("created_by")
+    val actorType = text("actor_type").nullable()
+    val actorId = text("actor_id").nullable()
     override val primaryKey = PrimaryKey(id, name = "record_history_pkey")
 
     init {

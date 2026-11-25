@@ -2,6 +2,8 @@
 #   Single-valued, org-scoped, accounting-only (never gates access).
 #   Plain column ref (relationMode="prisma"); the service validates the
 #   id belongs to this org. See departments.feature.
+# billingOnly:: A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+#   no seat. Any role change clears it. See billing-only-invite.feature.
 # disabledAt:: Set when an admin disables this membership to stay within the licensed
 #   seat count. The person loses access to this organization only, keeps
 #   their role, department and everything they did, and frees their seat.
@@ -21,6 +23,7 @@ class OrganizationUser < ApplicationRecord
   self.table_name = "OrganizationUser"
   self.primary_key = %w[userId organizationId]
 
+  attribute :billingOnly, default: false
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
 

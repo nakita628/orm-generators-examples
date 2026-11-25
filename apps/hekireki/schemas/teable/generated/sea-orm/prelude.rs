@@ -27,6 +27,7 @@ pub use super::domain_event_delivery::Entity as DomainEventDelivery;
 pub use super::domain_event_inbox::Entity as DomainEventInbox;
 pub use super::domain_event_outbox::Entity as DomainEventOutbox;
 pub use super::field::Entity as Field;
+pub use super::field_periodic_refresh_state::Entity as FieldPeriodicRefreshState;
 pub use super::integration::Entity as Integration;
 pub use super::invitation::Entity as Invitation;
 pub use super::invitation_record::Entity as InvitationRecord;

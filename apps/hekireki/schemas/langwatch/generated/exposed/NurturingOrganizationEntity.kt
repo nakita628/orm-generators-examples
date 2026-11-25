@@ -28,6 +28,7 @@ class NurturingOrganizationEntity(
     var codingRepositoryKeys by NurturingOrganizationTable.codingRepositoryKeys
     var codingFirstDays by NurturingOrganizationTable.codingFirstDays
     var lastTraceAt by NurturingOrganizationTable.lastTraceAt
+    var adminAt by NurturingOrganizationTable.adminAt
     var updatedAt by NurturingOrganizationTable.updatedAt
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {

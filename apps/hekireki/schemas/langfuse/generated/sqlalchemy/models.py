@@ -128,6 +128,7 @@ class User(Base):
     topic_configs_updated: Mapped[list["TopicConfig"]] = relationship(foreign_keys="TopicConfig.updated_by", back_populates="updated_by_user")
     tracing_readiness_created: Mapped[list["TracingReadinessSettings"]] = relationship(foreign_keys="TracingReadinessSettings.created_by", back_populates="created_by_user")
     tracing_readiness_updated: Mapped[list["TracingReadinessSettings"]] = relationship(foreign_keys="TracingReadinessSettings.updated_by", back_populates="updated_by_user")
+    gateway_guardrails_created: Mapped[list["GatewayGuardrail"]] = relationship(back_populates="created_by_user")
     annotation_queue_assignment: Mapped[list["AnnotationQueueAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     surveys: Mapped[list["Survey"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     comment_reactions: Mapped[list["CommentReaction"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
@@ -143,6 +144,7 @@ class User(Base):
     evaluation_rules_created: Mapped[list["EvaluationRule"]] = relationship(back_populates="created_by_user")
     gateway_spend_limits_owned: Mapped[list["GatewaySpendLimit"]] = relationship(foreign_keys="GatewaySpendLimit.owner_user_id", back_populates="owner_user")
     gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(foreign_keys="GatewaySpendLimit.user_id", cascade="all, delete", passive_deletes=True, back_populates="user")
+    gateway_guardrail_assignments: Mapped[list["GatewayGuardrailAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
 
 class VerificationToken(Base):
     __tablename__ = "verification_tokens"
@@ -186,6 +188,8 @@ class Organization(Base):
     verified_domains: Mapped[list["VerifiedDomain"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     gateway_ai_connections: Mapped[list["GatewayAiConnection"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
+    gateway_guardrails: Mapped[list["GatewayGuardrail"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
+    gateway_guardrail_assignments: Mapped[list["GatewayGuardrailAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     organization_llm_api_keys: Mapped[list["LlmApiKeys"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     models: Mapped[list["Model"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     role_assignments: Mapped[list["RoleAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
@@ -313,6 +317,7 @@ class ApiKey(Base):
     created_by_api_key: Mapped[Optional["ApiKey"]] = relationship(remote_side=[id], back_populates="api_keys_created")
     api_keys_created: Mapped[list["ApiKey"]] = relationship(back_populates="created_by_api_key")
     gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
+    gateway_guardrail_assignments: Mapped[list["GatewayGuardrailAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
     role_assignments: Mapped[list["RoleAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
     gateway_association: Mapped[Optional["GatewayApiKeyAssociation"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
 
@@ -445,6 +450,50 @@ class GatewaySpendLimitAlert(Base):
     )
 
     spend_limit: Mapped["GatewaySpendLimit"] = relationship(back_populates="alerts")
+
+class GatewayGuardrail(Base):
+    __tablename__ = "gateway_guardrails"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_guardrails_organization_id_fkey"))
+    name: Mapped[str]
+    type: Mapped[str] = mapped_column(Enum("REGEX", "BEDROCK", name="GatewayGuardrailType"), default="REGEX", server_default=text("'REGEX'"))
+    action: Mapped[str] = mapped_column(Enum("BLOCK", "LOG", "REDACT", name="GatewayGuardrailAction"))
+    config: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: {}, server_default=text("'{}'"))
+    encrypted_credential: Mapped[Optional[str]] = mapped_column("encrypted_credentials")
+    created_by: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="gateway_guardrails_created_by_fkey"))
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("gateway_guardrails_organization_id_name_key", "organization_id", "name", unique=True),
+    )
+
+    organization: Mapped["Organization"] = relationship(back_populates="gateway_guardrails")
+    created_by_user: Mapped[Optional["User"]] = relationship(back_populates="gateway_guardrails_created")
+    assignments: Mapped[list["GatewayGuardrailAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="guardrail")
+
+class GatewayGuardrailAssignment(Base):
+    __tablename__ = "gateway_guardrail_assignments"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    guardrail_id: Mapped[str] = mapped_column(ForeignKey("gateway_guardrails.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_guardrail_assignments_guardrail_id_fkey"))
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_guardrail_assignments_organization_id_fkey"))
+    scope: Mapped[str] = mapped_column(Enum("ORGANIZATION", "API_KEY", "USER", name="GatewayGuardrailAssignmentScope"))
+    api_key_id: Mapped[Optional[str]] = mapped_column(ForeignKey("api_keys.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_guardrail_assignments_api_key_id_fkey"))
+    user_id: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_guardrail_assignments_user_id_fkey"))
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("gateway_guardrail_assignments_organization_id_scope_idx", "organization_id", "scope"),
+        Index("gateway_guardrail_assignments_api_key_id_idx", "api_key_id"),
+        Index("gateway_guardrail_assignments_user_id_organization_id_idx", "user_id", "organization_id"),
+    )
+
+    guardrail: Mapped["GatewayGuardrail"] = relationship(back_populates="assignments")
+    organization: Mapped["Organization"] = relationship(back_populates="gateway_guardrail_assignments")
+    api_key: Mapped[Optional["ApiKey"]] = relationship(back_populates="gateway_guardrail_assignments")
+    user: Mapped[Optional["User"]] = relationship(back_populates="gateway_guardrail_assignments")
 
 class InAppAgentConversation(Base):
     __tablename__ = "in_app_agent_conversations"

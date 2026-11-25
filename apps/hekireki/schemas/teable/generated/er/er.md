@@ -11,6 +11,7 @@ erDiagram
     space ||--o{ base : "(id) - (spaceId)"
     base ||--o{ table_meta : "(id) - (baseId)"
     table_meta ||--o{ field : "(id) - (tableId)"
+    field ||--o| field_periodic_refresh_state : "(id) - (fieldId)"
     computed_update_outbox ||--o{ computed_update_outbox_seed : "(id) - (taskId)"
     computed_update_dead_letter ||--o{ computed_update_dead_letter_seed : "(id) - (taskId)"
     table_meta ||--o{ view : "(id) - (tableId)"
@@ -145,6 +146,7 @@ erDiagram
         json searchIndexPolicy
         json queryIndexPolicy
         provisionstate provisionState
+        int actorStorageVersion
         int version
         float order
         datetime createdTime
@@ -219,6 +221,8 @@ erDiagram
         boolean isConditionalLookup
         boolean isPending
         boolean hasError
+        boolean needsPeriodicRefresh
+        string refreshCadence
         string lookupLinkedFieldId
         string lookupOptions
         string tableId FK
@@ -266,6 +270,25 @@ erDiagram
         string eventId PK
         datetime createdAt
     }
+    field_periodic_refresh_state {
+        string fieldId PK, FK
+        string tableId
+        string baseId
+        boolean enabled
+        string timeZone
+        boolean containsNowPrecision
+        datetime lastRefreshedAt
+        string lastRefreshedLocalDate
+        string lastRangeHash
+        string lastStatus
+        string lastError
+        string pendingTaskId
+        string pendingLocalDate
+        string pendingRangeHash
+        datetime pendingStartedAt
+        datetime createdTime
+        datetime lastModifiedTime
+    }
     computed_update_outbox {
         string id PK
         string baseId
@@ -295,6 +318,7 @@ erDiagram
         datetime sourceChangedAt
         int stageDepth
         string predecessorTaskId
+        int deadLetterRestoreVersion
         datetime createdAt
         datetime updatedAt
     }
@@ -351,6 +375,7 @@ erDiagram
         datetime failedAt
         datetime createdAt
         datetime updatedAt
+        bigint deleteAuthorizedTxid
     }
     computed_update_dead_letter_seed {
         string taskId PK, FK
@@ -652,6 +677,8 @@ erDiagram
         string after
         datetime createdTime
         string createdBy
+        string actorType
+        string actorId
     }
     trash {
         string id PK

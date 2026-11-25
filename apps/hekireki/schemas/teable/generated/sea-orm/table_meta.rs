@@ -30,6 +30,8 @@ pub struct Model {
     pub query_index_policy: Option<Json>,
     #[sea_orm(default_value = "ready")]
     pub provision_state: ProvisionState,
+    #[sea_orm(default_value = 0)]
+    pub actor_storage_version: i32,
     pub version: i32,
     pub order: f64,
     #[sea_orm(

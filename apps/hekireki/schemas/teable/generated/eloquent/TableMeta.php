@@ -31,6 +31,7 @@ class TableMeta extends Model
         'search_index_policy',
         'query_index_policy',
         'provision_state',
+        'actor_storage_version',
         'version',
         'order',
         'created_time',
@@ -41,6 +42,7 @@ class TableMeta extends Model
 
     protected $attributes = [
         'provision_state' => 'ready',
+        'actor_storage_version' => 0,
     ];
 
     protected $casts = [
@@ -48,6 +50,7 @@ class TableMeta extends Model
         'search_index_policy' => 'array',
         'query_index_policy' => 'array',
         'provision_state' => ProvisionState::class,
+        'actor_storage_version' => 'integer',
         'version' => 'integer',
         'order' => 'float',
         'created_time' => 'datetime',

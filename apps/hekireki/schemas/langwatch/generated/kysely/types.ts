@@ -1080,6 +1080,11 @@ export interface OrganizationUser {
    */
   departmentId: string | null
   /**
+   * A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+   * no seat. Any role change clears it. See billing-only-invite.feature.
+   */
+  billingOnly: Generated<boolean>
+  /**
    * Set when an admin disables this membership to stay within the licensed
    * seat count. The person loses access to this organization only, keeps
    * their role, department and everything they did, and frees their seat.
@@ -2117,6 +2122,8 @@ export interface OrganizationInvite {
   subscriptionId: string | null
   acceptedByUserId: string | null
   acceptedViaIdentifierId: string | null
+  /** Invites the person who pays with the Billing grant and no seat (ADR-205). */
+  billingOnly: Generated<boolean>
   createdAt: Generated<Timestamp>
   updatedAt: Generated<Timestamp>
 }
@@ -2337,6 +2344,11 @@ export interface DashboardsV2 {
    * ORGANIZATION; null before.
    */
   organizationId: string | null
+  /**
+   * The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+   * decision 8). Every board made before homes existed is llm-ops.
+   */
+  homeProduct: Generated<string>
   /**
    * Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
    * 2026-10-28); dropped in a later migration, once no serving release reads it.
@@ -4032,9 +4044,8 @@ export interface NurturingProject {
 }
 
 /**
- * A project nurturing saw traces of with no placement copy, and when it first did: every worker
- * retries its trace batches only within one window from then, across restarts. Deleted when the
- * copy lands.
+ * retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+ * retry clock reads or writes this table; an operator step may drop it once old writers are gone.
  */
 export interface NurturingUncopiedProject {
   projectId: string
@@ -4065,6 +4076,52 @@ export interface NurturingOrganizationCreated {
 }
 
 /**
+ * Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+ * copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+ * fact only when it changes this row.
+ */
+export interface NurturingOrganizationPlan {
+  organizationId: string
+  plan: string | null
+  occurredAt: Timestamp
+  fromCatchUp: boolean
+  /** The event ids folded in, so a redelivery folds once. */
+  appliedEventIds: Generated<string[]>
+  /** The fact that last changed the row; only it may tell Customer.io. */
+  winnerEventId: string | null
+}
+
+/**
+ * Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+ * creator comes from the created fact alone; the holder and purpose are each the latest non-null
+ * value by the fact's time (stamped beside them); the state times keep their latest.
+ */
+export interface NurturingVirtualKey {
+  virtualKeyId: string
+  organizationId: string
+  name: string
+  occurredAt: Timestamp
+  keyCreatedAt: Timestamp | null
+  creatorUserId: string | null
+  principalUserId: string | null
+  principalUserIdAt: Timestamp | null
+  purpose: string | null
+  purposeAt: Timestamp | null
+  disabledAt: Timestamp | null
+  enabledAt: Timestamp | null
+  revokedAt: Timestamp | null
+}
+
+/**
+ * Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+ * naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+ */
+export interface NurturingErasedUser {
+  userIdHash: string
+  erasedAt: Generated<Timestamp>
+}
+
+/**
  * Nurturing's read model per organization: its admin and its milestone counts.
  * `seeded` marks an organization learned from the project backfill: its first_* already happened.
  */
@@ -4082,19 +4139,21 @@ export interface NurturingOrganization {
   codingRepositoryKeys: Generated<string[]>
   codingFirstDays: Generated<number[]>
   lastTraceAt: Timestamp | null
+  adminAt: Timestamp | null
   updatedAt: Timestamp
 }
 
 /**
  * Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
  * and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
- * organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+ * organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
  */
 export interface NurturingProjectUsageView {
   projectId: string
   /**
-   * The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-   * or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+   * The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+   * Evaluation days are not kept here: the evaluation-days map and its replay write them to
+   * NurturingProjectEvaluationDay.
    */
   owner: string
   /** The project's usage as the fold folded it (NurturingProjectUsageState). */
@@ -4108,9 +4167,8 @@ export interface NurturingProjectUsageView {
 }
 
 /**
- * Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
- * root span being one trace, one row per project and UTC day of append time, incremented in place
- * by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+ * retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+ * peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
  */
 export interface NurturingProjectTraceDay {
   projectId: string
@@ -4123,6 +4181,40 @@ export interface NurturingProjectTraceDay {
   lastTraceAt: Timestamp | null
   /** Append time of the newest trace_failed. */
   lastFailedTraceAt: Timestamp | null
+}
+
+/**
+ * Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+ * source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+ * `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+ * readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+ */
+export interface NurturingProjectTraceDayCount {
+  projectId: string
+  /** UTC `YYYY-MM-DD` of the facts' append time. */
+  day: string
+  /** The peer fold that wrote the row: `spans` or `failures`. */
+  source: string
+  traceCount: Generated<number>
+  errorCount: Generated<number>
+  /** Append time of the newest root span. */
+  lastTraceAt: Timestamp | null
+  /** Append time of the newest trace_failed. */
+  lastFailedTraceAt: Timestamp | null
+  /** The event ids of the last delivery folded in, so a redelivery folds once. */
+  appliedEventIds: Generated<string[]>
+  /** A row of another version reads as undecodable and is left out of the read. */
+  projectionVersion: string
+}
+
+/**
+ * Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+ * written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+ */
+export interface NurturingProjectEvaluationDay {
+  projectId: string
+  /** UTC `YYYY-MM-DD`. */
+  day: string
 }
 
 /**
@@ -5333,6 +5425,22 @@ export interface DiscoveredAgent {
 }
 
 /**
+ * One source's presence fact for one discovered agent. An agent is gone only when every
+ * source that listed it marked it gone; an agent no source listed (older sightings) never is.
+ */
+export interface DiscoveredAgentListing {
+  id: string
+  organizationId: string
+  ingestionSourceId: string
+  discoveredAgentId: string
+  lastListedAt: Timestamp
+  /** Set when this source's listing stopped naming the agent; cleared when it names it again. */
+  goneAt: Timestamp | null
+  createdAt: Generated<Timestamp>
+  updatedAt: Generated<Timestamp>
+}
+
+/**
  * One agent in the organisation's governance registry, from any source governance reads
  * (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest
  * machine-readable snapshot; `version` grows by one on every material change.
@@ -5379,6 +5487,14 @@ export interface AgentRegistryEvent {
 export interface AgentRegistryBaseline {
   organizationId: string
   baselinedAt: Timestamp
+}
+
+/** An organisation's agent registry settings. No row reads as the defaults. */
+export interface AgentRegistrySettings {
+  organizationId: string
+  /** Days without traffic after which a listed agent reads as dormant. */
+  dormantAfterDays: Generated<number>
+  updatedAt: Generated<Timestamp>
 }
 
 /**
@@ -5940,6 +6056,73 @@ export interface SignInProviderMount {
   updatedAt: Generated<Timestamp>
 }
 
+/** An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends. */
+export interface DigestCohortOrganization {
+  organizationId: string
+  enrolledBy: string
+  enrolledAt: Generated<Timestamp>
+}
+
+/** A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed. */
+export interface DigestSubscription {
+  userId: string
+  unsubscribedAt: Timestamp | null
+  /** The send whose unsubscribe link or one-click header the person used. */
+  unsubscribedFromSendId: string | null
+  updatedAt: Timestamp
+}
+
+/** A project's ISO week, folded from its owners' events. The id is the fold's aggregate key. */
+export interface DigestProjectWeek {
+  id: string
+  projectId: string
+  organizationId: string
+  isoWeek: string
+  /** The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps. */
+  state: unknown
+  occurredAt: Timestamp
+  lastEventId: string
+  acceptedAt: Timestamp
+  projectionVersion: string
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
+/** A person's ISO week of coding-agent activity in one organization, folded from the agents' facts. */
+export interface DigestUserWeek {
+  id: string
+  userId: string
+  organizationId: string
+  isoWeek: string
+  /** Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins. */
+  state: unknown
+  occurredAt: Timestamp
+  lastEventId: string
+  acceptedAt: Timestamp
+  projectionVersion: string
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
+/** One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`. */
+export interface DigestSend {
+  id: string
+  userId: string
+  organizationId: string
+  isoWeek: string
+  templateId: string
+  sentAt: Timestamp
+  createdAt: Generated<Timestamp>
+}
+
+/** The digest's one settings row. `armed` is the weekly send's master switch; it starts off. */
+export interface DigestSettings {
+  id: Generated<string>
+  armed: Generated<boolean>
+  lastPlannedWeek: string | null
+  updatedAt: Timestamp
+}
+
 export interface DB {
   Account: Account
   AccountCredential: AccountCredential
@@ -6092,9 +6275,14 @@ export interface DB {
   NurturingUncopiedProject: NurturingUncopiedProject
   NurturingOrganizationMember: NurturingOrganizationMember
   NurturingOrganizationCreated: NurturingOrganizationCreated
+  NurturingOrganizationPlan: NurturingOrganizationPlan
+  NurturingVirtualKey: NurturingVirtualKey
+  NurturingErasedUser: NurturingErasedUser
   NurturingOrganization: NurturingOrganization
   NurturingProjectUsageView: NurturingProjectUsageView
   NurturingProjectTraceDay: NurturingProjectTraceDay
+  NurturingProjectTraceDayCount: NurturingProjectTraceDayCount
+  NurturingProjectEvaluationDay: NurturingProjectEvaluationDay
   NurturingPersonalProject: NurturingPersonalProject
   NurturingTracedProject: NurturingTracedProject
   BillingMeterCheckpoint: BillingMeterCheckpoint
@@ -6138,9 +6326,11 @@ export interface DB {
   StoredObject: StoredObject
   DiscoveredPerson: DiscoveredPerson
   DiscoveredAgent: DiscoveredAgent
+  DiscoveredAgentListing: DiscoveredAgentListing
   AgentRegistryEntry: AgentRegistryEntry
   AgentRegistryEvent: AgentRegistryEvent
   AgentRegistryBaseline: AgentRegistryBaseline
+  AgentRegistrySettings: AgentRegistrySettings
   AgentStopPlanTarget: AgentStopPlanTarget
   AgentStopPlan: AgentStopPlan
   GovernanceAwsConnection: GovernanceAwsConnection
@@ -6162,4 +6352,10 @@ export interface DB {
   WebPushSubscription: WebPushSubscription
   WebPushVapidKey: WebPushVapidKey
   SignInProviderMount: SignInProviderMount
+  DigestCohortOrganization: DigestCohortOrganization
+  DigestSubscription: DigestSubscription
+  DigestProjectWeek: DigestProjectWeek
+  DigestUserWeek: DigestUserWeek
+  DigestSend: DigestSend
+  DigestSettings: DigestSettings
 }

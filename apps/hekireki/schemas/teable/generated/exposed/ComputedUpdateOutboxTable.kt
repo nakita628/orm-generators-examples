@@ -36,6 +36,7 @@ object ComputedUpdateOutboxTable : IdTable<String>("computed_update_outbox") {
     val sourceChangedAt = pgTimestamp("source_changed_at", 3).nullable()
     val stageDepth = integer("stage_depth").default(0)
     val predecessorTaskId = text("predecessor_task_id").nullable()
+    val deadLetterRestoreVersion = integer("dead_letter_restore_version").nullable()
     val createdAt = pgTimestamp("created_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updated_at", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "computed_update_outbox_pkey")

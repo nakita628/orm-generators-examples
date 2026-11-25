@@ -1090,6 +1090,10 @@ class OrganizationUser(Base):
     Plain column ref (relationMode="prisma"); the service validates the
     id belongs to this org. See departments.feature.
     """
+    billing_only: Mapped[bool] = mapped_column("billingOnly", default=False, server_default=text("false"))
+    """A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+    no seat. Any role change clears it. See billing-only-invite.feature.
+    """
     disabled_at: Mapped[Optional[datetime]] = mapped_column("disabledAt")
     """Set when an admin disables this membership to stay within the licensed
     seat count. The person loses access to this organization only, keeps
@@ -2317,6 +2321,8 @@ class OrganizationInvite(Base):
     subscription_id: Mapped[Optional[str]] = mapped_column("subscriptionId")
     accepted_by_user_id: Mapped[Optional[str]] = mapped_column("acceptedByUserId")
     accepted_via_identifier_id: Mapped[Optional[str]] = mapped_column("acceptedViaIdentifierId")
+    billing_only: Mapped[bool] = mapped_column("billingOnly", default=False, server_default=text("false"))
+    """Invites the person who pays with the Billing grant and no seat (ADR-205)."""
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
@@ -2622,6 +2628,10 @@ class DashboardsV2(Base):
     organization_id: Mapped[Optional[str]] = mapped_column("organizationId")
     """The owning project's organization, stamped when the board is first set to
     ORGANIZATION; null before.
+    """
+    home_product: Mapped[str] = mapped_column("homeProduct", default="llm-ops", server_default=text("'llm-ops'"))
+    """The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+    decision 8). Every board made before homes existed is llm-ops.
     """
     excluded_origins: Mapped[Optional[dict[str, Any]]] = mapped_column("excludedOrigins", JSONB(none_as_null=True))
     """Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
@@ -5010,9 +5020,8 @@ class NurturingProject(Base):
     )
 
 class NurturingUncopiedProject(Base):
-    """A project nurturing saw traces of with no placement copy, and when it first did: every worker
-    retries its trace batches only within one window from then, across restarts. Deleted when the
-    copy lands.
+    """retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+    retry clock reads or writes this table; an operator step may drop it once old writers are gone.
     """
 
     __tablename__ = "NurturingUncopiedProject"
@@ -5053,6 +5062,60 @@ class NurturingOrganizationCreated(Base):
         Index("NurturingOrganizationCreated_createdAt_idx", "createdAt"),
     )
 
+class NurturingOrganizationPlan(Base):
+    """Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+    copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+    fact only when it changes this row.
+    """
+
+    __tablename__ = "NurturingOrganizationPlan"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    plan: Mapped[Optional[str]]
+    occurred_at: Mapped[datetime] = mapped_column("occurredAt")
+    from_catch_up: Mapped[bool] = mapped_column("fromCatchUp")
+    applied_event_ids: Mapped[list[str]] = mapped_column("appliedEventIds", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
+    """The event ids folded in, so a redelivery folds once."""
+    winner_event_id: Mapped[Optional[str]] = mapped_column("winnerEventId")
+    """The fact that last changed the row; only it may tell Customer.io."""
+
+class NurturingVirtualKey(Base):
+    """Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+    creator comes from the created fact alone; the holder and purpose are each the latest non-null
+    value by the fact's time (stamped beside them); the state times keep their latest.
+    """
+
+    __tablename__ = "NurturingVirtualKey"
+
+    virtual_key_id: Mapped[str] = mapped_column("virtualKeyId", primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    name: Mapped[str]
+    occurred_at: Mapped[datetime] = mapped_column("occurredAt")
+    key_created_at: Mapped[Optional[datetime]] = mapped_column("keyCreatedAt")
+    creator_user_id: Mapped[Optional[str]] = mapped_column("creatorUserId")
+    principal_user_id: Mapped[Optional[str]] = mapped_column("principalUserId")
+    principal_user_id_at: Mapped[Optional[datetime]] = mapped_column("principalUserIdAt")
+    purpose: Mapped[Optional[str]]
+    purpose_at: Mapped[Optional[datetime]] = mapped_column("purposeAt")
+    disabled_at: Mapped[Optional[datetime]] = mapped_column("disabledAt")
+    enabled_at: Mapped[Optional[datetime]] = mapped_column("enabledAt")
+    revoked_at: Mapped[Optional[datetime]] = mapped_column("revokedAt")
+
+    __table_args__ = (
+        Index("NurturingVirtualKey_creatorUserId_idx", "creatorUserId"),
+        Index("NurturingVirtualKey_principalUserId_idx", "principalUserId"),
+    )
+
+class NurturingErasedUser(Base):
+    """Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+    naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+    """
+
+    __tablename__ = "NurturingErasedUser"
+
+    user_id_hash: Mapped[str] = mapped_column("userIdHash", primary_key=True)
+    erased_at: Mapped[datetime] = mapped_column("erasedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
 class NurturingOrganization(Base):
     """Nurturing's read model per organization: its admin and its milestone counts.
     `seeded` marks an organization learned from the project backfill: its first_* already happened.
@@ -5073,20 +5136,22 @@ class NurturingOrganization(Base):
     coding_repository_keys: Mapped[list[str]] = mapped_column("codingRepositoryKeys", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
     coding_first_days: Mapped[list[int]] = mapped_column("codingFirstDays", ARRAY(Integer), nullable=True, default=lambda: [], server_default=text("ARRAY[]::integer[]"))
     last_trace_at: Mapped[Optional[datetime]] = mapped_column("lastTraceAt")
+    admin_at: Mapped[Optional[datetime]] = mapped_column("adminAt")
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
 
 class NurturingProjectUsageView(Base):
     """Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
     and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-    organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+    organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
     """
 
     __tablename__ = "NurturingProjectUsageView"
 
     project_id: Mapped[str] = mapped_column("projectId", primary_key=True)
     owner: Mapped[str] = mapped_column(primary_key=True)
-    """The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-    or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+    """The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+    Evaluation days are not kept here: the evaluation-days map and its replay write them to
+    NurturingProjectEvaluationDay.
     """
     folded: Mapped[dict[str, Any]] = mapped_column(JSONB)
     """The project's usage as the fold folded it (NurturingProjectUsageState)."""
@@ -5098,9 +5163,8 @@ class NurturingProjectUsageView(Base):
     """Event-derived, so a replayed row equals the row it rebuilds."""
 
 class NurturingProjectTraceDay(Base):
-    """Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
-    root span being one trace, one row per project and UTC day of append time, incremented in place
-    by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+    """retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+    peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
     """
 
     __tablename__ = "NurturingProjectTraceDay"
@@ -5115,6 +5179,46 @@ class NurturingProjectTraceDay(Base):
     """Append time of the newest root span."""
     last_failed_trace_at: Mapped[Optional[datetime]] = mapped_column("lastFailedTraceAt")
     """Append time of the newest trace_failed."""
+
+class NurturingProjectTraceDayCount(Base):
+    """Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+    source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+    `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+    readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+    """
+
+    __tablename__ = "NurturingProjectTraceDayCount"
+
+    project_id: Mapped[str] = mapped_column("projectId", primary_key=True)
+    day: Mapped[str] = mapped_column(primary_key=True)
+    """UTC `YYYY-MM-DD` of the facts' append time."""
+    source: Mapped[str] = mapped_column(primary_key=True)
+    """The peer fold that wrote the row: `spans` or `failures`."""
+    trace_count: Mapped[int] = mapped_column("traceCount", default=0, server_default=text("0"))
+    error_count: Mapped[int] = mapped_column("errorCount", default=0, server_default=text("0"))
+    last_trace_at: Mapped[Optional[datetime]] = mapped_column("lastTraceAt")
+    """Append time of the newest root span."""
+    last_failed_trace_at: Mapped[Optional[datetime]] = mapped_column("lastFailedTraceAt")
+    """Append time of the newest trace_failed."""
+    applied_event_ids: Mapped[list[str]] = mapped_column("appliedEventIds", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
+    """The event ids of the last delivery folded in, so a redelivery folds once."""
+    projection_version: Mapped[str] = mapped_column("projectionVersion")
+    """A row of another version reads as undecodable and is left out of the read."""
+
+    __table_args__ = (
+        Index("NurturingProjectTraceDayCount_day_idx", "day"),
+    )
+
+class NurturingProjectEvaluationDay(Base):
+    """Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+    written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+    """
+
+    __tablename__ = "NurturingProjectEvaluationDay"
+
+    project_id: Mapped[str] = mapped_column("projectId", primary_key=True)
+    day: Mapped[str] = mapped_column(primary_key=True)
+    """UTC `YYYY-MM-DD`."""
 
 class NurturingPersonalProject(Base):
     """Nurturing's copy of each personal project's owner, from organization's and project's facts.
@@ -6600,6 +6704,28 @@ class DiscoveredAgent(Base):
         Index("DiscoveredAgent_organizationId_provider_rawAgentId_key", "organizationId", "provider", "rawAgentId", unique=True),
     )
 
+class DiscoveredAgentListing(Base):
+    """One source's presence fact for one discovered agent. An agent is gone only when every
+    source that listed it marked it gone; an agent no source listed (older sightings) never is.
+    """
+
+    __tablename__ = "DiscoveredAgentListing"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    ingestion_source_id: Mapped[str] = mapped_column("ingestionSourceId")
+    discovered_agent_id: Mapped[str] = mapped_column("discoveredAgentId")
+    last_listed_at: Mapped[datetime] = mapped_column("lastListedAt")
+    gone_at: Mapped[Optional[datetime]] = mapped_column("goneAt")
+    """Set when this source's listing stopped naming the agent; cleared when it names it again."""
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("DiscoveredAgentListing_organizationId_discoveredAgentId_idx", "organizationId", "discoveredAgentId"),
+        Index("DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key", "ingestionSourceId", "discoveredAgentId", unique=True),
+    )
+
 class AgentRegistryEntry(Base):
     """One agent in the organisation's governance registry, from any source governance reads
     (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest
@@ -6662,6 +6788,16 @@ class AgentRegistryBaseline(Base):
 
     organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
     baselined_at: Mapped[datetime] = mapped_column("baselinedAt")
+
+class AgentRegistrySettings(Base):
+    """An organisation's agent registry settings. No row reads as the defaults."""
+
+    __tablename__ = "AgentRegistrySettings"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    dormant_after_days: Mapped[int] = mapped_column("dormantAfterDays", default=30, server_default=text("30"))
+    """Days without traffic after which a listed agent reads as dormant."""
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
 class AgentStopPlanTarget(Base):
     """One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
@@ -7289,3 +7425,97 @@ class SignInProviderMount(Base):
     last_applied_event_id: Mapped[str] = mapped_column("lastAppliedEventId")
     """The last sso event applied: the row's idempotency guard and its version."""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+class DigestCohortOrganization(Base):
+    """An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends."""
+
+    __tablename__ = "DigestCohortOrganization"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    enrolled_by: Mapped[str] = mapped_column("enrolledBy")
+    enrolled_at: Mapped[datetime] = mapped_column("enrolledAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+class DigestSubscription(Base):
+    """A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed."""
+
+    __tablename__ = "DigestSubscription"
+
+    user_id: Mapped[str] = mapped_column("userId", primary_key=True)
+    unsubscribed_at: Mapped[Optional[datetime]] = mapped_column("unsubscribedAt")
+    unsubscribed_from_send_id: Mapped[Optional[str]] = mapped_column("unsubscribedFromSendId")
+    """The send whose unsubscribe link or one-click header the person used."""
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
+
+class DigestProjectWeek(Base):
+    """A project's ISO week, folded from its owners' events. The id is the fold's aggregate key."""
+
+    __tablename__ = "DigestProjectWeek"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    project_id: Mapped[str] = mapped_column("projectId")
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    iso_week: Mapped[str] = mapped_column("isoWeek")
+    state: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    """The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps."""
+    occurred_at: Mapped[datetime] = mapped_column("occurredAt")
+    last_event_id: Mapped[str] = mapped_column("lastEventId")
+    accepted_at: Mapped[datetime] = mapped_column("acceptedAt")
+    projection_version: Mapped[str] = mapped_column("projectionVersion")
+    created_at: Mapped[datetime] = mapped_column("createdAt")
+    updated_at: Mapped[datetime] = mapped_column("updatedAt")
+
+    __table_args__ = (
+        Index("DigestProjectWeek_organizationId_isoWeek_idx", "organizationId", "isoWeek"),
+        Index("DigestProjectWeek_isoWeek_idx", "isoWeek"),
+    )
+
+class DigestUserWeek(Base):
+    """A person's ISO week of coding-agent activity in one organization, folded from the agents' facts."""
+
+    __tablename__ = "DigestUserWeek"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column("userId")
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    iso_week: Mapped[str] = mapped_column("isoWeek")
+    state: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    """Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins."""
+    occurred_at: Mapped[datetime] = mapped_column("occurredAt")
+    last_event_id: Mapped[str] = mapped_column("lastEventId")
+    accepted_at: Mapped[datetime] = mapped_column("acceptedAt")
+    projection_version: Mapped[str] = mapped_column("projectionVersion")
+    created_at: Mapped[datetime] = mapped_column("createdAt")
+    updated_at: Mapped[datetime] = mapped_column("updatedAt")
+
+    __table_args__ = (
+        Index("DigestUserWeek_organizationId_isoWeek_idx", "organizationId", "isoWeek"),
+        Index("DigestUserWeek_isoWeek_idx", "isoWeek"),
+        Index("DigestUserWeek_userId_idx", "userId"),
+    )
+
+class DigestSend(Base):
+    """One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`."""
+
+    __tablename__ = "DigestSend"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column("userId")
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    iso_week: Mapped[str] = mapped_column("isoWeek")
+    template_id: Mapped[str] = mapped_column("templateId")
+    sent_at: Mapped[datetime] = mapped_column("sentAt")
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("DigestSend_userId_idx", "userId"),
+    )
+
+class DigestSettings(Base):
+    """The digest's one settings row. `armed` is the weekly send's master switch; it starts off."""
+
+    __tablename__ = "DigestSettings"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default="singleton", server_default=text("'singleton'"))
+    armed: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
+    last_planned_week: Mapped[Optional[str]] = mapped_column("lastPlannedWeek")
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)

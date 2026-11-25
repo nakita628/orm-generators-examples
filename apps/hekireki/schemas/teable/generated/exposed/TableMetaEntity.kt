@@ -22,6 +22,7 @@ class TableMetaEntity(
     var searchIndexPolicy by TableMetaTable.searchIndexPolicy
     var queryIndexPolicy by TableMetaTable.queryIndexPolicy
     var provisionState by TableMetaTable.provisionState
+    var actorStorageVersion by TableMetaTable.actorStorageVersion
     var version by TableMetaTable.version
     var order by TableMetaTable.order
     var createdTime by TableMetaTable.createdTime

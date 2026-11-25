@@ -531,6 +531,7 @@ CREATE TABLE "OrganizationUser" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "departmentId" TEXT,
+    "billingOnly" BOOLEAN NOT NULL DEFAULT false,
     "disabledAt" TIMESTAMP(3),
     "pendingSsoGrantId" TEXT,
     "membershipStamp" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
@@ -1020,6 +1021,7 @@ CREATE TABLE "OrganizationInvite" (
     "subscriptionId" TEXT,
     "acceptedByUserId" TEXT,
     "acceptedViaIdentifierId" TEXT,
+    "billingOnly" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -1190,6 +1192,7 @@ CREATE TABLE "DashboardsV2" (
     "createdById" TEXT,
     "scope" "DashboardScope" NOT NULL DEFAULT 'PROJECT',
     "organizationId" TEXT,
+    "homeProduct" TEXT NOT NULL DEFAULT 'llm-ops',
     "excludedOrigins" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2659,6 +2662,42 @@ CREATE TABLE "NurturingOrganizationCreated" (
     CONSTRAINT "NurturingOrganizationCreated_pkey" PRIMARY KEY ("organizationId")
 );
 
+CREATE TABLE "NurturingOrganizationPlan" (
+    "organizationId" TEXT NOT NULL,
+    "plan" TEXT,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "fromCatchUp" BOOLEAN NOT NULL,
+    "appliedEventIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "winnerEventId" TEXT,
+
+    CONSTRAINT "NurturingOrganizationPlan_pkey" PRIMARY KEY ("organizationId")
+);
+
+CREATE TABLE "NurturingVirtualKey" (
+    "virtualKeyId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "keyCreatedAt" TIMESTAMP(3),
+    "creatorUserId" TEXT,
+    "principalUserId" TEXT,
+    "principalUserIdAt" TIMESTAMP(3),
+    "purpose" TEXT,
+    "purposeAt" TIMESTAMP(3),
+    "disabledAt" TIMESTAMP(3),
+    "enabledAt" TIMESTAMP(3),
+    "revokedAt" TIMESTAMP(3),
+
+    CONSTRAINT "NurturingVirtualKey_pkey" PRIMARY KEY ("virtualKeyId")
+);
+
+CREATE TABLE "NurturingErasedUser" (
+    "userIdHash" TEXT NOT NULL,
+    "erasedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "NurturingErasedUser_pkey" PRIMARY KEY ("userIdHash")
+);
+
 CREATE TABLE "NurturingOrganization" (
     "organizationId" TEXT NOT NULL,
     "adminUserId" TEXT,
@@ -2673,6 +2712,7 @@ CREATE TABLE "NurturingOrganization" (
     "codingRepositoryKeys" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "codingFirstDays" INTEGER[] DEFAULT ARRAY[]::INTEGER[],
     "lastTraceAt" TIMESTAMP(3),
+    "adminAt" TIMESTAMP(3),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "NurturingOrganization_pkey" PRIMARY KEY ("organizationId")
@@ -2698,6 +2738,27 @@ CREATE TABLE "NurturingProjectTraceDay" (
     "lastFailedTraceAt" TIMESTAMP(3),
 
     CONSTRAINT "NurturingProjectTraceDay_pkey" PRIMARY KEY ("projectId","day")
+);
+
+CREATE TABLE "NurturingProjectTraceDayCount" (
+    "projectId" TEXT NOT NULL,
+    "day" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "traceCount" INTEGER NOT NULL DEFAULT 0,
+    "errorCount" INTEGER NOT NULL DEFAULT 0,
+    "lastTraceAt" TIMESTAMP(3),
+    "lastFailedTraceAt" TIMESTAMP(3),
+    "appliedEventIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "projectionVersion" TEXT NOT NULL,
+
+    CONSTRAINT "NurturingProjectTraceDayCount_pkey" PRIMARY KEY ("projectId","day","source")
+);
+
+CREATE TABLE "NurturingProjectEvaluationDay" (
+    "projectId" TEXT NOT NULL,
+    "day" TEXT NOT NULL,
+
+    CONSTRAINT "NurturingProjectEvaluationDay_pkey" PRIMARY KEY ("projectId","day")
 );
 
 CREATE TABLE "NurturingPersonalProject" (
@@ -3447,6 +3508,19 @@ CREATE TABLE "DiscoveredAgent" (
     CONSTRAINT "DiscoveredAgent_pkey" PRIMARY KEY ("id")
 );
 
+CREATE TABLE "DiscoveredAgentListing" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "ingestionSourceId" TEXT NOT NULL,
+    "discoveredAgentId" TEXT NOT NULL,
+    "lastListedAt" TIMESTAMP(3) NOT NULL,
+    "goneAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DiscoveredAgentListing_pkey" PRIMARY KEY ("id")
+);
+
 CREATE TABLE "AgentRegistryEntry" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
@@ -3485,6 +3559,14 @@ CREATE TABLE "AgentRegistryBaseline" (
     "baselinedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "AgentRegistryBaseline_pkey" PRIMARY KEY ("organizationId")
+);
+
+CREATE TABLE "AgentRegistrySettings" (
+    "organizationId" TEXT NOT NULL,
+    "dormantAfterDays" INTEGER NOT NULL DEFAULT 30,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentRegistrySettings_pkey" PRIMARY KEY ("organizationId")
 );
 
 CREATE TABLE "AgentStopPlanTarget" (
@@ -3777,6 +3859,76 @@ CREATE TABLE "SignInProviderMount" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "SignInProviderMount_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "DigestCohortOrganization" (
+    "organizationId" TEXT NOT NULL,
+    "enrolledBy" TEXT NOT NULL,
+    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DigestCohortOrganization_pkey" PRIMARY KEY ("organizationId")
+);
+
+CREATE TABLE "DigestSubscription" (
+    "userId" TEXT NOT NULL,
+    "unsubscribedAt" TIMESTAMP(3),
+    "unsubscribedFromSendId" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestSubscription_pkey" PRIMARY KEY ("userId")
+);
+
+CREATE TABLE "DigestProjectWeek" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "state" JSONB NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "acceptedAt" TIMESTAMP(3) NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestProjectWeek_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "DigestUserWeek" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "state" JSONB NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "acceptedAt" TIMESTAMP(3) NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestUserWeek_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "DigestSend" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "templateId" TEXT NOT NULL,
+    "sentAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DigestSend_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "DigestSettings" (
+    "id" TEXT NOT NULL DEFAULT 'singleton',
+    "armed" BOOLEAN NOT NULL DEFAULT false,
+    "lastPlannedWeek" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestSettings_pkey" PRIMARY KEY ("id")
 );
 
 CREATE INDEX "Account_userId_idx" ON "Account"("userId");
@@ -4533,6 +4685,12 @@ CREATE INDEX "NurturingOrganizationMember_userId_idx" ON "NurturingOrganizationM
 
 CREATE INDEX "NurturingOrganizationCreated_createdAt_idx" ON "NurturingOrganizationCreated"("createdAt");
 
+CREATE INDEX "NurturingVirtualKey_creatorUserId_idx" ON "NurturingVirtualKey"("creatorUserId");
+
+CREATE INDEX "NurturingVirtualKey_principalUserId_idx" ON "NurturingVirtualKey"("principalUserId");
+
+CREATE INDEX "NurturingProjectTraceDayCount_day_idx" ON "NurturingProjectTraceDayCount"("day");
+
 CREATE INDEX "NurturingTracedProject_organizationId_idx" ON "NurturingTracedProject"("organizationId");
 
 CREATE UNIQUE INDEX "BillingMeterCheckpoint_organizationId_billingMonth_meter_key" ON "BillingMeterCheckpoint"("organizationId", "billingMonth", "meter");
@@ -4735,6 +4893,10 @@ CREATE INDEX "DiscoveredAgent_organizationId_lastSeenAt_idx" ON "DiscoveredAgent
 
 CREATE UNIQUE INDEX "DiscoveredAgent_organizationId_provider_rawAgentId_key" ON "DiscoveredAgent"("organizationId", "provider", "rawAgentId");
 
+CREATE INDEX "DiscoveredAgentListing_organizationId_discoveredAgentId_idx" ON "DiscoveredAgentListing"("organizationId", "discoveredAgentId");
+
+CREATE UNIQUE INDEX "DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key" ON "DiscoveredAgentListing"("ingestionSourceId", "discoveredAgentId");
+
 CREATE INDEX "AgentRegistryEntry_organizationId_updatedAt_idx" ON "AgentRegistryEntry"("organizationId", "updatedAt");
 
 CREATE UNIQUE INDEX "AgentRegistryEntry_organizationId_sourceKey_key" ON "AgentRegistryEntry"("organizationId", "sourceKey");
@@ -4800,6 +4962,18 @@ CREATE INDEX "SelfHostedInstanceReport_receivedAt_idx" ON "SelfHostedInstanceRep
 CREATE UNIQUE INDEX "WebPushSubscription_endpoint_key" ON "WebPushSubscription"("endpoint");
 
 CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId");
+
+CREATE INDEX "DigestProjectWeek_organizationId_isoWeek_idx" ON "DigestProjectWeek"("organizationId", "isoWeek");
+
+CREATE INDEX "DigestProjectWeek_isoWeek_idx" ON "DigestProjectWeek"("isoWeek");
+
+CREATE INDEX "DigestUserWeek_organizationId_isoWeek_idx" ON "DigestUserWeek"("organizationId", "isoWeek");
+
+CREATE INDEX "DigestUserWeek_isoWeek_idx" ON "DigestUserWeek"("isoWeek");
+
+CREATE INDEX "DigestUserWeek_userId_idx" ON "DigestUserWeek"("userId");
+
+CREATE INDEX "DigestSend_userId_idx" ON "DigestSend"("userId");
 ```
 
 </details>
@@ -4956,12 +5130,17 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [SigningKey](#model-SigningKey)                                                   | `SigningKey`                          | ADR-201: a project's key for signing the tags on its calls. Owned by the API key module.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [ProjectActiveDay](#model-ProjectActiveDay)                                       | `ProjectActiveDay`                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [NurturingProject](#model-NurturingProject)                                       | `NurturingProject`                    | Nurturing's read model: which organization a project belongs to, from project's created event. The per-email usage places a project and lists an organization's projects from these rows only.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [NurturingUncopiedProject](#model-NurturingUncopiedProject)                       | `NurturingUncopiedProject`            | A project nurturing saw traces of with no placement copy, and when it first did: every worker retries its trace batches only within one window from then, across restarts. Deleted when the copy lands.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [NurturingUncopiedProject](#model-NurturingUncopiedProject)                       | `NurturingUncopiedProject`            | retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no retry clock reads or writes this table; an operator step may drop it once old writers are gone.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [NurturingOrganizationMember](#model-NurturingOrganizationMember)                 | `NurturingOrganizationMember`         | Nurturing's own copy of each organization's members, from the owners' member facts (§9): organization's signed_up and invite_accepted and auth's sso_auto_added join, member_removed and member_disabled leave, member_enabled returns. Each column keeps its latest time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [NurturingOrganizationCreated](#model-NurturingOrganizationCreated)               | `NurturingOrganizationCreated`        | When an organization was created, from organization's created event: nurturing's own copy for the per-email usage's day offsets. Its own table, so an early creation never adds an unseeded NurturingOrganization row.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [NurturingOrganizationPlan](#model-NurturingOrganizationPlan)                     | `NurturingOrganizationPlan`           | Each organization's plan, folded from billing's subscription_changed facts: nurturing's own copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a fact only when it changes this row.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [NurturingVirtualKey](#model-NurturingVirtualKey)                                 | `NurturingVirtualKey`                 | Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The creator comes from the created fact alone; the holder and purpose are each the latest non-null value by the fact's time (stamped beside them); the state times keep their latest.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [NurturingErasedUser](#model-NurturingErasedUser)                                 | `NurturingErasedUser`                 | Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [NurturingOrganization](#model-NurturingOrganization)                             | `NurturingOrganization`               | Nurturing's read model per organization: its admin and its milestone counts. `seeded` marks an organization learned from the project backfill: its first_* already happened.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [NurturingProjectUsageView](#model-NurturingProjectUsageView)                     | `NurturingProjectUsageView`           | Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [NurturingProjectTraceDay](#model-NurturingProjectTraceDay)                       | `NurturingProjectTraceDay`            | Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a root span being one trace, one row per project and UTC day of append time, incremented in place by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [NurturingProjectUsageView](#model-NurturingProjectUsageView)                     | `NurturingProjectUsageView`           | Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [NurturingProjectTraceDay](#model-NurturingProjectTraceDay)                       | `NurturingProjectTraceDay`            | retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [NurturingProjectTraceDayCount](#model-NurturingProjectTraceDayCount)             | `NurturingProjectTraceDayCount`       | Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and source: `spans` from trace's span_received peer fold (a customer root span is one trace), `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other; readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [NurturingProjectEvaluationDay](#model-NurturingProjectEvaluationDay)             | `NurturingProjectEvaluationDay`       | Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed, written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [NurturingPersonalProject](#model-NurturingPersonalProject)                       | `NurturingPersonalProject`            | Nurturing's copy of each personal project's owner, from organization's and project's facts. The first owner recorded stays: a personal project's owner never changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | [NurturingTracedProject](#model-NurturingTracedProject)                           | `NurturingTracedProject`              | Nurturing's copy of each project that received a real trace, from trace's and project's facts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [BillingMeterCheckpoint](#model-BillingMeterCheckpoint)                           | `BillingMeterCheckpoint`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -5005,9 +5184,11 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [StoredObject](#model-StoredObject)                                               | `StoredObject`                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [DiscoveredPerson](#model-DiscoveredPerson)                                       | `DiscoveredPerson`                    | A name-text seen on a provider's cost or audit rows: "the provider told us someone called m.silva exists". One row per provider-scoped identity. This is the unit of GDPR erasure (ADR-128 §9), and deliberately so: most of these people have no LangWatch login at all - contractors, seat holders who never signed in, anyone whose email a provider put on a cost row - so there is no platform user to key on and a user-deletion event can never fire for them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | [DiscoveredAgent](#model-DiscoveredAgent)                                         | `DiscoveredAgent`                     | The same shape as DiscoveredPerson for non-human actors - Genie spaces, Copilot bots, OpenAI projects - plus whatever provider-native metadata the source published. Discovering an agent grants it nothing either.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [DiscoveredAgentListing](#model-DiscoveredAgentListing)                           | `DiscoveredAgentListing`              | One source's presence fact for one discovered agent. An agent is gone only when every source that listed it marked it gone; an agent no source listed (older sightings) never is.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [AgentRegistryEntry](#model-AgentRegistryEntry)                                   | `AgentRegistryEntry`                  | One agent in the organisation's governance registry, from any source governance reads (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest machine-readable snapshot; `version` grows by one on every material change.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | [AgentRegistryEvent](#model-AgentRegistryEvent)                                   | `AgentRegistryEvent`                  | The registry's append-only change feed: one row per registered, versioned, removed or tool-deprecated fact. `sequence` is the pull cursor; `deliveryRecordedAt` marks the webhook fan-out as recorded in governance's outbox.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [AgentRegistryBaseline](#model-AgentRegistryBaseline)                             | `AgentRegistryBaseline`               | An organisation's registry baseline: its first reconcile, written as already pushed so the agents it already had are not announced. Every reconcile after it pushes its changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [AgentRegistrySettings](#model-AgentRegistrySettings)                             | `AgentRegistrySettings`               | An organisation's agent registry settings. No row reads as the defaults.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [AgentStopPlanTarget](#model-AgentStopPlanTarget)                                 | `AgentStopPlanTarget`                 | One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/ agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway virtual key. A plan write replaces every row of the agent at once.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [AgentStopPlan](#model-AgentStopPlan)                                             | `AgentStopPlan`                       | One agent's stop plan version: bumped by every save, so a save over a plan someone else saved since it was read is refused. No row means the plan was never saved (version 0).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [GovernanceAwsConnection](#model-GovernanceAwsConnection)                         | `GovernanceAwsConnection`             | An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume, or both. The secret access key and the external id are stored sealed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -5029,6 +5210,12 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [WebPushSubscription](#model-WebPushSubscription)                                 | `WebPushSubscription`                 | One browser a person subscribed to Web Push, owned by notification. A person holds one row per device; the endpoint names the browser, so a browser that subscribes again replaces its own row.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [WebPushVapidKey](#model-WebPushVapidKey)                                         | `WebPushVapidKey`                     | This installation's VAPID key pair, generated on first use so Web Push works without configuration. Fixed id, so the table holds one row: a second insert loses the race on the primary key and reads the winner's pair.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [SignInProviderMount](#model-SignInProviderMount)                                 | `SignInProviderMount`                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [DigestCohortOrganization](#model-DigestCohortOrganization)                       | `DigestCohortOrganization`            | An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [DigestSubscription](#model-DigestSubscription)                                   | `DigestSubscription`                  | A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [DigestProjectWeek](#model-DigestProjectWeek)                                     | `DigestProjectWeek`                   | A project's ISO week, folded from its owners' events. The id is the fold's aggregate key.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| [DigestUserWeek](#model-DigestUserWeek)                                           | `DigestUserWeek`                      | A person's ISO week of coding-agent activity in one organization, folded from the agents' facts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [DigestSend](#model-DigestSend)                                                   | `DigestSend`                          | One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [DigestSettings](#model-DigestSettings)                                           | `DigestSettings`                      | The digest's one settings row. `armed` is the weekly send's master switch; it starts off.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 | Enum                                                                           | Name in the database                 | Description                                                                                                                                                                                     |
 | ------------------------------------------------------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -6718,6 +6905,7 @@ SELECT
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -6952,6 +7140,7 @@ SELECT
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 FROM
@@ -14475,6 +14664,7 @@ RETURNING
 | `createdAt`         | `DateTime`                                           | NOT NULL                                             | `now()`                                  |                                                                                                                                                                                                                                                                                                                                                                 |
 | `updatedAt`         | `DateTime`                                           | NOT NULL                                             | `now()` `@updatedAt`                     |                                                                                                                                                                                                                                                                                                                                                                 |
 | `departmentId`      | `String`                                             | NULL                                                 |                                          | Department assignment for spend attribution (the people lens). Single-valued, org-scoped, accounting-only (never gates access). Plain column ref (relationMode="prisma"); the service validates the id belongs to this org. See departments.feature.                                                                                                            |
+| `billingOnly`       | `Boolean`                                            | NOT NULL                                             | `false`                                  | A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and no seat. Any role change clears it. See billing-only-invite.feature.                                                                                                                                                                                                             |
 | `disabledAt`        | `DateTime`                                           | NULL                                                 |                                          | Set when an admin disables this membership to stay within the licensed seat count. The person loses access to this organization only, keeps their role, department and everything they did, and frees their seat. Reversible: re-enabling restores access if a seat is available. Seat counting excludes disabled memberships. See seat-reconciliation.feature. |
 | `pendingSsoGrantId` | `String`                                             | NULL                                                 |                                          | Stable grant intent for an unfinished automatic SSO admission. Cleared after the authoritative grant is observed; never inferred from missing access.                                                                                                                                                                                                           |
 | `membershipStamp`   | `String`                                             | NOT NULL                                             | `dbgenerated("gen_random_uuid()::text")` | A new generation for each membership lifetime. Stamped USER grant facts must match the current active membership before they can be projected; removing and rejoining therefore cannot revive a delayed old attach.                                                                                                                                             |
@@ -14503,6 +14693,7 @@ CREATE TABLE "OrganizationUser" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "departmentId" TEXT,
+    "billingOnly" BOOLEAN NOT NULL DEFAULT false,
     "disabledAt" TIMESTAMP(3),
     "pendingSsoGrantId" TEXT,
     "membershipStamp" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
@@ -14536,6 +14727,7 @@ SELECT
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -14588,6 +14780,7 @@ SELECT
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -14710,6 +14903,7 @@ SELECT
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -14747,7 +14941,8 @@ INSERT INTO
     "organizationId",
     "role",
     "createdAt",
-    "updatedAt"
+    "updatedAt",
+    "billingOnly"
   )
 VALUES
   (
@@ -14755,7 +14950,8 @@ VALUES
     $2,
     CAST($3::text AS "public"."OrganizationUserRole"),
     $4,
-    $5
+    $5,
+    $6
   )
 RETURNING
   "public"."OrganizationUser"."userId",
@@ -14764,12 +14960,13 @@ RETURNING
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
   "public"."OrganizationUser"."fullSeatSince",
   "public"."OrganizationUser"."seatPendingSince"
--- params: ["example","example","ADMIN","<now()>","<now()>"]
+-- params: ["example","example","ADMIN","<now()>","<now()>",false]
 ```
 
 **update**: Update a row
@@ -14826,6 +15023,7 @@ RETURNING
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -14859,6 +15057,7 @@ RETURNING
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -16784,6 +16983,7 @@ SELECT
   "public"."OrganizationUser"."createdAt",
   "public"."OrganizationUser"."updatedAt",
   "public"."OrganizationUser"."departmentId",
+  "public"."OrganizationUser"."billingOnly",
   "public"."OrganizationUser"."disabledAt",
   "public"."OrganizationUser"."pendingSsoGrantId",
   "public"."OrganizationUser"."membershipStamp",
@@ -16867,6 +17067,7 @@ SELECT
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 FROM
@@ -25912,23 +26113,24 @@ RETURNING
 
 ![OrganizationInvite and the models it relates to](tables/OrganizationInvite.svg)
 
-| Field                     | Type                                                 | Constraints                                       | Default              | Description |
-| ------------------------- | ---------------------------------------------------- | ------------------------------------------------- | -------------------- | ----------- |
-| `id`                      | `String`                                             | PK NOT NULL                                       | `nanoid()`           |             |
-| `email`                   | `String`                                             | NOT NULL                                          |                      |             |
-| `inviteCode`              | `String`                                             | UNIQUE NOT NULL                                   |                      |             |
-| `expiration`              | `DateTime`                                           | NULL                                              |                      |             |
-| `status`                  | [`INVITE_STATUS`](#enum-INVITE_STATUS)               | NOT NULL                                          | `PENDING`            |             |
-| `organizationId`          | `String`                                             | NOT NULL → [Organization.id](#model-Organization) |                      |             |
-| `teamIds`                 | `String`                                             | NOT NULL                                          |                      |             |
-| `teamAssignments`         | `Json`                                               | NULL                                              |                      |             |
-| `role`                    | [`OrganizationUserRole`](#enum-OrganizationUserRole) | NOT NULL                                          |                      |             |
-| `requestedBy`             | `String`                                             | NULL → [User.id](#model-User)                     |                      |             |
-| `subscriptionId`          | `String`                                             | NULL                                              |                      |             |
-| `acceptedByUserId`        | `String`                                             | NULL                                              |                      |             |
-| `acceptedViaIdentifierId` | `String`                                             | NULL                                              |                      |             |
-| `createdAt`               | `DateTime`                                           | NOT NULL                                          | `now()`              |             |
-| `updatedAt`               | `DateTime`                                           | NOT NULL                                          | `now()` `@updatedAt` |             |
+| Field                     | Type                                                 | Constraints                                       | Default              | Description                                                               |
+| ------------------------- | ---------------------------------------------------- | ------------------------------------------------- | -------------------- | ------------------------------------------------------------------------- |
+| `id`                      | `String`                                             | PK NOT NULL                                       | `nanoid()`           |                                                                           |
+| `email`                   | `String`                                             | NOT NULL                                          |                      |                                                                           |
+| `inviteCode`              | `String`                                             | UNIQUE NOT NULL                                   |                      |                                                                           |
+| `expiration`              | `DateTime`                                           | NULL                                              |                      |                                                                           |
+| `status`                  | [`INVITE_STATUS`](#enum-INVITE_STATUS)               | NOT NULL                                          | `PENDING`            |                                                                           |
+| `organizationId`          | `String`                                             | NOT NULL → [Organization.id](#model-Organization) |                      |                                                                           |
+| `teamIds`                 | `String`                                             | NOT NULL                                          |                      |                                                                           |
+| `teamAssignments`         | `Json`                                               | NULL                                              |                      |                                                                           |
+| `role`                    | [`OrganizationUserRole`](#enum-OrganizationUserRole) | NOT NULL                                          |                      |                                                                           |
+| `requestedBy`             | `String`                                             | NULL → [User.id](#model-User)                     |                      |                                                                           |
+| `subscriptionId`          | `String`                                             | NULL                                              |                      |                                                                           |
+| `acceptedByUserId`        | `String`                                             | NULL                                              |                      |                                                                           |
+| `acceptedViaIdentifierId` | `String`                                             | NULL                                              |                      |                                                                           |
+| `billingOnly`             | `Boolean`                                            | NOT NULL                                          | `false`              | Invites the person who pays with the Billing grant and no seat (ADR-205). |
+| `createdAt`               | `DateTime`                                           | NOT NULL                                          | `now()`              |                                                                           |
+| `updatedAt`               | `DateTime`                                           | NOT NULL                                          | `now()` `@updatedAt` |                                                                           |
 
 #### Indexes
 
@@ -25957,6 +26159,7 @@ CREATE TABLE "OrganizationInvite" (
     "subscriptionId" TEXT,
     "acceptedByUserId" TEXT,
     "acceptedViaIdentifierId" TEXT,
+    "billingOnly" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -25994,6 +26197,7 @@ SELECT
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 FROM
@@ -26051,6 +26255,7 @@ SELECT
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 FROM
@@ -26175,6 +26380,7 @@ SELECT
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 FROM
@@ -26215,6 +26421,7 @@ INSERT INTO
     "organizationId",
     "teamIds",
     "role",
+    "billingOnly",
     "createdAt",
     "updatedAt"
   )
@@ -26228,7 +26435,8 @@ VALUES
     $6,
     CAST($7::text AS "public"."OrganizationUserRole"),
     $8,
-    $9
+    $9,
+    $10
   )
 RETURNING
   "public"."OrganizationInvite"."id",
@@ -26244,9 +26452,10 @@ RETURNING
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
--- params: ["<nanoid()>","example","example","PENDING","example","example","ADMIN","<now()>","<now()>"]
+-- params: ["<nanoid()>","example","example","PENDING","example","example","ADMIN",false,"<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -26297,6 +26506,7 @@ RETURNING
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
@@ -26329,6 +26539,7 @@ RETURNING
   "public"."OrganizationInvite"."subscriptionId",
   "public"."OrganizationInvite"."acceptedByUserId",
   "public"."OrganizationInvite"."acceptedViaIdentifierId",
+  "public"."OrganizationInvite"."billingOnly",
   "public"."OrganizationInvite"."createdAt",
   "public"."OrganizationInvite"."updatedAt"
 -- params: ["example"]
@@ -29620,6 +29831,7 @@ pointers still name them. No relation, per the database rule.
 | `createdById`     | `String`                                 | NULL        |                      | The member who created it; null for boards that predate authorship.                                                                                                 |
 | `scope`           | [`DashboardScope`](#enum-DashboardScope) | NOT NULL    | `PROJECT`            | Who sees it. Only the author changes it; a board with no author stays PROJECT.                                                                                      |
 | `organizationId`  | `String`                                 | NULL        |                      | The owning project's organization, stamped when the board is first set to ORGANIZATION; null before.                                                                |
+| `homeProduct`     | `String`                                 | NOT NULL    | `"llm-ops"`          | The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002, decision 8). Every board made before homes existed is llm-ops.                     |
 | `excludedOrigins` | `Json`                                   | NULL        |                      | Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200, 2026-10-28); dropped in a later migration, once no serving release reads it. |
 | `createdAt`       | `DateTime`                               | NOT NULL    | `now()`              |                                                                                                                                                                     |
 | `updatedAt`       | `DateTime`                               | NOT NULL    | `now()` `@updatedAt` |                                                                                                                                                                     |
@@ -29640,6 +29852,7 @@ CREATE TABLE "DashboardsV2" (
     "createdById" TEXT,
     "scope" "DashboardScope" NOT NULL DEFAULT 'PROJECT',
     "organizationId" TEXT,
+    "homeProduct" TEXT NOT NULL DEFAULT 'llm-ops',
     "excludedOrigins" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -29670,6 +29883,7 @@ SELECT
   "public"."DashboardsV2"."createdById",
   "public"."DashboardsV2"."scope"::text,
   "public"."DashboardsV2"."organizationId",
+  "public"."DashboardsV2"."homeProduct",
   "public"."DashboardsV2"."excludedOrigins",
   "public"."DashboardsV2"."createdAt",
   "public"."DashboardsV2"."updatedAt"
@@ -29720,6 +29934,7 @@ SELECT
   "public"."DashboardsV2"."createdById",
   "public"."DashboardsV2"."scope"::text,
   "public"."DashboardsV2"."organizationId",
+  "public"."DashboardsV2"."homeProduct",
   "public"."DashboardsV2"."excludedOrigins",
   "public"."DashboardsV2"."createdAt",
   "public"."DashboardsV2"."updatedAt"
@@ -29750,6 +29965,7 @@ INSERT INTO
     "projectId",
     "name",
     "scope",
+    "homeProduct",
     "createdAt",
     "updatedAt"
   )
@@ -29760,7 +29976,8 @@ VALUES
     $3,
     CAST($4::text AS "public"."DashboardScope"),
     $5,
-    $6
+    $6,
+    $7
   )
 RETURNING
   "public"."DashboardsV2"."id",
@@ -29770,10 +29987,11 @@ RETURNING
   "public"."DashboardsV2"."createdById",
   "public"."DashboardsV2"."scope"::text,
   "public"."DashboardsV2"."organizationId",
+  "public"."DashboardsV2"."homeProduct",
   "public"."DashboardsV2"."excludedOrigins",
   "public"."DashboardsV2"."createdAt",
   "public"."DashboardsV2"."updatedAt"
--- params: ["<nanoid()>","example","example","PROJECT","<now()>","<now()>"]
+-- params: ["<nanoid()>","example","example","PROJECT","llm-ops","<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -29818,6 +30036,7 @@ RETURNING
   "public"."DashboardsV2"."createdById",
   "public"."DashboardsV2"."scope"::text,
   "public"."DashboardsV2"."organizationId",
+  "public"."DashboardsV2"."homeProduct",
   "public"."DashboardsV2"."excludedOrigins",
   "public"."DashboardsV2"."createdAt",
   "public"."DashboardsV2"."updatedAt"
@@ -29845,6 +30064,7 @@ RETURNING
   "public"."DashboardsV2"."createdById",
   "public"."DashboardsV2"."scope"::text,
   "public"."DashboardsV2"."organizationId",
+  "public"."DashboardsV2"."homeProduct",
   "public"."DashboardsV2"."excludedOrigins",
   "public"."DashboardsV2"."createdAt",
   "public"."DashboardsV2"."updatedAt"
@@ -59119,9 +59339,8 @@ RETURNING
 
 ### NurturingUncopiedProject
 
-A project nurturing saw traces of with no placement copy, and when it first did: every worker
-retries its trace batches only within one window from then, across restarts. Deleted when the
-copy lands.
+retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+retry clock reads or writes this table; an operator step may drop it once old writers are gone.
 
 | Field         | Type       | Constraints | Default | Description |
 | ------------- | ---------- | ----------- | ------- | ----------- |
@@ -59693,6 +59912,661 @@ RETURNING
 
 </details>
 
+<a id="model-NurturingOrganizationPlan"></a>
+
+### NurturingOrganizationPlan
+
+Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+fact only when it changes this row.
+
+| Field             | Type       | Constraints | Default | Description                                                       |
+| ----------------- | ---------- | ----------- | ------- | ----------------------------------------------------------------- |
+| `organizationId`  | `String`   | PK NOT NULL |         |                                                                   |
+| `plan`            | `String`   | NULL        |         |                                                                   |
+| `occurredAt`      | `DateTime` | NOT NULL    |         |                                                                   |
+| `fromCatchUp`     | `Boolean`  | NOT NULL    |         |                                                                   |
+| `appliedEventIds` | `String[]` | NOT NULL    | `[]`    | The event ids folded in, so a redelivery folds once.              |
+| `winnerEventId`   | `String`   | NULL        |         | The fact that last changed the row; only it may tell Customer.io. |
+
+#### Definition
+
+```sql
+CREATE TABLE "NurturingOrganizationPlan" (
+    "organizationId" TEXT NOT NULL,
+    "plan" TEXT,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "fromCatchUp" BOOLEAN NOT NULL,
+    "appliedEventIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "winnerEventId" TEXT,
+
+    CONSTRAINT "NurturingOrganizationPlan_pkey" PRIMARY KEY ("organizationId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.nurturingOrganizationPlan.findMany();
+```
+
+```sql
+SELECT
+  "public"."NurturingOrganizationPlan"."organizationId",
+  "public"."NurturingOrganizationPlan"."plan",
+  "public"."NurturingOrganizationPlan"."occurredAt",
+  "public"."NurturingOrganizationPlan"."fromCatchUp",
+  "public"."NurturingOrganizationPlan"."appliedEventIds",
+  "public"."NurturingOrganizationPlan"."winnerEventId"
+FROM
+  "public"."NurturingOrganizationPlan"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.nurturingOrganizationPlan.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."NurturingOrganizationPlan"."organizationId"
+    FROM
+      "public"."NurturingOrganizationPlan"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.nurturingOrganizationPlan.findUnique({ where: { organizationId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."NurturingOrganizationPlan"."organizationId",
+  "public"."NurturingOrganizationPlan"."plan",
+  "public"."NurturingOrganizationPlan"."occurredAt",
+  "public"."NurturingOrganizationPlan"."fromCatchUp",
+  "public"."NurturingOrganizationPlan"."appliedEventIds",
+  "public"."NurturingOrganizationPlan"."winnerEventId"
+FROM
+  "public"."NurturingOrganizationPlan"
+WHERE
+  (
+    "public"."NurturingOrganizationPlan"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.nurturingOrganizationPlan.create({
+  data: {
+    organizationId: "example",
+    occurredAt: new Date("2026-01-01T00:00:00.000Z"),
+    fromCatchUp: true,
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."NurturingOrganizationPlan" (
+    "organizationId",
+    "occurredAt",
+    "fromCatchUp",
+    "appliedEventIds"
+  )
+VALUES
+  ($1, $2, $3, $4)
+RETURNING
+  "public"."NurturingOrganizationPlan"."organizationId",
+  "public"."NurturingOrganizationPlan"."plan",
+  "public"."NurturingOrganizationPlan"."occurredAt",
+  "public"."NurturingOrganizationPlan"."fromCatchUp",
+  "public"."NurturingOrganizationPlan"."appliedEventIds",
+  "public"."NurturingOrganizationPlan"."winnerEventId"
+-- params: ["example","2026-01-01T00:00:00.000Z",true,[]]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.nurturingOrganizationPlan.update({
+  where: { organizationId: "example" },
+  data: { plan: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingOrganizationPlan"."organizationId"
+FROM
+  "public"."NurturingOrganizationPlan"
+WHERE
+  (
+    "public"."NurturingOrganizationPlan"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."NurturingOrganizationPlan"
+SET
+  "plan" = $1
+WHERE
+  (
+    "public"."NurturingOrganizationPlan"."organizationId" IN ($2)
+    AND (
+      "public"."NurturingOrganizationPlan"."organizationId" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."NurturingOrganizationPlan"."organizationId",
+  "public"."NurturingOrganizationPlan"."plan",
+  "public"."NurturingOrganizationPlan"."occurredAt",
+  "public"."NurturingOrganizationPlan"."fromCatchUp",
+  "public"."NurturingOrganizationPlan"."appliedEventIds",
+  "public"."NurturingOrganizationPlan"."winnerEventId"
+-- params: ["example","<organizationId of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.nurturingOrganizationPlan.delete({ where: { organizationId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."NurturingOrganizationPlan"
+WHERE
+  (
+    "public"."NurturingOrganizationPlan"."organizationId" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."NurturingOrganizationPlan"."organizationId",
+  "public"."NurturingOrganizationPlan"."plan",
+  "public"."NurturingOrganizationPlan"."occurredAt",
+  "public"."NurturingOrganizationPlan"."fromCatchUp",
+  "public"."NurturingOrganizationPlan"."appliedEventIds",
+  "public"."NurturingOrganizationPlan"."winnerEventId"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-NurturingVirtualKey"></a>
+
+### NurturingVirtualKey
+
+Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+creator comes from the created fact alone; the holder and purpose are each the latest non-null
+value by the fact's time (stamped beside them); the state times keep their latest.
+
+| Field               | Type       | Constraints | Default | Description |
+| ------------------- | ---------- | ----------- | ------- | ----------- |
+| `virtualKeyId`      | `String`   | PK NOT NULL |         |             |
+| `organizationId`    | `String`   | NOT NULL    |         |             |
+| `name`              | `String`   | NOT NULL    |         |             |
+| `occurredAt`        | `DateTime` | NOT NULL    |         |             |
+| `keyCreatedAt`      | `DateTime` | NULL        |         |             |
+| `creatorUserId`     | `String`   | NULL        |         |             |
+| `principalUserId`   | `String`   | NULL        |         |             |
+| `principalUserIdAt` | `DateTime` | NULL        |         |             |
+| `purpose`           | `String`   | NULL        |         |             |
+| `purposeAt`         | `DateTime` | NULL        |         |             |
+| `disabledAt`        | `DateTime` | NULL        |         |             |
+| `enabledAt`         | `DateTime` | NULL        |         |             |
+| `revokedAt`         | `DateTime` | NULL        |         |             |
+
+#### Indexes
+
+- `@@index([creatorUserId])`
+- `@@index([principalUserId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "NurturingVirtualKey" (
+    "virtualKeyId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "keyCreatedAt" TIMESTAMP(3),
+    "creatorUserId" TEXT,
+    "principalUserId" TEXT,
+    "principalUserIdAt" TIMESTAMP(3),
+    "purpose" TEXT,
+    "purposeAt" TIMESTAMP(3),
+    "disabledAt" TIMESTAMP(3),
+    "enabledAt" TIMESTAMP(3),
+    "revokedAt" TIMESTAMP(3),
+
+    CONSTRAINT "NurturingVirtualKey_pkey" PRIMARY KEY ("virtualKeyId")
+);
+
+CREATE INDEX "NurturingVirtualKey_creatorUserId_idx" ON "NurturingVirtualKey"("creatorUserId");
+
+CREATE INDEX "NurturingVirtualKey_principalUserId_idx" ON "NurturingVirtualKey"("principalUserId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.nurturingVirtualKey.findMany();
+```
+
+```sql
+SELECT
+  "public"."NurturingVirtualKey"."virtualKeyId",
+  "public"."NurturingVirtualKey"."organizationId",
+  "public"."NurturingVirtualKey"."name",
+  "public"."NurturingVirtualKey"."occurredAt",
+  "public"."NurturingVirtualKey"."keyCreatedAt",
+  "public"."NurturingVirtualKey"."creatorUserId",
+  "public"."NurturingVirtualKey"."principalUserId",
+  "public"."NurturingVirtualKey"."principalUserIdAt",
+  "public"."NurturingVirtualKey"."purpose",
+  "public"."NurturingVirtualKey"."purposeAt",
+  "public"."NurturingVirtualKey"."disabledAt",
+  "public"."NurturingVirtualKey"."enabledAt",
+  "public"."NurturingVirtualKey"."revokedAt"
+FROM
+  "public"."NurturingVirtualKey"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.nurturingVirtualKey.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."NurturingVirtualKey"."virtualKeyId"
+    FROM
+      "public"."NurturingVirtualKey"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.nurturingVirtualKey.findUnique({ where: { virtualKeyId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."NurturingVirtualKey"."virtualKeyId",
+  "public"."NurturingVirtualKey"."organizationId",
+  "public"."NurturingVirtualKey"."name",
+  "public"."NurturingVirtualKey"."occurredAt",
+  "public"."NurturingVirtualKey"."keyCreatedAt",
+  "public"."NurturingVirtualKey"."creatorUserId",
+  "public"."NurturingVirtualKey"."principalUserId",
+  "public"."NurturingVirtualKey"."principalUserIdAt",
+  "public"."NurturingVirtualKey"."purpose",
+  "public"."NurturingVirtualKey"."purposeAt",
+  "public"."NurturingVirtualKey"."disabledAt",
+  "public"."NurturingVirtualKey"."enabledAt",
+  "public"."NurturingVirtualKey"."revokedAt"
+FROM
+  "public"."NurturingVirtualKey"
+WHERE
+  (
+    "public"."NurturingVirtualKey"."virtualKeyId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.nurturingVirtualKey.create({
+  data: {
+    virtualKeyId: "example",
+    organizationId: "example",
+    name: "example",
+    occurredAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."NurturingVirtualKey" (
+    "virtualKeyId",
+    "organizationId",
+    "name",
+    "occurredAt"
+  )
+VALUES
+  ($1, $2, $3, $4)
+RETURNING
+  "public"."NurturingVirtualKey"."virtualKeyId",
+  "public"."NurturingVirtualKey"."organizationId",
+  "public"."NurturingVirtualKey"."name",
+  "public"."NurturingVirtualKey"."occurredAt",
+  "public"."NurturingVirtualKey"."keyCreatedAt",
+  "public"."NurturingVirtualKey"."creatorUserId",
+  "public"."NurturingVirtualKey"."principalUserId",
+  "public"."NurturingVirtualKey"."principalUserIdAt",
+  "public"."NurturingVirtualKey"."purpose",
+  "public"."NurturingVirtualKey"."purposeAt",
+  "public"."NurturingVirtualKey"."disabledAt",
+  "public"."NurturingVirtualKey"."enabledAt",
+  "public"."NurturingVirtualKey"."revokedAt"
+-- params: ["example","example","example","2026-01-01T00:00:00.000Z"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.nurturingVirtualKey.update({
+  where: { virtualKeyId: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingVirtualKey"."virtualKeyId"
+FROM
+  "public"."NurturingVirtualKey"
+WHERE
+  (
+    "public"."NurturingVirtualKey"."virtualKeyId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."NurturingVirtualKey"
+SET
+  "organizationId" = $1
+WHERE
+  (
+    "public"."NurturingVirtualKey"."virtualKeyId" IN ($2)
+    AND (
+      "public"."NurturingVirtualKey"."virtualKeyId" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."NurturingVirtualKey"."virtualKeyId",
+  "public"."NurturingVirtualKey"."organizationId",
+  "public"."NurturingVirtualKey"."name",
+  "public"."NurturingVirtualKey"."occurredAt",
+  "public"."NurturingVirtualKey"."keyCreatedAt",
+  "public"."NurturingVirtualKey"."creatorUserId",
+  "public"."NurturingVirtualKey"."principalUserId",
+  "public"."NurturingVirtualKey"."principalUserIdAt",
+  "public"."NurturingVirtualKey"."purpose",
+  "public"."NurturingVirtualKey"."purposeAt",
+  "public"."NurturingVirtualKey"."disabledAt",
+  "public"."NurturingVirtualKey"."enabledAt",
+  "public"."NurturingVirtualKey"."revokedAt"
+-- params: ["example","<virtualKeyId of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.nurturingVirtualKey.delete({ where: { virtualKeyId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."NurturingVirtualKey"
+WHERE
+  (
+    "public"."NurturingVirtualKey"."virtualKeyId" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."NurturingVirtualKey"."virtualKeyId",
+  "public"."NurturingVirtualKey"."organizationId",
+  "public"."NurturingVirtualKey"."name",
+  "public"."NurturingVirtualKey"."occurredAt",
+  "public"."NurturingVirtualKey"."keyCreatedAt",
+  "public"."NurturingVirtualKey"."creatorUserId",
+  "public"."NurturingVirtualKey"."principalUserId",
+  "public"."NurturingVirtualKey"."principalUserIdAt",
+  "public"."NurturingVirtualKey"."purpose",
+  "public"."NurturingVirtualKey"."purposeAt",
+  "public"."NurturingVirtualKey"."disabledAt",
+  "public"."NurturingVirtualKey"."enabledAt",
+  "public"."NurturingVirtualKey"."revokedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-NurturingErasedUser"></a>
+
+### NurturingErasedUser
+
+Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+
+| Field        | Type       | Constraints | Default | Description |
+| ------------ | ---------- | ----------- | ------- | ----------- |
+| `userIdHash` | `String`   | PK NOT NULL |         |             |
+| `erasedAt`   | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE "NurturingErasedUser" (
+    "userIdHash" TEXT NOT NULL,
+    "erasedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "NurturingErasedUser_pkey" PRIMARY KEY ("userIdHash")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.nurturingErasedUser.findMany();
+```
+
+```sql
+SELECT
+  "public"."NurturingErasedUser"."userIdHash",
+  "public"."NurturingErasedUser"."erasedAt"
+FROM
+  "public"."NurturingErasedUser"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.nurturingErasedUser.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."NurturingErasedUser"."userIdHash"
+    FROM
+      "public"."NurturingErasedUser"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.nurturingErasedUser.findUnique({ where: { userIdHash: "example" } });
+```
+
+```sql
+SELECT
+  "public"."NurturingErasedUser"."userIdHash",
+  "public"."NurturingErasedUser"."erasedAt"
+FROM
+  "public"."NurturingErasedUser"
+WHERE
+  (
+    "public"."NurturingErasedUser"."userIdHash" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.nurturingErasedUser.create({ data: { userIdHash: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."NurturingErasedUser" ("userIdHash", "erasedAt")
+VALUES
+  ($1, $2)
+RETURNING
+  "public"."NurturingErasedUser"."userIdHash",
+  "public"."NurturingErasedUser"."erasedAt"
+-- params: ["example","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.nurturingErasedUser.update({
+  where: { userIdHash: "example" },
+  data: { erasedAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingErasedUser"."userIdHash"
+FROM
+  "public"."NurturingErasedUser"
+WHERE
+  (
+    "public"."NurturingErasedUser"."userIdHash" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."NurturingErasedUser"
+SET
+  "erasedAt" = $1
+WHERE
+  (
+    "public"."NurturingErasedUser"."userIdHash" IN ($2)
+    AND (
+      "public"."NurturingErasedUser"."userIdHash" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."NurturingErasedUser"."userIdHash",
+  "public"."NurturingErasedUser"."erasedAt"
+-- params: ["2026-01-01T00:00:00.000Z","<userIdHash of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.nurturingErasedUser.delete({ where: { userIdHash: "example" } });
+```
+
+```sql
+DELETE FROM "public"."NurturingErasedUser"
+WHERE
+  (
+    "public"."NurturingErasedUser"."userIdHash" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."NurturingErasedUser"."userIdHash",
+  "public"."NurturingErasedUser"."erasedAt"
+-- params: ["example"]
+```
+
+</details>
+
 <a id="model-NurturingOrganization"></a>
 
 ### NurturingOrganization
@@ -59715,6 +60589,7 @@ Nurturing's read model per organization: its admin and its milestone counts.
 | `codingRepositoryKeys` | `String[]` | NOT NULL    | `[]`         |             |
 | `codingFirstDays`      | `Int[]`    | NOT NULL    | `[]`         |             |
 | `lastTraceAt`          | `DateTime` | NULL        |              |             |
+| `adminAt`              | `DateTime` | NULL        |              |             |
 | `updatedAt`            | `DateTime` | NOT NULL    | `@updatedAt` |             |
 
 #### Definition
@@ -59734,6 +60609,7 @@ CREATE TABLE "NurturingOrganization" (
     "codingRepositoryKeys" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "codingFirstDays" INTEGER[] DEFAULT ARRAY[]::INTEGER[],
     "lastTraceAt" TIMESTAMP(3),
+    "adminAt" TIMESTAMP(3),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "NurturingOrganization_pkey" PRIMARY KEY ("organizationId")
@@ -59764,6 +60640,7 @@ SELECT
   "public"."NurturingOrganization"."codingRepositoryKeys",
   "public"."NurturingOrganization"."codingFirstDays",
   "public"."NurturingOrganization"."lastTraceAt",
+  "public"."NurturingOrganization"."adminAt",
   "public"."NurturingOrganization"."updatedAt"
 FROM
   "public"."NurturingOrganization"
@@ -59818,6 +60695,7 @@ SELECT
   "public"."NurturingOrganization"."codingRepositoryKeys",
   "public"."NurturingOrganization"."codingFirstDays",
   "public"."NurturingOrganization"."lastTraceAt",
+  "public"."NurturingOrganization"."adminAt",
   "public"."NurturingOrganization"."updatedAt"
 FROM
   "public"."NurturingOrganization"
@@ -59869,6 +60747,7 @@ RETURNING
   "public"."NurturingOrganization"."codingRepositoryKeys",
   "public"."NurturingOrganization"."codingFirstDays",
   "public"."NurturingOrganization"."lastTraceAt",
+  "public"."NurturingOrganization"."adminAt",
   "public"."NurturingOrganization"."updatedAt"
 -- params: ["example",false,"0","0",[],"0",[],[],[],"<now()>"]
 ```
@@ -59924,6 +60803,7 @@ RETURNING
   "public"."NurturingOrganization"."codingRepositoryKeys",
   "public"."NurturingOrganization"."codingFirstDays",
   "public"."NurturingOrganization"."lastTraceAt",
+  "public"."NurturingOrganization"."adminAt",
   "public"."NurturingOrganization"."updatedAt"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<organizationId of the rows above>","example"]
 ```
@@ -59955,6 +60835,7 @@ RETURNING
   "public"."NurturingOrganization"."codingRepositoryKeys",
   "public"."NurturingOrganization"."codingFirstDays",
   "public"."NurturingOrganization"."lastTraceAt",
+  "public"."NurturingOrganization"."adminAt",
   "public"."NurturingOrganization"."updatedAt"
 -- params: ["example"]
 ```
@@ -59967,16 +60848,16 @@ RETURNING
 
 Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
 and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
 
-| Field               | Type       | Constraints | Default | Description                                                                                                                                                                              |
-| ------------------- | ---------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `projectId`         | `String`   | PK NOT NULL |         |                                                                                                                                                                                          |
-| `owner`             | `String`   | PK NOT NULL |         | The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation), or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day. |
-| `folded`            | `Json`     | NOT NULL    |         | The project's usage as the fold folded it (NurturingProjectUsageState).                                                                                                                  |
-| `appliedEventIds`   | `String[]` | NOT NULL    | `[]`    | The event ids of the last delivery folded in, so a redelivery folds once.                                                                                                                |
-| `projectionVersion` | `String`   | NOT NULL    |         | A row of another version reads as undecodable and is re-folded from the log.                                                                                                             |
-| `updatedAt`         | `DateTime` | NOT NULL    |         | Event-derived, so a replayed row equals the row it rebuilds.                                                                                                                             |
+| Field               | Type       | Constraints | Default | Description                                                                                                                                                                                                        |
+| ------------------- | ---------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `projectId`         | `String`   | PK NOT NULL |         |                                                                                                                                                                                                                    |
+| `owner`             | `String`   | PK NOT NULL |         | The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation). Evaluation days are not kept here: the evaluation-days map and its replay write them to NurturingProjectEvaluationDay. |
+| `folded`            | `Json`     | NOT NULL    |         | The project's usage as the fold folded it (NurturingProjectUsageState).                                                                                                                                            |
+| `appliedEventIds`   | `String[]` | NOT NULL    | `[]`    | The event ids of the last delivery folded in, so a redelivery folds once.                                                                                                                                          |
+| `projectionVersion` | `String`   | NOT NULL    |         | A row of another version reads as undecodable and is re-folded from the log.                                                                                                                                       |
+| `updatedAt`         | `DateTime` | NOT NULL    |         | Event-derived, so a replayed row equals the row it rebuilds.                                                                                                                                                       |
 
 #### Indexes
 
@@ -60206,9 +61087,8 @@ RETURNING
 
 ### NurturingProjectTraceDay
 
-Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
-root span being one trace, one row per project and UTC day of append time, incremented in place
-by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
 
 | Field               | Type       | Constraints | Default | Description                                           |
 | ------------------- | ---------- | ----------- | ------- | ----------------------------------------------------- |
@@ -60423,6 +61303,421 @@ RETURNING
   "public"."NurturingProjectTraceDay"."errorCount",
   "public"."NurturingProjectTraceDay"."lastTraceAt",
   "public"."NurturingProjectTraceDay"."lastFailedTraceAt"
+-- params: ["example","example"]
+```
+
+</details>
+
+<a id="model-NurturingProjectTraceDayCount"></a>
+
+### NurturingProjectTraceDayCount
+
+Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+`failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+
+| Field               | Type       | Constraints | Default | Description                                                                |
+| ------------------- | ---------- | ----------- | ------- | -------------------------------------------------------------------------- |
+| `projectId`         | `String`   | PK NOT NULL |         |                                                                            |
+| `day`               | `String`   | PK NOT NULL |         | UTC `YYYY-MM-DD` of the facts' append time.                                |
+| `source`            | `String`   | PK NOT NULL |         | The peer fold that wrote the row: `spans` or `failures`.                   |
+| `traceCount`        | `Int`      | NOT NULL    | `0`     |                                                                            |
+| `errorCount`        | `Int`      | NOT NULL    | `0`     |                                                                            |
+| `lastTraceAt`       | `DateTime` | NULL        |         | Append time of the newest root span.                                       |
+| `lastFailedTraceAt` | `DateTime` | NULL        |         | Append time of the newest trace_failed.                                    |
+| `appliedEventIds`   | `String[]` | NOT NULL    | `[]`    | The event ids of the last delivery folded in, so a redelivery folds once.  |
+| `projectionVersion` | `String`   | NOT NULL    |         | A row of another version reads as undecodable and is left out of the read. |
+
+#### Indexes
+
+- `@@id([projectId, day, source])`
+- `@@index([day])`
+
+#### Definition
+
+```sql
+CREATE TABLE "NurturingProjectTraceDayCount" (
+    "projectId" TEXT NOT NULL,
+    "day" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "traceCount" INTEGER NOT NULL DEFAULT 0,
+    "errorCount" INTEGER NOT NULL DEFAULT 0,
+    "lastTraceAt" TIMESTAMP(3),
+    "lastFailedTraceAt" TIMESTAMP(3),
+    "appliedEventIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "projectionVersion" TEXT NOT NULL,
+
+    CONSTRAINT "NurturingProjectTraceDayCount_pkey" PRIMARY KEY ("projectId","day","source")
+);
+
+CREATE INDEX "NurturingProjectTraceDayCount_day_idx" ON "NurturingProjectTraceDayCount"("day");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.nurturingProjectTraceDayCount.findMany();
+```
+
+```sql
+SELECT
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source",
+  "public"."NurturingProjectTraceDayCount"."traceCount",
+  "public"."NurturingProjectTraceDayCount"."errorCount",
+  "public"."NurturingProjectTraceDayCount"."lastTraceAt",
+  "public"."NurturingProjectTraceDayCount"."lastFailedTraceAt",
+  "public"."NurturingProjectTraceDayCount"."appliedEventIds",
+  "public"."NurturingProjectTraceDayCount"."projectionVersion"
+FROM
+  "public"."NurturingProjectTraceDayCount"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.nurturingProjectTraceDayCount.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."NurturingProjectTraceDayCount"."projectId",
+      "public"."NurturingProjectTraceDayCount"."day",
+      "public"."NurturingProjectTraceDayCount"."source"
+    FROM
+      "public"."NurturingProjectTraceDayCount"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.nurturingProjectTraceDayCount.findUnique({
+  where: { projectId_day_source: { projectId: "example", day: "example", source: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source",
+  "public"."NurturingProjectTraceDayCount"."traceCount",
+  "public"."NurturingProjectTraceDayCount"."errorCount",
+  "public"."NurturingProjectTraceDayCount"."lastTraceAt",
+  "public"."NurturingProjectTraceDayCount"."lastFailedTraceAt",
+  "public"."NurturingProjectTraceDayCount"."appliedEventIds",
+  "public"."NurturingProjectTraceDayCount"."projectionVersion"
+FROM
+  "public"."NurturingProjectTraceDayCount"
+WHERE
+  (
+    (
+      "public"."NurturingProjectTraceDayCount"."projectId" = $1
+      AND "public"."NurturingProjectTraceDayCount"."day" = $2
+      AND "public"."NurturingProjectTraceDayCount"."source" = $3
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $4
+OFFSET
+  $5
+-- params: ["example","example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.nurturingProjectTraceDayCount.create({
+  data: { projectId: "example", day: "example", source: "example", projectionVersion: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."NurturingProjectTraceDayCount" (
+    "projectId",
+    "day",
+    "source",
+    "traceCount",
+    "errorCount",
+    "appliedEventIds",
+    "projectionVersion"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source",
+  "public"."NurturingProjectTraceDayCount"."traceCount",
+  "public"."NurturingProjectTraceDayCount"."errorCount",
+  "public"."NurturingProjectTraceDayCount"."lastTraceAt",
+  "public"."NurturingProjectTraceDayCount"."lastFailedTraceAt",
+  "public"."NurturingProjectTraceDayCount"."appliedEventIds",
+  "public"."NurturingProjectTraceDayCount"."projectionVersion"
+-- params: ["example","example","example","0","0",[],"example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.nurturingProjectTraceDayCount.update({
+  where: { projectId_day_source: { projectId: "example", day: "example", source: "example" } },
+  data: { traceCount: 1 },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source"
+FROM
+  "public"."NurturingProjectTraceDayCount"
+WHERE
+  (
+    (
+      "public"."NurturingProjectTraceDayCount"."projectId" = $1
+      AND "public"."NurturingProjectTraceDayCount"."day" = $2
+      AND "public"."NurturingProjectTraceDayCount"."source" = $3
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $4
+OFFSET
+  $5
+-- params: ["example","example","example","1","0"]
+
+UPDATE "public"."NurturingProjectTraceDayCount"
+SET
+  "traceCount" = $1
+WHERE
+  (
+    (
+      "public"."NurturingProjectTraceDayCount"."projectId" IN ($2)
+      AND "public"."NurturingProjectTraceDayCount"."day" IN ($3)
+      AND "public"."NurturingProjectTraceDayCount"."source" IN ($4)
+    )
+    AND (
+      (
+        "public"."NurturingProjectTraceDayCount"."projectId" = $5
+        AND "public"."NurturingProjectTraceDayCount"."day" = $6
+        AND "public"."NurturingProjectTraceDayCount"."source" = $7
+      )
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source",
+  "public"."NurturingProjectTraceDayCount"."traceCount",
+  "public"."NurturingProjectTraceDayCount"."errorCount",
+  "public"."NurturingProjectTraceDayCount"."lastTraceAt",
+  "public"."NurturingProjectTraceDayCount"."lastFailedTraceAt",
+  "public"."NurturingProjectTraceDayCount"."appliedEventIds",
+  "public"."NurturingProjectTraceDayCount"."projectionVersion"
+-- params: ["1","<projectId of the rows above>","<day of the rows above>","<source of the rows above>","example","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.nurturingProjectTraceDayCount.delete({
+  where: { projectId_day_source: { projectId: "example", day: "example", source: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."NurturingProjectTraceDayCount"
+WHERE
+  (
+    (
+      "public"."NurturingProjectTraceDayCount"."projectId" = $1
+      AND "public"."NurturingProjectTraceDayCount"."day" = $2
+      AND "public"."NurturingProjectTraceDayCount"."source" = $3
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."NurturingProjectTraceDayCount"."projectId",
+  "public"."NurturingProjectTraceDayCount"."day",
+  "public"."NurturingProjectTraceDayCount"."source",
+  "public"."NurturingProjectTraceDayCount"."traceCount",
+  "public"."NurturingProjectTraceDayCount"."errorCount",
+  "public"."NurturingProjectTraceDayCount"."lastTraceAt",
+  "public"."NurturingProjectTraceDayCount"."lastFailedTraceAt",
+  "public"."NurturingProjectTraceDayCount"."appliedEventIds",
+  "public"."NurturingProjectTraceDayCount"."projectionVersion"
+-- params: ["example","example","example"]
+```
+
+</details>
+
+<a id="model-NurturingProjectEvaluationDay"></a>
+
+### NurturingProjectEvaluationDay
+
+Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+
+| Field       | Type     | Constraints | Default | Description       |
+| ----------- | -------- | ----------- | ------- | ----------------- |
+| `projectId` | `String` | PK NOT NULL |         |                   |
+| `day`       | `String` | PK NOT NULL |         | UTC `YYYY-MM-DD`. |
+
+#### Indexes
+
+- `@@id([projectId, day])`
+
+#### Definition
+
+```sql
+CREATE TABLE "NurturingProjectEvaluationDay" (
+    "projectId" TEXT NOT NULL,
+    "day" TEXT NOT NULL,
+
+    CONSTRAINT "NurturingProjectEvaluationDay_pkey" PRIMARY KEY ("projectId","day")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.nurturingProjectEvaluationDay.findMany();
+```
+
+```sql
+SELECT
+  "public"."NurturingProjectEvaluationDay"."projectId",
+  "public"."NurturingProjectEvaluationDay"."day"
+FROM
+  "public"."NurturingProjectEvaluationDay"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.nurturingProjectEvaluationDay.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."NurturingProjectEvaluationDay"."projectId",
+      "public"."NurturingProjectEvaluationDay"."day"
+    FROM
+      "public"."NurturingProjectEvaluationDay"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.nurturingProjectEvaluationDay.findUnique({
+  where: { projectId_day: { projectId: "example", day: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."NurturingProjectEvaluationDay"."projectId",
+  "public"."NurturingProjectEvaluationDay"."day"
+FROM
+  "public"."NurturingProjectEvaluationDay"
+WHERE
+  (
+    (
+      "public"."NurturingProjectEvaluationDay"."projectId" = $1
+      AND "public"."NurturingProjectEvaluationDay"."day" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.nurturingProjectEvaluationDay.create({
+  data: { projectId: "example", day: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."NurturingProjectEvaluationDay" ("projectId", "day")
+VALUES
+  ($1, $2)
+RETURNING
+  "public"."NurturingProjectEvaluationDay"."projectId",
+  "public"."NurturingProjectEvaluationDay"."day"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.nurturingProjectEvaluationDay.delete({
+  where: { projectId_day: { projectId: "example", day: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."NurturingProjectEvaluationDay"
+WHERE
+  (
+    (
+      "public"."NurturingProjectEvaluationDay"."projectId" = $1
+      AND "public"."NurturingProjectEvaluationDay"."day" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."NurturingProjectEvaluationDay"."projectId",
+  "public"."NurturingProjectEvaluationDay"."day"
 -- params: ["example","example"]
 ```
 
@@ -74505,6 +75800,245 @@ RETURNING
 
 </details>
 
+<a id="model-DiscoveredAgentListing"></a>
+
+### DiscoveredAgentListing
+
+One source's presence fact for one discovered agent. An agent is gone only when every
+source that listed it marked it gone; an agent no source listed (older sightings) never is.
+
+| Field               | Type       | Constraints | Default              | Description                                                                              |
+| ------------------- | ---------- | ----------- | -------------------- | ---------------------------------------------------------------------------------------- |
+| `id`                | `String`   | PK NOT NULL | `nanoid()`           |                                                                                          |
+| `organizationId`    | `String`   | NOT NULL    |                      |                                                                                          |
+| `ingestionSourceId` | `String`   | NOT NULL    |                      |                                                                                          |
+| `discoveredAgentId` | `String`   | NOT NULL    |                      |                                                                                          |
+| `lastListedAt`      | `DateTime` | NOT NULL    |                      |                                                                                          |
+| `goneAt`            | `DateTime` | NULL        |                      | Set when this source's listing stopped naming the agent; cleared when it names it again. |
+| `createdAt`         | `DateTime` | NOT NULL    | `now()`              |                                                                                          |
+| `updatedAt`         | `DateTime` | NOT NULL    | `now()` `@updatedAt` |                                                                                          |
+
+#### Indexes
+
+- `@@index([organizationId, discoveredAgentId])`
+- `@@unique([ingestionSourceId, discoveredAgentId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "DiscoveredAgentListing" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "ingestionSourceId" TEXT NOT NULL,
+    "discoveredAgentId" TEXT NOT NULL,
+    "lastListedAt" TIMESTAMP(3) NOT NULL,
+    "goneAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DiscoveredAgentListing_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "DiscoveredAgentListing_organizationId_discoveredAgentId_idx" ON "DiscoveredAgentListing"("organizationId", "discoveredAgentId");
+
+CREATE UNIQUE INDEX "DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key" ON "DiscoveredAgentListing"("ingestionSourceId", "discoveredAgentId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.discoveredAgentListing.findMany();
+```
+
+```sql
+SELECT
+  "public"."DiscoveredAgentListing"."id",
+  "public"."DiscoveredAgentListing"."organizationId",
+  "public"."DiscoveredAgentListing"."ingestionSourceId",
+  "public"."DiscoveredAgentListing"."discoveredAgentId",
+  "public"."DiscoveredAgentListing"."lastListedAt",
+  "public"."DiscoveredAgentListing"."goneAt",
+  "public"."DiscoveredAgentListing"."createdAt",
+  "public"."DiscoveredAgentListing"."updatedAt"
+FROM
+  "public"."DiscoveredAgentListing"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.discoveredAgentListing.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DiscoveredAgentListing"."id"
+    FROM
+      "public"."DiscoveredAgentListing"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.discoveredAgentListing.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DiscoveredAgentListing"."id",
+  "public"."DiscoveredAgentListing"."organizationId",
+  "public"."DiscoveredAgentListing"."ingestionSourceId",
+  "public"."DiscoveredAgentListing"."discoveredAgentId",
+  "public"."DiscoveredAgentListing"."lastListedAt",
+  "public"."DiscoveredAgentListing"."goneAt",
+  "public"."DiscoveredAgentListing"."createdAt",
+  "public"."DiscoveredAgentListing"."updatedAt"
+FROM
+  "public"."DiscoveredAgentListing"
+WHERE
+  (
+    "public"."DiscoveredAgentListing"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.discoveredAgentListing.create({
+  data: {
+    organizationId: "example",
+    ingestionSourceId: "example",
+    discoveredAgentId: "example",
+    lastListedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."DiscoveredAgentListing" (
+    "id",
+    "organizationId",
+    "ingestionSourceId",
+    "discoveredAgentId",
+    "lastListedAt",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+  "public"."DiscoveredAgentListing"."id",
+  "public"."DiscoveredAgentListing"."organizationId",
+  "public"."DiscoveredAgentListing"."ingestionSourceId",
+  "public"."DiscoveredAgentListing"."discoveredAgentId",
+  "public"."DiscoveredAgentListing"."lastListedAt",
+  "public"."DiscoveredAgentListing"."goneAt",
+  "public"."DiscoveredAgentListing"."createdAt",
+  "public"."DiscoveredAgentListing"."updatedAt"
+-- params: ["<nanoid()>","example","example","example","2026-01-01T00:00:00.000Z","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.discoveredAgentListing.update({
+  where: { id: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."DiscoveredAgentListing"."id"
+FROM
+  "public"."DiscoveredAgentListing"
+WHERE
+  (
+    "public"."DiscoveredAgentListing"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DiscoveredAgentListing"
+SET
+  "organizationId" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."DiscoveredAgentListing"."id" IN ($3)
+    AND (
+      "public"."DiscoveredAgentListing"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DiscoveredAgentListing"."id",
+  "public"."DiscoveredAgentListing"."organizationId",
+  "public"."DiscoveredAgentListing"."ingestionSourceId",
+  "public"."DiscoveredAgentListing"."discoveredAgentId",
+  "public"."DiscoveredAgentListing"."lastListedAt",
+  "public"."DiscoveredAgentListing"."goneAt",
+  "public"."DiscoveredAgentListing"."createdAt",
+  "public"."DiscoveredAgentListing"."updatedAt"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.discoveredAgentListing.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DiscoveredAgentListing"
+WHERE
+  (
+    "public"."DiscoveredAgentListing"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DiscoveredAgentListing"."id",
+  "public"."DiscoveredAgentListing"."organizationId",
+  "public"."DiscoveredAgentListing"."ingestionSourceId",
+  "public"."DiscoveredAgentListing"."discoveredAgentId",
+  "public"."DiscoveredAgentListing"."lastListedAt",
+  "public"."DiscoveredAgentListing"."goneAt",
+  "public"."DiscoveredAgentListing"."createdAt",
+  "public"."DiscoveredAgentListing"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
 <a id="model-AgentRegistryEntry"></a>
 
 ### AgentRegistryEntry
@@ -75213,6 +76747,185 @@ WHERE
 RETURNING
   "public"."AgentRegistryBaseline"."organizationId",
   "public"."AgentRegistryBaseline"."baselinedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AgentRegistrySettings"></a>
+
+### AgentRegistrySettings
+
+An organisation's agent registry settings. No row reads as the defaults.
+
+| Field              | Type       | Constraints | Default              | Description                                                       |
+| ------------------ | ---------- | ----------- | -------------------- | ----------------------------------------------------------------- |
+| `organizationId`   | `String`   | PK NOT NULL |                      |                                                                   |
+| `dormantAfterDays` | `Int`      | NOT NULL    | `30`                 | Days without traffic after which a listed agent reads as dormant. |
+| `updatedAt`        | `DateTime` | NOT NULL    | `now()` `@updatedAt` |                                                                   |
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentRegistrySettings" (
+    "organizationId" TEXT NOT NULL,
+    "dormantAfterDays" INTEGER NOT NULL DEFAULT 30,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentRegistrySettings_pkey" PRIMARY KEY ("organizationId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentRegistrySettings.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentRegistrySettings"."organizationId",
+  "public"."AgentRegistrySettings"."dormantAfterDays",
+  "public"."AgentRegistrySettings"."updatedAt"
+FROM
+  "public"."AgentRegistrySettings"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentRegistrySettings.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentRegistrySettings"."organizationId"
+    FROM
+      "public"."AgentRegistrySettings"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentRegistrySettings.findUnique({ where: { organizationId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AgentRegistrySettings"."organizationId",
+  "public"."AgentRegistrySettings"."dormantAfterDays",
+  "public"."AgentRegistrySettings"."updatedAt"
+FROM
+  "public"."AgentRegistrySettings"
+WHERE
+  (
+    "public"."AgentRegistrySettings"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentRegistrySettings.create({ data: { organizationId: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."AgentRegistrySettings" ("organizationId", "dormantAfterDays", "updatedAt")
+VALUES
+  ($1, $2, $3)
+RETURNING
+  "public"."AgentRegistrySettings"."organizationId",
+  "public"."AgentRegistrySettings"."dormantAfterDays",
+  "public"."AgentRegistrySettings"."updatedAt"
+-- params: ["example","30","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentRegistrySettings.update({
+  where: { organizationId: "example" },
+  data: { dormantAfterDays: 1 },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentRegistrySettings"."organizationId"
+FROM
+  "public"."AgentRegistrySettings"
+WHERE
+  (
+    "public"."AgentRegistrySettings"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."AgentRegistrySettings"
+SET
+  "dormantAfterDays" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."AgentRegistrySettings"."organizationId" IN ($3)
+    AND (
+      "public"."AgentRegistrySettings"."organizationId" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentRegistrySettings"."organizationId",
+  "public"."AgentRegistrySettings"."dormantAfterDays",
+  "public"."AgentRegistrySettings"."updatedAt"
+-- params: ["1",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<organizationId of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentRegistrySettings.delete({ where: { organizationId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AgentRegistrySettings"
+WHERE
+  (
+    "public"."AgentRegistrySettings"."organizationId" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentRegistrySettings"."organizationId",
+  "public"."AgentRegistrySettings"."dormantAfterDays",
+  "public"."AgentRegistrySettings"."updatedAt"
 -- params: ["example"]
 ```
 
@@ -80434,6 +82147,1316 @@ RETURNING
   "public"."SignInProviderMount"."mounted",
   "public"."SignInProviderMount"."lastAppliedEventId",
   "public"."SignInProviderMount"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestCohortOrganization"></a>
+
+### DigestCohortOrganization
+
+An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends.
+
+| Field            | Type       | Constraints | Default | Description |
+| ---------------- | ---------- | ----------- | ------- | ----------- |
+| `organizationId` | `String`   | PK NOT NULL |         |             |
+| `enrolledBy`     | `String`   | NOT NULL    |         |             |
+| `enrolledAt`     | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestCohortOrganization" (
+    "organizationId" TEXT NOT NULL,
+    "enrolledBy" TEXT NOT NULL,
+    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DigestCohortOrganization_pkey" PRIMARY KEY ("organizationId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestCohortOrganization.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestCohortOrganization"."organizationId",
+  "public"."DigestCohortOrganization"."enrolledBy",
+  "public"."DigestCohortOrganization"."enrolledAt"
+FROM
+  "public"."DigestCohortOrganization"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestCohortOrganization.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestCohortOrganization"."organizationId"
+    FROM
+      "public"."DigestCohortOrganization"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestCohortOrganization.findUnique({ where: { organizationId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestCohortOrganization"."organizationId",
+  "public"."DigestCohortOrganization"."enrolledBy",
+  "public"."DigestCohortOrganization"."enrolledAt"
+FROM
+  "public"."DigestCohortOrganization"
+WHERE
+  (
+    "public"."DigestCohortOrganization"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestCohortOrganization.create({
+  data: { organizationId: "example", enrolledBy: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."DigestCohortOrganization" ("organizationId", "enrolledBy", "enrolledAt")
+VALUES
+  ($1, $2, $3)
+RETURNING
+  "public"."DigestCohortOrganization"."organizationId",
+  "public"."DigestCohortOrganization"."enrolledBy",
+  "public"."DigestCohortOrganization"."enrolledAt"
+-- params: ["example","example","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestCohortOrganization.update({
+  where: { organizationId: "example" },
+  data: { enrolledBy: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."DigestCohortOrganization"."organizationId"
+FROM
+  "public"."DigestCohortOrganization"
+WHERE
+  (
+    "public"."DigestCohortOrganization"."organizationId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestCohortOrganization"
+SET
+  "enrolledBy" = $1
+WHERE
+  (
+    "public"."DigestCohortOrganization"."organizationId" IN ($2)
+    AND (
+      "public"."DigestCohortOrganization"."organizationId" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestCohortOrganization"."organizationId",
+  "public"."DigestCohortOrganization"."enrolledBy",
+  "public"."DigestCohortOrganization"."enrolledAt"
+-- params: ["example","<organizationId of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestCohortOrganization.delete({ where: { organizationId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestCohortOrganization"
+WHERE
+  (
+    "public"."DigestCohortOrganization"."organizationId" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestCohortOrganization"."organizationId",
+  "public"."DigestCohortOrganization"."enrolledBy",
+  "public"."DigestCohortOrganization"."enrolledAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestSubscription"></a>
+
+### DigestSubscription
+
+A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed.
+
+| Field                    | Type       | Constraints | Default      | Description                                                          |
+| ------------------------ | ---------- | ----------- | ------------ | -------------------------------------------------------------------- |
+| `userId`                 | `String`   | PK NOT NULL |              |                                                                      |
+| `unsubscribedAt`         | `DateTime` | NULL        |              |                                                                      |
+| `unsubscribedFromSendId` | `String`   | NULL        |              | The send whose unsubscribe link or one-click header the person used. |
+| `updatedAt`              | `DateTime` | NOT NULL    | `@updatedAt` |                                                                      |
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestSubscription" (
+    "userId" TEXT NOT NULL,
+    "unsubscribedAt" TIMESTAMP(3),
+    "unsubscribedFromSendId" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestSubscription_pkey" PRIMARY KEY ("userId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestSubscription.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestSubscription"."userId",
+  "public"."DigestSubscription"."unsubscribedAt",
+  "public"."DigestSubscription"."unsubscribedFromSendId",
+  "public"."DigestSubscription"."updatedAt"
+FROM
+  "public"."DigestSubscription"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestSubscription.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestSubscription"."userId"
+    FROM
+      "public"."DigestSubscription"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestSubscription.findUnique({ where: { userId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestSubscription"."userId",
+  "public"."DigestSubscription"."unsubscribedAt",
+  "public"."DigestSubscription"."unsubscribedFromSendId",
+  "public"."DigestSubscription"."updatedAt"
+FROM
+  "public"."DigestSubscription"
+WHERE
+  (
+    "public"."DigestSubscription"."userId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestSubscription.create({ data: { userId: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."DigestSubscription" ("userId", "updatedAt")
+VALUES
+  ($1, $2)
+RETURNING
+  "public"."DigestSubscription"."userId",
+  "public"."DigestSubscription"."unsubscribedAt",
+  "public"."DigestSubscription"."unsubscribedFromSendId",
+  "public"."DigestSubscription"."updatedAt"
+-- params: ["example","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestSubscription.update({
+  where: { userId: "example" },
+  data: { unsubscribedAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+SELECT
+  "public"."DigestSubscription"."userId"
+FROM
+  "public"."DigestSubscription"
+WHERE
+  (
+    "public"."DigestSubscription"."userId" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestSubscription"
+SET
+  "unsubscribedAt" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."DigestSubscription"."userId" IN ($3)
+    AND (
+      "public"."DigestSubscription"."userId" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestSubscription"."userId",
+  "public"."DigestSubscription"."unsubscribedAt",
+  "public"."DigestSubscription"."unsubscribedFromSendId",
+  "public"."DigestSubscription"."updatedAt"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<userId of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestSubscription.delete({ where: { userId: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestSubscription"
+WHERE
+  (
+    "public"."DigestSubscription"."userId" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestSubscription"."userId",
+  "public"."DigestSubscription"."unsubscribedAt",
+  "public"."DigestSubscription"."unsubscribedFromSendId",
+  "public"."DigestSubscription"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestProjectWeek"></a>
+
+### DigestProjectWeek
+
+A project's ISO week, folded from its owners' events. The id is the fold's aggregate key.
+
+| Field               | Type       | Constraints | Default | Description                                                                                      |
+| ------------------- | ---------- | ----------- | ------- | ------------------------------------------------------------------------------------------------ |
+| `id`                | `String`   | PK NOT NULL |         |                                                                                                  |
+| `projectId`         | `String`   | NOT NULL    |         |                                                                                                  |
+| `organizationId`    | `String`   | NOT NULL    |         |                                                                                                  |
+| `isoWeek`           | `String`   | NOT NULL    |         |                                                                                                  |
+| `state`             | `Json`     | NOT NULL    |         | The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps. |
+| `occurredAt`        | `DateTime` | NOT NULL    |         |                                                                                                  |
+| `lastEventId`       | `String`   | NOT NULL    |         |                                                                                                  |
+| `acceptedAt`        | `DateTime` | NOT NULL    |         |                                                                                                  |
+| `projectionVersion` | `String`   | NOT NULL    |         |                                                                                                  |
+| `createdAt`         | `DateTime` | NOT NULL    |         |                                                                                                  |
+| `updatedAt`         | `DateTime` | NOT NULL    |         |                                                                                                  |
+
+#### Indexes
+
+- `@@index([organizationId, isoWeek])`
+- `@@index([isoWeek])`
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestProjectWeek" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "state" JSONB NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "acceptedAt" TIMESTAMP(3) NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestProjectWeek_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "DigestProjectWeek_organizationId_isoWeek_idx" ON "DigestProjectWeek"("organizationId", "isoWeek");
+
+CREATE INDEX "DigestProjectWeek_isoWeek_idx" ON "DigestProjectWeek"("isoWeek");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestProjectWeek.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestProjectWeek"."id",
+  "public"."DigestProjectWeek"."projectId",
+  "public"."DigestProjectWeek"."organizationId",
+  "public"."DigestProjectWeek"."isoWeek",
+  "public"."DigestProjectWeek"."state",
+  "public"."DigestProjectWeek"."occurredAt",
+  "public"."DigestProjectWeek"."lastEventId",
+  "public"."DigestProjectWeek"."acceptedAt",
+  "public"."DigestProjectWeek"."projectionVersion",
+  "public"."DigestProjectWeek"."createdAt",
+  "public"."DigestProjectWeek"."updatedAt"
+FROM
+  "public"."DigestProjectWeek"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestProjectWeek.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestProjectWeek"."id"
+    FROM
+      "public"."DigestProjectWeek"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestProjectWeek.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestProjectWeek"."id",
+  "public"."DigestProjectWeek"."projectId",
+  "public"."DigestProjectWeek"."organizationId",
+  "public"."DigestProjectWeek"."isoWeek",
+  "public"."DigestProjectWeek"."state",
+  "public"."DigestProjectWeek"."occurredAt",
+  "public"."DigestProjectWeek"."lastEventId",
+  "public"."DigestProjectWeek"."acceptedAt",
+  "public"."DigestProjectWeek"."projectionVersion",
+  "public"."DigestProjectWeek"."createdAt",
+  "public"."DigestProjectWeek"."updatedAt"
+FROM
+  "public"."DigestProjectWeek"
+WHERE
+  (
+    "public"."DigestProjectWeek"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestProjectWeek.create({
+  data: {
+    id: "example",
+    projectId: "example",
+    organizationId: "example",
+    isoWeek: "example",
+    state: {},
+    occurredAt: new Date("2026-01-01T00:00:00.000Z"),
+    lastEventId: "example",
+    acceptedAt: new Date("2026-01-01T00:00:00.000Z"),
+    projectionVersion: "example",
+    createdAt: new Date("2026-01-01T00:00:00.000Z"),
+    updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."DigestProjectWeek" (
+    "id",
+    "projectId",
+    "organizationId",
+    "isoWeek",
+    "state",
+    "occurredAt",
+    "lastEventId",
+    "acceptedAt",
+    "projectionVersion",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+RETURNING
+  "public"."DigestProjectWeek"."id",
+  "public"."DigestProjectWeek"."projectId",
+  "public"."DigestProjectWeek"."organizationId",
+  "public"."DigestProjectWeek"."isoWeek",
+  "public"."DigestProjectWeek"."state",
+  "public"."DigestProjectWeek"."occurredAt",
+  "public"."DigestProjectWeek"."lastEventId",
+  "public"."DigestProjectWeek"."acceptedAt",
+  "public"."DigestProjectWeek"."projectionVersion",
+  "public"."DigestProjectWeek"."createdAt",
+  "public"."DigestProjectWeek"."updatedAt"
+-- params: ["example","example","example","example","{}","2026-01-01T00:00:00.000Z","example","2026-01-01T00:00:00.000Z","example","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestProjectWeek.update({ where: { id: "example" }, data: { projectId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestProjectWeek"."id"
+FROM
+  "public"."DigestProjectWeek"
+WHERE
+  (
+    "public"."DigestProjectWeek"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestProjectWeek"
+SET
+  "projectId" = $1
+WHERE
+  (
+    "public"."DigestProjectWeek"."id" IN ($2)
+    AND (
+      "public"."DigestProjectWeek"."id" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestProjectWeek"."id",
+  "public"."DigestProjectWeek"."projectId",
+  "public"."DigestProjectWeek"."organizationId",
+  "public"."DigestProjectWeek"."isoWeek",
+  "public"."DigestProjectWeek"."state",
+  "public"."DigestProjectWeek"."occurredAt",
+  "public"."DigestProjectWeek"."lastEventId",
+  "public"."DigestProjectWeek"."acceptedAt",
+  "public"."DigestProjectWeek"."projectionVersion",
+  "public"."DigestProjectWeek"."createdAt",
+  "public"."DigestProjectWeek"."updatedAt"
+-- params: ["example","<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestProjectWeek.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestProjectWeek"
+WHERE
+  (
+    "public"."DigestProjectWeek"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestProjectWeek"."id",
+  "public"."DigestProjectWeek"."projectId",
+  "public"."DigestProjectWeek"."organizationId",
+  "public"."DigestProjectWeek"."isoWeek",
+  "public"."DigestProjectWeek"."state",
+  "public"."DigestProjectWeek"."occurredAt",
+  "public"."DigestProjectWeek"."lastEventId",
+  "public"."DigestProjectWeek"."acceptedAt",
+  "public"."DigestProjectWeek"."projectionVersion",
+  "public"."DigestProjectWeek"."createdAt",
+  "public"."DigestProjectWeek"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestUserWeek"></a>
+
+### DigestUserWeek
+
+A person's ISO week of coding-agent activity in one organization, folded from the agents' facts.
+
+| Field               | Type       | Constraints | Default | Description                                                                              |
+| ------------------- | ---------- | ----------- | ------- | ---------------------------------------------------------------------------------------- |
+| `id`                | `String`   | PK NOT NULL |         |                                                                                          |
+| `userId`            | `String`   | NOT NULL    |         |                                                                                          |
+| `organizationId`    | `String`   | NOT NULL    |         |                                                                                          |
+| `isoWeek`           | `String`   | NOT NULL    |         |                                                                                          |
+| `state`             | `Json`     | NOT NULL    |         | Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins. |
+| `occurredAt`        | `DateTime` | NOT NULL    |         |                                                                                          |
+| `lastEventId`       | `String`   | NOT NULL    |         |                                                                                          |
+| `acceptedAt`        | `DateTime` | NOT NULL    |         |                                                                                          |
+| `projectionVersion` | `String`   | NOT NULL    |         |                                                                                          |
+| `createdAt`         | `DateTime` | NOT NULL    |         |                                                                                          |
+| `updatedAt`         | `DateTime` | NOT NULL    |         |                                                                                          |
+
+#### Indexes
+
+- `@@index([organizationId, isoWeek])`
+- `@@index([isoWeek])`
+- `@@index([userId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestUserWeek" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "state" JSONB NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "acceptedAt" TIMESTAMP(3) NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestUserWeek_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "DigestUserWeek_organizationId_isoWeek_idx" ON "DigestUserWeek"("organizationId", "isoWeek");
+
+CREATE INDEX "DigestUserWeek_isoWeek_idx" ON "DigestUserWeek"("isoWeek");
+
+CREATE INDEX "DigestUserWeek_userId_idx" ON "DigestUserWeek"("userId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestUserWeek.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestUserWeek"."id",
+  "public"."DigestUserWeek"."userId",
+  "public"."DigestUserWeek"."organizationId",
+  "public"."DigestUserWeek"."isoWeek",
+  "public"."DigestUserWeek"."state",
+  "public"."DigestUserWeek"."occurredAt",
+  "public"."DigestUserWeek"."lastEventId",
+  "public"."DigestUserWeek"."acceptedAt",
+  "public"."DigestUserWeek"."projectionVersion",
+  "public"."DigestUserWeek"."createdAt",
+  "public"."DigestUserWeek"."updatedAt"
+FROM
+  "public"."DigestUserWeek"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestUserWeek.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestUserWeek"."id"
+    FROM
+      "public"."DigestUserWeek"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestUserWeek.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestUserWeek"."id",
+  "public"."DigestUserWeek"."userId",
+  "public"."DigestUserWeek"."organizationId",
+  "public"."DigestUserWeek"."isoWeek",
+  "public"."DigestUserWeek"."state",
+  "public"."DigestUserWeek"."occurredAt",
+  "public"."DigestUserWeek"."lastEventId",
+  "public"."DigestUserWeek"."acceptedAt",
+  "public"."DigestUserWeek"."projectionVersion",
+  "public"."DigestUserWeek"."createdAt",
+  "public"."DigestUserWeek"."updatedAt"
+FROM
+  "public"."DigestUserWeek"
+WHERE
+  (
+    "public"."DigestUserWeek"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestUserWeek.create({
+  data: {
+    id: "example",
+    userId: "example",
+    organizationId: "example",
+    isoWeek: "example",
+    state: {},
+    occurredAt: new Date("2026-01-01T00:00:00.000Z"),
+    lastEventId: "example",
+    acceptedAt: new Date("2026-01-01T00:00:00.000Z"),
+    projectionVersion: "example",
+    createdAt: new Date("2026-01-01T00:00:00.000Z"),
+    updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."DigestUserWeek" (
+    "id",
+    "userId",
+    "organizationId",
+    "isoWeek",
+    "state",
+    "occurredAt",
+    "lastEventId",
+    "acceptedAt",
+    "projectionVersion",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+RETURNING
+  "public"."DigestUserWeek"."id",
+  "public"."DigestUserWeek"."userId",
+  "public"."DigestUserWeek"."organizationId",
+  "public"."DigestUserWeek"."isoWeek",
+  "public"."DigestUserWeek"."state",
+  "public"."DigestUserWeek"."occurredAt",
+  "public"."DigestUserWeek"."lastEventId",
+  "public"."DigestUserWeek"."acceptedAt",
+  "public"."DigestUserWeek"."projectionVersion",
+  "public"."DigestUserWeek"."createdAt",
+  "public"."DigestUserWeek"."updatedAt"
+-- params: ["example","example","example","example","{}","2026-01-01T00:00:00.000Z","example","2026-01-01T00:00:00.000Z","example","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestUserWeek.update({ where: { id: "example" }, data: { userId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestUserWeek"."id"
+FROM
+  "public"."DigestUserWeek"
+WHERE
+  (
+    "public"."DigestUserWeek"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestUserWeek"
+SET
+  "userId" = $1
+WHERE
+  (
+    "public"."DigestUserWeek"."id" IN ($2)
+    AND (
+      "public"."DigestUserWeek"."id" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestUserWeek"."id",
+  "public"."DigestUserWeek"."userId",
+  "public"."DigestUserWeek"."organizationId",
+  "public"."DigestUserWeek"."isoWeek",
+  "public"."DigestUserWeek"."state",
+  "public"."DigestUserWeek"."occurredAt",
+  "public"."DigestUserWeek"."lastEventId",
+  "public"."DigestUserWeek"."acceptedAt",
+  "public"."DigestUserWeek"."projectionVersion",
+  "public"."DigestUserWeek"."createdAt",
+  "public"."DigestUserWeek"."updatedAt"
+-- params: ["example","<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestUserWeek.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestUserWeek"
+WHERE
+  (
+    "public"."DigestUserWeek"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestUserWeek"."id",
+  "public"."DigestUserWeek"."userId",
+  "public"."DigestUserWeek"."organizationId",
+  "public"."DigestUserWeek"."isoWeek",
+  "public"."DigestUserWeek"."state",
+  "public"."DigestUserWeek"."occurredAt",
+  "public"."DigestUserWeek"."lastEventId",
+  "public"."DigestUserWeek"."acceptedAt",
+  "public"."DigestUserWeek"."projectionVersion",
+  "public"."DigestUserWeek"."createdAt",
+  "public"."DigestUserWeek"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestSend"></a>
+
+### DigestSend
+
+One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`.
+
+| Field            | Type       | Constraints | Default | Description |
+| ---------------- | ---------- | ----------- | ------- | ----------- |
+| `id`             | `String`   | PK NOT NULL |         |             |
+| `userId`         | `String`   | NOT NULL    |         |             |
+| `organizationId` | `String`   | NOT NULL    |         |             |
+| `isoWeek`        | `String`   | NOT NULL    |         |             |
+| `templateId`     | `String`   | NOT NULL    |         |             |
+| `sentAt`         | `DateTime` | NOT NULL    |         |             |
+| `createdAt`      | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Indexes
+
+- `@@index([userId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestSend" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "isoWeek" TEXT NOT NULL,
+    "templateId" TEXT NOT NULL,
+    "sentAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DigestSend_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "DigestSend_userId_idx" ON "DigestSend"("userId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestSend.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestSend"."id",
+  "public"."DigestSend"."userId",
+  "public"."DigestSend"."organizationId",
+  "public"."DigestSend"."isoWeek",
+  "public"."DigestSend"."templateId",
+  "public"."DigestSend"."sentAt",
+  "public"."DigestSend"."createdAt"
+FROM
+  "public"."DigestSend"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestSend.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestSend"."id"
+    FROM
+      "public"."DigestSend"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestSend.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestSend"."id",
+  "public"."DigestSend"."userId",
+  "public"."DigestSend"."organizationId",
+  "public"."DigestSend"."isoWeek",
+  "public"."DigestSend"."templateId",
+  "public"."DigestSend"."sentAt",
+  "public"."DigestSend"."createdAt"
+FROM
+  "public"."DigestSend"
+WHERE
+  (
+    "public"."DigestSend"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestSend.create({
+  data: {
+    id: "example",
+    userId: "example",
+    organizationId: "example",
+    isoWeek: "example",
+    templateId: "example",
+    sentAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."DigestSend" (
+    "id",
+    "userId",
+    "organizationId",
+    "isoWeek",
+    "templateId",
+    "sentAt",
+    "createdAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+  "public"."DigestSend"."id",
+  "public"."DigestSend"."userId",
+  "public"."DigestSend"."organizationId",
+  "public"."DigestSend"."isoWeek",
+  "public"."DigestSend"."templateId",
+  "public"."DigestSend"."sentAt",
+  "public"."DigestSend"."createdAt"
+-- params: ["example","example","example","example","example","2026-01-01T00:00:00.000Z","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestSend.update({ where: { id: "example" }, data: { userId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestSend"."id"
+FROM
+  "public"."DigestSend"
+WHERE
+  (
+    "public"."DigestSend"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestSend"
+SET
+  "userId" = $1
+WHERE
+  (
+    "public"."DigestSend"."id" IN ($2)
+    AND (
+      "public"."DigestSend"."id" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestSend"."id",
+  "public"."DigestSend"."userId",
+  "public"."DigestSend"."organizationId",
+  "public"."DigestSend"."isoWeek",
+  "public"."DigestSend"."templateId",
+  "public"."DigestSend"."sentAt",
+  "public"."DigestSend"."createdAt"
+-- params: ["example","<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestSend.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestSend"
+WHERE
+  (
+    "public"."DigestSend"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestSend"."id",
+  "public"."DigestSend"."userId",
+  "public"."DigestSend"."organizationId",
+  "public"."DigestSend"."isoWeek",
+  "public"."DigestSend"."templateId",
+  "public"."DigestSend"."sentAt",
+  "public"."DigestSend"."createdAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DigestSettings"></a>
+
+### DigestSettings
+
+The digest's one settings row. `armed` is the weekly send's master switch; it starts off.
+
+| Field             | Type       | Constraints | Default       | Description |
+| ----------------- | ---------- | ----------- | ------------- | ----------- |
+| `id`              | `String`   | PK NOT NULL | `"singleton"` |             |
+| `armed`           | `Boolean`  | NOT NULL    | `false`       |             |
+| `lastPlannedWeek` | `String`   | NULL        |               |             |
+| `updatedAt`       | `DateTime` | NOT NULL    | `@updatedAt`  |             |
+
+#### Definition
+
+```sql
+CREATE TABLE "DigestSettings" (
+    "id" TEXT NOT NULL DEFAULT 'singleton',
+    "armed" BOOLEAN NOT NULL DEFAULT false,
+    "lastPlannedWeek" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DigestSettings_pkey" PRIMARY KEY ("id")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.digestSettings.findMany();
+```
+
+```sql
+SELECT
+  "public"."DigestSettings"."id",
+  "public"."DigestSettings"."armed",
+  "public"."DigestSettings"."lastPlannedWeek",
+  "public"."DigestSettings"."updatedAt"
+FROM
+  "public"."DigestSettings"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.digestSettings.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."DigestSettings"."id"
+    FROM
+      "public"."DigestSettings"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.digestSettings.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."DigestSettings"."id",
+  "public"."DigestSettings"."armed",
+  "public"."DigestSettings"."lastPlannedWeek",
+  "public"."DigestSettings"."updatedAt"
+FROM
+  "public"."DigestSettings"
+WHERE
+  (
+    "public"."DigestSettings"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.digestSettings.create({ data: {} });
+```
+
+```sql
+INSERT INTO
+  "public"."DigestSettings" ("id", "armed", "updatedAt")
+VALUES
+  ($1, $2, $3)
+RETURNING
+  "public"."DigestSettings"."id",
+  "public"."DigestSettings"."armed",
+  "public"."DigestSettings"."lastPlannedWeek",
+  "public"."DigestSettings"."updatedAt"
+-- params: ["singleton",false,"<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.digestSettings.update({ where: { id: "example" }, data: { armed: true } });
+```
+
+```sql
+SELECT
+  "public"."DigestSettings"."id"
+FROM
+  "public"."DigestSettings"
+WHERE
+  (
+    "public"."DigestSettings"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."DigestSettings"
+SET
+  "armed" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."DigestSettings"."id" IN ($3)
+    AND (
+      "public"."DigestSettings"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."DigestSettings"."id",
+  "public"."DigestSettings"."armed",
+  "public"."DigestSettings"."lastPlannedWeek",
+  "public"."DigestSettings"."updatedAt"
+-- params: [true,{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.digestSettings.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."DigestSettings"
+WHERE
+  (
+    "public"."DigestSettings"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."DigestSettings"."id",
+  "public"."DigestSettings"."armed",
+  "public"."DigestSettings"."lastPlannedWeek",
+  "public"."DigestSettings"."updatedAt"
 -- params: ["example"]
 ```
 

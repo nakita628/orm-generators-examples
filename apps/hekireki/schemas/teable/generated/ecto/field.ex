@@ -25,6 +25,8 @@ defmodule Teable.Field do
           is_conditional_lookup: boolean() | nil,
           is_pending: boolean() | nil,
           has_error: boolean() | nil,
+          needs_periodic_refresh: boolean(),
+          refresh_cadence: String.t() | nil,
           lookup_linked_field_id: String.t() | nil,
           lookup_options: String.t() | nil,
           order: float(),
@@ -34,7 +36,8 @@ defmodule Teable.Field do
           created_by: String.t(),
           last_modified_by: String.t() | nil,
           updated_at: DateTime.t() | nil,
-          table: Teable.TableMeta.t() | nil
+          table: Teable.TableMeta.t() | nil,
+          periodic_refresh_state: Teable.FieldPeriodicRefreshState.t() | nil
         }
 
   schema "field" do
@@ -58,6 +61,8 @@ defmodule Teable.Field do
     field(:is_conditional_lookup, :boolean)
     field(:is_pending, :boolean)
     field(:has_error, :boolean)
+    field(:needs_periodic_refresh, :boolean, default: false)
+    field(:refresh_cadence, :string)
     field(:lookup_linked_field_id, :string)
     field(:lookup_options, :string)
     field(:order, :float)
@@ -67,6 +72,7 @@ defmodule Teable.Field do
     field(:created_by, :string)
     field(:last_modified_by, :string)
     belongs_to(:table, Teable.TableMeta, foreign_key: :table_id, type: :string)
+    has_one(:periodic_refresh_state, Teable.FieldPeriodicRefreshState, foreign_key: :field_id, references: :id)
     timestamps(inserted_at: false, updated_at_source: :last_modified_time)
   end
 end

@@ -142,6 +142,8 @@ pub enum Relation {
         to = "super::tracing_readiness_settings::Column::UpdatedBy"
     )]
     TracingReadinessUpdated,
+    #[sea_orm(has_many = "super::gateway_guardrail::Entity")]
+    GatewayGuardrailsCreated,
     #[sea_orm(has_many = "super::annotation_queue_assignment::Entity")]
     AnnotationQueueAssignment,
     #[sea_orm(has_many = "super::survey::Entity")]
@@ -188,6 +190,8 @@ pub enum Relation {
         to = "super::gateway_spend_limit::Column::UserId"
     )]
     GatewaySpendLimits,
+    #[sea_orm(has_many = "super::gateway_guardrail_assignment::Entity")]
+    GatewayGuardrailAssignments,
 }
 
 impl Related<super::account::Entity> for Entity {
@@ -274,6 +278,12 @@ impl Related<super::tracing_readiness_settings::Entity> for Entity {
     }
 }
 
+impl Related<super::gateway_guardrail::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewayGuardrailsCreated.def()
+    }
+}
+
 impl Related<super::annotation_queue_assignment::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::AnnotationQueueAssignment.def()
@@ -349,6 +359,12 @@ impl Related<super::evaluation_rule::Entity> for Entity {
 impl Related<super::gateway_spend_limit::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::GatewaySpendLimitsOwned.def()
+    }
+}
+
+impl Related<super::gateway_guardrail_assignment::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewayGuardrailAssignments.def()
     }
 }
 

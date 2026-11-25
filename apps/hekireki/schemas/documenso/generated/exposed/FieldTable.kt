@@ -10,6 +10,8 @@ import java.math.BigDecimal
 object FieldTable : IdTable<Int>("\"Field\"") {
     override val id = integer("id").autoIncrement().entityId()
     val secondaryId = text("secondaryId").clientDefault { CUID.randomCUID1().toString() }.uniqueIndex("\"Field_secondaryId_key\"")
+    val externalId = varchar("externalId", 255).nullable()
+    val groupId = varchar("groupId", 255).nullable()
     val envelopeId =
         reference(
             "envelopeId",

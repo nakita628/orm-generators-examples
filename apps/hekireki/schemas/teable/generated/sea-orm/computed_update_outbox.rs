@@ -65,6 +65,7 @@ pub struct Model {
     pub stage_depth: i32,
     #[sea_orm(column_type = "Text")]
     pub predecessor_task_id: Option<String>,
+    pub dead_letter_restore_version: Option<i32>,
     #[sea_orm(
         column_type = "custom(\"timestamp(3)\")",
         default_expr = "Expr::current_timestamp()"

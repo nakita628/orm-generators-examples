@@ -24,6 +24,9 @@ class OrganizationInviteEntity(
     var subscriptionId by OrganizationInviteTable.subscriptionId
     var acceptedByUserId by OrganizationInviteTable.acceptedByUserId
     var acceptedViaIdentifierId by OrganizationInviteTable.acceptedViaIdentifierId
+
+    /** Invites the person who pays with the Billing grant and no seat (ADR-205). */
+    var billingOnly by OrganizationInviteTable.billingOnly
     var createdAt by OrganizationInviteTable.createdAt
     var updatedAt by OrganizationInviteTable.updatedAt
 

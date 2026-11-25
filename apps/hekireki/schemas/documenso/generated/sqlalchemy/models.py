@@ -629,6 +629,8 @@ class Field(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     secondary_id: Mapped[str] = mapped_column("secondaryId", default=lambda: cuid.cuid())
+    external_id: Mapped[Optional[str]] = mapped_column("externalId", String(255))
+    group_id: Mapped[Optional[str]] = mapped_column("groupId", String(255))
     envelope_id: Mapped[str] = mapped_column("envelopeId", ForeignKey("Envelope.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_envelopeId_fkey"))
     envelope_item_id: Mapped[str] = mapped_column("envelopeItemId", ForeignKey("EnvelopeItem.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_envelopeItemId_fkey"))
     recipient_id: Mapped[int] = mapped_column("recipientId", ForeignKey("Recipient.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_recipientId_fkey"))

@@ -357,6 +357,7 @@ export const tableMeta = pgTable(
     searchIndexPolicy: jsonb('search_index_policy'),
     queryIndexPolicy: jsonb('query_index_policy'),
     provisionState: provisionStateEnum('provision_state').notNull().default('ready'),
+    actorStorageVersion: integer('actor_storage_version').notNull().default(0),
     version: integer('version').notNull(),
     order: doublePrecision('order').notNull(),
     createdTime: timestamp('created_time', { precision: 3 })
@@ -495,6 +496,8 @@ export const field = pgTable(
     isConditionalLookup: boolean('is_conditional_lookup'),
     isPending: boolean('is_pending'),
     hasError: boolean('has_error'),
+    needsPeriodicRefresh: boolean('needs_periodic_refresh').notNull().default(false),
+    refreshCadence: varchar('refresh_cadence', { length: 16 }),
     lookupLinkedFieldId: text('lookup_linked_field_id'),
     lookupOptions: text('lookup_options'),
     tableId: text('table_id').notNull(),
@@ -593,6 +596,50 @@ export const domainEventInbox = pgTable(
   ],
 )
 
+export const fieldPeriodicRefreshState = pgTable(
+  'field_periodic_refresh_state',
+  {
+    fieldId: text('field_id').primaryKey(),
+    tableId: text('table_id').notNull(),
+    baseId: text('base_id').notNull(),
+    enabled: boolean('enabled').notNull().default(true),
+    timeZone: varchar('time_zone', { length: 64 }).notNull().default('UTC'),
+    containsNowPrecision: boolean('contains_now_precision').notNull().default(false),
+    lastRefreshedAt: timestamp('last_refreshed_at', { withTimezone: true, precision: 6 }),
+    lastRefreshedLocalDate: varchar('last_refreshed_local_date', { length: 16 }),
+    lastRangeHash: varchar('last_range_hash', { length: 128 }),
+    lastStatus: varchar('last_status', { length: 32 }).notNull().default('idle'),
+    lastError: text('last_error'),
+    pendingTaskId: varchar('pending_task_id', { length: 64 }),
+    pendingLocalDate: varchar('pending_local_date', { length: 16 }),
+    pendingRangeHash: varchar('pending_range_hash', { length: 128 }),
+    pendingStartedAt: timestamp('pending_started_at', { withTimezone: true, precision: 6 }),
+    createdTime: timestamp('created_time', { withTimezone: true, precision: 6 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    lastModifiedTime: timestamp('last_modified_time', {
+      withTimezone: true,
+      precision: 6,
+    }).$onUpdate(utcNow),
+  },
+  (table) => [
+    index('field_periodic_refresh_state_base_id_enabled_idx').on(table.baseId, table.enabled),
+    index('field_periodic_refresh_state_table_id_idx').on(table.tableId),
+    index('field_periodic_refresh_state_enabled_local_date_idx').on(
+      table.enabled,
+      table.lastRefreshedLocalDate,
+    ),
+    foreignKey({
+      name: 'field_periodic_refresh_state_field_id_fkey',
+      columns: [table.fieldId],
+      foreignColumns: [field.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
 export const computedUpdateOutbox = pgTable(
   'computed_update_outbox',
   {
@@ -629,6 +676,7 @@ export const computedUpdateOutbox = pgTable(
     sourceChangedAt: timestamp('source_changed_at', { precision: 3 }),
     stageDepth: integer('stage_depth').notNull().default(0),
     predecessorTaskId: text('predecessor_task_id'),
+    deadLetterRestoreVersion: integer('dead_letter_restore_version'),
     createdAt: timestamp('created_at', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -763,6 +811,7 @@ export const computedUpdateDeadLetter = pgTable(
     failedAt: timestamp('failed_at', { precision: 3 }).notNull(),
     createdAt: timestamp('created_at', { precision: 3 }).notNull(),
     updatedAt: timestamp('updated_at', { precision: 3 }).notNull(),
+    deleteAuthorizedTxid: bigint('delete_authorized_txid', { mode: 'bigint' }),
   },
   (table) => [
     index('computed_update_dead_letter_base_id_seed_table_id_idx').on(
@@ -1452,6 +1501,8 @@ export const recordHistory = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow),
     createdBy: text('created_by').notNull(),
+    actorType: text('actor_type'),
+    actorId: text('actor_id'),
   },
   (table) => [
     index('record_history_table_id_record_id_created_time_idx').on(
@@ -2097,6 +2148,7 @@ export const relations = defineRelations(
     domainEventOutbox,
     domainEventDelivery,
     domainEventInbox,
+    fieldPeriodicRefreshState,
     computedUpdateOutbox,
     computedUpdateOutboxSeed,
     computedUpdateChangeFrontier,
@@ -2225,6 +2277,17 @@ export const relations = defineRelations(
     },
     field: {
       table: r.one.tableMeta({ from: r.field.tableId, to: r.tableMeta.id, optional: false }),
+      periodicRefreshState: r.one.fieldPeriodicRefreshState({
+        from: r.field.id,
+        to: r.fieldPeriodicRefreshState.fieldId,
+      }),
+    },
+    fieldPeriodicRefreshState: {
+      field: r.one.field({
+        from: r.fieldPeriodicRefreshState.fieldId,
+        to: r.field.id,
+        optional: false,
+      }),
     },
     computedUpdateOutbox: { seeds: r.many.computedUpdateOutboxSeed() },
     computedUpdateOutboxSeed: {

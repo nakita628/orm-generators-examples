@@ -11,6 +11,10 @@ public partial class Field
 
     public string SecondaryId { get; set; } = null!;
 
+    public string? ExternalId { get; set; }
+
+    public string? GroupId { get; set; }
+
     public string EnvelopeId { get; set; } = null!;
 
     public string EnvelopeItemId { get; set; } = null!;

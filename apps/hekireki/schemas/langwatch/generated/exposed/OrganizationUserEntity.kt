@@ -28,6 +28,12 @@ class OrganizationUserEntity(
     var departmentId by OrganizationUserTable.departmentId
 
     /**
+     * A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+     * no seat. Any role change clears it. See billing-only-invite.feature.
+     */
+    var billingOnly by OrganizationUserTable.billingOnly
+
+    /**
      * Set when an admin disables this membership to stay within the licensed
      * seat count. The person loses access to this organization only, keeps
      * their role, department and everything they did, and frees their seat.

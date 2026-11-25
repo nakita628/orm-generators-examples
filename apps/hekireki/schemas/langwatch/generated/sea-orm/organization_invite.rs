@@ -35,6 +35,9 @@ pub struct Model {
     pub accepted_by_user_id: Option<String>,
     #[sea_orm(column_name = "acceptedViaIdentifierId", column_type = "Text")]
     pub accepted_via_identifier_id: Option<String>,
+    /// Invites the person who pays with the Billing grant and no seat (ADR-205).
+    #[sea_orm(column_name = "billingOnly", default_value = false)]
+    pub billing_only: bool,
     #[sea_orm(
         column_name = "createdAt",
         column_type = "custom(\"timestamp(3)\")",

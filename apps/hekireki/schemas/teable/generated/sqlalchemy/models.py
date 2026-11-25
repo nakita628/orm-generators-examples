@@ -236,6 +236,7 @@ class TableMeta(Base):
     search_index_policy: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     query_index_policy: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     provision_state: Mapped[str] = mapped_column(Enum("pending", "ready", "error", "deleting", name="ProvisionState"), default="ready", server_default=text("'ready'"))
+    actor_storage_version: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     version: Mapped[int]
     order: Mapped[float]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -343,6 +344,8 @@ class Field(Base):
     is_conditional_lookup: Mapped[Optional[bool]]
     is_pending: Mapped[Optional[bool]]
     has_error: Mapped[Optional[bool]]
+    needs_periodic_refresh: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
+    refresh_cadence: Mapped[Optional[str]] = mapped_column(String(16))
     lookup_linked_field_id: Mapped[Optional[str]]
     lookup_options: Mapped[Optional[str]]
     table_id: Mapped[str] = mapped_column(ForeignKey("table_meta.id", ondelete="RESTRICT", onupdate="CASCADE", name="field_table_id_fkey"))
@@ -360,6 +363,7 @@ class Field(Base):
     )
 
     table: Mapped["TableMeta"] = relationship(back_populates="fields")
+    periodic_refresh_state: Mapped[Optional["FieldPeriodicRefreshState"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="field")
 
 class DomainEventOutbox(Base):
     __tablename__ = "domain_event_outbox"
@@ -415,6 +419,35 @@ class DomainEventInbox(Base):
         Index("domain_event_inbox_event_id_idx", "event_id"),
     )
 
+class FieldPeriodicRefreshState(Base):
+    __tablename__ = "field_periodic_refresh_state"
+
+    field_id: Mapped[str] = mapped_column(ForeignKey("field.id", ondelete="CASCADE", onupdate="CASCADE", name="field_periodic_refresh_state_field_id_fkey"), primary_key=True)
+    table_id: Mapped[str]
+    base_id: Mapped[str]
+    enabled: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
+    time_zone: Mapped[str] = mapped_column(String(64), default="UTC", server_default=text("'UTC'"))
+    contains_now_precision: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
+    last_refreshed_at: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=6))
+    last_refreshed_local_date: Mapped[Optional[str]] = mapped_column(String(16))
+    last_range_hash: Mapped[Optional[str]] = mapped_column(String(128))
+    last_status: Mapped[str] = mapped_column(String(32), default="idle", server_default=text("'idle'"))
+    last_error: Mapped[Optional[str]]
+    pending_task_id: Mapped[Optional[str]] = mapped_column(String(64))
+    pending_local_date: Mapped[Optional[str]] = mapped_column(String(16))
+    pending_range_hash: Mapped[Optional[str]] = mapped_column(String(128))
+    pending_started_at: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=6))
+    created_time: Mapped[datetime] = mapped_column(UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    last_modified_time: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=6), default=utc_now, onupdate=utc_now)
+
+    __table_args__ = (
+        Index("field_periodic_refresh_state_base_id_enabled_idx", "base_id", "enabled"),
+        Index("field_periodic_refresh_state_table_id_idx", "table_id"),
+        Index("field_periodic_refresh_state_enabled_local_date_idx", "enabled", "last_refreshed_local_date"),
+    )
+
+    field: Mapped["Field"] = relationship(back_populates="periodic_refresh_state")
+
 class ComputedUpdateOutbox(Base):
     __tablename__ = "computed_update_outbox"
 
@@ -446,6 +479,7 @@ class ComputedUpdateOutbox(Base):
     source_changed_at: Mapped[Optional[datetime]]
     stage_depth: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     predecessor_task_id: Mapped[Optional[str]]
+    dead_letter_restore_version: Mapped[Optional[int]]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
 
@@ -544,6 +578,7 @@ class ComputedUpdateDeadLetter(Base):
     failed_at: Mapped[datetime]
     created_at: Mapped[datetime]
     updated_at: Mapped[datetime]
+    delete_authorized_txid: Mapped[Optional[int]] = mapped_column(BigInteger)
 
     __table_args__ = (
         Index("computed_update_dead_letter_base_id_seed_table_id_idx", "base_id", "seed_table_id"),
@@ -1052,6 +1087,8 @@ class RecordHistory(Base):
     after: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     created_by: Mapped[str]
+    actor_type: Mapped[Optional[str]]
+    actor_id: Mapped[Optional[str]]
 
     __table_args__ = (
         Index("record_history_table_id_record_id_created_time_idx", "table_id", "record_id", "created_time"),

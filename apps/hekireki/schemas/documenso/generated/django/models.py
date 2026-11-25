@@ -836,6 +836,8 @@ class Field(models.Model):
 
     id = models.AutoField(primary_key=True)
     secondary_id = models.TextField(unique=True, db_column="secondaryId", default=cuid_str)
+    external_id = models.CharField(max_length=255, null=True, db_column="externalId")
+    group_id = models.CharField(max_length=255, null=True, db_column="groupId")
     envelope = models.ForeignKey("Envelope", on_delete=models.CASCADE, related_name="fields", db_column="envelopeId", db_index=False)
     envelope_item = models.ForeignKey("EnvelopeItem", on_delete=models.CASCADE, related_name="field", db_column="envelopeItemId", db_index=False)
     recipient = models.ForeignKey("Recipient", on_delete=models.CASCADE, related_name="fields", db_column="recipientId", db_index=False)

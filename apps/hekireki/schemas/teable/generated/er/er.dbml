@@ -195,6 +195,7 @@ Table table_meta {
   search_index_policy Json
   query_index_policy Json
   provision_state ProvisionState [default: 'ready', not null]
+  actor_storage_version Int [default: 0, not null]
   version Int [not null]
   order Float [not null]
   created_time DateTime [default: `now()`, not null]
@@ -276,6 +277,8 @@ Table field {
   is_conditional_lookup Boolean
   is_pending Boolean
   has_error Boolean
+  needs_periodic_refresh Boolean [default: false, not null]
+  refresh_cadence String
   lookup_linked_field_id String
   lookup_options String
   table_id String [not null]
@@ -335,6 +338,26 @@ Table domain_event_inbox {
   }
 }
 
+Table field_periodic_refresh_state {
+  field_id String [pk]
+  table_id String [not null]
+  base_id String [not null]
+  enabled Boolean [default: true, not null]
+  time_zone String [default: 'UTC', not null]
+  contains_now_precision Boolean [default: false, not null]
+  last_refreshed_at DateTime
+  last_refreshed_local_date String
+  last_range_hash String
+  last_status String [default: 'idle', not null]
+  last_error String
+  pending_task_id String
+  pending_local_date String
+  pending_range_hash String
+  pending_started_at DateTime
+  created_time DateTime [default: `now()`, not null]
+  last_modified_time DateTime
+}
+
 Table computed_update_outbox {
   id String [pk]
   base_id String [not null]
@@ -364,6 +387,7 @@ Table computed_update_outbox {
   source_changed_at DateTime
   stage_depth Int [default: 0, not null]
   predecessor_task_id String
+  dead_letter_restore_version Int
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
 }
@@ -448,6 +472,7 @@ Table computed_update_dead_letter {
   failed_at DateTime [not null]
   created_at DateTime [not null]
   updated_at DateTime [not null]
+  delete_authorized_txid BigInt
 }
 
 Table computed_update_dead_letter_seed {
@@ -820,6 +845,8 @@ Table record_history {
   after String [not null]
   created_time DateTime [default: `now()`, not null]
   created_by String [not null]
+  actor_type String
+  actor_id String
 }
 
 Table trash {
@@ -1165,6 +1192,8 @@ Ref base_space_id_fk: base.space_id > space.id
 Ref table_meta_base_id_fk: table_meta.base_id > base.id
 
 Ref field_table_id_fk: field.table_id > table_meta.id
+
+Ref field_periodic_refresh_state_field_id_fk: field_periodic_refresh_state.field_id - field.id [delete: cascade]
 
 Ref computed_update_outbox_seed_task_id_fk: computed_update_outbox_seed.task_id > computed_update_outbox.id [delete: cascade]
 

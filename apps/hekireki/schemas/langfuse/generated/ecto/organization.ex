@@ -30,6 +30,8 @@ defmodule Langfuse.Organization do
           verified_domains: [Langfuse.VerifiedDomain.t()],
           gateway_ai_connections: [Langfuse.GatewayAiConnection.t()],
           gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()],
+          gateway_guardrails: [Langfuse.GatewayGuardrail.t()],
+          gateway_guardrail_assignments: [Langfuse.GatewayGuardrailAssignment.t()],
           organization_llm_api_keys: [Langfuse.LlmApiKeys.t()],
           models: [Langfuse.Model.t()],
           role_assignments: [Langfuse.RoleAssignment.t()]
@@ -59,6 +61,8 @@ defmodule Langfuse.Organization do
     has_many(:verified_domains, Langfuse.VerifiedDomain, foreign_key: :organization_id, references: :id)
     has_many(:gateway_ai_connections, Langfuse.GatewayAiConnection, foreign_key: :organization_id, references: :id)
     has_many(:gateway_spend_limits, Langfuse.GatewaySpendLimit, foreign_key: :organization_id, references: :id)
+    has_many(:gateway_guardrails, Langfuse.GatewayGuardrail, foreign_key: :organization_id, references: :id)
+    has_many(:gateway_guardrail_assignments, Langfuse.GatewayGuardrailAssignment, foreign_key: :organization_id, references: :id)
     has_many(:organization_llm_api_keys, Langfuse.LlmApiKeys, foreign_key: :organization_id, references: :id)
     has_many(:models, Langfuse.Model, foreign_key: :organization_id, references: :id)
     has_many(:role_assignments, Langfuse.RoleAssignment, foreign_key: :org_id, references: :id)

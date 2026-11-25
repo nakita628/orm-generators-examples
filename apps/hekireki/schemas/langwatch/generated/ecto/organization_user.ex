@@ -9,6 +9,7 @@ defmodule LangWatch.OrganizationUser do
           organization_id: String.t(),
           role: atom(),
           department_id: String.t() | nil,
+          billing_only: boolean(),
           disabled_at: DateTime.t() | nil,
           pending_sso_grant_id: String.t() | nil,
           membership_stamp: String.t(),
@@ -27,6 +28,9 @@ defmodule LangWatch.OrganizationUser do
     # Plain column ref (relationMode="prisma"); the service validates the
     # id belongs to this org. See departments.feature.
     field(:department_id, :string, source: :departmentId)
+    # A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+    # no seat. Any role change clears it. See billing-only-invite.feature.
+    field(:billing_only, :boolean, default: false, source: :billingOnly)
     # Set when an admin disables this membership to stay within the licensed
     # seat count. The person loses access to this organization only, keeps
     # their role, department and everything they did, and frees their seat.

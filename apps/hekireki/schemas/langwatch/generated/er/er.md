@@ -485,6 +485,7 @@ erDiagram
         datetime createdAt
         datetime updatedAt
         string departmentId "Department assignment for spend attribution (the people lens). Single-valued, org-scoped, accounting-only (never gates access). Plain column ref (relationMode=#quot;prisma#quot;); the service validates the id belongs to this org. See departments.feature."
+        boolean billingOnly "A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and no seat. Any role change clears it. See billing-only-invite.feature."
         datetime disabledAt "Set when an admin disables this membership to stay within the licensed seat count. The person loses access to this organization only, keeps their role, department and everything they did, and frees their seat. Reversible: re-enabling restores access if a seat is available. Seat counting excludes disabled memberships. See seat-reconciliation.feature."
         string pendingSsoGrantId "Stable grant intent for an unfinished automatic SSO admission. Cleared after the authoritative grant is observed; never inferred from missing access."
         string membershipStamp "A new generation for each membership lifetime. Stamped USER grant facts must match the current active membership before they can be projected; removing and rejoining therefore cannot revive a delayed old attach."
@@ -893,6 +894,7 @@ erDiagram
         string subscriptionId
         string acceptedByUserId
         string acceptedViaIdentifierId
+        boolean billingOnly "Invites the person who pays with the Billing grant and no seat (ADR-205)."
         datetime createdAt
         datetime updatedAt
     }
@@ -1033,6 +1035,7 @@ erDiagram
         string createdById "The member who created it; null for boards that predate authorship."
         dashboardscope scope "Who sees it. Only the author changes it; a board with no author stays PROJECT."
         string organizationId "The owning project's organization, stamped when the board is first set to ORGANIZATION; null before."
+        string homeProduct "The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002, decision 8). Every board made before homes existed is llm-ops."
         json excludedOrigins "Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200, 2026-10-28); dropped in a later migration, once no serving release reads it."
         datetime createdAt
         datetime updatedAt
@@ -2213,6 +2216,33 @@ erDiagram
         string organizationId PK
         datetime createdAt
     }
+    NurturingOrganizationPlan {
+        string organizationId PK
+        string plan
+        datetime occurredAt
+        boolean fromCatchUp
+        string[] appliedEventIds "The event ids folded in, so a redelivery folds once."
+        string winnerEventId "The fact that last changed the row; only it may tell Customer.io."
+    }
+    NurturingVirtualKey {
+        string virtualKeyId PK
+        string organizationId
+        string name
+        datetime occurredAt
+        datetime keyCreatedAt
+        string creatorUserId
+        string principalUserId
+        datetime principalUserIdAt
+        string purpose
+        datetime purposeAt
+        datetime disabledAt
+        datetime enabledAt
+        datetime revokedAt
+    }
+    NurturingErasedUser {
+        string userIdHash PK
+        datetime erasedAt
+    }
     NurturingOrganization {
         string organizationId PK
         string adminUserId
@@ -2227,11 +2257,12 @@ erDiagram
         string[] codingRepositoryKeys
         int[] codingFirstDays
         datetime lastTraceAt
+        datetime adminAt
         datetime updatedAt
     }
     NurturingProjectUsageView {
         string projectId PK
-        string owner PK "The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation), or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day."
+        string owner PK "The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation). Evaluation days are not kept here: the evaluation-days map and its replay write them to NurturingProjectEvaluationDay."
         json folded "The project's usage as the fold folded it (NurturingProjectUsageState)."
         string[] appliedEventIds "The event ids of the last delivery folded in, so a redelivery folds once."
         string projectionVersion "A row of another version reads as undecodable and is re-folded from the log."
@@ -2244,6 +2275,21 @@ erDiagram
         int errorCount "Traces trace recorded failed (lw.trace.trace_failed)."
         datetime lastTraceAt "Append time of the newest root span."
         datetime lastFailedTraceAt "Append time of the newest trace_failed."
+    }
+    NurturingProjectTraceDayCount {
+        string projectId PK
+        string day PK "UTC `YYYY-MM-DD` of the facts' append time."
+        string source PK "The peer fold that wrote the row: `spans` or `failures`."
+        int traceCount
+        int errorCount
+        datetime lastTraceAt "Append time of the newest root span."
+        datetime lastFailedTraceAt "Append time of the newest trace_failed."
+        string[] appliedEventIds "The event ids of the last delivery folded in, so a redelivery folds once."
+        string projectionVersion "A row of another version reads as undecodable and is left out of the read."
+    }
+    NurturingProjectEvaluationDay {
+        string projectId PK
+        string day PK "UTC `YYYY-MM-DD`."
     }
     NurturingPersonalProject {
         string projectId PK
@@ -2863,6 +2909,16 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
+    DiscoveredAgentListing {
+        string id PK
+        string organizationId
+        string ingestionSourceId UK
+        string discoveredAgentId UK
+        datetime lastListedAt
+        datetime goneAt "Set when this source's listing stopped naming the agent; cleared when it names it again."
+        datetime createdAt
+        datetime updatedAt
+    }
     AgentRegistryEntry {
         string id PK
         string organizationId UK
@@ -2893,6 +2949,11 @@ erDiagram
     AgentRegistryBaseline {
         string organizationId PK
         datetime baselinedAt
+    }
+    AgentRegistrySettings {
+        string organizationId PK
+        int dormantAfterDays "Days without traffic after which a listed agent reads as dormant."
+        datetime updatedAt
     }
     AgentStopPlanTarget {
         string id PK
@@ -3121,6 +3182,58 @@ erDiagram
         string provider "The configured provider's name; null when the deployment signs in by email."
         boolean mounted
         string lastAppliedEventId "The last sso event applied: the row's idempotency guard and its version."
+        datetime updatedAt
+    }
+    DigestCohortOrganization {
+        string organizationId PK
+        string enrolledBy
+        datetime enrolledAt
+    }
+    DigestSubscription {
+        string userId PK
+        datetime unsubscribedAt
+        string unsubscribedFromSendId "The send whose unsubscribe link or one-click header the person used."
+        datetime updatedAt
+    }
+    DigestProjectWeek {
+        string id PK
+        string projectId
+        string organizationId
+        string isoWeek
+        json state "The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps."
+        datetime occurredAt
+        string lastEventId
+        datetime acceptedAt
+        string projectionVersion
+        datetime createdAt
+        datetime updatedAt
+    }
+    DigestUserWeek {
+        string id PK
+        string userId
+        string organizationId
+        string isoWeek
+        json state "Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins."
+        datetime occurredAt
+        string lastEventId
+        datetime acceptedAt
+        string projectionVersion
+        datetime createdAt
+        datetime updatedAt
+    }
+    DigestSend {
+        string id PK
+        string userId
+        string organizationId
+        string isoWeek
+        string templateId
+        datetime sentAt
+        datetime createdAt
+    }
+    DigestSettings {
+        string id PK
+        boolean armed
+        string lastPlannedWeek
         datetime updatedAt
     }
 ```

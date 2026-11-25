@@ -40,5 +40,6 @@ class ComputedUpdateDeadLetterEntity(
     var failedAt by ComputedUpdateDeadLetterTable.failedAt
     var createdAt by ComputedUpdateDeadLetterTable.createdAt
     var updatedAt by ComputedUpdateDeadLetterTable.updatedAt
+    var deleteAuthorizedTxid by ComputedUpdateDeadLetterTable.deleteAuthorizedTxid
     val seeds by ComputedUpdateDeadLetterSeedEntity referrersOn ComputedUpdateDeadLetterSeedTable.taskId
 }

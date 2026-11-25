@@ -18,6 +18,7 @@ defmodule LangWatch.DashboardsV2 do
           created_by_id: String.t() | nil,
           scope: atom(),
           organization_id: String.t() | nil,
+          home_product: String.t(),
           excluded_origins: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -37,6 +38,9 @@ defmodule LangWatch.DashboardsV2 do
     # The owning project's organization, stamped when the board is first set to
     # ORGANIZATION; null before.
     field(:organization_id, :string, source: :organizationId)
+    # The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+    # decision 8). Every board made before homes existed is llm-ops.
+    field(:home_product, :string, default: "llm-ops", source: :homeProduct)
     # Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
     # 2026-10-28); dropped in a later migration, once no serving release reads it.
     field(:excluded_origins, LangWatch.PrismaJson, source: :excludedOrigins)

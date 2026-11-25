@@ -24,6 +24,7 @@ defmodule Langfuse.ApiKey do
           gateway_association: Langfuse.GatewayApiKeyAssociation.t() | nil,
           api_keys_created: [Langfuse.ApiKey.t()],
           gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()],
+          gateway_guardrail_assignments: [Langfuse.GatewayGuardrailAssignment.t()],
           role_assignments: [Langfuse.RoleAssignment.t()]
         }
 
@@ -47,6 +48,7 @@ defmodule Langfuse.ApiKey do
     has_one(:gateway_association, Langfuse.GatewayApiKeyAssociation, foreign_key: :api_key_id, references: :id)
     has_many(:api_keys_created, Langfuse.ApiKey, foreign_key: :created_by_api_key_id, references: :id)
     has_many(:gateway_spend_limits, Langfuse.GatewaySpendLimit, foreign_key: :api_key_id, references: :id)
+    has_many(:gateway_guardrail_assignments, Langfuse.GatewayGuardrailAssignment, foreign_key: :api_key_id, references: :id)
     has_many(:role_assignments, Langfuse.RoleAssignment, foreign_key: :api_key_id, references: :id)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end

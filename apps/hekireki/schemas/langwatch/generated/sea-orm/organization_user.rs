@@ -32,6 +32,10 @@ pub struct Model {
     /// id belongs to this org. See departments.feature.
     #[sea_orm(column_name = "departmentId", column_type = "Text")]
     pub department_id: Option<String>,
+    /// A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+    /// no seat. Any role change clears it. See billing-only-invite.feature.
+    #[sea_orm(column_name = "billingOnly", default_value = false)]
+    pub billing_only: bool,
     /// Set when an admin disables this membership to stay within the licensed
     /// seat count. The person loses access to this organization only, keeps
     /// their role, department and everything they did, and frees their seat.

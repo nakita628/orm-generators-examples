@@ -19,6 +19,9 @@ object OrganizationInviteTable : IdTable<String>("\"OrganizationInvite\"") {
     val subscriptionId = text("subscriptionId").nullable()
     val acceptedByUserId = text("acceptedByUserId").nullable()
     val acceptedViaIdentifierId = text("acceptedViaIdentifierId").nullable()
+
+    /** Invites the person who pays with the Billing grant and no seat (ADR-205). */
+    val billingOnly = bool("billingOnly").default(false)
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"OrganizationInvite_pkey\"")

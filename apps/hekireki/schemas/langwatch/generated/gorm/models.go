@@ -1256,6 +1256,9 @@ type OrganizationUser struct {
 	// Plain column ref (relationMode="prisma"); the service validates the
 	// id belongs to this org. See departments.feature.
 	DepartmentID *string `gorm:"column:departmentId;index:OrganizationUser_departmentId_idx" json:"departmentId"`
+	// A Billing-only member (ADR-205): role EXTERNAL, the Billing grant, no team and
+	// no seat. Any role change clears it. See billing-only-invite.feature.
+	BillingOnly bool `gorm:"column:billingOnly;default:false;not null" json:"billingOnly"`
 	// Set when an admin disables this membership to stay within the licensed
 	// seat count. The person loses access to this organization only, keeps
 	// their role, department and everything they did, and frees their seat.
@@ -2683,10 +2686,12 @@ type OrganizationInvite struct {
 	SubscriptionID          *string        `gorm:"column:subscriptionId" json:"subscriptionId"`
 	AcceptedByUserID        *string        `gorm:"column:acceptedByUserId" json:"acceptedByUserId"`
 	AcceptedViaIdentifierID *string        `gorm:"column:acceptedViaIdentifierId" json:"acceptedViaIdentifierId"`
-	CreatedAt               DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt               DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization            *Organization  `gorm:"belongsTo"`
-	RequestedByUser         *User          `gorm:"foreignKey:RequestedBy;belongsTo"`
+	// Invites the person who pays with the Billing grant and no seat (ADR-205).
+	BillingOnly     bool          `gorm:"column:billingOnly;default:false;not null" json:"billingOnly"`
+	CreatedAt       DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization    *Organization `gorm:"belongsTo"`
+	RequestedByUser *User         `gorm:"foreignKey:RequestedBy;belongsTo"`
 }
 
 func (OrganizationInvite) TableName() string {
@@ -3118,6 +3123,9 @@ type DashboardsV2 struct {
 	// The owning project's organization, stamped when the board is first set to
 	// ORGANIZATION; null before.
 	OrganizationID *string `gorm:"column:organizationId;index:DashboardsV2_organizationId_scope_idx,priority:1" json:"organizationId"`
+	// The product whose sidebar lists it: llm-ops, me, gateway or governance (ADR-002,
+	// decision 8). Every board made before homes existed is llm-ops.
+	HomeProduct *string `gorm:"column:homeProduct;default:'llm-ops';not null" json:"homeProduct"`
 	// Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
 	// 2026-10-28); dropped in a later migration, once no serving release reads it.
 	ExcludedOrigins datatypes.JSON `gorm:"column:excludedOrigins" json:"excludedOrigins"`
@@ -6514,9 +6522,8 @@ func (NurturingProject) TableName() string {
 	return "NurturingProject"
 }
 
-// A project nurturing saw traces of with no placement copy, and when it first did: every worker
-// retries its trace batches only within one window from then, across restarts. Deleted when the
-// copy lands.
+// retired: unread since v3.28.0. The trace-day folds count a trace with no placement copy, so no
+// retry clock reads or writes this table; an operator step may drop it once old writers are gone.
 type NurturingUncopiedProject struct {
 	ProjectID   string   `gorm:"column:projectId;primaryKey" json:"projectId"`
 	FirstSeenAt DateTime `gorm:"column:firstSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstSeenAt"`
@@ -6561,6 +6568,66 @@ func (NurturingOrganizationCreated) TableName() string {
 	return "NurturingOrganizationCreated"
 }
 
+// Each organization's plan, folded from billing's subscription_changed facts: nurturing's own
+// copy. The newest fact wins, and a real fact wins a tie over a catch-up; Customer.io hears a
+// fact only when it changes this row.
+type NurturingOrganizationPlan struct {
+	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
+	Plan           *string  `gorm:"column:plan" json:"plan"`
+	OccurredAt     DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	FromCatchUp    bool     `gorm:"column:fromCatchUp;not null" json:"fromCatchUp"`
+	// The event ids folded in, so a redelivery folds once.
+	AppliedEventIds ScalarList[string] `gorm:"column:appliedEventIds;type:text[]" json:"appliedEventIds"`
+	// The fact that last changed the row; only it may tell Customer.io.
+	WinnerEventID *string `gorm:"column:winnerEventId" json:"winnerEventId"`
+}
+
+func (NurturingOrganizationPlan) TableName() string {
+	return "NurturingOrganizationPlan"
+}
+
+// Each gateway virtual key, folded from gateway's vk_lifecycle facts: nurturing's own copy. The
+// creator comes from the created fact alone; the holder and purpose are each the latest non-null
+// value by the fact's time (stamped beside them); the state times keep their latest.
+type NurturingVirtualKey struct {
+	VirtualKeyID      string    `gorm:"column:virtualKeyId;primaryKey" json:"virtualKeyId"`
+	OrganizationID    string    `gorm:"column:organizationId;not null" json:"organizationId"`
+	Name              string    `gorm:"column:name;not null" json:"name"`
+	OccurredAt        DateTime  `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	KeyCreatedAt      *DateTime `gorm:"column:keyCreatedAt;type:timestamp(3)" json:"keyCreatedAt"`
+	CreatorUserID     *string   `gorm:"column:creatorUserId;index:NurturingVirtualKey_creatorUserId_idx" json:"creatorUserId"`
+	PrincipalUserID   *string   `gorm:"column:principalUserId;index:NurturingVirtualKey_principalUserId_idx" json:"principalUserId"`
+	PrincipalUserIDAt *DateTime `gorm:"column:principalUserIdAt;type:timestamp(3)" json:"principalUserIdAt"`
+	Purpose           *string   `gorm:"column:purpose" json:"purpose"`
+	PurposeAt         *DateTime `gorm:"column:purposeAt;type:timestamp(3)" json:"purposeAt"`
+	DisabledAt        *DateTime `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
+	EnabledAt         *DateTime `gorm:"column:enabledAt;type:timestamp(3)" json:"enabledAt"`
+	RevokedAt         *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
+}
+
+func (NurturingVirtualKey) TableName() string {
+	return "NurturingVirtualKey"
+}
+
+// Each account nurturing erased, as a SHA-256 of its id and never the id: a gateway key fact
+// naming it, however late it lands, stores no creator or holder. Platform-wide, like the erasure.
+type NurturingErasedUser struct {
+	UserIDHash string   `gorm:"column:userIdHash;primaryKey" json:"userIdHash"`
+	ErasedAt   DateTime `gorm:"column:erasedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"erasedAt"`
+}
+
+func (NurturingErasedUser) TableName() string {
+	return "NurturingErasedUser"
+}
+
+func (m *NurturingErasedUser) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ErasedAt.IsZero() {
+		m.ErasedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
 // Nurturing's read model per organization: its admin and its milestone counts.
 // `seeded` marks an organization learned from the project backfill: its first_* already happened.
 type NurturingOrganization struct {
@@ -6577,6 +6644,7 @@ type NurturingOrganization struct {
 	CodingRepositoryKeys ScalarList[string] `gorm:"column:codingRepositoryKeys;type:text[]" json:"codingRepositoryKeys"`
 	CodingFirstDays      ScalarList[int]    `gorm:"column:codingFirstDays;type:integer[]" json:"codingFirstDays"`
 	LastTraceAt          *DateTime          `gorm:"column:lastTraceAt;type:timestamp(3)" json:"lastTraceAt"`
+	AdminAt              *DateTime          `gorm:"column:adminAt;type:timestamp(3)" json:"adminAt"`
 	UpdatedAt            DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -6602,11 +6670,12 @@ func (*NurturingOrganization) BeforeUpdate(tx *gorm.DB) error {
 
 // Nurturing's own per-project usage: a peer fold over the owners' prompt, evaluator, scenario
 // and simulation-run events (ARCHITECTURE §9), one peer fold per owner pipeline, summed per
-// organization for the per-email traits. Traces are counted in NurturingProjectTraceDay.
+// organization for the per-email traits. Traces are counted in NurturingProjectTraceDayCount.
 type NurturingProjectUsageView struct {
 	ProjectID string `gorm:"column:projectId;primaryKey" json:"projectId"`
-	// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation),
-	// or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
+	// The owner pipeline whose peer fold wrote the row (prompt, evaluator, scenario, simulation).
+	// Evaluation days are not kept here: the evaluation-days map and its replay write them to
+	// NurturingProjectEvaluationDay.
 	Owner string `gorm:"column:owner;primaryKey" json:"owner"`
 	// The project's usage as the fold folded it (NurturingProjectUsageState).
 	Folded datatypes.JSON `gorm:"column:folded;not null" json:"folded"`
@@ -6622,9 +6691,8 @@ func (NurturingProjectUsageView) TableName() string {
 	return "NurturingProjectUsageView"
 }
 
-// Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
-// root span being one trace, one row per project and UTC day of append time, incremented in place
-// by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+// retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+// peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
 type NurturingProjectTraceDay struct {
 	ProjectID string `gorm:"column:projectId;primaryKey" json:"projectId"`
 	// UTC `YYYY-MM-DD` of the root spans' append time.
@@ -6640,6 +6708,44 @@ type NurturingProjectTraceDay struct {
 
 func (NurturingProjectTraceDay) TableName() string {
 	return "NurturingProjectTraceDay"
+}
+
+// Nurturing's own trace counts (ARCHITECTURE §9), one row per project, UTC day of append time and
+// source: `spans` from trace's span_received peer fold (a customer root span is one trace),
+// `failures` from trace_failed's. Each fold owns its rows, so the two never overwrite each other;
+// readers sum a day's sources. Rebuilt by a projection replay. Kept 30 days.
+type NurturingProjectTraceDayCount struct {
+	ProjectID string `gorm:"column:projectId;primaryKey" json:"projectId"`
+	// UTC `YYYY-MM-DD` of the facts' append time.
+	Day string `gorm:"column:day;primaryKey;index:NurturingProjectTraceDayCount_day_idx" json:"day"`
+	// The peer fold that wrote the row: `spans` or `failures`.
+	Source     string `gorm:"column:source;primaryKey" json:"source"`
+	TraceCount int    `gorm:"column:traceCount;size:32;default:0;not null" json:"traceCount"`
+	ErrorCount int    `gorm:"column:errorCount;size:32;default:0;not null" json:"errorCount"`
+	// Append time of the newest root span.
+	LastTraceAt *DateTime `gorm:"column:lastTraceAt;type:timestamp(3)" json:"lastTraceAt"`
+	// Append time of the newest trace_failed.
+	LastFailedTraceAt *DateTime `gorm:"column:lastFailedTraceAt;type:timestamp(3)" json:"lastFailedTraceAt"`
+	// The event ids of the last delivery folded in, so a redelivery folds once.
+	AppliedEventIds ScalarList[string] `gorm:"column:appliedEventIds;type:text[]" json:"appliedEventIds"`
+	// A row of another version reads as undecodable and is left out of the read.
+	ProjectionVersion string `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
+}
+
+func (NurturingProjectTraceDayCount) TableName() string {
+	return "NurturingProjectTraceDayCount"
+}
+
+// Each project and UTC day with a completed evaluation, from evaluation's lifecycle_completed,
+// written insert-ignore. Replaces the `evaluation` rows of NurturingProjectUsageView.
+type NurturingProjectEvaluationDay struct {
+	ProjectID string `gorm:"column:projectId;primaryKey" json:"projectId"`
+	// UTC `YYYY-MM-DD`.
+	Day string `gorm:"column:day;primaryKey" json:"day"`
+}
+
+func (NurturingProjectEvaluationDay) TableName() string {
+	return "NurturingProjectEvaluationDay"
 }
 
 // Nurturing's copy of each personal project's owner, from organization's and project's facts.
@@ -8510,6 +8616,46 @@ func (*DiscoveredAgent) BeforeUpdate(tx *gorm.DB) error {
 	return nil
 }
 
+// One source's presence fact for one discovered agent. An agent is gone only when every
+// source that listed it marked it gone; an agent no source listed (older sightings) never is.
+type DiscoveredAgentListing struct {
+	ID                string   `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID    string   `gorm:"column:organizationId;index:DiscoveredAgentListing_organizationId_discoveredAgentId_idx,priority:1;not null" json:"organizationId"`
+	IngestionSourceID string   `gorm:"column:ingestionSourceId;uniqueIndex:DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key,priority:1;not null" json:"ingestionSourceId"`
+	DiscoveredAgentID string   `gorm:"column:discoveredAgentId;uniqueIndex:DiscoveredAgentListing_ingestionSourceId_discoveredAgentId_key,priority:2;index:DiscoveredAgentListing_organizationId_discoveredAgentId_idx,priority:2;not null" json:"discoveredAgentId"`
+	LastListedAt      DateTime `gorm:"column:lastListedAt;type:timestamp(3);not null" json:"lastListedAt"`
+	// Set when this source's listing stopped naming the agent; cleared when it names it again.
+	GoneAt    *DateTime `gorm:"column:goneAt;type:timestamp(3)" json:"goneAt"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (DiscoveredAgentListing) TableName() string {
+	return "DiscoveredAgentListing"
+}
+
+func (m *DiscoveredAgentListing) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = gonanoid.Must()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*DiscoveredAgentListing) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
 // One agent in the organisation's governance registry, from any source governance reads
 // (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest
 // machine-readable snapshot; `version` grows by one on every material change.
@@ -8592,6 +8738,34 @@ type AgentRegistryBaseline struct {
 
 func (AgentRegistryBaseline) TableName() string {
 	return "AgentRegistryBaseline"
+}
+
+// An organisation's agent registry settings. No row reads as the defaults.
+type AgentRegistrySettings struct {
+	OrganizationID string `gorm:"column:organizationId;primaryKey" json:"organizationId"`
+	// Days without traffic after which a listed agent reads as dormant.
+	DormantAfterDays *int     `gorm:"column:dormantAfterDays;size:32;default:30;not null" json:"dormantAfterDays"`
+	UpdatedAt        DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (AgentRegistrySettings) TableName() string {
+	return "AgentRegistrySettings"
+}
+
+func (m *AgentRegistrySettings) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*AgentRegistrySettings) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
 }
 
 // One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
@@ -9384,6 +9558,145 @@ func (m *SignInProviderMount) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (*SignInProviderMount) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// An organization enrolled in the weekly digest. No row: not enrolled, so nothing sends.
+type DigestCohortOrganization struct {
+	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
+	EnrolledBy     string   `gorm:"column:enrolledBy;not null" json:"enrolledBy"`
+	EnrolledAt     DateTime `gorm:"column:enrolledAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"enrolledAt"`
+}
+
+func (DigestCohortOrganization) TableName() string {
+	return "DigestCohortOrganization"
+}
+
+func (m *DigestCohortOrganization) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.EnrolledAt.IsZero() {
+		m.EnrolledAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+// A person's opt-out of the digest. No row, or no `unsubscribedAt`: subscribed.
+type DigestSubscription struct {
+	UserID         string    `gorm:"column:userId;primaryKey" json:"userId"`
+	UnsubscribedAt *DateTime `gorm:"column:unsubscribedAt;type:timestamp(3)" json:"unsubscribedAt"`
+	// The send whose unsubscribe link or one-click header the person used.
+	UnsubscribedFromSendID *string  `gorm:"column:unsubscribedFromSendId" json:"unsubscribedFromSendId"`
+	UpdatedAt              DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (DigestSubscription) TableName() string {
+	return "DigestSubscription"
+}
+
+func (m *DigestSubscription) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*DigestSubscription) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// A project's ISO week, folded from its owners' events. The id is the fold's aggregate key.
+type DigestProjectWeek struct {
+	ID             string `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID      string `gorm:"column:projectId;not null" json:"projectId"`
+	OrganizationID string `gorm:"column:organizationId;index:DigestProjectWeek_organizationId_isoWeek_idx,priority:1;not null" json:"organizationId"`
+	IsoWeek        string `gorm:"column:isoWeek;index:DigestProjectWeek_organizationId_isoWeek_idx,priority:2;index:DigestProjectWeek_isoWeek_idx;not null" json:"isoWeek"`
+	// The fold state: counts, sums, a fixed-bucket latency histogram, capped model and evaluator maps.
+	State             datatypes.JSON `gorm:"column:state;not null" json:"state"`
+	OccurredAt        DateTime       `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	LastEventID       string         `gorm:"column:lastEventId;not null" json:"lastEventId"`
+	AcceptedAt        DateTime       `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
+	ProjectionVersion string         `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (DigestProjectWeek) TableName() string {
+	return "DigestProjectWeek"
+}
+
+// A person's ISO week of coding-agent activity in one organization, folded from the agents' facts.
+type DigestUserWeek struct {
+	ID             string `gorm:"column:id;primaryKey" json:"id"`
+	UserID         string `gorm:"column:userId;index:DigestUserWeek_userId_idx;not null" json:"userId"`
+	OrganizationID string `gorm:"column:organizationId;index:DigestUserWeek_organizationId_isoWeek_idx,priority:1;not null" json:"organizationId"`
+	IsoWeek        string `gorm:"column:isoWeek;index:DigestUserWeek_organizationId_isoWeek_idx,priority:2;index:DigestUserWeek_isoWeek_idx;not null" json:"isoWeek"`
+	// Sessions (a capped set of ids) and the agents' metric series, converged last-write-wins.
+	State             datatypes.JSON `gorm:"column:state;not null" json:"state"`
+	OccurredAt        DateTime       `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	LastEventID       string         `gorm:"column:lastEventId;not null" json:"lastEventId"`
+	AcceptedAt        DateTime       `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
+	ProjectionVersion string         `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (DigestUserWeek) TableName() string {
+	return "DigestUserWeek"
+}
+
+// One person's digest for one ISO week, accepted by our own mailer. The id is `userId:isoWeek`.
+type DigestSend struct {
+	ID             string   `gorm:"column:id;primaryKey" json:"id"`
+	UserID         string   `gorm:"column:userId;index:DigestSend_userId_idx;not null" json:"userId"`
+	OrganizationID string   `gorm:"column:organizationId;not null" json:"organizationId"`
+	IsoWeek        string   `gorm:"column:isoWeek;not null" json:"isoWeek"`
+	TemplateID     string   `gorm:"column:templateId;not null" json:"templateId"`
+	SentAt         DateTime `gorm:"column:sentAt;type:timestamp(3);not null" json:"sentAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+}
+
+func (DigestSend) TableName() string {
+	return "DigestSend"
+}
+
+func (m *DigestSend) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+// The digest's one settings row. `armed` is the weekly send's master switch; it starts off.
+type DigestSettings struct {
+	ID              string   `gorm:"column:id;primaryKey" json:"id"`
+	Armed           bool     `gorm:"column:armed;default:false;not null" json:"armed"`
+	LastPlannedWeek *string  `gorm:"column:lastPlannedWeek" json:"lastPlannedWeek"`
+	UpdatedAt       DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+}
+
+func (DigestSettings) TableName() string {
+	return "DigestSettings"
+}
+
+func (m *DigestSettings) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*DigestSettings) BeforeUpdate(tx *gorm.DB) error {
 	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
 	if !tx.Statement.Changed("UpdatedAt") {
 		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})

@@ -582,6 +582,8 @@ Table Recipient {
 Table Field {
   id Int [pk, increment]
   secondaryId String [unique, not null]
+  externalId String
+  groupId String
   envelopeId String [not null]
   envelopeItemId String [not null]
   recipientId Int [not null]

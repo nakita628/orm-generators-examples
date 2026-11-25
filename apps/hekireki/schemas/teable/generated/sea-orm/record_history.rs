@@ -26,6 +26,10 @@ pub struct Model {
     pub created_time: DateTime,
     #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
+    pub actor_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
+    pub actor_id: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

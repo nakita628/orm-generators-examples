@@ -318,29 +318,30 @@ func (*Base) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TableMeta struct {
-	ID                string              `gorm:"column:id;primaryKey" json:"id"`
-	BaseID            string              `gorm:"column:base_id;index:table_meta_base_id_deleted_time_idx,priority:1;not null" json:"base_id"`
-	Name              string              `gorm:"column:name;not null" json:"name"`
-	Description       *string             `gorm:"column:description" json:"description"`
-	Icon              *string             `gorm:"column:icon" json:"icon"`
-	DbTableName       string              `gorm:"column:db_table_name;index:table_meta_db_table_name_idx;not null" json:"db_table_name"`
-	DbViewName        *string             `gorm:"column:db_view_name" json:"db_view_name"`
-	SearchIndex       datatypes.JSON      `gorm:"column:search_index;type:jsonb" json:"search_index"`
-	SearchIndexPolicy datatypes.JSON      `gorm:"column:search_index_policy;type:jsonb" json:"search_index_policy"`
-	QueryIndexPolicy  datatypes.JSON      `gorm:"column:query_index_policy;type:jsonb" json:"query_index_policy"`
-	ProvisionState    string              `gorm:"column:provision_state;default:'ready';not null" json:"provision_state"`
-	Version           int                 `gorm:"column:version;size:32;not null" json:"version"`
-	Order             float64             `gorm:"column:order;index:table_meta_order_idx;type:double precision;not null" json:"order"`
-	CreatedTime       DateTime            `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
-	LastModifiedTime  *DateTime           `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
-	DeletedTime       *DateTime           `gorm:"column:deleted_time;index:table_meta_base_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
-	CreatedBy         string              `gorm:"column:created_by;not null" json:"created_by"`
-	LastModifiedBy    *string             `gorm:"column:last_modified_by" json:"last_modified_by"`
-	Base              *Base               `gorm:"belongsTo"`
-	Fields            []Field             `gorm:"foreignKey:TableID;constraint:field_table_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
-	Views             []View              `gorm:"foreignKey:TableID;constraint:view_table_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
-	PluginPanel       []PluginPanel       `gorm:"foreignKey:TableID;constraint:plugin_panel_table_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	PluginContextMenu []PluginContextMenu `gorm:"foreignKey:TableID;constraint:plugin_context_menu_table_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID                  string              `gorm:"column:id;primaryKey" json:"id"`
+	BaseID              string              `gorm:"column:base_id;index:table_meta_base_id_deleted_time_idx,priority:1;not null" json:"base_id"`
+	Name                string              `gorm:"column:name;not null" json:"name"`
+	Description         *string             `gorm:"column:description" json:"description"`
+	Icon                *string             `gorm:"column:icon" json:"icon"`
+	DbTableName         string              `gorm:"column:db_table_name;index:table_meta_db_table_name_idx;not null" json:"db_table_name"`
+	DbViewName          *string             `gorm:"column:db_view_name" json:"db_view_name"`
+	SearchIndex         datatypes.JSON      `gorm:"column:search_index;type:jsonb" json:"search_index"`
+	SearchIndexPolicy   datatypes.JSON      `gorm:"column:search_index_policy;type:jsonb" json:"search_index_policy"`
+	QueryIndexPolicy    datatypes.JSON      `gorm:"column:query_index_policy;type:jsonb" json:"query_index_policy"`
+	ProvisionState      string              `gorm:"column:provision_state;default:'ready';not null" json:"provision_state"`
+	ActorStorageVersion int                 `gorm:"column:actor_storage_version;size:32;default:0;not null" json:"actor_storage_version"`
+	Version             int                 `gorm:"column:version;size:32;not null" json:"version"`
+	Order               float64             `gorm:"column:order;index:table_meta_order_idx;type:double precision;not null" json:"order"`
+	CreatedTime         DateTime            `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	LastModifiedTime    *DateTime           `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
+	DeletedTime         *DateTime           `gorm:"column:deleted_time;index:table_meta_base_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
+	CreatedBy           string              `gorm:"column:created_by;not null" json:"created_by"`
+	LastModifiedBy      *string             `gorm:"column:last_modified_by" json:"last_modified_by"`
+	Base                *Base               `gorm:"belongsTo"`
+	Fields              []Field             `gorm:"foreignKey:TableID;constraint:field_table_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Views               []View              `gorm:"foreignKey:TableID;constraint:view_table_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	PluginPanel         []PluginPanel       `gorm:"foreignKey:TableID;constraint:plugin_panel_table_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	PluginContextMenu   []PluginContextMenu `gorm:"foreignKey:TableID;constraint:plugin_context_menu_table_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (TableMeta) TableName() string {
@@ -452,37 +453,40 @@ func (*SchemaOperation) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Field struct {
-	ID                  string     `gorm:"column:id;primaryKey" json:"id"`
-	Name                string     `gorm:"column:name;not null" json:"name"`
-	Description         *string    `gorm:"column:description" json:"description"`
-	Options             *string    `gorm:"column:options" json:"options"`
-	Meta                *string    `gorm:"column:meta" json:"meta"`
-	AiConfig            *string    `gorm:"column:ai_config" json:"ai_config"`
-	Type                string     `gorm:"column:type;not null" json:"type"`
-	CellValueType       string     `gorm:"column:cell_value_type;not null" json:"cell_value_type"`
-	IsMultipleCellValue *bool      `gorm:"column:is_multiple_cell_value" json:"is_multiple_cell_value"`
-	DbFieldType         string     `gorm:"column:db_field_type;not null" json:"db_field_type"`
-	DbFieldName         string     `gorm:"column:db_field_name;not null" json:"db_field_name"`
-	ProvisionState      string     `gorm:"column:provision_state;default:'ready';not null" json:"provision_state"`
-	NotNull             *bool      `gorm:"column:not_null" json:"not_null"`
-	Unique              *bool      `gorm:"column:unique" json:"unique"`
-	IsPrimary           *bool      `gorm:"column:is_primary" json:"is_primary"`
-	IsComputed          *bool      `gorm:"column:is_computed" json:"is_computed"`
-	IsLookup            *bool      `gorm:"column:is_lookup" json:"is_lookup"`
-	IsConditionalLookup *bool      `gorm:"column:is_conditional_lookup" json:"is_conditional_lookup"`
-	IsPending           *bool      `gorm:"column:is_pending" json:"is_pending"`
-	HasError            *bool      `gorm:"column:has_error" json:"has_error"`
-	LookupLinkedFieldID *string    `gorm:"column:lookup_linked_field_id;index:field_lookup_linked_field_id_idx" json:"lookup_linked_field_id"`
-	LookupOptions       *string    `gorm:"column:lookup_options" json:"lookup_options"`
-	TableID             string     `gorm:"column:table_id;index:field_table_id_deleted_time_idx,priority:1;not null" json:"table_id"`
-	Order               float64    `gorm:"column:order;type:double precision;not null" json:"order"`
-	Version             int        `gorm:"column:version;size:32;not null" json:"version"`
-	CreatedTime         DateTime   `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
-	LastModifiedTime    *DateTime  `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
-	DeletedTime         *DateTime  `gorm:"column:deleted_time;index:field_table_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
-	CreatedBy           string     `gorm:"column:created_by;not null" json:"created_by"`
-	LastModifiedBy      *string    `gorm:"column:last_modified_by" json:"last_modified_by"`
-	Table               *TableMeta `gorm:"foreignKey:TableID;belongsTo"`
+	ID                   string                     `gorm:"column:id;primaryKey" json:"id"`
+	Name                 string                     `gorm:"column:name;not null" json:"name"`
+	Description          *string                    `gorm:"column:description" json:"description"`
+	Options              *string                    `gorm:"column:options" json:"options"`
+	Meta                 *string                    `gorm:"column:meta" json:"meta"`
+	AiConfig             *string                    `gorm:"column:ai_config" json:"ai_config"`
+	Type                 string                     `gorm:"column:type;not null" json:"type"`
+	CellValueType        string                     `gorm:"column:cell_value_type;not null" json:"cell_value_type"`
+	IsMultipleCellValue  *bool                      `gorm:"column:is_multiple_cell_value" json:"is_multiple_cell_value"`
+	DbFieldType          string                     `gorm:"column:db_field_type;not null" json:"db_field_type"`
+	DbFieldName          string                     `gorm:"column:db_field_name;not null" json:"db_field_name"`
+	ProvisionState       string                     `gorm:"column:provision_state;default:'ready';not null" json:"provision_state"`
+	NotNull              *bool                      `gorm:"column:not_null" json:"not_null"`
+	Unique               *bool                      `gorm:"column:unique" json:"unique"`
+	IsPrimary            *bool                      `gorm:"column:is_primary" json:"is_primary"`
+	IsComputed           *bool                      `gorm:"column:is_computed" json:"is_computed"`
+	IsLookup             *bool                      `gorm:"column:is_lookup" json:"is_lookup"`
+	IsConditionalLookup  *bool                      `gorm:"column:is_conditional_lookup" json:"is_conditional_lookup"`
+	IsPending            *bool                      `gorm:"column:is_pending" json:"is_pending"`
+	HasError             *bool                      `gorm:"column:has_error" json:"has_error"`
+	NeedsPeriodicRefresh bool                       `gorm:"column:needs_periodic_refresh;default:false;not null" json:"needs_periodic_refresh"`
+	RefreshCadence       *string                    `gorm:"column:refresh_cadence;type:varchar(16)" json:"refresh_cadence"`
+	LookupLinkedFieldID  *string                    `gorm:"column:lookup_linked_field_id;index:field_lookup_linked_field_id_idx" json:"lookup_linked_field_id"`
+	LookupOptions        *string                    `gorm:"column:lookup_options" json:"lookup_options"`
+	TableID              string                     `gorm:"column:table_id;index:field_table_id_deleted_time_idx,priority:1;not null" json:"table_id"`
+	Order                float64                    `gorm:"column:order;type:double precision;not null" json:"order"`
+	Version              int                        `gorm:"column:version;size:32;not null" json:"version"`
+	CreatedTime          DateTime                   `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	LastModifiedTime     *DateTime                  `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
+	DeletedTime          *DateTime                  `gorm:"column:deleted_time;index:field_table_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
+	CreatedBy            string                     `gorm:"column:created_by;not null" json:"created_by"`
+	LastModifiedBy       *string                    `gorm:"column:last_modified_by" json:"last_modified_by"`
+	Table                *TableMeta                 `gorm:"foreignKey:TableID;belongsTo"`
+	PeriodicRefreshState *FieldPeriodicRefreshState `gorm:"foreignKey:FieldID;constraint:field_periodic_refresh_state_field_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Field) TableName() string {
@@ -586,38 +590,83 @@ func (m *DomainEventInbox) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
+type FieldPeriodicRefreshState struct {
+	FieldID                string    `gorm:"column:field_id;primaryKey" json:"field_id"`
+	TableID                string    `gorm:"column:table_id;index:field_periodic_refresh_state_table_id_idx;not null" json:"table_id"`
+	BaseID                 string    `gorm:"column:base_id;index:field_periodic_refresh_state_base_id_enabled_idx,priority:1;not null" json:"base_id"`
+	Enabled                *bool     `gorm:"column:enabled;index:field_periodic_refresh_state_base_id_enabled_idx,priority:2;index:field_periodic_refresh_state_enabled_local_date_idx,priority:1;default:true;not null" json:"enabled"`
+	TimeZone               *string   `gorm:"column:time_zone;type:varchar(64);default:'UTC';not null" json:"time_zone"`
+	ContainsNowPrecision   bool      `gorm:"column:contains_now_precision;default:false;not null" json:"contains_now_precision"`
+	LastRefreshedAt        *DateTime `gorm:"column:last_refreshed_at;type:timestamptz(6)" json:"last_refreshed_at"`
+	LastRefreshedLocalDate *string   `gorm:"column:last_refreshed_local_date;index:field_periodic_refresh_state_enabled_local_date_idx,priority:2;type:varchar(16)" json:"last_refreshed_local_date"`
+	LastRangeHash          *string   `gorm:"column:last_range_hash;type:varchar(128)" json:"last_range_hash"`
+	LastStatus             *string   `gorm:"column:last_status;type:varchar(32);default:'idle';not null" json:"last_status"`
+	LastError              *string   `gorm:"column:last_error" json:"last_error"`
+	PendingTaskID          *string   `gorm:"column:pending_task_id;type:varchar(64)" json:"pending_task_id"`
+	PendingLocalDate       *string   `gorm:"column:pending_local_date;type:varchar(16)" json:"pending_local_date"`
+	PendingRangeHash       *string   `gorm:"column:pending_range_hash;type:varchar(128)" json:"pending_range_hash"`
+	PendingStartedAt       *DateTime `gorm:"column:pending_started_at;type:timestamptz(6)" json:"pending_started_at"`
+	CreatedTime            DateTime  `gorm:"column:created_time;type:timestamptz(6);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	LastModifiedTime       *DateTime `gorm:"column:last_modified_time;type:timestamptz(6)" json:"last_modified_time"`
+	Field                  *Field    `gorm:"belongsTo"`
+}
+
+func (FieldPeriodicRefreshState) TableName() string {
+	return "field_periodic_refresh_state"
+}
+
+func (m *FieldPeriodicRefreshState) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedTime.IsZero() {
+		m.CreatedTime = DateTime{Time: now}
+	}
+	if m.LastModifiedTime == nil {
+		m.LastModifiedTime = &DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*FieldPeriodicRefreshState) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("LastModifiedTime") {
+		tx.Statement.SetColumn("LastModifiedTime", &DateTime{Time: now})
+	}
+	return nil
+}
+
 type ComputedUpdateOutbox struct {
-	ID                      string                     `gorm:"column:id;primaryKey" json:"id"`
-	BaseID                  string                     `gorm:"column:base_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:1;not null" json:"base_id"`
-	WorkerLane              *string                    `gorm:"column:worker_lane;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:1;default:'production';not null" json:"worker_lane"`
-	SeedTableID             string                     `gorm:"column:seed_table_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:2;not null" json:"seed_table_id"`
-	SeedRecordIds           datatypes.JSON             `gorm:"column:seed_record_ids" json:"seed_record_ids"`
-	ChangeType              string                     `gorm:"column:change_type;not null" json:"change_type"`
-	Steps                   datatypes.JSON             `gorm:"column:steps" json:"steps"`
-	Edges                   datatypes.JSON             `gorm:"column:edges" json:"edges"`
-	Status                  string                     `gorm:"column:status;index:computed_update_outbox_status_next_run_at_idx,priority:1;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:2;not null" json:"status"`
-	Attempts                int                        `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
-	MaxAttempts             *int                       `gorm:"column:max_attempts;size:32;default:8;not null" json:"max_attempts"`
-	NextRunAt               DateTime                   `gorm:"column:next_run_at;index:computed_update_outbox_status_next_run_at_idx,priority:2;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
-	LockedAt                *DateTime                  `gorm:"column:locked_at;type:timestamp(3)" json:"locked_at"`
-	LockedBy                *string                    `gorm:"column:locked_by" json:"locked_by"`
-	LastError               *string                    `gorm:"column:last_error" json:"last_error"`
-	EstimatedComplexity     int                        `gorm:"column:estimated_complexity;size:32;default:0;not null" json:"estimated_complexity"`
-	PlanHash                string                     `gorm:"column:plan_hash;index:computed_update_outbox_plan_hash_idx;not null" json:"plan_hash"`
-	DirtyStats              datatypes.JSON             `gorm:"column:dirty_stats" json:"dirty_stats"`
-	RunID                   string                     `gorm:"column:run_id;index:computed_update_outbox_run_id_idx;not null" json:"run_id"`
-	OriginRunIds            ScalarList[string]         `gorm:"column:origin_run_ids;type:text[]" json:"origin_run_ids"`
-	RunTotalSteps           int                        `gorm:"column:run_total_steps;size:32;default:0;not null" json:"run_total_steps"`
-	RunCompletedStepsBefore int                        `gorm:"column:run_completed_steps_before;size:32;default:0;not null" json:"run_completed_steps_before"`
-	AffectedTableIds        ScalarList[string]         `gorm:"column:affected_table_ids;type:text[]" json:"affected_table_ids"`
-	AffectedFieldIds        ScalarList[string]         `gorm:"column:affected_field_ids;type:text[]" json:"affected_field_ids"`
-	SyncMaxLevel            *int                       `gorm:"column:sync_max_level;size:32" json:"sync_max_level"`
-	SourceChangedAt         *DateTime                  `gorm:"column:source_changed_at;type:timestamp(3)" json:"source_changed_at"`
-	StageDepth              int                        `gorm:"column:stage_depth;size:32;default:0;not null" json:"stage_depth"`
-	PredecessorTaskID       *string                    `gorm:"column:predecessor_task_id" json:"predecessor_task_id"`
-	CreatedAt               DateTime                   `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt               DateTime                   `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Seeds                   []ComputedUpdateOutboxSeed `gorm:"foreignKey:TaskID;constraint:computed_update_outbox_seed_task_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID                       string                     `gorm:"column:id;primaryKey" json:"id"`
+	BaseID                   string                     `gorm:"column:base_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:1;not null" json:"base_id"`
+	WorkerLane               *string                    `gorm:"column:worker_lane;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:1;default:'production';not null" json:"worker_lane"`
+	SeedTableID              string                     `gorm:"column:seed_table_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:2;not null" json:"seed_table_id"`
+	SeedRecordIds            datatypes.JSON             `gorm:"column:seed_record_ids" json:"seed_record_ids"`
+	ChangeType               string                     `gorm:"column:change_type;not null" json:"change_type"`
+	Steps                    datatypes.JSON             `gorm:"column:steps" json:"steps"`
+	Edges                    datatypes.JSON             `gorm:"column:edges" json:"edges"`
+	Status                   string                     `gorm:"column:status;index:computed_update_outbox_status_next_run_at_idx,priority:1;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:2;not null" json:"status"`
+	Attempts                 int                        `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
+	MaxAttempts              *int                       `gorm:"column:max_attempts;size:32;default:8;not null" json:"max_attempts"`
+	NextRunAt                DateTime                   `gorm:"column:next_run_at;index:computed_update_outbox_status_next_run_at_idx,priority:2;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
+	LockedAt                 *DateTime                  `gorm:"column:locked_at;type:timestamp(3)" json:"locked_at"`
+	LockedBy                 *string                    `gorm:"column:locked_by" json:"locked_by"`
+	LastError                *string                    `gorm:"column:last_error" json:"last_error"`
+	EstimatedComplexity      int                        `gorm:"column:estimated_complexity;size:32;default:0;not null" json:"estimated_complexity"`
+	PlanHash                 string                     `gorm:"column:plan_hash;index:computed_update_outbox_plan_hash_idx;not null" json:"plan_hash"`
+	DirtyStats               datatypes.JSON             `gorm:"column:dirty_stats" json:"dirty_stats"`
+	RunID                    string                     `gorm:"column:run_id;index:computed_update_outbox_run_id_idx;not null" json:"run_id"`
+	OriginRunIds             ScalarList[string]         `gorm:"column:origin_run_ids;type:text[]" json:"origin_run_ids"`
+	RunTotalSteps            int                        `gorm:"column:run_total_steps;size:32;default:0;not null" json:"run_total_steps"`
+	RunCompletedStepsBefore  int                        `gorm:"column:run_completed_steps_before;size:32;default:0;not null" json:"run_completed_steps_before"`
+	AffectedTableIds         ScalarList[string]         `gorm:"column:affected_table_ids;type:text[]" json:"affected_table_ids"`
+	AffectedFieldIds         ScalarList[string]         `gorm:"column:affected_field_ids;type:text[]" json:"affected_field_ids"`
+	SyncMaxLevel             *int                       `gorm:"column:sync_max_level;size:32" json:"sync_max_level"`
+	SourceChangedAt          *DateTime                  `gorm:"column:source_changed_at;type:timestamp(3)" json:"source_changed_at"`
+	StageDepth               int                        `gorm:"column:stage_depth;size:32;default:0;not null" json:"stage_depth"`
+	PredecessorTaskID        *string                    `gorm:"column:predecessor_task_id" json:"predecessor_task_id"`
+	DeadLetterRestoreVersion *int                       `gorm:"column:dead_letter_restore_version;size:32" json:"dead_letter_restore_version"`
+	CreatedAt                DateTime                   `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt                DateTime                   `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	Seeds                    []ComputedUpdateOutboxSeed `gorm:"foreignKey:TaskID;constraint:computed_update_outbox_seed_task_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ComputedUpdateOutbox) TableName() string {
@@ -735,6 +784,7 @@ type ComputedUpdateDeadLetter struct {
 	FailedAt                DateTime                       `gorm:"column:failed_at;type:timestamp(3);not null" json:"failed_at"`
 	CreatedAt               DateTime                       `gorm:"column:created_at;type:timestamp(3);autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt               DateTime                       `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	DeleteAuthorizedTxid    *int64                         `gorm:"column:delete_authorized_txid" json:"delete_authorized_txid"`
 	Seeds                   []ComputedUpdateDeadLetterSeed `gorm:"foreignKey:TaskID;constraint:computed_update_dead_letter_seed_task_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
@@ -1490,6 +1540,8 @@ type RecordHistory struct {
 	After       string   `gorm:"column:after;not null" json:"after"`
 	CreatedTime DateTime `gorm:"column:created_time;index:record_history_table_id_record_id_created_time_idx,priority:3;index:record_history_table_id_created_time_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy   string   `gorm:"column:created_by;not null" json:"created_by"`
+	ActorType   *string  `gorm:"column:actor_type" json:"actor_type"`
+	ActorID     *string  `gorm:"column:actor_id" json:"actor_id"`
 }
 
 func (RecordHistory) TableName() string {

@@ -57,6 +57,10 @@ public partial class Organization
 
     public virtual ICollection<GatewaySpendLimit> GatewaySpendLimits { get; set; } = new List<GatewaySpendLimit>();
 
+    public virtual ICollection<GatewayGuardrail> GatewayGuardrails { get; set; } = new List<GatewayGuardrail>();
+
+    public virtual ICollection<GatewayGuardrailAssignment> GatewayGuardrailAssignments { get; set; } = new List<GatewayGuardrailAssignment>();
+
     public virtual ICollection<LlmApiKeys> OrganizationLlmApiKeys { get; set; } = new List<LlmApiKeys>();
 
     public virtual ICollection<Model> Models { get; set; } = new List<Model>();

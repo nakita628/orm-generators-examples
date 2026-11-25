@@ -1023,6 +1023,8 @@ export const field = pgTable(
     secondaryId: text('secondaryId')
       .notNull()
       .$defaultFn(() => cuid()),
+    externalId: varchar('externalId', { length: 255 }),
+    groupId: varchar('groupId', { length: 255 }),
     envelopeId: text('envelopeId').notNull(),
     envelopeItemId: text('envelopeItemId').notNull(),
     recipientId: integer('recipientId').notNull(),

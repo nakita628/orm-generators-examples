@@ -1,9 +1,8 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-/// Nurturing's own trace counts from trace's span_received and trace_failed (ARCHITECTURE §9), a
-/// root span being one trace, one row per project and UTC day of append time, incremented in place
-/// by each batch. A redelivered batch can count a trace twice; accepted (issue 9378). Kept 30 days.
+/// retired: unread since v3.28.0. Replaced by NurturingProjectTraceDayCount, which the trace-day
+/// peer folds write and a replay rebuilds; an operator step may drop it once old writers are gone.
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "NurturingProjectTraceDay")]
 pub struct Model {

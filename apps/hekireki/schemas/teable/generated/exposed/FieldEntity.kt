@@ -31,6 +31,8 @@ class FieldEntity(
     var isConditionalLookup by FieldTable.isConditionalLookup
     var isPending by FieldTable.isPending
     var hasError by FieldTable.hasError
+    var needsPeriodicRefresh by FieldTable.needsPeriodicRefresh
+    var refreshCadence by FieldTable.refreshCadence
     var lookupLinkedFieldId by FieldTable.lookupLinkedFieldId
     var lookupOptions by FieldTable.lookupOptions
     var tableId by FieldTable.tableId
@@ -42,6 +44,7 @@ class FieldEntity(
     var createdBy by FieldTable.createdBy
     var lastModifiedBy by FieldTable.lastModifiedBy
     var table by TableMetaEntity referencedOn FieldTable.tableId
+    val periodicRefreshState by FieldPeriodicRefreshStateEntity optionalBackReferencedOn FieldPeriodicRefreshStateTable.id
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

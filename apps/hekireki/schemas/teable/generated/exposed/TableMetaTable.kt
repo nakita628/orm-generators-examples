@@ -26,6 +26,7 @@ object TableMetaTable : IdTable<String>("table_meta") {
     val queryIndexPolicy = jsonb<String>("query_index_policy", { it }, { it }).nullable()
     val provisionState =
         pgEnum("provision_state", "\"ProvisionState\"", ProvisionState.entries, ProvisionState::dbName).default(ProvisionState.READY)
+    val actorStorageVersion = integer("actor_storage_version").default(0)
     val version = integer("version")
     val order = double("order")
     val createdTime = pgTimestamp("created_time", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
