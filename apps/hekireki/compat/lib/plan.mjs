@@ -233,7 +233,10 @@ function sample(f, enums, n, dialect) {
 function updated(f, enums, dialect) {
   switch (f.type) {
     case 'String':
-      return f.native?.[0] === 'Uuid' ? '00000000-0000-4000-8000-ffffffffffff' : 'u1'
+      // A column that only takes text of its own kind: a UUID, an address.
+      if (f.native?.[0] === 'Uuid') return '00000000-0000-4000-8000-ffffffffffff'
+      if (f.native?.[0] === 'Inet') return '10.9.9.9'
+      return 'u1'
     case 'Int':
       return 4242
     case 'Boolean':

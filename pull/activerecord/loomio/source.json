@@ -1,0 +1,86 @@
+{
+  "source": "activerecord/loomio",
+  "about": "[Loomio](https://github.com/loomio/loomio)'s db/schema.rb",
+  "repo": "loomio/loomio",
+  "commit": "53dd1b0a3b09fe2ac81f5845f2ffe005ae412446",
+  "path": "db/schema.rb",
+  "license": "AGPL-3.0",
+  "dialect": "postgresql",
+  "tables": 81,
+  "models": 81,
+  "fixes": [
+    "account_completion_proofs.user_id: BigInt -> Int, the type of users.id it references",
+    "anonymous_ballot_choices.poll_option_id: BigInt -> Int, the type of poll_options.id it references",
+    "anonymous_ballots.poll_id: BigInt -> Int, the type of polls.id it references",
+    "anonymous_poll_voters.poll_id: BigInt -> Int, the type of polls.id it references",
+    "anonymous_poll_voters.inviter_id: BigInt? -> Int?, the type of users.id it references",
+    "anonymous_poll_voters.voter_id: BigInt -> Int, the type of users.id it references",
+    "discussions.topic_id: Int? -> BigInt?, the type of topics.id it references",
+    "email_suppressions.cleared_by_id: BigInt? -> Int?, the type of users.id it references",
+    "group_follows.user_id: BigInt -> Int, the type of users.id it references",
+    "group_follows.group_id: BigInt -> Int, the type of groups.id it references",
+    "group_handle_redirects.group_id: BigInt -> Int, the type of groups.id it references",
+    "mobile_authorization_codes.user_id: BigInt -> Int, the type of users.id it references",
+    "mobile_devices.user_id: BigInt -> Int, the type of users.id it references",
+    "passkey_challenges.user_id: BigInt? -> Int?, the type of users.id it references",
+    "passkey_credentials.user_id: BigInt -> Int, the type of users.id it references",
+    "pending_emails.group_id: BigInt -> Int, the type of groups.id it references",
+    "polls.topic_id: Int? -> BigInt?, the type of topics.id it references",
+    "push_subscriptions.user_id: BigInt -> Int, the type of users.id it references",
+    "sessions.user_id: BigInt -> Int, the type of users.id it references",
+    "subscription_update_receipts.subscription_id: BigInt? -> Int?, the type of subscriptions.id it references",
+    "tasks_users.user_id: BigInt -> Int, the type of users.id it references",
+    "topic_items.topic_id: Int -> BigInt, the type of topics.id it references",
+    "topic_readers.topic_id: Int -> BigInt, the type of topics.id it references"
+  ],
+  "prisma": "8.1.0-dev.9",
+  "pulled_at": "2026-11-25T20:01:44.391Z",
+  "sql": {
+    "prisma": {
+      "status": "error",
+      "error": "Error: ERROR: cannot use column reference in DEFAULT expression"
+    },
+    "drizzle": {
+      "status": "error",
+      "error": "Error: ERROR: syntax error at or near \",\""
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "error",
+      "error": "NameError: name 'parent_id' is not defined"
+    },
+    "django": {
+      "status": "error",
+      "error": "psycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression"
+    },
+    "gorm": {
+      "status": "error",
+      "error": "ERROR: cannot use column reference in DEFAULT expression (SQLSTATE 0A000)"
+    },
+    "sea-orm": {
+      "status": "error",
+      "error": "\"groups\": Execution Error: error returned from database: cannot use column reference in DEFAULT expression"
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "error",
+      "error": "Property 'TrialInvitationRecipients.IpAddress' cannot be used as a key because it has type 'NpgsqlInet' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'NpgsqlInet' with a type that can be compared."
+    },
+    "exposed": {
+      "status": "error",
+      "error": "Exception in thread \"main\" org.jetbrains.exposed.v1.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: cannot use column reference in DEFAULT expression"
+    }
+  },
+  "hekireki": "0.55.0",
+  "checked_at": "2026-11-25T20:03:52.960Z"
+}

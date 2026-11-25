@@ -237,6 +237,8 @@ async function pullSource(source) {
   rmSync(sqlDir, { recursive: true, force: true })
   mkdirSync(sqlDir, { recursive: true })
   const pushUrl = await freshDatabase(source.dialect, work, `pull_${source.layer}_${source.name}_prisma`)
+  // What the app creates outside its schema and a default calls (Mastodon's timestamp_id()).
+  if (source.before_sql) execSql(source.dialect, pushUrl, source.before_sql)
   const push = prisma(work, pushUrl, ['db', 'push', '--schema', join(dir, 'schema.prisma')])
   writeFileSync(join(sqlDir, 'prisma.sql'), push.status === 0 ? dump(source.dialect, pushUrl) : `-- prisma db push failed:\n-- ${tail(push).replaceAll('\n', '\n-- ')}\n`)
   dropDatabase(source.dialect, pushUrl)

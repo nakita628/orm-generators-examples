@@ -1,0 +1,14 @@
+-- prisma db push failed:
+-- Loaded Prisma config from prisma.config.mjs.
+-- 
+-- Prisma schema loaded from ../../../../../../home/user/orm-generators-examples/pull/activerecord/loomio/schema.prisma.
+-- Error: ERROR: cannot use column reference in DEFAULT expression
+--    0: sql_schema_connector::apply_migration::migration_step
+--            with step=CreateTable { table_id: TableId(18) }
+--              at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:28
+--    1: sql_schema_connector::apply_migration::apply_migration
+--              at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:11
+--    2: schema_core::state::SchemaPush
+--              at schema-engine/core/src/state.rs:547
+-- 
+-- Datasource "db": PostgreSQL database "pull_activerecord_loomio_prisma", schema "public" at "127.0.0.1:55432"

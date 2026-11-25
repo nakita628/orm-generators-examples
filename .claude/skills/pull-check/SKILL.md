@@ -90,13 +90,24 @@ Read the generated code and the table (`source.sql`) before deciding.
 - drizzle-kit's `export` cuts a `CASE … ELSE 'b'::text END` default to `… ELSE 'b',`, a syntax
   error;
 - GORM's SQLite dialect writes a string default in double quotes (`DEFAULT "mentions"`).
+- Ecto has no association for a composite foreign key (hekireki-ecto leaves the columns as plain
+  fields, and says so in `belongsToAssociation`), so each one shows as "no relation for …".
+- hekireki-django leaves out a partial index (`condition=` takes a Q, not SQL; the generated model
+  says so in a comment), and a PostgreSQL `DateTime` is `timestamptz` there (hekireki#311).
 
 **Prisma's**: not filed. What `sql/prisma.sql` already lacks against `source.sql` (the write-up
 does not say it: check constraints, triggers, views), anything listed in the write-up's header
 under "Changed from what `prisma db pull` wrote", a column Prisma writes up as `Unsupported(...)`,
 and a pull that does not validate. A generated column that `prisma db pull` writes up as
 `@default(dbgenerated("<expression>"))` makes `prisma db push` and every ORM's tables fail with
-"cannot use column reference in DEFAULT expression" (Maybe): Prisma's too.
+"cannot use column reference in DEFAULT expression" (Maybe, Loomio): Prisma's too. So are the
+runtime findings that follow from those: an insert refused by a check constraint ("violates check
+constraint") or by a generated column ("cannot insert a non-DEFAULT value into column"), and a key
+that comes back as `"1"` (or a `mismatched types` error) on a column the header lists as changed
+(`BigInt -> Int`).
+
+**The harness's own limit**: a model whose required key closes a cycle is not inserted ("a required
+key closes a cycle"); it is no finding on any ORM.
 
 **The pipeline's**: fix it here, not upstream. That includes `pull/lib/sql.mjs` when two dumps
 that say the same thing come out as different (run `node pull/pull.mjs --compare-only <...>`

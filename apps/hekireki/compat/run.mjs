@@ -132,6 +132,11 @@ for (const name of schemas) {
       if (plan.dialect === 'postgresql' && existsSync(sourceSql))
         for (const [, ext] of readFileSync(sourceSql, 'utf8').matchAll(/^CREATE EXTENSION IF NOT EXISTS ("?[\w-]+"?)/gm))
           await admin(plan.dialect, `CREATE EXTENSION IF NOT EXISTS ${ext}`, new URL(ddlUrl).pathname.slice(1))
+      // The functions a source.sql's column defaults call (Mastodon's timestamp_id(), which the app
+      // creates outside its schema): a table cannot be created without them.
+      if (plan.dialect === 'postgresql' && existsSync(sourceSql))
+        for (const [fn] of readFileSync(sourceSql, 'utf8').matchAll(/^CREATE FUNCTION [^]*?\bAS \$([A-Za-z_]*)\$[^]*?\$\1\$;$/gm))
+          await admin(plan.dialect, fn, new URL(ddlUrl).pathname.slice(1))
       const ddl = harness.ddl(prepared, join(work, 'plan.json'), ddlUrl)
       if (ddl.error) result.ddl = { error: ddl.error }
       else {

@@ -330,6 +330,10 @@ public static class Harness
         if (inner == typeof(short)) return short.Parse(text, CultureInfo.InvariantCulture);
         if (inner == typeof(JsonDocument)) return JsonDocument.Parse(node.ToJsonString());
         if (inner == typeof(JsonElement)) return JsonDocument.Parse(node.ToJsonString()).RootElement;
+#if PG
+        // @db.Inet: a struct with a constructor from text and no Parse(string).
+        if (inner == typeof(NpgsqlTypes.NpgsqlInet)) return new NpgsqlTypes.NpgsqlInet(text);
+#endif
         if (inner.IsEnum)
         {
             foreach (var field in inner.GetFields(BindingFlags.Public | BindingFlags.Static))

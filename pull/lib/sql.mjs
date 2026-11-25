@@ -78,8 +78,18 @@ function read(sql, dialect) {
       if (m) owned.add(m[1])
     }
     for (const s of strict) readPg(s, table, other, owned)
+    for (const t of tables.values()) for (const [column, def] of t.columns) t.columns.set(column, sameDefault(def))
   }
   return { strict, tables, other, pretty }
+}
+
+// Defaults PostgreSQL's tools spell two ways for one value: an empty array (`ARRAY[]::bigint[]`,
+// `'{}'::bigint[]`, `ARRAY[]::text[]` on a varchar[] column: the column says the type) and a float's
+// whole number with or without its `.0` (`DEFAULT 0.0`, `DEFAULT 0`).
+function sameDefault(def) {
+  let d = def.replace(/\bARRAY\[\]::[\w ]+(?:\([^)]*\))?\[\]/gi, 'ARRAY[]').replace(/'\{\}'::[\w ]+(?:\([^)]*\))?\[\]/gi, 'ARRAY[]')
+  if (/^(double precision|real|float\d*)\b/i.test(d)) d = d.replace(/(\bDEFAULT\s+-?\d+)\.0+\b/i, '$1')
+  return d
 }
 
 // What a dump holds besides the tables: session settings, extensions, the schema itself.

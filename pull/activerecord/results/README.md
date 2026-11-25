@@ -5,6 +5,8 @@ Each project's tables as Active Record created them (`<project>/source.sql`), wr
 | Schema | Models | hekireki | drizzle | kysely | sqlalchemy | django | gorm | sea-orm | ecto | activerecord | eloquent | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [campfire](campfire.md) | 23 | 0.52.2 | ⚠️ 30/32 · tables ≠ | ✅ 32/32 · no tables | ✅ 32/32 · tables ≠ | ✅ 32/32 · tables ≠ | ✅ 32/32 · tables ≠ | ✅ 32/32 · tables ≠ | ✅ 32/32 · no tables | ✅ 32/32 · no tables | ✅ 32/32 · no tables | ✅ 32/32 · tables ≠ | not generated |
+| [loomio](loomio.md) | 81 | 0.55.0 | ⚠️ 428/453 · tables ❌ | ⚠️ 323/351 · no tables | ❌ did not run | ⚠️ 441/453 · tables ❌ | ⚠️ 497/501 · tables ❌ | ⚠️ 265/306 · tables ❌ | ⚠️ 349/375 · no tables | ⚠️ 494/499 · no tables | ⚠️ 441/453 · no tables | ❌ did not run | ⚠️ 439/451 · tables ❌ |
+| [mastodon](mastodon.md) | 124 | 0.55.0 | ✅ 881/881 · tables ✅ | ✅ 561/561 · no tables | ✅ 881/881 · tables ✅ | ✅ 881/881 · tables ≠ | ✅ 881/881 · tables ❌ | ✅ 873/873 · tables ❌ | ⚠️ 806/816 · no tables | ✅ 881/881 · no tables | ✅ 881/881 · no tables | ❌ did not run | ✅ 879/879 · tables ✅ |
 | [maybe](maybe.md) | 61 | 0.52.2 | ⚠️ 374/376 · tables ❌ | ⚠️ 273/280 · no tables | ⚠️ 374/376 · tables ❌ | ⚠️ 366/372 · tables ❌ | ⚠️ 284/299 · tables ❌ | ⚠️ 72/129 · tables ❌ | ⚠️ 133/173 · no tables | ⚠️ 374/376 · no tables | ⚠️ 111/165 · no tables | ⚠️ 372/376 · tables ❌ | ⚠️ 374/376 · tables ❌ |
 
 ## The SQL each ORM creates from the write-up
@@ -16,6 +18,8 @@ Each project's tables as Active Record created them (`<project>/source.sql`), wr
 | Project | prisma | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [campfire](../campfire/README.md) | ≠ 24 | ≠ 21 | ≠ 21 | ≠ 21 | ≠ 21 | ≠ 20 | ≠ 21 | not generated |
+| [loomio](../loomio/README.md) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [mastodon](../mastodon/README.md) | ≠ 25 | ≠ 25 | ≠ 25 | ≠ 132 | ❌ | ❌ | ❌ | ≠ 25 |
 | [maybe](../maybe/README.md) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### Against prisma.sql, what Prisma itself creates from the same write-up
@@ -25,4 +29,6 @@ What the write-up cannot say (Django's identity columns become serial ones, chec
 | Project | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [campfire](../campfire/README.md) | ≠ 20 | ≠ 19 | ≠ 19 | ≠ 20 | ≠ 23 | ≠ 19 | not generated |
+| [loomio](../loomio/README.md) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [mastodon](../mastodon/README.md) | ≈ | ≈ | ≠ 122 | ❌ | ❌ | ❌ | ≈ |
 | [maybe](../maybe/README.md) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

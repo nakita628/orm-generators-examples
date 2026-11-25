@@ -1,0 +1,831 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 172,
+          "total": 172
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 52,
+          "total": 52
+        },
+        "insert": {
+          "ok": 51,
+          "total": 51
+        },
+        "read": {
+          "ok": 51,
+          "total": 51
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 174,
+          "total": 174
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");\n\n-- RenameIndex\nALTER INDEX \"auth_group__group_i_56451c_idx\" RENAME TO \"auth_group_permissions_group_id_b120cbf9\";\n\n-- RenameIndex\nALTER INDEX \"auth_group__permiss_70720c_idx\" RENAME TO \"auth_group_permissions_permission_id_84c5c92e\";\n\n-- RenameIndex\nALTER INDEX \"auth_permis_content_2e1e7f_idx\" RENAME TO \"auth_permission_content_type_id_2f476e4b\";\n\n-- RenameIndex\nALTER INDEX \"auth_user_g_group_i_b1969d_idx\" RENAME TO \"auth_user_groups_group_id_97559544\";\n\n-- RenameIndex\nALTER INDEX \"auth_user_g_user_id_80d319_idx\" RENAME TO \"auth_user_groups_user_id_6a12ed8b\";\n\n-- RenameIndex\nALTER INDEX \"auth_user_u_permiss_9d102f_idx\" RENAME TO \"auth_user_user_permissions_permission_id_1fbb5f2c\";\n\n-- RenameIndex\nALTER INDEX \"auth_user_u_user_id_0249bb_idx\" RENAME TO \"auth_user_user_permissions_user_id_a95ead1b\";\n\n-- RenameIndex\nALTER INDEX \"django_admi_content_3bf227_idx\" RENAME TO \"django_admin_log_content_type_id_c4bce8eb\";\n\n-- RenameIndex\nALTER INDEX \"django_admi_user_id_a427ca_idx\" RENAME TO \"django_admin_log_user_id_c564eba6\";\n\n-- RenameIndex\nALTER INDEX \"django_sess_expire__73ed74_idx\" RENAME TO \"django_session_expire_date_a5c62663\";\n\n-- RenameIndex\nALTER INDEX \"taggit_tagg_content_e2405e_idx\" RENAME TO \"taggit_taggeditem_content_type_id_9957a03c\";\n\n-- RenameIndex\nALTER INDEX \"taggit_tagg_object__01f443_idx\" RENAME TO \"taggit_taggeditem_object_id_e2d7d1df\";\n\n-- RenameIndex\nALTER INDEX \"taggit_tagg_tag_id_cc30ee_idx\" RENAME TO \"taggit_taggeditem_tag_id_f4f5b767\";\n\n-- RenameIndex\nALTER INDEX \"wagtail_hea_content_4d2229_idx\" RENAME TO \"wagtail_headless_preview_pagepreview_content_type_id_68ffe5aa\";\n\n-- RenameIndex\nALTER INDEX \"wagtailadmi_content_bf3b26_idx\" RENAME TO \"wagtailadmin_editingsession_content_type_id_4df7730e\";\n\n-- RenameIndex\nALTER INDEX \"wagtailadmi_user_id_d53809_idx\" RENAME TO \"wagtailadmin_editingsession_user_id_6e1a9b70\";\n\n-- RenameIndex\nALTER INDEX \"wagtailadmi_content_613ded_idx\" RENAME TO \"wagtailadmin_formstate_content_type_id_e32438b3\";\n\n-- RenameIndex\nALTER INDEX \"wagtailadmi_user_id_6e3fef_idx\" RENAME TO \"wagtailadmin_formstate_user_id_b910adc2\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_92cb2a_idx\" RENAME TO \"wagtailcore_apitoken_user_id_49b1141b\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_collect_b5c6be_idx\" RENAME TO \"wagtailcore_collectionviewrestriction_collection_id_761908ec\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_collect_af47f2_idx\" RENAME TO \"wagtailcore_collectionview_collectionviewrestriction__47320efd\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_db5a5c_idx\" RENAME TO \"wagtailcore_collectionviewrestriction_groups_group_id_1823f2a3\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_page_id_86fc52_idx\" RENAME TO \"wagtailcore_comment_page_id_108444b5\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_resolve_2ccdfc_idx\" RENAME TO \"wagtailcore_comment_resolved_by_id_a282aa0e\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_revisio_1d4032_idx\" RENAME TO \"wagtailcore_comment_revision_created_id_1d058279\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_642e04_idx\" RENAME TO \"wagtailcore_comment_user_id_0c577ca6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_comment_cd8330_idx\" RENAME TO \"wagtailcore_commentreply_comment_id_afc7e027\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_772d92_idx\" RENAME TO \"wagtailcore_commentreply_user_id_d0b3b9c3\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_9388fd_idx\" RENAME TO \"wagtailcore_groupapprovaltask_groups_group_id_2e64b61f\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_groupap_cdcd2d_idx\" RENAME TO \"wagtailcore_groupapprovalt_groupapprovaltask_id_9a9255ea\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_collect_6a6a5c_idx\" RENAME TO \"wagtailcore_groupcollectionpermission_collection_id_5423575a\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_0e12df_idx\" RENAME TO \"wagtailcore_groupcollectionpermission_group_id_05d61460\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_permiss_2f9333_idx\" RENAME TO \"wagtailcore_groupcollectionpermission_permission_id_1b626275\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_76047c_idx\" RENAME TO \"wagtailcore_grouppagepermission_group_id_fc07e671\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_page_id_9e96f4_idx\" RENAME TO \"wagtailcore_grouppagepermission_page_id_710b114a\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_permiss_717c5f_idx\" RENAME TO \"wagtailcore_grouppagepermission_permission_id_05acb22e\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_f33049_idx\" RENAME TO \"wagtailcore_groupsitepermission_group_id_e5cdbee4\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_permiss_b5106b_idx\" RENAME TO \"wagtailcore_groupsitepermission_permission_id_459b1f38\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_site_id_e78648_idx\" RENAME TO \"wagtailcore_groupsitepermission_site_id_245de488\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_action_e47383_idx\" RENAME TO \"wagtailcore_modellogentry_action_d2d856ee\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_0b906b_idx\" RENAME TO \"wagtailcore_modellogentry_content_type_id_68849e77\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_e73a48_idx\" RENAME TO \"wagtailcore_modellogentry_content_changed_8bc39742\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_object__2aa191_idx\" RENAME TO \"wagtailcore_modellogentry_object_id_e0e7d4ef\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_revisio_051e86_idx\" RENAME TO \"wagtailcore_modellogentry_revision_id_df6ca33a\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_timesta_093e56_idx\" RENAME TO \"wagtailcore_modellogentry_timestamp_9694521b\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_43590a_idx\" RENAME TO \"wagtailcore_modellogentry_user_id_0278d1bf\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_alias_o_ae8d0b_idx\" RENAME TO \"wagtailcore_page_alias_of_id_12945502\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_aa7001_idx\" RENAME TO \"wagtailcore_page_content_type_id_c28424df\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_first_p_876e7a_idx\" RENAME TO \"wagtailcore_page_first_published_at_2b5dd637\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_latest__cc73c2_idx\" RENAME TO \"wagtailcore_page_latest_revision_id_e60fef51\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_live_re_c2cb6b_idx\" RENAME TO \"wagtailcore_page_live_revision_id_930bd822\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_locale__d3b958_idx\" RENAME TO \"wagtailcore_page_locale_id_3c7e30a6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_locked__d5b70d_idx\" RENAME TO \"wagtailcore_page_locked_by_id_bcb86245\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_owner_i_855fe6_idx\" RENAME TO \"wagtailcore_page_owner_id_fbf7c332\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_action_c7e19f_idx\" RENAME TO \"wagtailcore_pagelogentry_action_c2408198\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_1648d4_idx\" RENAME TO \"wagtailcore_pagelogentry_content_changed_99f27ade\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_d61786_idx\" RENAME TO \"wagtailcore_pagelogentry_content_type_id_74e7708a\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_page_id_02b30d_idx\" RENAME TO \"wagtailcore_pagelogentry_page_id_8464e327\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_revisio_635c51_idx\" RENAME TO \"wagtailcore_pagelogentry_revision_id_8043d103\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_timesta_d5e790_idx\" RENAME TO \"wagtailcore_pagelogentry_timestamp_deb774c4\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_19db19_idx\" RENAME TO \"wagtailcore_pagelogentry_user_id_604ccfd8\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_page_id_32c4c3_idx\" RENAME TO \"wagtailcore_pagesubscription_page_id_a085e7a6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_b7582f_idx\" RENAME TO \"wagtailcore_pagesubscription_user_id_89d7def9\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_page_id_80d5da_idx\" RENAME TO \"wagtailcore_pageviewrestriction_page_id_15a8bea6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_group_i_a40b21_idx\" RENAME TO \"wagtailcore_pageviewrestriction_groups_group_id_6460f223\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_pagevie_cbd137_idx\" RENAME TO \"wagtailcore_pageviewrestri_pageviewrestriction_id_f147a99a\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_base_co_ee52de_idx\" RENAME TO \"wagtailcore_referenceindex_base_content_type_id_313cf40f\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_4e5674_idx\" RENAME TO \"wagtailcore_referenceindex_content_type_id_766e0336\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_to_cont_473560_idx\" RENAME TO \"wagtailcore_referenceindex_to_content_type_id_93690bbd\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_approve_563bcf_idx\" RENAME TO \"wagtailcore_revision_approved_go_live_at_88d3dee5\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_base_co_4659da_idx\" RENAME TO \"wagtailcore_revision_base_content_type_id_5b4ef7bd\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_d24acf_idx\" RENAME TO \"wagtailcore_revision_content_type_id_c8cb69c0\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_created_4f5941_idx\" RENAME TO \"wagtailcore_revision_created_at_81450aa6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_user_id_8503ef_idx\" RENAME TO \"wagtailcore_revision_user_id_03df83b0\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_hostnam_f0ee8d_idx\" RENAME TO \"wagtailcore_site_hostname_96b20b46\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_root_pa_4b0eee_idx\" RENAME TO \"wagtailcore_site_root_page_id_e02fb95c\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_57ba00_idx\" RENAME TO \"wagtailcore_task_content_type_id_249ab8ba\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_6ae825_idx\" RENAME TO \"wagtailcore_taskstate_content_type_id_0a758fdc\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_finishe_3cb174_idx\" RENAME TO \"wagtailcore_taskstate_finished_by_id_13f98229\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_revisio_d2b5a8_idx\" RENAME TO \"wagtailcore_taskstate_revision_id_df25a499\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_task_id_8bdfb1_idx\" RENAME TO \"wagtailcore_taskstate_task_id_c3677c34\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_workflo_b368a1_idx\" RENAME TO \"wagtailcore_taskstate_workflow_state_id_9239a775\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_for_con_fa51e0_idx\" RENAME TO \"wagtailcore_uploadedfile_for_content_type_id_b0fc87b2\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_uploade_34552b_idx\" RENAME TO \"wagtailcore_uploadedfile_uploaded_by_user_id_c7580fe8\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_workflo_73daf3_idx\" RENAME TO \"wagtailcore_workflowcontenttype_workflow_id_9aad7cd2\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_workflo_4b4b48_idx\" RENAME TO \"wagtailcore_workflowpage_workflow_id_56f56ff6\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_base_co_907202_idx\" RENAME TO \"wagtailcore_workflowstate_base_content_type_id_a30dc576\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_content_4c4332_idx\" RENAME TO \"wagtailcore_workflowstate_content_type_id_2bb78ce1\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_request_079a83_idx\" RENAME TO \"wagtailcore_workflowstate_requested_by_id_4090bca3\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_workflo_ac86b6_idx\" RENAME TO \"wagtailcore_workflowstate_workflow_id_1f18378f\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_task_id_882486_idx\" RENAME TO \"wagtailcore_workflowtask_task_id_ce7716fe\";\n\n-- RenameIndex\nALTER INDEX \"wagtailcore_workflo_bbd03e_idx\" RENAME TO \"wagtailcore_workflowtask_workflow_id_b9717175\";\n\n-- RenameIndex\nALTER INDEX \"wagtaildocs_collect_943919_idx\" RENAME TO \"wagtaildocs_document_collection_id_23881625\";\n\n-- RenameIndex\nALTER INDEX \"wagtaildocs_uploade_8148e7_idx\" RENAME TO \"wagtaildocs_document_uploaded_by_user_id_17258b41\";\n\n-- RenameIndex\nALTER INDEX \"wagtailembe_cache_u_2ea573_idx\" RENAME TO \"wagtailembeds_embed_cache_until_26c94bb0\";\n\n-- RenameIndex\nALTER INDEX \"wagtailform_page_id_0584e2_idx\" RENAME TO \"wagtailforms_formsubmission_page_id_e48e93e7\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_collect_b1bd87_idx\" RENAME TO \"wagtailimages_image_collection_id_c2f8af7e\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_created_64ae65_idx\" RENAME TO \"wagtailimages_image_created_at_86fa6cd4\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_file_ha_2e43c7_idx\" RENAME TO \"wagtailimages_image_file_hash_fb5bbb23\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_uploade_b5a1e5_idx\" RENAME TO \"wagtailimages_image_uploaded_by_user_id_5d73dc75\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_filter__537f19_idx\" RENAME TO \"wagtailimages_rendition_filter_spec_1cba3201\";\n\n-- RenameIndex\nALTER INDEX \"wagtailimag_image_i_bb2d1b_idx\" RENAME TO \"wagtailimages_rendition_image_id_3e1fd774\";\n\n-- RenameIndex\nALTER INDEX \"wagtailredi_old_pat_eacf57_idx\" RENAME TO \"wagtailredirects_redirect_old_path_bb35247b\";\n\n-- RenameIndex\nALTER INDEX \"wagtailredi_redirec_358da6_idx\" RENAME TO \"wagtailredirects_redirect_redirect_page_id_b5728a8f\";\n\n-- RenameIndex\nALTER INDEX \"wagtailredi_site_id_d8295b_idx\" RENAME TO \"wagtailredirects_redirect_site_id_780a0e1e\";\n\n-- RenameIndex\nALTER INDEX \"wagtailsear_content_1d13ca_idx\" RENAME TO \"wagtailsearch_indexentry_content_type_id_62ed694f\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"wagtailcore_taskstate\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 172,
+            "total": 172
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"wagtailcore_workflowstate\": Execution Error: error returned from database: relation \"wagtailcore_taskstate\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 52,
+            "total": 52
+          },
+          "insert": {
+            "ok": 51,
+            "total": 51
+          },
+          "read": {
+            "ok": 51,
+            "total": 51
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 174,
+            "total": 174
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");"
+      }
+    }
+  ]
+}

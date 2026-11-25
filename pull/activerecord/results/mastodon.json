@@ -1,0 +1,825 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 312,
+          "total": 312
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 113,
+          "total": 123
+        },
+        "read": {
+          "ok": 113,
+          "total": 113
+        },
+        "update": {
+          "ok": 61,
+          "total": 61
+        },
+        "relations": {
+          "ok": 282,
+          "total": 282
+        },
+        "delete": {
+          "ok": 113,
+          "total": 113
+        }
+      },
+      "findings": 11,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 320,
+          "total": 320
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": true,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 124,
+          "total": 124
+        },
+        "insert": {
+          "ok": 123,
+          "total": 123
+        },
+        "read": {
+          "ok": 123,
+          "total": 123
+        },
+        "update": {
+          "ok": 68,
+          "total": 68
+        },
+        "relations": {
+          "ok": 318,
+          "total": 318
+        },
+        "delete": {
+          "ok": 123,
+          "total": 123
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"account_aliases\" DROP CONSTRAINT \"account_aliases_account_id_0453ba63_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_conversations\" DROP CONSTRAINT \"account_conversation_conversation_id_823531bc_fk_conversat\";\n\n-- DropForeignKey\nALTER TABLE \"account_conversations\" DROP CONSTRAINT \"account_conversations_account_id_96ae5f18_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_deletion_requests\" DROP CONSTRAINT \"account_deletion_requests_account_id_c627158d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_domain_blocks\" DROP CONSTRAINT \"account_domain_blocks_account_id_0d7ce1b1_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_migrations\" DROP CONSTRAINT \"account_migrations_account_id_82199f36_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_migrations\" DROP CONSTRAINT \"account_migrations_target_account_id_7b62a6dc_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_moderation_notes\" DROP CONSTRAINT \"account_moderation_n_target_account_id_5942d929_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"account_moderation_notes\" DROP CONSTRAINT \"account_moderation_notes_account_id_1f28b90f_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_notes\" DROP CONSTRAINT \"account_notes_account_id_84a32a36_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_notes\" DROP CONSTRAINT \"account_notes_target_account_id_9f140fef_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_pins\" DROP CONSTRAINT \"account_pins_account_id_682dad90_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_pins\" DROP CONSTRAINT \"account_pins_target_account_id_6d91f06f_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_reach_filters\" DROP CONSTRAINT \"account_reach_filters_account_id_abf5bc5b_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_relationship_severance_events\" DROP CONSTRAINT \"account_relationship_account_id_652d8369_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"account_relationship_severance_events\" DROP CONSTRAINT \"account_relationship_relationship_severan_e3fd7c02_fk_relations\";\n\n-- DropForeignKey\nALTER TABLE \"account_stats\" DROP CONSTRAINT \"account_stats_account_id_c523a689_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_statuses_cleanup_policies\" DROP CONSTRAINT \"account_statuses_cle_account_id_e4b82430_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"account_summaries\" DROP CONSTRAINT \"account_summaries_account_id_26ebed4b_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_warnings\" DROP CONSTRAINT \"account_warnings_account_id_efa52499_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_warnings\" DROP CONSTRAINT \"account_warnings_report_id_5c7f9030_fk_reports_id\";\n\n-- DropForeignKey\nALTER TABLE \"account_warnings\" DROP CONSTRAINT \"account_warnings_target_account_id_b53168fb_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"accounts\" DROP CONSTRAINT \"accounts_moved_to_account_id_d8fbbd85_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"admin_action_logs\" DROP CONSTRAINT \"admin_action_logs_account_id_c911a046_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"announcement_mutes\" DROP CONSTRAINT \"announcement_mutes_account_id_c97bcd29_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"announcement_mutes\" DROP CONSTRAINT \"announcement_mutes_announcement_id_7caee373_fk_announcements_id\";\n\n-- DropForeignKey\nALTER TABLE \"announcement_reactions\" DROP CONSTRAINT \"announcement_reactio_announcement_id_6022d2b5_fk_announcem\";\n\n-- DropForeignKey\nALTER TABLE \"announcement_reactions\" DROP CONSTRAINT \"announcement_reactio_custom_emoji_id_78836983_fk_custom_em\";\n\n-- DropForeignKey\nALTER TABLE \"announcement_reactions\" DROP CONSTRAINT \"announcement_reactions_account_id_d493650d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"appeals\" DROP CONSTRAINT \"appeals_account_id_4261ffde_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"appeals\" DROP CONSTRAINT \"appeals_account_warning_id_d1337b5f_fk_account_warnings_id\";\n\n-- DropForeignKey\nALTER TABLE \"appeals\" DROP CONSTRAINT \"appeals_approved_by_account_id_ea0b3698_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"appeals\" DROP CONSTRAINT \"appeals_rejected_by_account_id_d7c297a3_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"backups\" DROP CONSTRAINT \"backups_user_id_3aa0bf01_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"blocks\" DROP CONSTRAINT \"blocks_account_id_dda7efa4_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"blocks\" DROP CONSTRAINT \"blocks_target_account_id_e23bccd2_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"bookmarks\" DROP CONSTRAINT \"bookmarks_account_id_9c432459_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"bookmarks\" DROP CONSTRAINT \"bookmarks_status_id_95be2876_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"bulk_import_rows\" DROP CONSTRAINT \"bulk_import_rows_bulk_import_id_b6d9a520_fk_bulk_imports_id\";\n\n-- DropForeignKey\nALTER TABLE \"bulk_imports\" DROP CONSTRAINT \"bulk_imports_account_id_49949947_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"canonical_email_blocks\" DROP CONSTRAINT \"canonical_email_bloc_reference_account_id_948084c7_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"collection_items\" DROP CONSTRAINT \"collection_items_collection_id_416affbe_fk_collections_id\";\n\n-- DropForeignKey\nALTER TABLE \"collection_reports\" DROP CONSTRAINT \"collection_reports_collection_id_90a17c07_fk_collections_id\";\n\n-- DropForeignKey\nALTER TABLE \"collection_reports\" DROP CONSTRAINT \"collection_reports_report_id_1213c693_fk_reports_id\";\n\n-- DropForeignKey\nALTER TABLE \"conversation_mutes\" DROP CONSTRAINT \"conversation_mutes_account_id_7b104020_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"conversation_mutes\" DROP CONSTRAINT \"conversation_mutes_conversation_id_82bb0646_fk_conversations_id\";\n\n-- DropForeignKey\nALTER TABLE \"custom_emoji_categories\" DROP CONSTRAINT \"custom_emoji_categor_featured_emoji_id_dc82a544_fk_custom_em\";\n\n-- DropForeignKey\nALTER TABLE \"custom_filter_keywords\" DROP CONSTRAINT \"custom_filter_keywor_custom_filter_id_43f3b360_fk_custom_fi\";\n\n-- DropForeignKey\nALTER TABLE \"custom_filter_statuses\" DROP CONSTRAINT \"custom_filter_status_custom_filter_id_b89e80dd_fk_custom_fi\";\n\n-- DropForeignKey\nALTER TABLE \"custom_filter_statuses\" DROP CONSTRAINT \"custom_filter_statuses_status_id_22b74281_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"custom_filters\" DROP CONSTRAINT \"custom_filters_account_id_7568f0fa_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"domain_allows\" DROP CONSTRAINT \"domain_allows_moderation_subscript_6bd78cfa_fk_moderatio\";\n\n-- DropForeignKey\nALTER TABLE \"domain_blocks\" DROP CONSTRAINT \"domain_blocks_moderation_subscript_b9655937_fk_moderatio\";\n\n-- DropForeignKey\nALTER TABLE \"email_domain_blocks\" DROP CONSTRAINT \"email_domain_blocks_parent_id_074ac374_fk_email_dom\";\n\n-- DropForeignKey\nALTER TABLE \"email_subscriptions\" DROP CONSTRAINT \"email_subscriptions_account_id_42521f3d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"favourites\" DROP CONSTRAINT \"favourites_account_id_f53e5cc4_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"favourites\" DROP CONSTRAINT \"favourites_status_id_837e5034_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"featured_tags\" DROP CONSTRAINT \"featured_tags_account_id_35c39049_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"featured_tags\" DROP CONSTRAINT \"featured_tags_tag_id_8d3d1bfa_fk_tags_id\";\n\n-- DropForeignKey\nALTER TABLE \"follow_recommendation_mutes\" DROP CONSTRAINT \"follow_recommendatio_target_account_id_aad71553_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"follow_recommendation_mutes\" DROP CONSTRAINT \"follow_recommendation_mutes_account_id_1085c219_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"follow_recommendation_suppressions\" DROP CONSTRAINT \"follow_recommendatio_account_id_87800dbe_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"follow_requests\" DROP CONSTRAINT \"follow_requests_account_id_09837cdc_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"follow_requests\" DROP CONSTRAINT \"follow_requests_target_account_id_705b470b_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"follows\" DROP CONSTRAINT \"follows_account_id_87b58e82_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"follows\" DROP CONSTRAINT \"follows_target_account_id_1fe8b217_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"generated_annual_reports\" DROP CONSTRAINT \"generated_annual_reports_account_id_14bbaae6_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"global_follow_recommendations\" DROP CONSTRAINT \"global_follow_recomm_account_id_201cf742_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"identities\" DROP CONSTRAINT \"identities_user_id_24e17a25_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"instance_moderation_notes\" DROP CONSTRAINT \"instance_moderation_notes_account_id_a1b0ac2e_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"invites_user_id_7fedf47c_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"keypairs\" DROP CONSTRAINT \"keypairs_account_id_1f46d6d7_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"list_accounts\" DROP CONSTRAINT \"list_accounts_account_id_6a4d9ae6_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"list_accounts\" DROP CONSTRAINT \"list_accounts_follow_id_98692c54_fk_follows_id\";\n\n-- DropForeignKey\nALTER TABLE \"list_accounts\" DROP CONSTRAINT \"list_accounts_follow_request_id_7946fd0b_fk_follow_requests_id\";\n\n-- DropForeignKey\nALTER TABLE \"list_accounts\" DROP CONSTRAINT \"list_accounts_list_id_ac70a0b9_fk_lists_id\";\n\n-- DropForeignKey\nALTER TABLE \"lists\" DROP CONSTRAINT \"lists_account_id_dd916c9e_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"login_activities\" DROP CONSTRAINT \"login_activities_user_id_2da0430b_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"markers\" DROP CONSTRAINT \"markers_user_id_9b4ba80c_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"media_attachments\" DROP CONSTRAINT \"media_attachments_account_id_44e31ec4_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"media_attachments\" DROP CONSTRAINT \"media_attachments_scheduled_status_id_d7691c0c_fk_scheduled\";\n\n-- DropForeignKey\nALTER TABLE \"media_attachments\" DROP CONSTRAINT \"media_attachments_status_id_9cf4f076_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"mentions\" DROP CONSTRAINT \"mentions_account_id_58419629_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"mentions\" DROP CONSTRAINT \"mentions_status_id_ab06586d_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"moderation_suggestions\" DROP CONSTRAINT \"moderation_suggestio_moderation_subscript_914c4835_fk_moderatio\";\n\n-- DropForeignKey\nALTER TABLE \"mutes\" DROP CONSTRAINT \"mutes_account_id_cfb9450d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"mutes\" DROP CONSTRAINT \"mutes_target_account_id_17a02a3b_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_permissions\" DROP CONSTRAINT \"notification_permiss_from_account_id_1de8efc4_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"notification_permissions\" DROP CONSTRAINT \"notification_permissions_account_id_6a34027f_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_policies\" DROP CONSTRAINT \"notification_policies_account_id_405c3c5a_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_requests\" DROP CONSTRAINT \"notification_requests_account_id_09cab42c_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_requests\" DROP CONSTRAINT \"notification_requests_from_account_id_bad1b0de_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_requests\" DROP CONSTRAINT \"notification_requests_last_status_id_bf3de926_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_account_id_8a8fa869_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_from_account_id_0f9ea99a_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_access_grants\" DROP CONSTRAINT \"oauth_access_grants_application_id_dfb58da0_fk_oauth_app\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_access_grants\" DROP CONSTRAINT \"oauth_access_grants_resource_owner_id_ef7ddcf4_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_access_tokens\" DROP CONSTRAINT \"oauth_access_tokens_application_id_8c5af57c_fk_oauth_app\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_access_tokens\" DROP CONSTRAINT \"oauth_access_tokens_resource_owner_id_2e41e5bd_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_applications\" DROP CONSTRAINT \"oauth_applications_owner_id_1206e2ac_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"poll_votes\" DROP CONSTRAINT \"poll_votes_account_id_64a6f20d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"poll_votes\" DROP CONSTRAINT \"poll_votes_poll_id_e14568d8_fk_polls_id\";\n\n-- DropForeignKey\nALTER TABLE \"polls\" DROP CONSTRAINT \"polls_account_id_48994fa5_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"polls\" DROP CONSTRAINT \"polls_status_id_6ae759a1_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"preview_card_trends\" DROP CONSTRAINT \"preview_card_trends_preview_card_id_7a2c2640_fk_preview_c\";\n\n-- DropForeignKey\nALTER TABLE \"preview_cards\" DROP CONSTRAINT \"preview_cards_author_account_id_b467cbfe_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"preview_cards\" DROP CONSTRAINT \"preview_cards_unverified_author_ac_6e747df6_fk_accounts_\";\n\n-- DropForeignKey\nALTER TABLE \"quotes\" DROP CONSTRAINT \"quotes_account_id_8f20ed23_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"quotes\" DROP CONSTRAINT \"quotes_quoted_account_id_accb1b67_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"quotes\" DROP CONSTRAINT \"quotes_quoted_status_id_1fd1c599_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"quotes\" DROP CONSTRAINT \"quotes_status_id_a7bc0de7_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"report_notes\" DROP CONSTRAINT \"report_notes_account_id_cfe5b8ee_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"report_notes\" DROP CONSTRAINT \"report_notes_report_id_065fab23_fk_reports_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_account_id_aa19b227_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_action_taken_by_account_id_9bad8cc0_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_application_id_b6f855e8_fk_oauth_applications_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_assigned_account_id_86db5993_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_target_account_id_b0284009_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"rule_translations\" DROP CONSTRAINT \"rule_translations_rule_id_5c6cbcd2_fk_rules_id\";\n\n-- DropForeignKey\nALTER TABLE \"scheduled_statuses\" DROP CONSTRAINT \"scheduled_statuses_account_id_dc20aa61_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_activations\" DROP CONSTRAINT \"session_activations_access_token_id_b4fab01c_fk_oauth_acc\";\n\n-- DropForeignKey\nALTER TABLE \"session_activations\" DROP CONSTRAINT \"session_activations_user_id_566bd8e6_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"severed_relationships\" DROP CONSTRAINT \"severed_relationship_relationship_severan_82c7531b_fk_relations\";\n\n-- DropForeignKey\nALTER TABLE \"severed_relationships\" DROP CONSTRAINT \"severed_relationships_local_account_id_364685d7_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"severed_relationships\" DROP CONSTRAINT \"severed_relationships_remote_account_id_dd771f88_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_edits\" DROP CONSTRAINT \"status_edits_account_id_e06296c2_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_edits\" DROP CONSTRAINT \"status_edits_status_id_62a5d858_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_pins\" DROP CONSTRAINT \"status_pins_account_id_0b63079b_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_pins\" DROP CONSTRAINT \"status_pins_status_id_0ecb6cd1_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_stats\" DROP CONSTRAINT \"status_stats_status_id_383cd9ae_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_trends\" DROP CONSTRAINT \"status_trends_account_id_f736d53e_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"status_trends\" DROP CONSTRAINT \"status_trends_status_id_364a23c8_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses\" DROP CONSTRAINT \"statuses_account_id_5ad5339f_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses\" DROP CONSTRAINT \"statuses_in_reply_to_account_id_fc29143d_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses\" DROP CONSTRAINT \"statuses_in_reply_to_id_2dd36720_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses\" DROP CONSTRAINT \"statuses_reblog_of_id_b83415f7_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses_tags\" DROP CONSTRAINT \"statuses_tags_status_id_82b524b3_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"statuses_tags\" DROP CONSTRAINT \"statuses_tags_tag_id_11b7d77c_fk_tags_id\";\n\n-- DropForeignKey\nALTER TABLE \"tag_follows\" DROP CONSTRAINT \"tag_follows_account_id_6b18859a_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"tag_follows\" DROP CONSTRAINT \"tag_follows_tag_id_e4ba7473_fk_tags_id\";\n\n-- DropForeignKey\nALTER TABLE \"tag_trends\" DROP CONSTRAINT \"tag_trends_tag_id_beeeabf0_fk_tags_id\";\n\n-- DropForeignKey\nALTER TABLE \"tagged_objects\" DROP CONSTRAINT \"tagged_objects_status_id_cd2bc1fa_fk_statuses_id\";\n\n-- DropForeignKey\nALTER TABLE \"tombstones\" DROP CONSTRAINT \"tombstones_account_id_c90f919c_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"user_invite_requests\" DROP CONSTRAINT \"user_invite_requests_user_id_923bc003_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_account_id_b2e5bd98_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_created_by_applicati_d2531f2f_fk_oauth_app\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_invite_id_09787195_fk_invites_id\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_role_id_1900a745_fk_user_roles_id\";\n\n-- DropForeignKey\nALTER TABLE \"web_push_subscriptions\" DROP CONSTRAINT \"web_push_subscriptio_access_token_id_ddf27908_fk_oauth_acc\";\n\n-- DropForeignKey\nALTER TABLE \"web_push_subscriptions\" DROP CONSTRAINT \"web_push_subscriptions_user_id_17e18662_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"web_settings\" DROP CONSTRAINT \"web_settings_user_id_7be51074_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"webauthn_credentials\" DROP CONSTRAINT \"webauthn_credentials_user_id_b30cd878_fk_users_id\";\n\n-- DropIndex\nDROP INDEX \"accounts_uri_059ca4ad_like\";\n\n-- DropIndex\nDROP INDEX \"admin_server_checks_key_1a60650d_like\";\n\n-- DropIndex\nDROP INDEX \"ar_internal_metadata_key_20ebc70f_like\";\n\n-- DropIndex\nDROP INDEX \"canonical_email_blocks_canonical_email_hash_6379c54b_like\";\n\n-- DropIndex\nDROP INDEX \"custom_emoji_categories_name_58601b4c_like\";\n\n-- DropIndex\nDROP INDEX \"domain_allows_domain_f6d6c615_like\";\n\n-- DropIndex\nDROP INDEX \"domain_blocks_domain_3f6ac120_like\";\n\n-- DropIndex\nDROP INDEX \"email_domain_blocks_domain_4c73146b_like\";\n\n-- DropIndex\nDROP INDEX \"fasp_providers_base_url_efe0588b_like\";\n\n-- DropIndex\nDROP INDEX \"invites_code_5fdcf541_like\";\n\n-- DropIndex\nDROP INDEX \"keypairs_uri_fdacfcf7_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_access_grants_token_428c55fb_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_access_tokens_token_b30fb528_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_applications_uid_7e7dcc28_like\";\n\n-- DropIndex\nDROP INDEX \"preview_card_providers_domain_567e89e6_like\";\n\n-- DropIndex\nDROP INDEX \"preview_cards_url_ee558d5c_like\";\n\n-- DropIndex\nDROP INDEX \"schema_migrations_version_7db6b9a4_like\";\n\n-- DropIndex\nDROP INDEX \"session_activations_session_id_4118f477_like\";\n\n-- DropIndex\nDROP INDEX \"settings_var_f9593d6d_like\";\n\n-- DropIndex\nDROP INDEX \"site_uploads_var_47a2cca8_like\";\n\n-- DropIndex\nDROP INDEX \"software_deprecations_branch_aaeec87d_like\";\n\n-- DropIndex\nDROP INDEX \"software_updates_version_32a6bf50_like\";\n\n-- DropIndex\nDROP INDEX \"unavailable_domains_domain_0c8bc8ba_like\";\n\n-- DropIndex\nDROP INDEX \"users_confirmation_token_98a30b00_like\";\n\n-- DropIndex\nDROP INDEX \"users_email_0ea73cca_like\";\n\n-- DropIndex\nDROP INDEX \"webauthn_credentials_external_id_76daeb85_like\";\n\n-- DropIndex\nDROP INDEX \"webhooks_url_99fbdc9b_like\";\n\n-- AlterTable\nALTER TABLE \"account_aliases\" ALTER COLUMN \"acct\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"uri\" SET DEFAULT '';\n\n-- AlterTable\nALTER TABLE \"account_conversations\" ALTER COLUMN \"lock_version\" SET DEFAULT 0,\nALTER COLUMN \"participant_account_ids\" SET DEFAULT ARRAY[]::BIGINT[],\nALTER COLUMN \"status_ids\" SET DEFAULT ARRAY[]::BIGINT[],\nALTER COLUMN \"unread\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"account_deletion_requests\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_domain_blocks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_migrations\" ALTER COLUMN \"acct\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"followers_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_moderation_notes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_notes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_pins\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_reach_filters\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"saturated\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_relationship_severance_events\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"followers_count\" SET DEFAULT 0,\nALTER COLUMN \"following_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_stats\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"followers_count\" SET DEFAULT 0,\nALTER COLUMN \"following_count\" SET DEFAULT 0,\nALTER COLUMN \"last_status_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"statuses_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"account_statuses_cleanup_policies\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"enabled\" SET DEFAULT true,\nALTER COLUMN \"keep_direct\" SET DEFAULT true,\nALTER COLUMN \"keep_media\" SET DEFAULT false,\nALTER COLUMN \"keep_pinned\" SET DEFAULT true,\nALTER COLUMN \"keep_polls\" SET DEFAULT false,\nALTER COLUMN \"keep_self_bookmark\" SET DEFAULT true,\nALTER COLUMN \"keep_self_fav\" SET DEFAULT true,\nALTER COLUMN \"min_status_age\" SET DEFAULT 1209600,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nCREATE SEQUENCE account_summaries_account_id_seq;\nALTER TABLE \"account_summaries\" ALTER COLUMN \"account_id\" SET DEFAULT nextval('account_summaries_account_id_seq'),\nALTER COLUMN \"sensitive\" SET DEFAULT false;\nALTER SEQUENCE account_summaries_account_id_seq OWNED BY \"account_summaries\".\"account_id\";\n\n-- AlterTable\nALTER TABLE \"account_warning_presets\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"title\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"action_category\" SET DEFAULT 'all_actions';\n\n-- AlterTable\nALTER TABLE \"account_warnings\" ALTER COLUMN \"action\" SET DEFAULT 0,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"overruled_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"accounts\" ALTER COLUMN \"attribution_domains\" SET DEFAULT ARRAY[]::VARCHAR[],\nALTER COLUMN \"avatar_description\" SET DEFAULT '',\nALTER COLUMN \"avatar_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"display_name\" SET DEFAULT '',\nALTER COLUMN \"feature_approval_policy\" SET DEFAULT 0,\nALTER COLUMN \"followers_url\" SET DEFAULT '',\nALTER COLUMN \"following_url\" SET DEFAULT '',\nALTER COLUMN \"header_description\" SET DEFAULT '',\nALTER COLUMN \"header_remote_url\" SET DEFAULT '',\nALTER COLUMN \"header_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"id_scheme\" SET DEFAULT 1,\nALTER COLUMN \"inbox_url\" SET DEFAULT '',\nALTER COLUMN \"indexable\" SET DEFAULT false,\nALTER COLUMN \"last_webfingered_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"locked\" SET DEFAULT false,\nALTER COLUMN \"memorial\" SET DEFAULT false,\nALTER COLUMN \"note\" SET DEFAULT '',\nALTER COLUMN \"outbox_url\" SET DEFAULT '',\nALTER COLUMN \"protocol\" SET DEFAULT 0,\nALTER COLUMN \"public_key\" SET DEFAULT '',\nALTER COLUMN \"requested_deletion_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"requested_review_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"reviewed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"sensitized_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"shared_inbox_url\" SET DEFAULT '',\nALTER COLUMN \"show_featured\" SET DEFAULT true,\nALTER COLUMN \"show_media\" SET DEFAULT true,\nALTER COLUMN \"show_media_replies\" SET DEFAULT true,\nALTER COLUMN \"silenced_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"suspended_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"username\" SET DEFAULT '';\n\n-- AlterTable\nALTER TABLE \"admin_action_logs\" ALTER COLUMN \"action\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"admin_server_checks\" ALTER COLUMN \"status\" SET DEFAULT 0,\nALTER COLUMN \"severity\" SET DEFAULT 0,\nALTER COLUMN \"ignored\" SET DEFAULT false,\nALTER COLUMN \"checked_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"announcement_mutes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"announcement_reactions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"name\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"announcements\" ALTER COLUMN \"all_day\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"ends_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"notification_sent_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"published\" SET DEFAULT false,\nALTER COLUMN \"published_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"scheduled_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"starts_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"appeals\" ALTER COLUMN \"approved_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"rejected_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"ar_internal_metadata\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"backups\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"dump_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"processed\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"blocks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"bookmarks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"bulk_import_rows\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"bulk_imports\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"finished_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"imported_items\" SET DEFAULT 0,\nALTER COLUMN \"likely_mismatched\" SET DEFAULT false,\nALTER COLUMN \"missing_status\" SET DEFAULT false,\nALTER COLUMN \"original_filename\" SET DEFAULT '',\nALTER COLUMN \"overwrite\" SET DEFAULT false,\nALTER COLUMN \"processed_items\" SET DEFAULT 0,\nALTER COLUMN \"total_items\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"canonical_email_blocks\" ALTER COLUMN \"canonical_email_hash\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"collection_items\" ALTER COLUMN \"approval_last_verified_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"position\" SET DEFAULT 1,\nALTER COLUMN \"state\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"collection_reports\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"collections\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"item_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"conversations\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"custom_emoji_categories\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"custom_emojis\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"disabled\" SET DEFAULT false,\nALTER COLUMN \"image_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"shortcode\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"visible_in_picker\" SET DEFAULT true;\n\n-- AlterTable\nALTER TABLE \"custom_filter_keywords\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"keyword\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"whole_word\" SET DEFAULT true;\n\n-- AlterTable\nALTER TABLE \"custom_filter_statuses\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"custom_filters\" ALTER COLUMN \"action\" SET DEFAULT 0,\nALTER COLUMN \"context\" SET DEFAULT ARRAY[]::VARCHAR[],\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"phrase\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"domain_allows\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"domain\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"domain_blocks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"domain\" SET DEFAULT '',\nALTER COLUMN \"obfuscate\" SET DEFAULT false,\nALTER COLUMN \"reject_media\" SET DEFAULT false,\nALTER COLUMN \"reject_reports\" SET DEFAULT false,\nALTER COLUMN \"severity\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"email_domain_blocks\" ALTER COLUMN \"allow_with_approval\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"domain\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"email_subscriptions\" ALTER COLUMN \"confirmed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_backfill_requests\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"fulfilled\" SET DEFAULT false,\nALTER COLUMN \"max_count\" SET DEFAULT 100,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_capabilities\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"enabled\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_debug_callbacks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_follow_recommendations\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_providers\" ALTER COLUMN \"confirmed\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"delivery_last_failed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"fasp_subscriptions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"favourites\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"featured_tags\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_status_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"statuses_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"follow_recommendation_mutes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"follow_recommendation_suppressions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"follow_requests\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"notify\" SET DEFAULT false,\nALTER COLUMN \"show_reblogs\" SET DEFAULT true,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"follows\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"notify\" SET DEFAULT false,\nALTER COLUMN \"show_reblogs\" SET DEFAULT true,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"generated_annual_reports\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"viewed_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nCREATE SEQUENCE global_follow_recommendations_account_id_seq;\nALTER TABLE \"global_follow_recommendations\" ALTER COLUMN \"account_id\" SET DEFAULT nextval('global_follow_recommendations_account_id_seq'),\nALTER COLUMN \"rank\" SET DATA TYPE DECIMAL,\nALTER COLUMN \"stale\" SET DEFAULT false;\nALTER SEQUENCE global_follow_recommendations_account_id_seq OWNED BY \"global_follow_recommendations\".\"account_id\";\n\n-- AlterTable\nALTER TABLE \"identities\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"provider\" SET DEFAULT '',\nALTER COLUMN \"uid\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"instance_moderation_notes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"invites\" ALTER COLUMN \"autofollow\" SET DEFAULT false,\nALTER COLUMN \"code\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"uses\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"ip_blocks\" ALTER COLUMN \"comment\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"ip\" SET DEFAULT '0.0.0.0',\nALTER COLUMN \"severity\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"keypairs\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"revoked\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"lists\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"exclusive\" SET DEFAULT false,\nALTER COLUMN \"replies_policy\" SET DEFAULT 0,\nALTER COLUMN \"title\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"login_activities\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"markers\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_read_id\" SET DEFAULT 0,\nALTER COLUMN \"lock_version\" SET DEFAULT 0,\nALTER COLUMN \"timeline\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"media_attachments\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"file_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"remote_url\" SET DEFAULT '',\nALTER COLUMN \"thumbnail_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"type\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"mentions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"silent\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"moderation_subscription_advisories\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"moderation_subscriptions\" ALTER COLUMN \"apply_automatically\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_synced_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"override_unattributed\" SET DEFAULT false,\nALTER COLUMN \"preserve_relationships\" SET DEFAULT true,\nALTER COLUMN \"retract_automatically\" SET DEFAULT true,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"moderation_suggestions\" ALTER COLUMN \"state\" SET DEFAULT 0,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"mutes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"hide_notifications\" SET DEFAULT true,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"notification_permissions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"notification_policies\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"for_bots\" SET DEFAULT 0,\nALTER COLUMN \"for_limited_accounts\" SET DEFAULT 1,\nALTER COLUMN \"for_new_accounts\" SET DEFAULT 0,\nALTER COLUMN \"for_not_followers\" SET DEFAULT 0,\nALTER COLUMN \"for_not_following\" SET DEFAULT 0,\nALTER COLUMN \"for_private_mentions\" SET DEFAULT 1,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"notification_requests\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"notifications_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"notifications\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"filtered\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"oauth_access_grants\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"revoked_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"oauth_access_tokens\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_used_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"revoked_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"oauth_applications\" ALTER COLUMN \"confidential\" SET DEFAULT true,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"scopes\" SET DEFAULT '',\nALTER COLUMN \"superapp\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"pghero_space_stats\" ALTER COLUMN \"captured_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"poll_votes\" ALTER COLUMN \"choice\" SET DEFAULT 0,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"polls\" ALTER COLUMN \"cached_tallies\" SET DEFAULT ARRAY[]::BIGINT[],\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"hide_totals\" SET DEFAULT false,\nALTER COLUMN \"last_fetched_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"lock_version\" SET DEFAULT 0,\nALTER COLUMN \"multiple\" SET DEFAULT false,\nALTER COLUMN \"options\" SET DEFAULT ARRAY[]::VARCHAR[],\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"votes_count\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"preview_card_providers\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"domain\" SET DEFAULT '',\nALTER COLUMN \"icon_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"requested_review_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"reviewed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"preview_card_trends\" ALTER COLUMN \"allowed\" SET DEFAULT false,\nALTER COLUMN \"rank\" SET DEFAULT 0,\nALTER COLUMN \"score\" SET DEFAULT 0.0;\n\n-- AlterTable\nALTER TABLE \"preview_cards\" ALTER COLUMN \"author_name\" SET DEFAULT '',\nALTER COLUMN \"author_url\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"description\" SET DEFAULT '',\nALTER COLUMN \"embed_url\" SET DEFAULT '',\nALTER COLUMN \"height\" SET DEFAULT 0,\nALTER COLUMN \"html\" SET DEFAULT '',\nALTER COLUMN \"image_description\" SET DEFAULT '',\nALTER COLUMN \"image_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"max_score_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"provider_name\" SET DEFAULT '',\nALTER COLUMN \"provider_url\" SET DEFAULT '',\nALTER COLUMN \"published_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"title\" SET DEFAULT '',\nALTER COLUMN \"type\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"url\" SET DEFAULT '',\nALTER COLUMN \"width\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"quotes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"legacy\" SET DEFAULT false,\nALTER COLUMN \"state\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"relationship_severance_events\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"purged\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"relays\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"inbox_url\" SET DEFAULT '',\nALTER COLUMN \"state\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"report_notes\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"reports\" ALTER COLUMN \"action_taken_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"category\" SET DEFAULT 0,\nALTER COLUMN \"comment\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"status_ids\" SET DEFAULT ARRAY[]::BIGINT[],\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"rule_translations\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"hint\" SET DEFAULT '',\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"rules\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"deleted_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"hint\" SET DEFAULT '',\nALTER COLUMN \"priority\" SET DEFAULT 0,\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"scheduled_statuses\" ALTER COLUMN \"scheduled_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"session_activations\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"user_agent\" SET DEFAULT '';\n\n-- AlterTable\nALTER TABLE \"settings\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"severed_relationships\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"site_uploads\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"file_updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"var\" SET DEFAULT '';\n\n-- AlterTable\nALTER TABLE \"software_deprecations\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"software_updates\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"release_notes\" SET DEFAULT '',\nALTER COLUMN \"type\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"urgent\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"status_edits\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"spoiler_text\" SET DEFAULT '',\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"status_pins\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"status_stats\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"favourites_count\" SET DEFAULT 0,\nALTER COLUMN \"quotes_count\" SET DEFAULT 0,\nALTER COLUMN \"reblogs_count\" SET DEFAULT 0,\nALTER COLUMN \"replies_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"status_trends\" ALTER COLUMN \"allowed\" SET DEFAULT false,\nALTER COLUMN \"rank\" SET DEFAULT 0,\nALTER COLUMN \"score\" SET DEFAULT 0.0;\n\n-- AlterTable\nALTER TABLE \"statuses\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"deleted_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"edited_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"fetched_replies_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"quote_approval_policy\" SET DEFAULT 0,\nALTER COLUMN \"reply\" SET DEFAULT false,\nALTER COLUMN \"sensitive\" SET DEFAULT false,\nALTER COLUMN \"spoiler_text\" SET DEFAULT '',\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"visibility\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"tag_follows\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"tag_trends\" ALTER COLUMN \"allowed\" SET DEFAULT false,\nALTER COLUMN \"language\" SET DEFAULT '',\nALTER COLUMN \"rank\" SET DEFAULT 0,\nALTER COLUMN \"score\" SET DEFAULT 0.0;\n\n-- AlterTable\nALTER TABLE \"tagged_objects\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"tags\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_status_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"max_score_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"name\" SET DEFAULT '',\nALTER COLUMN \"requested_review_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"reviewed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"terms_of_services\" ALTER COLUMN \"changelog\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"notification_sent_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"published_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"text\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"tombstones\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"unavailable_domains\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"domain\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"user_invite_requests\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"user_roles\" ALTER COLUMN \"collection_limit\" SET DEFAULT 10,\nALTER COLUMN \"color\" SET DEFAULT '',\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"highlighted\" SET DEFAULT false,\nALTER COLUMN \"name\" SET DEFAULT '',\nALTER COLUMN \"permissions\" SET DEFAULT 0,\nALTER COLUMN \"position\" SET DEFAULT 0,\nALTER COLUMN \"require_2fa\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"username_blocks\" ALTER COLUMN \"allow_with_approval\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"exact\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"users\" ALTER COLUMN \"age_verified_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"approved\" SET DEFAULT true,\nALTER COLUMN \"confirmation_sent_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"confirmed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"current_sign_in_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"disabled\" SET DEFAULT false,\nALTER COLUMN \"email\" SET DEFAULT '',\nALTER COLUMN \"encrypted_password\" SET DEFAULT '',\nALTER COLUMN \"last_emailed_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"last_sign_in_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"otp_required_for_login\" SET DEFAULT false,\nALTER COLUMN \"require_tos_interstitial\" SET DEFAULT false,\nALTER COLUMN \"reset_password_sent_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"sign_in_count\" SET DEFAULT 0,\nALTER COLUMN \"sign_in_token_sent_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"web_push_subscriptions\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"standard\" SET DEFAULT false,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"web_settings\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"webauthn_credentials\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"sign_count\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- AlterTable\nALTER TABLE \"webhooks\" ALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(6),\nALTER COLUMN \"enabled\" SET DEFAULT true,\nALTER COLUMN \"events\" SET DEFAULT ARRAY[]::VARCHAR[],\nALTER COLUMN \"secret\" SET DEFAULT '',\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(6);\n\n-- CreateIndex\nCREATE INDEX \"index_account_migrations_on_target_account_id\" ON \"account_migrations\"(\"target_account_id\") WHERE (target_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_accounts_on_moved_to_account_id\" ON \"accounts\"(\"moved_to_account_id\") WHERE (moved_to_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_accounts_on_url\" ON \"accounts\"(\"url\") WHERE (url IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_admin_action_logs_on_moderation_subscription_id\" ON \"admin_action_logs\"(\"moderation_subscription_id\") WHERE (moderation_subscription_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_announcement_reactions_on_custom_emoji_id\" ON \"announcement_reactions\"(\"custom_emoji_id\") WHERE (custom_emoji_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_appeals_on_approved_by_account_id\" ON \"appeals\"(\"approved_by_account_id\") WHERE (approved_by_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_appeals_on_rejected_by_account_id\" ON \"appeals\"(\"rejected_by_account_id\") WHERE (rejected_by_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_bulk_imports_unconfirmed\" ON \"bulk_imports\"(\"id\") WHERE (state = 0);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_collection_items_on_approval_uri\" ON \"collection_items\"(\"approval_uri\") WHERE (approval_uri IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_collection_items_on_uri\" ON \"collection_items\"(\"uri\") WHERE (uri IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_collection_items_on_state\" ON \"collection_items\"(\"state\") WHERE (state = ANY (ARRAY[2, 3]));\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_collections_on_uri\" ON \"collections\"(\"uri\") WHERE (uri IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_conversations_on_parent_status_id\" ON \"conversations\"(\"parent_status_id\") WHERE (parent_status_id IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_conversations_on_uri\" ON \"conversations\"(\"uri\") WHERE (uri IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_email_subscriptions_on_confirmation_token\" ON \"email_subscriptions\"(\"confirmation_token\") WHERE (confirmation_token IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_list_accounts_on_follow_id\" ON \"list_accounts\"(\"follow_id\") WHERE (follow_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_list_accounts_on_follow_request_id\" ON \"list_accounts\"(\"follow_request_id\") WHERE (follow_request_id IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_media_attachments_on_shortcode\" ON \"media_attachments\"(\"shortcode\") WHERE (shortcode IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_media_attachments_on_scheduled_status_id\" ON \"media_attachments\"(\"scheduled_status_id\") WHERE (scheduled_status_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_notifications_on_account_id_and_group_key\" ON \"notifications\"(\"account_id\", \"group_key\") WHERE (group_key IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_notifications_on_filtered\" ON \"notifications\"(\"account_id\", \"id\" DESC, \"type\") WHERE (filtered = false);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_oauth_access_tokens_on_refresh_token\" ON \"oauth_access_tokens\"(\"refresh_token\") WHERE (refresh_token IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_oauth_access_tokens_on_resource_owner_id\" ON \"oauth_access_tokens\"(\"resource_owner_id\") WHERE (resource_owner_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_oauth_applications_on_superapp\" ON \"oauth_applications\"(\"superapp\") WHERE (superapp = true);\n\n-- CreateIndex\nCREATE INDEX \"index_preview_cards_on_author_account_id\" ON \"preview_cards\"(\"author_account_id\") WHERE (author_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_preview_cards_on_unverified_author_account_id_and_id\" ON \"preview_cards\"(\"unverified_author_account_id\", \"id\") WHERE (unverified_author_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_quotes_on_activity_uri\" ON \"quotes\"(\"activity_uri\") WHERE (activity_uri IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_quotes_on_approval_uri\" ON \"quotes\"(\"approval_uri\") WHERE (approval_uri IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_reports_on_action_taken_by_account_id\" ON \"reports\"(\"action_taken_by_account_id\") WHERE (action_taken_by_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_reports_on_assigned_account_id\" ON \"reports\"(\"assigned_account_id\") WHERE (assigned_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_statuses_on_uri\" ON \"statuses\"(\"uri\") WHERE (uri IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_20190820\" ON \"statuses\"(\"account_id\", \"id\" DESC, \"visibility\", \"updated_at\") WHERE (deleted_at IS NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_local_20190824\" ON \"statuses\"(\"id\" DESC, \"account_id\") WHERE ((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)));\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_on_deleted_at\" ON \"statuses\"(\"deleted_at\") WHERE (deleted_at IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_on_in_reply_to_account_id\" ON \"statuses\"(\"in_reply_to_account_id\") WHERE (in_reply_to_account_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_on_in_reply_to_id\" ON \"statuses\"(\"in_reply_to_id\") WHERE (in_reply_to_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_statuses_public_20250129\" ON \"statuses\"(\"id\" DESC, \"language\", \"account_id\") WHERE ((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)));\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"idx_on_status_id_object_type_object_id_d6ebe374bd\" ON \"tagged_objects\"(\"status_id\", \"object_type\", \"object_id\") WHERE ((object_type IS NOT NULL) AND (object_id IS NOT NULL));\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_tagged_objects_on_status_id_and_uri\" ON \"tagged_objects\"(\"status_id\", \"uri\") WHERE (uri IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_terms_of_services_on_effective_date\" ON \"terms_of_services\"(\"effective_date\") WHERE (effective_date IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_users_on_reset_password_token\" ON \"users\"(\"reset_password_token\") WHERE (reset_password_token IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_users_on_created_by_application_id\" ON \"users\"(\"created_by_application_id\") WHERE (created_by_application_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_users_on_role_id\" ON \"users\"(\"role_id\") WHERE (role_id IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_users_on_unconfirmed_email\" ON \"users\"(\"unconfirmed_email\") WHERE (unconfirmed_email IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"index_web_push_subscriptions_on_access_token_id\" ON \"web_push_subscriptions\"(\"access_token_id\") WHERE (access_token_id IS NOT NULL);\n\n-- RenameForeignKey\nALTER TABLE \"collection_items\" RENAME CONSTRAINT \"collection_items_account_id_3b8d7b95_fk_accounts_id\" TO \"fk_rails_2eb992658d\";\n\n-- RenameForeignKey\nALTER TABLE \"collections\" RENAME CONSTRAINT \"collections_account_id_a2461667_fk_accounts_id\" TO \"fk_rails_544f142936\";\n\n-- RenameForeignKey\nALTER TABLE \"collections\" RENAME CONSTRAINT \"collections_tag_id_b8b739fb_fk_tags_id\" TO \"fk_rails_70f13aad15\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_backfill_requests\" RENAME CONSTRAINT \"fasp_backfill_reques_fasp_provider_id_4a9357ed_fk_fasp_prov\" TO \"fk_rails_760d761775\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_capabilities\" RENAME CONSTRAINT \"fasp_capabilities_fasp_provider_id_c5bf3cc7_fk_fasp_prov\" TO \"fk_rails_a6c03d8c46\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_debug_callbacks\" RENAME CONSTRAINT \"fasp_debug_callbacks_fasp_provider_id_3a678e74_fk_fasp_prov\" TO \"fk_rails_c1650087cd\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_follow_recommendations\" RENAME CONSTRAINT \"fasp_follow_recommen_recommended_account__2c255a26_fk_accounts_\" TO \"fk_rails_5c63a5fd1b\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_follow_recommendations\" RENAME CONSTRAINT \"fasp_follow_recommen_requesting_account_i_04e6533e_fk_accounts_\" TO \"fk_rails_71623d7e2c\";\n\n-- RenameForeignKey\nALTER TABLE \"fasp_subscriptions\" RENAME CONSTRAINT \"fasp_subscriptions_fasp_provider_id_1969f511_fk_fasp_prov\" TO \"fk_rails_4c021f5938\";\n\n-- RenameForeignKey\nALTER TABLE \"moderation_subscription_advisories\" RENAME CONSTRAINT \"moderation_subscript_moderation_subscript_9695fe44_fk_moderatio\" TO \"fk_rails_373d44cfb0\";\n\n-- AddForeignKey\nALTER TABLE \"account_aliases\" ADD CONSTRAINT \"fk_rails_fc91575d08\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_conversations\" ADD CONSTRAINT \"fk_rails_1491654f9f\" FOREIGN KEY (\"conversation_id\") REFERENCES \"conversations\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_conversations\" ADD CONSTRAINT \"fk_rails_6f5278b6e9\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_deletion_requests\" ADD CONSTRAINT \"fk_rails_45bf2626b9\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_domain_blocks\" ADD CONSTRAINT \"fk_206c6029bd\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_migrations\" ADD CONSTRAINT \"fk_rails_c9f701caaf\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_migrations\" ADD CONSTRAINT \"fk_rails_d9a8dad070\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_moderation_notes\" ADD CONSTRAINT \"fk_rails_3f8b75089b\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_moderation_notes\" ADD CONSTRAINT \"fk_rails_dd62ed5ac3\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_notes\" ADD CONSTRAINT \"fk_rails_2801b48f1a\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_notes\" ADD CONSTRAINT \"fk_rails_4ee4503c69\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_pins\" ADD CONSTRAINT \"fk_rails_a176e26c37\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_pins\" ADD CONSTRAINT \"fk_rails_d44979e5dd\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_reach_filters\" ADD CONSTRAINT \"fk_rails_f1ab63c96b\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_relationship_severance_events\" ADD CONSTRAINT \"fk_rails_030c916965\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_relationship_severance_events\" ADD CONSTRAINT \"fk_rails_8a34c3a361\" FOREIGN KEY (\"relationship_severance_event_id\") REFERENCES \"relationship_severance_events\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_stats\" ADD CONSTRAINT \"fk_rails_215bb31ff1\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_statuses_cleanup_policies\" ADD CONSTRAINT \"fk_rails_23d5f73cfe\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_summaries\" ADD CONSTRAINT \"fk_rails_4ea43ef304\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_warnings\" ADD CONSTRAINT \"fk_rails_8f2bab4b16\" FOREIGN KEY (\"report_id\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_warnings\" ADD CONSTRAINT \"fk_rails_a65a1bf71b\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"account_warnings\" ADD CONSTRAINT \"fk_rails_a7ebbb1e37\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"accounts\" ADD CONSTRAINT \"fk_rails_2320833084\" FOREIGN KEY (\"moved_to_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"admin_action_logs\" ADD CONSTRAINT \"fk_rails_a7667297fa\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"announcement_mutes\" ADD CONSTRAINT \"fk_rails_9c99f8e835\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"announcement_mutes\" ADD CONSTRAINT \"fk_rails_e35401adf1\" FOREIGN KEY (\"announcement_id\") REFERENCES \"announcements\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"announcement_reactions\" ADD CONSTRAINT \"fk_rails_7444ad831f\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"announcement_reactions\" ADD CONSTRAINT \"fk_rails_a1226eaa5c\" FOREIGN KEY (\"announcement_id\") REFERENCES \"announcements\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"announcement_reactions\" ADD CONSTRAINT \"fk_rails_b742c91c0e\" FOREIGN KEY (\"custom_emoji_id\") REFERENCES \"custom_emojis\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"appeals\" ADD CONSTRAINT \"fk_rails_501c3a6e13\" FOREIGN KEY (\"rejected_by_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"appeals\" ADD CONSTRAINT \"fk_rails_9deb2f63ad\" FOREIGN KEY (\"approved_by_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"appeals\" ADD CONSTRAINT \"fk_rails_a99f14546e\" FOREIGN KEY (\"account_warning_id\") REFERENCES \"account_warnings\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"appeals\" ADD CONSTRAINT \"fk_rails_ea84881569\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"backups\" ADD CONSTRAINT \"fk_rails_096669d221\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"blocks\" ADD CONSTRAINT \"fk_4269e03e65\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"blocks\" ADD CONSTRAINT \"fk_9571bfabc1\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"bookmarks\" ADD CONSTRAINT \"fk_rails_11207ffcfd\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"bookmarks\" ADD CONSTRAINT \"fk_rails_9f6ac182a6\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"bulk_import_rows\" ADD CONSTRAINT \"fk_rails_d39af34335\" FOREIGN KEY (\"bulk_import_id\") REFERENCES \"bulk_imports\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"bulk_imports\" ADD CONSTRAINT \"fk_rails_1d89c0f8b2\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"canonical_email_blocks\" ADD CONSTRAINT \"fk_rails_1ecb262096\" FOREIGN KEY (\"reference_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"collection_items\" ADD CONSTRAINT \"fk_rails_b1a778644b\" FOREIGN KEY (\"collection_id\") REFERENCES \"collections\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"collection_reports\" ADD CONSTRAINT \"fk_rails_0720c1a3d6\" FOREIGN KEY (\"collection_id\") REFERENCES \"collections\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"collection_reports\" ADD CONSTRAINT \"fk_rails_4a504bd5e6\" FOREIGN KEY (\"report_id\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"conversation_mutes\" ADD CONSTRAINT \"fk_225b4212bb\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"conversation_mutes\" ADD CONSTRAINT \"fk_rails_5ab139311f\" FOREIGN KEY (\"conversation_id\") REFERENCES \"conversations\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"custom_emoji_categories\" ADD CONSTRAINT \"fk_rails_ad7840c8cf\" FOREIGN KEY (\"featured_emoji_id\") REFERENCES \"custom_emojis\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"custom_filter_keywords\" ADD CONSTRAINT \"fk_rails_5a49a74012\" FOREIGN KEY (\"custom_filter_id\") REFERENCES \"custom_filters\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"custom_filter_statuses\" ADD CONSTRAINT \"fk_rails_2f6d20c0cf\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"custom_filter_statuses\" ADD CONSTRAINT \"fk_rails_e2ddaf5b14\" FOREIGN KEY (\"custom_filter_id\") REFERENCES \"custom_filters\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"custom_filters\" ADD CONSTRAINT \"fk_rails_8b8d786993\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"domain_allows\" ADD CONSTRAINT \"fk_rails_1be18c8bad\" FOREIGN KEY (\"moderation_subscription_id\") REFERENCES \"moderation_subscriptions\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"domain_blocks\" ADD CONSTRAINT \"fk_rails_0d4a303c6d\" FOREIGN KEY (\"moderation_subscription_id\") REFERENCES \"moderation_subscriptions\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"email_domain_blocks\" ADD CONSTRAINT \"fk_rails_408efe0a15\" FOREIGN KEY (\"parent_id\") REFERENCES \"email_domain_blocks\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"email_subscriptions\" ADD CONSTRAINT \"fk_rails_282940e759\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"favourites\" ADD CONSTRAINT \"fk_5eb6c2b873\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"favourites\" ADD CONSTRAINT \"fk_b0e856845e\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"featured_tags\" ADD CONSTRAINT \"fk_rails_174efcf15f\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"featured_tags\" ADD CONSTRAINT \"fk_rails_23a9055c7c\" FOREIGN KEY (\"tag_id\") REFERENCES \"tags\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follow_recommendation_mutes\" ADD CONSTRAINT \"fk_rails_a9f09ec9a8\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follow_recommendation_mutes\" ADD CONSTRAINT \"fk_rails_d36abd69ea\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follow_recommendation_suppressions\" ADD CONSTRAINT \"fk_rails_dfb9a1dbe2\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follow_requests\" ADD CONSTRAINT \"fk_76d644b0e7\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follow_requests\" ADD CONSTRAINT \"fk_9291ec025d\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follows\" ADD CONSTRAINT \"fk_32ed1b5560\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"follows\" ADD CONSTRAINT \"fk_745ca29eac\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"generated_annual_reports\" ADD CONSTRAINT \"fk_rails_4ca37f035c\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"global_follow_recommendations\" ADD CONSTRAINT \"fk_rails_bacefde68a\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"identities\" ADD CONSTRAINT \"fk_bea040f377\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"instance_moderation_notes\" ADD CONSTRAINT \"fk_rails_62f919e09b\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"fk_rails_ff69dbb2ac\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"keypairs\" ADD CONSTRAINT \"fk_rails_f5ea7ac36a\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"list_accounts\" ADD CONSTRAINT \"fk_rails_40f9cc29f1\" FOREIGN KEY (\"follow_id\") REFERENCES \"follows\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"list_accounts\" ADD CONSTRAINT \"fk_rails_85fee9d6ab\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"list_accounts\" ADD CONSTRAINT \"fk_rails_e54e356c88\" FOREIGN KEY (\"list_id\") REFERENCES \"lists\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"list_accounts\" ADD CONSTRAINT \"fk_rails_f11f9d1fcc\" FOREIGN KEY (\"follow_request_id\") REFERENCES \"follow_requests\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"lists\" ADD CONSTRAINT \"fk_rails_3853b78dac\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"login_activities\" ADD CONSTRAINT \"fk_rails_e4b6396b41\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"markers\" ADD CONSTRAINT \"fk_rails_a7009bc2b6\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"media_attachments\" ADD CONSTRAINT \"fk_96dd81e81b\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"media_attachments\" ADD CONSTRAINT \"fk_rails_31fc5aeef1\" FOREIGN KEY (\"scheduled_status_id\") REFERENCES \"scheduled_statuses\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"media_attachments\" ADD CONSTRAINT \"fk_rails_3ec0cfdd70\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"mentions\" ADD CONSTRAINT \"fk_970d43f9d1\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"mentions\" ADD CONSTRAINT \"fk_rails_59edbe2887\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"moderation_suggestions\" ADD CONSTRAINT \"fk_rails_189e624c8b\" FOREIGN KEY (\"moderation_subscription_id\") REFERENCES \"moderation_subscriptions\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"mutes\" ADD CONSTRAINT \"fk_b8d8daf315\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"mutes\" ADD CONSTRAINT \"fk_eecff219ea\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_permissions\" ADD CONSTRAINT \"fk_rails_7c0bed08df\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_permissions\" ADD CONSTRAINT \"fk_rails_e3e0aaad70\" FOREIGN KEY (\"from_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_policies\" ADD CONSTRAINT \"fk_rails_506d62f0da\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_requests\" ADD CONSTRAINT \"fk_rails_5632f121b4\" FOREIGN KEY (\"from_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_requests\" ADD CONSTRAINT \"fk_rails_61c7aa9c1f\" FOREIGN KEY (\"last_status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notification_requests\" ADD CONSTRAINT \"fk_rails_881c7f71c4\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"fk_c141c8ee55\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"fk_fbd6b0bf9e\" FOREIGN KEY (\"from_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"oauth_access_grants\" ADD CONSTRAINT \"fk_34d54b0a33\" FOREIGN KEY (\"application_id\") REFERENCES \"oauth_applications\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"oauth_access_grants\" ADD CONSTRAINT \"fk_63b044929b\" FOREIGN KEY (\"resource_owner_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"oauth_access_tokens\" ADD CONSTRAINT \"fk_e84df68546\" FOREIGN KEY (\"resource_owner_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"oauth_access_tokens\" ADD CONSTRAINT \"fk_f5fc4c1ee3\" FOREIGN KEY (\"application_id\") REFERENCES \"oauth_applications\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"oauth_applications\" ADD CONSTRAINT \"fk_b0988c7c0a\" FOREIGN KEY (\"owner_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"poll_votes\" ADD CONSTRAINT \"fk_rails_a6e6974b7e\" FOREIGN KEY (\"poll_id\") REFERENCES \"polls\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"poll_votes\" ADD CONSTRAINT \"fk_rails_b6c18cf44a\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"polls\" ADD CONSTRAINT \"fk_rails_3e0d9f1115\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"polls\" ADD CONSTRAINT \"fk_rails_5b19a0c011\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"preview_card_trends\" ADD CONSTRAINT \"fk_rails_371593db34\" FOREIGN KEY (\"preview_card_id\") REFERENCES \"preview_cards\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"preview_cards\" ADD CONSTRAINT \"fk_rails_6fb2119894\" FOREIGN KEY (\"unverified_author_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"preview_cards\" ADD CONSTRAINT \"fk_rails_dca4905b94\" FOREIGN KEY (\"author_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"quotes\" ADD CONSTRAINT \"fk_rails_36d54169fc\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"quotes\" ADD CONSTRAINT \"fk_rails_38068caa0e\" FOREIGN KEY (\"quoted_status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"quotes\" ADD CONSTRAINT \"fk_rails_bd3ab4462c\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"quotes\" ADD CONSTRAINT \"fk_rails_bfc5276b70\" FOREIGN KEY (\"quoted_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"report_notes\" ADD CONSTRAINT \"fk_rails_7fa83a61eb\" FOREIGN KEY (\"report_id\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"report_notes\" ADD CONSTRAINT \"fk_rails_cae66353f3\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"fk_4b81f7522c\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"fk_bca45b75fd\" FOREIGN KEY (\"action_taken_by_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"fk_eb37af34f0\" FOREIGN KEY (\"target_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"fk_rails_3deb8c7acb\" FOREIGN KEY (\"application_id\") REFERENCES \"oauth_applications\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"fk_rails_4e7a498fb4\" FOREIGN KEY (\"assigned_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"rule_translations\" ADD CONSTRAINT \"fk_rails_d5fd439dde\" FOREIGN KEY (\"rule_id\") REFERENCES \"rules\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"scheduled_statuses\" ADD CONSTRAINT \"fk_rails_23bd9018f9\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"session_activations\" ADD CONSTRAINT \"fk_957e5bda89\" FOREIGN KEY (\"access_token_id\") REFERENCES \"oauth_access_tokens\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"session_activations\" ADD CONSTRAINT \"fk_e5fda67334\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"severed_relationships\" ADD CONSTRAINT \"fk_rails_5054494e1e\" FOREIGN KEY (\"relationship_severance_event_id\") REFERENCES \"relationship_severance_events\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"severed_relationships\" ADD CONSTRAINT \"fk_rails_98ff099d4c\" FOREIGN KEY (\"local_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"severed_relationships\" ADD CONSTRAINT \"fk_rails_f7afd97ba4\" FOREIGN KEY (\"remote_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_edits\" ADD CONSTRAINT \"fk_rails_a960f234a0\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_edits\" ADD CONSTRAINT \"fk_rails_dc8988c545\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_pins\" ADD CONSTRAINT \"fk_d4cb435b62\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_pins\" ADD CONSTRAINT \"fk_rails_65c05552f1\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_stats\" ADD CONSTRAINT \"fk_rails_4a247aac42\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_trends\" ADD CONSTRAINT \"fk_rails_68c610dc1a\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"status_trends\" ADD CONSTRAINT \"fk_rails_a6b527ea49\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses\" ADD CONSTRAINT \"fk_9bda1543f7\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses\" ADD CONSTRAINT \"fk_c7fa917661\" FOREIGN KEY (\"in_reply_to_account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses\" ADD CONSTRAINT \"fk_rails_256483a9ab\" FOREIGN KEY (\"reblog_of_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses\" ADD CONSTRAINT \"fk_rails_94a6f70399\" FOREIGN KEY (\"in_reply_to_id\") REFERENCES \"statuses\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses_tags\" ADD CONSTRAINT \"fk_3081861e21\" FOREIGN KEY (\"tag_id\") REFERENCES \"tags\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"statuses_tags\" ADD CONSTRAINT \"fk_rails_df0fe11427\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"tag_follows\" ADD CONSTRAINT \"fk_rails_091e831473\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"tag_follows\" ADD CONSTRAINT \"fk_rails_0deefe597f\" FOREIGN KEY (\"tag_id\") REFERENCES \"tags\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"tag_trends\" ADD CONSTRAINT \"fk_rails_3033046460\" FOREIGN KEY (\"tag_id\") REFERENCES \"tags\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"tagged_objects\" ADD CONSTRAINT \"fk_rails_087c1d32f7\" FOREIGN KEY (\"status_id\") REFERENCES \"statuses\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"tombstones\" ADD CONSTRAINT \"fk_rails_f95b861449\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"user_invite_requests\" ADD CONSTRAINT \"fk_rails_3773f15361\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"fk_50500f500d\" FOREIGN KEY (\"account_id\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"fk_rails_642f17018b\" FOREIGN KEY (\"role_id\") REFERENCES \"user_roles\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"fk_rails_8fb2a43e88\" FOREIGN KEY (\"invite_id\") REFERENCES \"invites\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"fk_rails_ecc9536e7c\" FOREIGN KEY (\"created_by_application_id\") REFERENCES \"oauth_applications\"(\"id\") ON DELETE SET NULL ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"web_push_subscriptions\" ADD CONSTRAINT \"fk_rails_751a9f390b\" FOREIGN KEY (\"access_token_id\") REFERENCES \"oauth_access_tokens\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"web_push_subscriptions\" ADD CONSTRAINT \"fk_rails_b006f28dac\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"web_settings\" ADD CONSTRAINT \"fk_11910667b2\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- AddForeignKey\nALTER TABLE \"webauthn_credentials\" ADD CONSTRAINT \"fk_rails_a4355aef77\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- RenameIndex\nALTER INDEX \"account_con_convers_efb62f_idx\" RENAME TO \"index_account_conversations_on_conversation_id\";\n\n-- RenameIndex\nALTER INDEX \"account_del_account_686c6a_idx\" RENAME TO \"index_account_deletion_requests_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_mig_account_1f9cfd_idx\" RENAME TO \"index_account_migrations_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_mod_account_d8fdbd_idx\" RENAME TO \"index_account_moderation_notes_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_mod_target__96a9b4_idx\" RENAME TO \"index_account_moderation_notes_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_not_target__461c03_idx\" RENAME TO \"index_account_notes_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_pin_target__723d78_idx\" RENAME TO \"index_account_pins_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_reach_filters_account_id_key\" RENAME TO \"index_account_reach_filters_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_rel_relatio_7f27ba_idx\" RENAME TO \"idx_on_relationship_severance_event_id_403f53e707\";\n\n-- RenameIndex\nALTER INDEX \"account_sta_last_st_62dbda_idx\" RENAME TO \"index_account_stats_on_last_status_at_and_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_stats_account_id_key\" RENAME TO \"index_account_stats_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_sta_account_f5fd49_idx\" RENAME TO \"index_account_statuses_cleanup_policies_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_sum_account_000253_idx\" RENAME TO \"idx_on_account_id_language_sensitive_250461e1eb\";\n\n-- RenameIndex\nALTER INDEX \"account_war_account_491928_idx\" RENAME TO \"index_account_warnings_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"account_war_target__c6e8fd_idx\" RENAME TO \"index_account_warnings_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"accounts_domain_482c68_idx\" RENAME TO \"index_accounts_on_domain_and_id\";\n\n-- RenameIndex\nALTER INDEX \"accounts_uri_key\" RENAME TO \"index_accounts_on_uri\";\n\n-- RenameIndex\nALTER INDEX \"accounts_ta_account_9abfc4_idx\" RENAME TO \"index_accounts_tags_on_account_id_and_tag_id\";\n\n-- RenameIndex\nALTER INDEX \"admin_actio_account_003462_idx\" RENAME TO \"index_admin_action_logs_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"admin_actio_target__28c949_idx\" RENAME TO \"index_admin_action_logs_on_target_type_and_target_id\";\n\n-- RenameIndex\nALTER INDEX \"admin_server_checks_key_key\" RENAME TO \"index_admin_server_checks_on_key\";\n\n-- RenameIndex\nALTER INDEX \"announcemen_announc_6cbced_idx\" RENAME TO \"index_announcement_mutes_on_announcement_id\";\n\n-- RenameIndex\nALTER INDEX \"announcemen_announc_fb60a9_idx\" RENAME TO \"index_announcement_reactions_on_announcement_id\";\n\n-- RenameIndex\nALTER INDEX \"appeals_account_warning_id_key\" RENAME TO \"index_appeals_on_account_warning_id\";\n\n-- RenameIndex\nALTER INDEX \"blocks_target__322ae4_idx\" RENAME TO \"index_blocks_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"bulk_import_bulk_im_98394a_idx\" RENAME TO \"index_bulk_import_rows_on_bulk_import_id\";\n\n-- RenameIndex\nALTER INDEX \"bulk_import_account_ee7a2b_idx\" RENAME TO \"index_bulk_imports_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"canonical_e_referen_35ea73_idx\" RENAME TO \"index_canonical_email_blocks_on_reference_account_id\";\n\n-- RenameIndex\nALTER INDEX \"canonical_email_blocks_canonical_email_hash_key\" RENAME TO \"index_canonical_email_blocks_on_canonical_email_hash\";\n\n-- RenameIndex\nALTER INDEX \"collection__collect_526adc_idx\" RENAME TO \"index_collection_items_on_collection_id\";\n\n-- RenameIndex\nALTER INDEX \"collection__collect_0ca522_idx\" RENAME TO \"index_collection_reports_on_collection_id\";\n\n-- RenameIndex\nALTER INDEX \"collection__report__6b1da9_idx\" RENAME TO \"index_collection_reports_on_report_id\";\n\n-- RenameIndex\nALTER INDEX \"collections_account_264833_idx\" RENAME TO \"index_collections_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"custom_emoji_categories_name_key\" RENAME TO \"index_custom_emoji_categories_on_name\";\n\n-- RenameIndex\nALTER INDEX \"custom_filt_custom__ab3e3d_idx\" RENAME TO \"index_custom_filter_keywords_on_custom_filter_id\";\n\n-- RenameIndex\nALTER INDEX \"custom_filt_custom__13a56d_idx\" RENAME TO \"index_custom_filter_statuses_on_custom_filter_id\";\n\n-- RenameIndex\nALTER INDEX \"custom_filt_account_c9952c_idx\" RENAME TO \"index_custom_filters_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"domain_allo_moderat_eedfcd_idx\" RENAME TO \"index_domain_allows_on_moderation_subscription_id\";\n\n-- RenameIndex\nALTER INDEX \"domain_allows_domain_key\" RENAME TO \"index_domain_allows_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"domain_bloc_moderat_23670f_idx\" RENAME TO \"index_domain_blocks_on_moderation_subscription_id\";\n\n-- RenameIndex\nALTER INDEX \"domain_blocks_domain_key\" RENAME TO \"index_domain_blocks_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"email_domain_blocks_domain_key\" RENAME TO \"index_email_domain_blocks_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"fasp_backfi_fasp_pr_27028a_idx\" RENAME TO \"index_fasp_backfill_requests_on_fasp_provider_id\";\n\n-- RenameIndex\nALTER INDEX \"fasp_capabi_fasp_pr_e153a4_idx\" RENAME TO \"index_fasp_capabilities_on_fasp_provider_id\";\n\n-- RenameIndex\nALTER INDEX \"fasp_debug__fasp_pr_762eb7_idx\" RENAME TO \"index_fasp_debug_callbacks_on_fasp_provider_id\";\n\n-- RenameIndex\nALTER INDEX \"fasp_follow_recomme_576f15_idx\" RENAME TO \"index_fasp_follow_recommendations_on_recommended_account_id\";\n\n-- RenameIndex\nALTER INDEX \"fasp_follow_request_6c0209_idx\" RENAME TO \"index_fasp_follow_recommendations_on_requesting_account_id\";\n\n-- RenameIndex\nALTER INDEX \"fasp_providers_base_url_key\" RENAME TO \"index_fasp_providers_on_base_url\";\n\n-- RenameIndex\nALTER INDEX \"fasp_subscr_fasp_pr_a52741_idx\" RENAME TO \"index_fasp_subscriptions_on_fasp_provider_id\";\n\n-- RenameIndex\nALTER INDEX \"favourites_account_64ce97_idx\" RENAME TO \"index_favourites_on_account_id_and_id\";\n\n-- RenameIndex\nALTER INDEX \"follow_reco_target__53d633_idx\" RENAME TO \"index_follow_recommendation_mutes_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"follow_recommendation_suppressions_account_id_key\" RENAME TO \"index_follow_recommendation_suppressions_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"follow_requ_target__e98074_idx\" RENAME TO \"index_follow_requests_on_target_account_id_and_account_id\";\n\n-- RenameIndex\nALTER INDEX \"follows_target__0b244b_idx\" RENAME TO \"index_follows_on_target_account_id_and_account_id\";\n\n-- RenameIndex\nALTER INDEX \"global_foll_rank_df2071_idx\" RENAME TO \"index_global_follow_recommendations_on_rank\";\n\n-- RenameIndex\nALTER INDEX \"instance_mo_domain_b9ddbb_idx\" RENAME TO \"index_instance_moderation_notes_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"invites_code_key\" RENAME TO \"index_invites_on_code\";\n\n-- RenameIndex\nALTER INDEX \"ip_blocks_ip_key\" RENAME TO \"index_ip_blocks_on_ip\";\n\n-- RenameIndex\nALTER INDEX \"keypairs_uri_key\" RENAME TO \"index_keypairs_on_uri\";\n\n-- RenameIndex\nALTER INDEX \"list_accoun_list_id_59e103_idx\" RENAME TO \"index_list_accounts_on_list_id_and_account_id\";\n\n-- RenameIndex\nALTER INDEX \"login_activ_user_id_71ae80_idx\" RENAME TO \"index_login_activities_on_user_id\";\n\n-- RenameIndex\nALTER INDEX \"media_attac_account_5f621b_idx\" RENAME TO \"index_media_attachments_on_account_id_and_status_id\";\n\n-- RenameIndex\nALTER INDEX \"media_attac_status__c2626c_idx\" RENAME TO \"index_media_attachments_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"moderation__moderat_f597a1_idx\" RENAME TO \"index_moderation_advisories_on_moderation_subscription_id\";\n\n-- RenameIndex\nALTER INDEX \"moderation__moderat_477b69_idx\" RENAME TO \"index_moderation_suggestions_on_moderation_subscription_id\";\n\n-- RenameIndex\nALTER INDEX \"mutes_target__09d31b_idx\" RENAME TO \"index_mutes_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_account_56758f_idx\" RENAME TO \"index_notification_permissions_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_from_ac_57e4d7_idx\" RENAME TO \"index_notification_permissions_on_from_account_id\";\n\n-- RenameIndex\nALTER INDEX \"notification_policies_account_id_key\" RENAME TO \"index_notification_policies_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_from_ac_7a8429_idx\" RENAME TO \"index_notification_requests_on_from_account_id\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_last_st_26647f_idx\" RENAME TO \"index_notification_requests_on_last_status_id\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_account_5e9059_idx\" RENAME TO \"index_notifications_on_account_id_and_id_and_type\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_activit_faeefe_idx\" RENAME TO \"index_notifications_on_activity_id_and_activity_type\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_from_ac_9fb0d0_idx\" RENAME TO \"index_notifications_on_from_account_id\";\n\n-- RenameIndex\nALTER INDEX \"oauth_acces_resourc_a1f9af_idx\" RENAME TO \"index_oauth_access_grants_on_resource_owner_id\";\n\n-- RenameIndex\nALTER INDEX \"oauth_access_grants_token_key\" RENAME TO \"index_oauth_access_grants_on_token\";\n\n-- RenameIndex\nALTER INDEX \"oauth_access_tokens_token_key\" RENAME TO \"index_oauth_access_tokens_on_token\";\n\n-- RenameIndex\nALTER INDEX \"oauth_appli_owner_i_940c3d_idx\" RENAME TO \"index_oauth_applications_on_owner_id_and_owner_type\";\n\n-- RenameIndex\nALTER INDEX \"oauth_applications_uid_key\" RENAME TO \"index_oauth_applications_on_uid\";\n\n-- RenameIndex\nALTER INDEX \"pghero_spac_databas_77837e_idx\" RENAME TO \"index_pghero_space_stats_on_database_and_captured_at\";\n\n-- RenameIndex\nALTER INDEX \"preview_card_providers_domain_key\" RENAME TO \"index_preview_card_providers_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"preview_card_trends_preview_card_id_key\" RENAME TO \"index_preview_card_trends_on_preview_card_id\";\n\n-- RenameIndex\nALTER INDEX \"preview_cards_url_key\" RENAME TO \"index_preview_cards_on_url\";\n\n-- RenameIndex\nALTER INDEX \"quotes_account_09038f_idx\" RENAME TO \"index_quotes_on_account_id_and_quoted_account_id_and_id\";\n\n-- RenameIndex\nALTER INDEX \"quotes_quoted__5e9494_idx\" RENAME TO \"index_quotes_on_quoted_account_id\";\n\n-- RenameIndex\nALTER INDEX \"quotes_quoted__cf4804_idx\" RENAME TO \"index_quotes_on_quoted_status_id_and_id\";\n\n-- RenameIndex\nALTER INDEX \"quotes_status_id_key\" RENAME TO \"index_quotes_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"relationshi_type_64d5fd_idx\" RENAME TO \"index_relationship_severance_events_on_type_and_target_name\";\n\n-- RenameIndex\nALTER INDEX \"report_note_account_7fc213_idx\" RENAME TO \"index_report_notes_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"report_note_report__a5140e_idx\" RENAME TO \"index_report_notes_on_report_id\";\n\n-- RenameIndex\nALTER INDEX \"reports_target__0150d8_idx\" RENAME TO \"index_reports_on_target_account_id\";\n\n-- RenameIndex\nALTER INDEX \"scheduled_s_account_b7949a_idx\" RENAME TO \"index_scheduled_statuses_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"scheduled_s_schedul_9b8146_idx\" RENAME TO \"index_scheduled_statuses_on_scheduled_at\";\n\n-- RenameIndex\nALTER INDEX \"session_act_access__2abdc8_idx\" RENAME TO \"index_session_activations_on_access_token_id\";\n\n-- RenameIndex\nALTER INDEX \"session_act_user_id_5b31fc_idx\" RENAME TO \"index_session_activations_on_user_id\";\n\n-- RenameIndex\nALTER INDEX \"session_activations_session_id_key\" RENAME TO \"index_session_activations_on_session_id\";\n\n-- RenameIndex\nALTER INDEX \"settings_var_key\" RENAME TO \"index_settings_on_var\";\n\n-- RenameIndex\nALTER INDEX \"severed_rel_local_a_729cf5_idx\" RENAME TO \"index_severed_relationships_on_local_account_and_event\";\n\n-- RenameIndex\nALTER INDEX \"severed_rel_remote__dcefad_idx\" RENAME TO \"index_severed_relationships_on_remote_account_id\";\n\n-- RenameIndex\nALTER INDEX \"site_uploads_var_key\" RENAME TO \"index_site_uploads_on_var\";\n\n-- RenameIndex\nALTER INDEX \"software_deprecations_branch_key\" RENAME TO \"index_software_deprecations_on_branch\";\n\n-- RenameIndex\nALTER INDEX \"software_updates_version_key\" RENAME TO \"index_software_updates_on_version\";\n\n-- RenameIndex\nALTER INDEX \"status_edit_account_b831bd_idx\" RENAME TO \"index_status_edits_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"status_edit_status__10c0e0_idx\" RENAME TO \"index_status_edits_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"status_stats_status_id_key\" RENAME TO \"index_status_stats_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"status_tren_account_d1cc5d_idx\" RENAME TO \"index_status_trends_on_account_id\";\n\n-- RenameIndex\nALTER INDEX \"status_trends_status_id_key\" RENAME TO \"index_status_trends_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"statuses_convers_62c389_idx\" RENAME TO \"index_statuses_on_conversation_id\";\n\n-- RenameIndex\nALTER INDEX \"statuses_reblog__f654a0_idx\" RENAME TO \"index_statuses_on_reblog_of_id_and_account_id\";\n\n-- RenameIndex\nALTER INDEX \"statuses_ta_status__a7bfa7_idx\" RENAME TO \"index_statuses_tags_on_status_id\";\n\n-- RenameIndex\nALTER INDEX \"unavailable_domains_domain_key\" RENAME TO \"index_unavailable_domains_on_domain\";\n\n-- RenameIndex\nALTER INDEX \"user_invite_user_id_a17cff_idx\" RENAME TO \"index_user_invite_requests_on_user_id\";\n\n-- RenameIndex\nALTER INDEX \"username_bl_normali_b1a5fe_idx\" RENAME TO \"index_username_blocks_on_normalized_username\";\n\n-- RenameIndex\nALTER INDEX \"users_confirmation_token_key\" RENAME TO \"index_users_on_confirmation_token\";\n\n-- RenameIndex\nALTER INDEX \"users_email_key\" RENAME TO \"index_users_on_email\";\n\n-- RenameIndex\nALTER INDEX \"web_push_su_user_id_a9f08a_idx\" RENAME TO \"index_web_push_subscriptions_on_user_id\";\n\n-- RenameIndex\nALTER INDEX \"web_settings_user_id_key\" RENAME TO \"index_web_settings_on_user_id\";\n\n-- RenameIndex\nALTER INDEX \"webauthn_credentials_external_id_key\" RENAME TO \"index_webauthn_credentials_on_external_id\";\n\n-- RenameIndex\nALTER INDEX \"webhooks_url_key\" RENAME TO \"index_webhooks_on_url\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: multiple default values specified for column \"id\" of table \"accounts\" (SQLSTATE 42601)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 312,
+            "total": 312
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"invites\": Execution Error: error returned from database: relation \"users\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 113,
+            "total": 123
+          },
+          "read": {
+            "ok": 113,
+            "total": 113
+          },
+          "update": {
+            "ok": 61,
+            "total": 61
+          },
+          "relations": {
+            "ok": 282,
+            "total": 282
+          },
+          "delete": {
+            "ok": 113,
+            "total": 113
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected %Postgrex.INET{}, got \\\"10.0.0.101\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "ip_blocks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected %Postgrex.INET{}, got \\\"0.0.0.0\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "login_activities",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "markers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "oauth_access_grants",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "oauth_access_tokens",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected %Postgrex.INET{}, got \\\"10.0.0.173\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "session_activations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "user_invite_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "web_push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauth_access_tokens`) did not go in"
+          },
+          {
+            "model": "web_settings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 320,
+            "total": 320
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "fatal": "Property 'AccountConversations.ParticipantAccountIds' cannot be used as a key because it has type 'List<long>' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'List<long>' with a type that can be compared.",
+      "ddl": {
+        "error": "Property 'AccountConversations.ParticipantAccountIds' cannot be used as a key because it has type 'List<long>' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'List<long>' with a type that can be compared."
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 124,
+            "total": 124
+          },
+          "insert": {
+            "ok": 123,
+            "total": 123
+          },
+          "read": {
+            "ok": 123,
+            "total": 123
+          },
+          "update": {
+            "ok": 68,
+            "total": 68
+          },
+          "relations": {
+            "ok": 318,
+            "total": 318
+          },
+          "delete": {
+            "ok": 123,
+            "total": 123
+          }
+        },
+        "findings": [
+          {
+            "model": "invites",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

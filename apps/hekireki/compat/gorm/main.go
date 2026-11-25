@@ -338,7 +338,11 @@ func set(sf *schema.Field, obj reflect.Value, f Field, v any) error {
 			}
 		}
 	}
-	data, _ := json.Marshal(v)
+	payload := v
+	if f.List {
+		payload = goValue
+	}
+	data, _ := json.Marshal(payload)
 	if err := json.Unmarshal(data, target.Interface()); err == nil {
 		return sf.Set(ctx, obj.Elem(), target.Elem().Interface())
 	}
@@ -347,6 +351,18 @@ func set(sf *schema.Field, obj reflect.Value, f Field, v any) error {
 
 func toGo(f Field, v any) any {
 	if f.List {
+		// A BigInt list holds strings in the plan; a Go list of int64 takes numbers.
+		if list, ok := v.([]any); ok && f.Type == "BigInt" {
+			out := make([]any, len(list))
+			for i, x := range list {
+				if n, ok := new(big.Int).SetString(fmt.Sprint(x), 10); ok {
+					out[i] = n.Int64()
+				} else {
+					out[i] = x
+				}
+			}
+			return out
+		}
 		return v
 	}
 	switch f.Type {
@@ -443,6 +459,15 @@ func normal(v any) any {
 		return x
 	case uint64:
 		return x
+	}
+	// A list (hekireki-gorm's ScalarList, a []T with a Value() that writes PostgreSQL's array
+	// text): its elements, not what Value() would write to the database.
+	if rv.Kind() == reflect.Slice && rv.Type().Elem().Kind() != reflect.Uint8 {
+		list := make([]any, rv.Len())
+		for i := range list {
+			list[i] = normal(rv.Index(i).Interface())
+		}
+		return list
 	}
 	if valuer, ok := v.(driver.Valuer); ok {
 		dv, err := valuer.Value()

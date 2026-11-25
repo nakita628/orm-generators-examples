@@ -1,0 +1,1681 @@
+// activerecord/loomio: the tables that Active Record creates from Loomio's db/schema.rb,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+//
+// Changed from what `prisma db pull` wrote, which `prisma validate` or `prisma db push` refuses:
+// - account_completion_proofs.user_id: BigInt -> Int, the type of users.id it references
+// - anonymous_ballot_choices.poll_option_id: BigInt -> Int, the type of poll_options.id it references
+// - anonymous_ballots.poll_id: BigInt -> Int, the type of polls.id it references
+// - anonymous_poll_voters.poll_id: BigInt -> Int, the type of polls.id it references
+// - anonymous_poll_voters.inviter_id: BigInt? -> Int?, the type of users.id it references
+// - anonymous_poll_voters.voter_id: BigInt -> Int, the type of users.id it references
+// - discussions.topic_id: Int? -> BigInt?, the type of topics.id it references
+// - email_suppressions.cleared_by_id: BigInt? -> Int?, the type of users.id it references
+// - group_follows.user_id: BigInt -> Int, the type of users.id it references
+// - group_follows.group_id: BigInt -> Int, the type of groups.id it references
+// - group_handle_redirects.group_id: BigInt -> Int, the type of groups.id it references
+// - mobile_authorization_codes.user_id: BigInt -> Int, the type of users.id it references
+// - mobile_devices.user_id: BigInt -> Int, the type of users.id it references
+// - passkey_challenges.user_id: BigInt? -> Int?, the type of users.id it references
+// - passkey_credentials.user_id: BigInt -> Int, the type of users.id it references
+// - pending_emails.group_id: BigInt -> Int, the type of groups.id it references
+// - polls.topic_id: Int? -> BigInt?, the type of topics.id it references
+// - push_subscriptions.user_id: BigInt -> Int, the type of users.id it references
+// - sessions.user_id: BigInt -> Int, the type of users.id it references
+// - subscription_update_receipts.subscription_id: BigInt? -> Int?, the type of subscriptions.id it references
+// - tasks_users.user_id: BigInt -> Int, the type of users.id it references
+// - topic_items.topic_id: Int -> BigInt, the type of topics.id it references
+// - topic_readers.topic_id: Int -> BigInt, the type of topics.id it references
+
+datasource db {
+  provider = "postgresql"
+}
+
+// The preview features the schema needs.
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+model account_completion_proofs {
+  id           BigInt   @id @default(autoincrement())
+  created_at   DateTime @db.Timestamp(6)
+  expires_at   DateTime @db.Timestamp(6)
+  name_managed Boolean  @default(false)
+  updated_at   DateTime @db.Timestamp(6)
+  user_id      Int
+  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_c02f9f4bf7")
+
+  @@index([expires_at], map: "index_account_completion_proofs_on_expires_at")
+  @@index([user_id], map: "index_account_completion_proofs_on_user_id")
+}
+
+model action_mailbox_inbound_emails {
+  id                      BigInt          @id @default(autoincrement())
+  created_at              DateTime        @db.Timestamp(6)
+  message_checksum        String          @db.VarChar
+  message_id              String          @db.VarChar
+  processing_completed_at DateTime?       @db.Timestamp(6)
+  status                  Int             @default(0)
+  updated_at              DateTime        @db.Timestamp(6)
+  pending_emails          pending_emails?
+
+  @@unique([message_id, message_checksum], map: "index_action_mailbox_inbound_emails_uniqueness")
+  @@index([message_id, id], map: "index_inbound_emails_on_message_id_and_id")
+}
+
+model active_storage_attachments {
+  id                   BigInt               @id @default(autoincrement())
+  blob_id              BigInt
+  created_at           DateTime             @db.Timestamp(6)
+  group_id             Int?
+  name                 String               @db.VarChar
+  record_id            BigInt
+  record_type          String               @db.VarChar
+  active_storage_blobs active_storage_blobs @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_c3b3935057")
+
+  @@unique([record_type, record_id, name, blob_id], map: "index_active_storage_attachments_uniqueness")
+  @@index([blob_id], map: "index_active_storage_attachments_on_blob_id")
+  @@index([group_id], map: "index_active_storage_attachments_on_group_id")
+}
+
+model active_storage_blobs {
+  id                             BigInt                           @id @unique(map: "active_storage_blobs_idx") @default(autoincrement())
+  byte_size                      BigInt
+  checksum                       String?                          @db.VarChar
+  content_type                   String?                          @db.VarChar
+  created_at                     DateTime                         @db.Timestamp(6)
+  filename                       String                           @db.VarChar
+  key                            String                           @unique(map: "index_active_storage_blobs_on_key") @db.VarChar
+  metadata                       String?
+  service_name                   String                           @db.VarChar
+  active_storage_attachments     active_storage_attachments[]
+  active_storage_variant_records active_storage_variant_records[]
+}
+
+model active_storage_variant_records {
+  id                   BigInt               @id @default(autoincrement())
+  blob_id              BigInt
+  variation_digest     String               @db.VarChar
+  active_storage_blobs active_storage_blobs @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_993965df05")
+
+  @@unique([blob_id, variation_digest], map: "index_active_storage_variant_records_uniqueness")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model anonymous_ballot_choices {
+  anonymous_ballot_id String            @db.Uuid
+  poll_option_id      Int
+  score               Int               @default(1)
+  poll_options        poll_options      @relation(fields: [poll_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_578b8af196")
+  anonymous_ballots   anonymous_ballots @relation(fields: [anonymous_ballot_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_d5a8965893")
+
+  @@unique([anonymous_ballot_id, poll_option_id], map: "index_anonymous_ballot_choices_on_ballot_and_option")
+  @@index([anonymous_ballot_id], map: "index_anonymous_ballot_choices_on_anonymous_ballot_id")
+  @@index([poll_option_id], map: "index_anonymous_ballot_choices_on_poll_option_id")
+}
+
+model anonymous_ballots {
+  id                            String                         @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  none_of_the_above             Boolean                        @default(false)
+  poll_id                       Int
+  anonymous_ballot_choices      anonymous_ballot_choices[]
+  polls                         polls                          @relation(fields: [poll_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_b45f0b3905")
+  legacy_anonymous_vote_reasons legacy_anonymous_vote_reasons?
+
+  @@index([poll_id], map: "index_anonymous_ballots_on_poll_id")
+}
+
+model anonymous_poll_voters {
+  id                                            BigInt    @id @default(autoincrement())
+  ballot_submitted                              Boolean   @default(false)
+  group_member                                  Boolean?  @default(false)
+  invited_at                                    DateTime? @db.Timestamp(6)
+  inviter_id                                    Int?
+  poll_id                                       Int
+  voter_id                                      Int
+  polls                                         polls     @relation(fields: [poll_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_12044b32f9")
+  users_anonymous_poll_voters_inviter_idTousers users?    @relation("anonymous_poll_voters_inviter_idTousers", fields: [inviter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_b858c4c7e5")
+  users_anonymous_poll_voters_voter_idTousers   users     @relation("anonymous_poll_voters_voter_idTousers", fields: [voter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_d9f669b313")
+
+  @@unique([poll_id, voter_id], map: "index_anonymous_poll_voters_on_poll_id_and_voter_id")
+  @@index([inviter_id], map: "index_anonymous_poll_voters_on_inviter_id")
+  @@index([poll_id], map: "index_anonymous_poll_voters_on_poll_id")
+  @@index([voter_id], map: "index_anonymous_poll_voters_on_voter_id")
+}
+
+model ar_internal_metadata {
+  key        String   @id @db.VarChar
+  value      String?  @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model bookmarks {
+  id                BigInt    @id @default(autoincrement())
+  bookmarkable_id   BigInt
+  bookmarkable_type String    @db.VarChar
+  created_at        DateTime  @db.Timestamp(6)
+  discarded_at      DateTime? @db.Timestamp(6)
+  updated_at        DateTime  @db.Timestamp(6)
+  user_id           BigInt
+
+  @@unique([user_id, bookmarkable_type, bookmarkable_id], map: "index_bookmarks_on_user_and_bookmarkable")
+  @@index([bookmarkable_type, bookmarkable_id], map: "index_bookmarks_on_bookmarkable")
+  @@index([discarded_at], map: "index_bookmarks_on_discarded_at")
+  @@index([user_id], map: "index_bookmarks_on_user_id")
+}
+
+model chatbots {
+  id                BigInt   @id @default(autoincrement())
+  access_token      String?  @db.VarChar
+  author_id         Int?
+  channel           String?  @db.VarChar
+  created_at        DateTime @db.Timestamp(6)
+  event_kinds       String[] @db.VarChar
+  group_id          Int?
+  kind              String?  @db.VarChar
+  name              String?  @db.VarChar
+  notification_only Boolean  @default(false)
+  server            String?  @db.VarChar
+  updated_at        DateTime @db.Timestamp(6)
+  webhook_kind      String?  @db.VarChar
+
+  @@index([group_id], map: "index_chatbots_on_group_id")
+}
+
+model comments {
+  id             Int       @id @default(autoincrement())
+  attachments    Json      @default("[]")
+  body           String?   @default("")
+  body_format    String    @default("md") @db.VarChar(10)
+  content_locale String?   @db.VarChar
+  created_at     DateTime? @db.Timestamp(6)
+  discarded_at   DateTime? @db.Timestamp(6)
+  discarded_by   Int?
+  edited_at      DateTime? @db.Timestamp(6)
+  link_previews  Json      @default("[]")
+  parent_id      Int?
+  parent_type    String    @db.VarChar
+  updated_at     DateTime? @db.Timestamp(6)
+  user_id        Int?      @default(0)
+  versions_count Int?      @default(0)
+
+  @@index([created_at], map: "index_comments_on_created_at")
+  @@index([discarded_by], map: "index_comments_on_discarded_by")
+  @@index([parent_type, parent_id], map: "index_comments_on_parent_type_and_parent_id")
+  @@index([user_id], map: "index_comments_on_user_id")
+}
+
+model discussion_templates {
+  id                           BigInt    @id @default(autoincrement())
+  allow_comments               Boolean   @default(true)
+  allow_reactions              Boolean   @default(true)
+  attachments                  Json      @default("[]")
+  attachments_admin_only       Boolean   @default(false)
+  author_id                    Int?
+  comment_length_max           Int?
+  content_locale               String?   @db.VarChar
+  created_at                   DateTime  @db.Timestamp(6)
+  default_to_direct_discussion Boolean   @default(false)
+  description                  String?
+  description_format           String    @default("html") @db.VarChar(10)
+  discarded_at                 DateTime? @db.Timestamp(6)
+  discarded_by                 Int?
+  group_id                     Int?
+  hidden_at                    DateTime? @db.Timestamp(6)
+  hider_id                     Int?
+  key                          String?   @db.VarChar
+  link_previews                Json      @default("[]")
+  max_depth                    Int       @default(3)
+  newest_first                 Boolean   @default(false)
+  poll_template_keys_or_ids    Json      @default("[]")
+  polls_one_at_a_time          Boolean   @default(false)
+  position                     Int?
+  process_introduction         String?   @db.VarChar
+  process_introduction_format  String    @default("html") @db.VarChar
+  process_name                 String?   @db.VarChar
+  process_subtitle             String?   @db.VarChar
+  public                       Boolean   @default(false)
+  recipient_audience           String?   @db.VarChar
+  source_discussion_id         Int?
+  tags                         String[]  @default([]) @db.VarChar
+  title                        String?   @db.VarChar
+  title_placeholder            String?   @db.VarChar
+  updated_at                   DateTime  @db.Timestamp(6)
+
+  @@index([author_id], map: "index_discussion_templates_on_author_id")
+  @@index([discarded_at], map: "index_discussion_templates_on_discarded_at")
+  @@index([discarded_by], map: "index_discussion_templates_on_discarded_by")
+  @@index([hidden_at], map: "index_discussion_templates_on_hidden_at")
+  @@index([hider_id], map: "index_discussion_templates_on_hider_id")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model discussions {
+  id                      Int       @id @default(autoincrement())
+  attachments             Json      @default("[]")
+  author_id               Int?
+  content_locale          String?   @db.VarChar
+  created_at              DateTime? @db.Timestamp(6)
+  description             String?
+  description_format      String    @default("md") @db.VarChar(10)
+  discarded_at            DateTime? @db.Timestamp(6)
+  discarded_by            Int?
+  discussion_template_id  Int?
+  discussion_template_key String?   @db.VarChar
+  info                    Json      @default("{}")
+  key                     String?   @unique(map: "index_discussions_on_key") @db.VarChar(255)
+  link_previews           Json      @default("[]")
+  tags                    String[]  @default([]) @db.VarChar
+  template                Boolean   @default(false)
+  title                   String?   @db.VarChar(255)
+  topic_id                BigInt?
+  updated_at              DateTime? @db.Timestamp(6)
+  versions_count          Int?      @default(0)
+  context_changed_at      DateTime? @db.Timestamp(6)
+  topics                  topics?   @relation(fields: [topic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_5e49c0df8c")
+
+  @@index([author_id], map: "index_discussions_on_author_id")
+  @@index([created_at], map: "index_discussions_on_created_at")
+  @@index([discarded_at], map: "index_discussions_on_discarded_at", where: raw("(discarded_at IS NULL)"))
+  @@index([discarded_by], map: "index_discussions_on_discarded_by")
+  @@index([tags], map: "index_discussions_on_tags", type: Gin)
+  @@index([template], map: "index_discussions_on_template", where: raw("(template IS TRUE)"))
+  @@index([topic_id], map: "index_discussions_on_topic_id")
+}
+
+model email_suppressions {
+  id                             BigInt                        @id @default(autoincrement())
+  clear_method                   String?                       @db.VarChar
+  cleared_at                     DateTime?                     @db.Timestamp(6)
+  cleared_by_id                  Int?
+  created_at                     DateTime                      @db.Timestamp(6)
+  email_sha256                   String                        @db.VarChar
+  notification_delivery_event_id BigInt?
+  occurred_at                    DateTime?                     @db.Timestamp(6)
+  reason                         String                        @db.VarChar
+  source_key                     String                        @unique(map: "index_email_suppressions_on_source_key") @db.VarChar
+  updated_at                     DateTime                      @db.Timestamp(6)
+  users                          users?                        @relation(fields: [cleared_by_id], references: [id], onUpdate: NoAction, map: "fk_rails_7d37329afe")
+  notification_delivery_events   notification_delivery_events? @relation(fields: [notification_delivery_event_id], references: [id], onUpdate: NoAction, map: "fk_rails_7dcbb9c021")
+
+  @@index([email_sha256], map: "index_email_suppressions_active_address", where: raw("(cleared_at IS NULL)"))
+  @@index([cleared_by_id], map: "index_email_suppressions_on_cleared_by_id")
+  @@index([email_sha256, id], map: "index_email_suppressions_on_email_sha256_and_id")
+  @@index([notification_delivery_event_id], map: "index_email_suppressions_on_notification_delivery_event_id")
+}
+
+model forward_email_rules {
+  id     BigInt  @id @default(autoincrement())
+  email  String? @db.VarChar
+  handle String  @db.Citext
+}
+
+model group_follows {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  group_id   Int
+  updated_at DateTime @db.Timestamp(6)
+  user_id    Int
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9fd22d074b")
+  groups     groups   @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_aeb40bad55")
+
+  @@unique([user_id, group_id], map: "index_group_follows_on_user_id_and_group_id")
+  @@index([group_id], map: "index_group_follows_on_group_id")
+  @@index([user_id], map: "index_group_follows_on_user_id")
+}
+
+model group_handle_redirects {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  group_id   Int
+  handle     String   @unique(map: "index_group_handle_redirects_on_handle") @db.Citext
+  updated_at DateTime @db.Timestamp(6)
+  groups     groups   @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_7456fe8392")
+
+  @@unique([group_id, handle], map: "index_group_handle_redirects_on_group_id_and_handle")
+  @@index([group_id], map: "index_group_handle_redirects_on_group_id")
+}
+
+model groups {
+  id                                                   Int                      @id @default(autoincrement())
+  admin_memberships_count                              Int                      @default(0)
+  admin_tags                                           String?                  @db.VarChar
+  admins_can_edit_user_content                         Boolean                  @default(true)
+  attachments                                          Json                     @default("[]")
+  category                                             String?                  @db.VarChar
+  city                                                 String?                  @db.VarChar
+  content_locale                                       String?                  @db.VarChar
+  country                                              String?                  @db.VarChar
+  created_at                                           DateTime?                @db.Timestamp(6)
+  creator_id                                           Int?
+  description                                          String?
+  description_format                                   String                   @default("md") @db.VarChar(10)
+  discarded_at                                         DateTime?                @db.Timestamp(6)
+  discarded_by                                         Int?
+  discussion_privacy_options                           String                   @default("private_only") @db.VarChar
+  discussions_count                                    Int                      @default(0)
+  full_name                                            String?                  @db.VarChar(255)
+  handle                                               String?                  @unique(map: "index_groups_on_handle") @db.Citext
+  info                                                 Json                     @default("{}")
+  is_visible_to_parent_members                         Boolean                  @default(false)
+  is_visible_to_public                                 Boolean                  @default(true)
+  key                                                  String?                  @unique(map: "index_groups_on_key") @db.VarChar(255)
+  link_previews                                        Json                     @default("[]")
+  listed_in_explore                                    Boolean                  @default(false)
+  members_can_add_guests                               Boolean                  @default(true)
+  members_can_add_members                              Boolean                  @default(false)
+  members_can_announce                                 Boolean                  @default(true)
+  members_can_create_subgroups                         Boolean                  @default(false)
+  members_can_create_tags                              Boolean                  @default(true)
+  members_can_create_templates                         Boolean                  @default(false)
+  members_can_delete_comments                          Boolean                  @default(true)
+  members_can_edit_comments                            Boolean?                 @default(true)
+  members_can_edit_discussions                         Boolean                  @default(true)
+  members_can_raise_motions                            Boolean                  @default(true)
+  members_can_start_discussions                        Boolean                  @default(true)
+  members_can_vote                                     Boolean                  @default(true)
+  membership_granted_upon                              String                   @default("approval") @db.VarChar
+  memberships_count                                    Int                      @default(0)
+  name                                                 String?                  @db.VarChar(255)
+  non_members_can_start_discussions                    Boolean                  @default(false)
+  org_members_count                                    Int                      @default(0)
+  parent_id                                            Int?
+  parent_members_can_see_discussions                   Boolean                  @default(false)
+  pending_memberships_count                            Int                      @default(0)
+  poll_templates_count                                 Int                      @default(0)
+  polls_count                                          Int                      @default(0)
+  region                                               String?                  @db.VarChar
+  request_to_join_prompt                               String?                  @db.VarChar
+  subscription_id                                      Int?
+  theme_id                                             Int?
+  token                                                String?                  @unique(map: "index_groups_on_token") @db.VarChar
+  updated_at                                           DateTime?                @db.Timestamp(6)
+  is_root                                              Boolean?                 @default(dbgenerated("(parent_id IS NULL)"))
+  parent_is_root                                       Boolean?                 @default(dbgenerated("\nCASE\n    WHEN (parent_id IS NOT NULL) THEN true\n    ELSE NULL::boolean\nEND"))
+  group_follows                                        group_follows[]
+  group_handle_redirects                               group_handle_redirects[]
+  groups_groups_parent_id_parent_is_rootTogroups       groups?                  @relation("groups_parent_id_parent_is_rootTogroups", fields: [parent_id, parent_is_root], references: [id, is_root], onDelete: NoAction, onUpdate: NoAction, map: "fk_groups_single_level_subgroup")
+  other_groups_groups_parent_id_parent_is_rootTogroups groups[]                 @relation("groups_parent_id_parent_is_rootTogroups")
+  groups_groups_parent_idTogroups                      groups?                  @relation("groups_parent_idTogroups", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_be49f097d1")
+  other_groups_groups_parent_idTogroups                groups[]                 @relation("groups_parent_idTogroups")
+  membership_requests                                  membership_requests[]
+  memberships                                          memberships[]
+  pending_emails                                       pending_emails[]
+  tags                                                 tags[]
+  topics                                               topics[]
+
+  @@unique([id, is_root], map: "index_groups_on_id_and_is_root")
+  @@index([subscription_id])
+  @@index([created_at], map: "index_groups_on_created_at")
+  @@index([creator_id], map: "index_groups_on_creator_id")
+  @@index([discarded_at], map: "index_groups_on_discarded_at", where: raw("(discarded_at IS NULL)"))
+  @@index([full_name], map: "index_groups_on_full_name")
+  @@index([name], map: "index_groups_on_name")
+  @@index([parent_id], map: "index_groups_on_parent_id")
+}
+
+model legacy_anonymous_vote_reasons {
+  anonymous_ballot_id String            @id @db.Uuid
+  body                String
+  anonymous_ballots   anonymous_ballots @relation(fields: [anonymous_ballot_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d23ea4dbb3")
+}
+
+model login_tokens {
+  id              Int       @id @default(autoincrement())
+  code            Int
+  created_at      DateTime? @db.Timestamp(6)
+  failed_attempts Int       @default(0)
+  is_reactivation Boolean   @default(false)
+  redirect        String?   @db.VarChar
+  token           String?   @db.VarChar
+  updated_at      DateTime? @db.Timestamp(6)
+  user_id         Int?
+  used_at         DateTime? @db.Timestamp(6)
+
+  @@index([token], map: "index_login_tokens_on_token")
+}
+
+model member_email_aliases {
+  id           BigInt   @id @default(autoincrement())
+  author_id    Int
+  created_at   DateTime @db.Timestamp(6)
+  email        String   @db.Citext
+  group_id     Int
+  require_dkim Boolean  @default(true)
+  require_spf  Boolean  @default(true)
+  updated_at   DateTime @db.Timestamp(6)
+  user_id      Int?
+
+  @@unique([email, group_id], map: "index_member_email_aliases_on_email_and_group_id")
+}
+
+model membership_requests {
+  id             Int       @id @default(autoincrement())
+  approved_at    DateTime? @db.Timestamp(6)
+  created_at     DateTime  @db.Timestamp(6)
+  decline_reason String?
+  declined_at    DateTime? @db.Timestamp(6)
+  email          String?   @db.VarChar(255)
+  group_id       Int
+  introduction   String?
+  name           String?   @db.VarChar(255)
+  requestor_id   Int?
+  responder_id   Int?
+  updated_at     DateTime  @db.Timestamp(6)
+  groups         groups    @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_70e5b09e14")
+
+  @@index([group_id], map: "index_membership_requests_on_group_id")
+  @@index([requestor_id], map: "index_membership_requests_on_requestor_id")
+  @@index([responder_id], map: "index_membership_requests_on_responder_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model memberships {
+  id           Int       @id @default(autoincrement())
+  accepted_at  DateTime? @db.Timestamp(6)
+  admin        Boolean   @default(false)
+  created_at   DateTime? @db.Timestamp(6)
+  delegate     Boolean   @default(false)
+  experiences  Json      @default("{}")
+  group_id     Int
+  inviter_id   Int?
+  revoked_at   DateTime? @db.Timestamp(6)
+  revoker_id   Int?
+  title        String?   @db.VarChar
+  token        String?   @unique(map: "index_memberships_on_token") @db.VarChar
+  updated_at   DateTime? @db.Timestamp(6)
+  user_id      Int
+  volume_email Int       @default(2)
+  volume_push  Int       @default(2)
+  weight       Decimal   @default(1.0) @db.Decimal(12, 3)
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_99326fb65d")
+  groups       groups    @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_aaf389f138")
+
+  @@unique([group_id, user_id], map: "index_memberships_on_group_id_and_user_id")
+  @@index([created_at], map: "index_memberships_on_created_at")
+  @@index([inviter_id], map: "index_memberships_on_inviter_id")
+  @@index([revoked_at, id], map: "index_memberships_on_revoked_at_and_id_for_relay", where: raw("(revoked_at IS NOT NULL)"))
+  @@index([revoker_id], map: "index_memberships_on_revoker_id")
+  @@index([user_id, volume_email], map: "index_memberships_on_user_id_and_volume_email")
+  @@index([user_id, volume_push], map: "index_memberships_on_user_id_and_volume_push")
+  @@index([volume_email], map: "index_memberships_on_volume_email")
+  @@index([volume_push], map: "index_memberships_on_volume_push")
+}
+
+model mobile_access_tokens {
+  id               BigInt         @id @default(autoincrement())
+  created_at       DateTime       @db.Timestamp(6)
+  expires_at       DateTime       @db.Timestamp(6)
+  mobile_device_id String         @db.Uuid
+  revoked_at       DateTime?      @db.Timestamp(6)
+  scopes           String
+  token_digest     String         @unique(map: "index_mobile_access_tokens_on_token_digest") @db.VarChar
+  updated_at       DateTime       @db.Timestamp(6)
+  mobile_devices   mobile_devices @relation(fields: [mobile_device_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5e75bf068b")
+
+  @@index([expires_at], map: "index_mobile_access_tokens_on_expires_at")
+  @@index([mobile_device_id], map: "index_mobile_access_tokens_on_mobile_device_id")
+}
+
+model mobile_authorization_codes {
+  id             BigInt    @id @default(autoincrement())
+  client_id      String    @db.VarChar
+  code_challenge String    @db.VarChar
+  created_at     DateTime  @db.Timestamp(6)
+  expires_at     DateTime  @db.Timestamp(6)
+  redirect_uri   String    @db.VarChar
+  token_digest   String    @unique(map: "index_mobile_authorization_codes_on_token_digest") @db.VarChar
+  updated_at     DateTime  @db.Timestamp(6)
+  used_at        DateTime? @db.Timestamp(6)
+  user_id        Int
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9c7f847bfa")
+
+  @@index([expires_at], map: "index_mobile_authorization_codes_on_expires_at")
+  @@index([user_id], map: "index_mobile_authorization_codes_on_user_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model mobile_devices {
+  id                          String                        @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  created_at                  DateTime                      @db.Timestamp(6)
+  last_seen_at                DateTime                      @db.Timestamp(6)
+  name                        String                        @db.VarChar
+  platform                    String                        @default("ios") @db.VarChar
+  protocol_version            Int                           @default(1)
+  refresh_family_id           String                        @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  revoked_at                  DateTime?                     @db.Timestamp(6)
+  updated_at                  DateTime                      @db.Timestamp(6)
+  user_id                     Int
+  mobile_access_tokens        mobile_access_tokens[]
+  users                       users                         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f61b19cc7b")
+  mobile_push_registrations   mobile_push_registrations?
+  mobile_refresh_tokens       mobile_refresh_tokens[]
+  mobile_relay_authorizations mobile_relay_authorizations[]
+  mobile_web_session_tickets  mobile_web_session_tickets[]
+
+  @@index([user_id], map: "index_mobile_devices_on_user_id")
+  @@index([user_id, revoked_at], map: "index_mobile_devices_on_user_id_and_revoked_at")
+}
+
+model mobile_push_registrations {
+  id                      BigInt         @id @default(autoincrement())
+  created_at              DateTime       @db.Timestamp(6)
+  delivery_key_ciphertext String
+  mobile_device_id        String         @unique(map: "index_mobile_push_registrations_on_mobile_device_id") @db.Uuid
+  registration_id         String         @unique(map: "index_mobile_push_registrations_on_registration_id") @db.Uuid
+  updated_at              DateTime       @db.Timestamp(6)
+  mobile_devices          mobile_devices @relation(fields: [mobile_device_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_20073d55f7")
+}
+
+model mobile_refresh_tokens {
+  id                          BigInt                  @id @default(autoincrement())
+  consumed_at                 DateTime?               @db.Timestamp(6)
+  created_at                  DateTime                @db.Timestamp(6)
+  expires_at                  DateTime                @db.Timestamp(6)
+  family_id                   String                  @db.Uuid
+  idle_expires_at             DateTime                @db.Timestamp(6)
+  mobile_device_id            String                  @db.Uuid
+  parent_id                   BigInt?
+  revoked_at                  DateTime?               @db.Timestamp(6)
+  token_digest                String                  @unique(map: "index_mobile_refresh_tokens_on_token_digest") @db.VarChar
+  updated_at                  DateTime                @db.Timestamp(6)
+  mobile_refresh_tokens       mobile_refresh_tokens?  @relation("mobile_refresh_tokensTomobile_refresh_tokens", fields: [parent_id], references: [id], onUpdate: NoAction, map: "fk_rails_adff67f1ba")
+  other_mobile_refresh_tokens mobile_refresh_tokens[] @relation("mobile_refresh_tokensTomobile_refresh_tokens")
+  mobile_devices              mobile_devices          @relation(fields: [mobile_device_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_fa71c6f511")
+
+  @@index([family_id, revoked_at], map: "index_mobile_refresh_tokens_on_family_id_and_revoked_at")
+  @@index([mobile_device_id], map: "index_mobile_refresh_tokens_on_mobile_device_id")
+  @@index([parent_id], map: "index_mobile_refresh_tokens_on_parent_id")
+}
+
+model mobile_relay_authorizations {
+  id                      BigInt         @id @default(autoincrement())
+  consumed_at             DateTime?      @db.Timestamp(6)
+  created_at              DateTime       @db.Timestamp(6)
+  delivery_key_ciphertext String
+  expires_at              DateTime       @db.Timestamp(6)
+  mobile_device_id        String         @db.Uuid
+  registration_id         String         @db.Uuid
+  token_digest            String         @unique(map: "index_mobile_relay_authorizations_on_token_digest") @db.VarChar
+  updated_at              DateTime       @db.Timestamp(6)
+  mobile_devices          mobile_devices @relation(fields: [mobile_device_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_1dc193b29c")
+
+  @@index([expires_at], map: "index_mobile_relay_authorizations_on_expires_at")
+  @@index([mobile_device_id], map: "index_mobile_relay_authorizations_on_mobile_device_id")
+}
+
+model mobile_web_session_tickets {
+  id               BigInt         @id @default(autoincrement())
+  consumed_at      DateTime?      @db.Timestamp(6)
+  created_at       DateTime       @db.Timestamp(6)
+  expires_at       DateTime       @db.Timestamp(6)
+  mobile_device_id String         @db.Uuid
+  token_digest     String         @unique(map: "index_mobile_web_session_tickets_on_token_digest") @db.VarChar
+  updated_at       DateTime       @db.Timestamp(6)
+  mobile_devices   mobile_devices @relation(fields: [mobile_device_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_8a8d6cc141")
+
+  @@index([expires_at], map: "index_mobile_web_session_tickets_on_expires_at")
+  @@index([mobile_device_id], map: "index_mobile_web_session_tickets_on_mobile_device_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model notification_deliveries {
+  id                           BigInt                         @id @default(autoincrement())
+  channel                      String                         @db.VarChar
+  created_at                   DateTime                       @db.Timestamp(6)
+  delivered_at                 DateTime?                      @db.Timestamp(6)
+  email_message_id             String?                        @unique(map: "index_notification_deliveries_on_email_message_id") @db.VarChar
+  notification_id              BigInt
+  provider_message_id          String?                        @db.VarChar
+  recipient_id                 BigInt
+  recipient_type               String                         @db.VarChar
+  translation_values           Json                           @default("{}")
+  updated_at                   DateTime                       @db.Timestamp(6)
+  viewed_at                    DateTime?                      @db.Timestamp(6)
+  notifications                notifications                  @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7f4a998ea3")
+  notification_delivery_events notification_delivery_events[]
+
+  @@unique([notification_id, channel, recipient_type, recipient_id], map: "index_notification_deliveries_on_identity")
+  @@index([delivered_at, id], map: "index_notification_deliveries_on_email_send_cursor", where: raw("(((channel)::text = 'email'::text) AND (delivered_at IS NOT NULL))"))
+  @@index([notification_id], map: "index_notification_deliveries_on_notification_id")
+  @@index([provider_message_id], map: "index_notification_deliveries_on_provider_message_id")
+  @@index([recipient_type, recipient_id], map: "index_notification_deliveries_on_recipient")
+}
+
+model notification_delivery_events {
+  id                       BigInt                  @id @default(autoincrement())
+  bounce_type              String?                 @db.VarChar
+  created_at               DateTime                @db.Timestamp(6)
+  detail                   String?
+  kind                     String                  @db.VarChar
+  notification_delivery_id BigInt
+  occurred_at              DateTime                @db.Timestamp(6)
+  source_key               String                  @db.VarChar
+  updated_at               DateTime                @db.Timestamp(6)
+  email_suppressions       email_suppressions[]
+  notification_deliveries  notification_deliveries @relation(fields: [notification_delivery_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d464e6f3e4")
+
+  @@unique([notification_delivery_id, source_key], map: "index_notification_delivery_events_on_source")
+  @@index([notification_delivery_id], map: "index_notification_delivery_events_on_notification_delivery_id")
+}
+
+model notifications {
+  id                      BigInt                    @id @default(autoincrement())
+  actor_id                Int?
+  created_at              DateTime                  @db.Timestamp(6)
+  deliveries_generated_at DateTime?                 @db.Timestamp(6)
+  kind                    String                    @db.VarChar
+  recipient_audience      String?                   @db.VarChar
+  recipient_chatbot_ids   Int[]                     @default([])
+  recipient_context       Json                      @default("{}")
+  recipient_message       String?
+  recipient_user_ids      Int[]                     @default([])
+  subject_id              BigInt
+  subject_type            String                    @db.VarChar
+  translation_values      Json                      @default("{}")
+  updated_at              DateTime                  @db.Timestamp(6)
+  notification_deliveries notification_deliveries[]
+  users                   users?                    @relation(fields: [actor_id], references: [id], onUpdate: NoAction, map: "fk_rails_06a39bb8cc")
+
+  @@index([actor_id], map: "index_notifications_on_actor_id")
+  @@index([id], map: "index_notifications_on_pending_delivery_resolution", where: raw("(deliveries_generated_at IS NULL)"))
+  @@index([recipient_user_ids], map: "index_notifications_on_recipient_user_ids", type: Gin)
+  @@index([subject_type, subject_id], map: "index_notifications_on_subject")
+}
+
+model omniauth_identities {
+  id            Int      @id @default(autoincrement())
+  access_token  String?  @default("") @db.VarChar
+  created_at    DateTime @db.Timestamp(6)
+  custom_fields Json     @default("{}")
+  email         String?  @db.VarChar(255)
+  identity_type String?  @db.VarChar(255)
+  logo          String?  @db.VarChar
+  name          String?  @db.VarChar(255)
+  uid           String?  @db.VarChar(255)
+  updated_at    DateTime @db.Timestamp(6)
+  user_id       Int?
+
+  @@unique([identity_type, uid], map: "index_omniauth_identities_on_identity_type_and_uid")
+  @@index([email], map: "index_personas_on_email")
+  @@index([user_id], map: "index_personas_on_user_id")
+}
+
+model outcomes {
+  id               Int       @id @default(autoincrement())
+  attachments      Json      @default("[]")
+  author_id        Int
+  content_locale   String?   @db.VarChar
+  created_at       DateTime? @db.Timestamp(6)
+  custom_fields    Json      @default("{}")
+  latest           Boolean   @default(true)
+  link_previews    Json      @default("[]")
+  poll_id          Int
+  poll_option_id   Int?
+  review_on        DateTime? @db.Date
+  statement        String
+  statement_format String    @default("md") @db.VarChar(10)
+  updated_at       DateTime? @db.Timestamp(6)
+  versions_count   Int       @default(0)
+  polls            polls     @relation(fields: [poll_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_4960b8adaa")
+
+  @@index([author_id], map: "index_outcomes_on_author_id")
+  @@index([created_at], map: "index_outcomes_on_created_at")
+  @@index([poll_id], map: "index_outcomes_on_poll_id")
+}
+
+model partition_sequences {
+  counter Int?   @default(0)
+  id      Int
+  key     String
+
+  @@id([key, id])
+}
+
+model passkey_challenges {
+  id               BigInt   @id @default(autoincrement())
+  ceremony         String   @db.VarChar
+  challenge_digest String   @unique(map: "index_passkey_challenges_on_challenge_digest") @db.VarChar
+  created_at       DateTime @db.Timestamp(6)
+  expires_at       DateTime @db.Timestamp(6)
+  updated_at       DateTime @db.Timestamp(6)
+  user_id          Int?
+  users            users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_c58e583d84")
+
+  @@index([expires_at], map: "index_passkey_challenges_on_expires_at")
+  @@index([user_id], map: "index_passkey_challenges_on_user_id")
+}
+
+model passkey_credentials {
+  id           BigInt    @id @default(autoincrement())
+  created_at   DateTime  @db.Timestamp(6)
+  external_id  String    @unique(map: "index_passkey_credentials_on_external_id") @db.VarChar
+  last_used_at DateTime? @db.Timestamp(6)
+  name         String    @db.VarChar
+  public_key   Bytes
+  sign_count   BigInt    @default(0)
+  transports   Json      @default("[]")
+  updated_at   DateTime  @db.Timestamp(6)
+  user_handle  String    @db.VarChar
+  user_id      Int
+  users        users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_225250860c")
+
+  @@index([user_id], map: "index_passkey_credentials_on_user_id")
+}
+
+model pending_emails {
+  id                            BigInt                        @id @default(autoincrement())
+  created_at                    DateTime                      @db.Timestamp(6)
+  group_id                      Int
+  inbound_email_id              BigInt                        @unique(map: "index_pending_emails_on_inbound_email_id")
+  sender_email                  String?                       @db.VarChar
+  sender_name                   String?                       @db.VarChar
+  status                        Int                           @default(0)
+  subject                       String?                       @db.VarChar
+  updated_at                    DateTime                      @db.Timestamp(6)
+  action_mailbox_inbound_emails action_mailbox_inbound_emails @relation(fields: [inbound_email_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_37076ce2c9")
+  groups                        groups                        @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d651d810f5")
+
+  @@index([group_id], map: "index_pending_emails_on_group_id")
+}
+
+model pg_search_documents {
+  id              BigInt                   @id @default(autoincrement())
+  author_id       BigInt?
+  authored_at     DateTime?                @db.Timestamp(6)
+  content         String?
+  created_at      DateTime                 @db.Timestamp(6)
+  discussion_id   BigInt?
+  group_id        BigInt?
+  poll_id         BigInt?
+  searchable_id   BigInt?
+  searchable_type String?                  @db.VarChar
+  tags            String[]                 @default([]) @db.VarChar
+  topic_id        BigInt?
+  ts_content      Unsupported("tsvector")?
+  updated_at      DateTime                 @db.Timestamp(6)
+
+  @@index([author_id], map: "index_pg_search_documents_on_author_id")
+  @@index([discussion_id], map: "index_pg_search_documents_on_discussion_id")
+  @@index([group_id], map: "index_pg_search_documents_on_group_id")
+  @@index([poll_id], map: "index_pg_search_documents_on_poll_id")
+  @@index([searchable_type, searchable_id], map: "index_pg_search_documents_on_searchable")
+  @@index([tags], map: "index_pg_search_documents_on_tags", type: Gin)
+  @@index([topic_id], map: "index_pg_search_documents_on_topic_id")
+  @@index([ts_content], map: "pg_search_documents_searchable_index", type: Gin)
+}
+
+model pg_search_words {
+  document_count Int
+  word           String @unique(map: "index_pg_search_words_on_word")
+
+  @@index([word(ops: raw("gin_trgm_ops"))], map: "index_pg_search_words_on_word_trigram", type: Gin)
+}
+
+model poll_options {
+  id                       Int                        @id @default(autoincrement())
+  created_at               DateTime?                  @db.Timestamp(6)
+  icon                     String?                    @db.VarChar
+  meaning                  String?                    @db.VarChar
+  name                     String                     @db.VarChar
+  poll_id                  Int
+  priority                 Int                        @default(0)
+  prompt                   String?                    @db.VarChar
+  scores_by_voter          Json                       @default("{}")
+  test_against             String?                    @db.VarChar
+  test_operator            String?                    @db.VarChar
+  test_percent             Int?
+  total_score              Decimal                    @default(0.0) @db.Decimal(30, 3)
+  unweighted_score         BigInt                     @default(0)
+  updated_at               DateTime?                  @db.Timestamp(6)
+  vote_count               Int                        @default(0)
+  vote_counts_by_score     Json                       @default("{}")
+  vote_weight              Decimal                    @default(0.0) @db.Decimal(30, 3)
+  anonymous_ballot_choices anonymous_ballot_choices[]
+  polls                    polls                      @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_aa85becb42")
+  stance_choices           stance_choices[]
+
+  @@index([poll_id], map: "index_poll_options_on_poll_id")
+}
+
+model poll_templates {
+  id                          BigInt    @id @default(autoincrement())
+  agree_target                Int?
+  allow_comments              Boolean   @default(true)
+  allow_reactions             Boolean   @default(true)
+  anonymous                   Boolean   @default(false)
+  attachments_admin_only      Boolean   @default(false)
+  author_id                   Int
+  can_respond_maybe           Boolean   @default(true)
+  chart_type                  String?   @db.VarChar
+  choice_count_max            Int?
+  choice_count_min            Int?
+  comment_length_max          Int?
+  content_locale              String?   @db.VarChar
+  created_at                  DateTime  @db.Timestamp(6)
+  default_duration_in_days    Int       @default(7)
+  details                     String?
+  details_format              String    @default("md") @db.VarChar(10)
+  discarded_at                DateTime? @db.Timestamp(6)
+  discarded_by                Int?
+  group_id                    Int
+  hidden_at                   DateTime? @db.Timestamp(6)
+  hide_results                Int       @default(0)
+  hider_id                    Int?
+  key                         String?   @db.VarChar
+  limit_reason_length         Boolean   @default(true)
+  link_previews               Json      @default("[]")
+  meeting_duration            Int?
+  notify_on_closing_soon      Int       @default(0)
+  notify_on_open              Boolean   @default(true)
+  outcome_review_due_in_days  Int?
+  outcome_statement           String?   @db.VarChar
+  outcome_statement_format    String    @default("html") @db.VarChar
+  points_per_voter            Int?
+  poll_option_name_format     String    @default("plain") @db.VarChar
+  poll_options                Json      @default("[]")
+  poll_type                   String    @db.VarChar
+  position                    Int       @default(0)
+  process_introduction        String?   @db.VarChar
+  process_introduction_format String    @default("md") @db.VarChar
+  process_name                String?   @db.VarChar
+  process_subtitle            String?   @db.VarChar
+  public                      Boolean   @default(false)
+  quorum_pct                  Int?
+  reason_prompt               String?   @db.VarChar
+  score_max                   Int?
+  score_min                   Int?
+  show_none_of_the_above      Boolean   @default(false)
+  shuffle_options             Boolean   @default(false)
+  specified_voters_only       Boolean   @default(false)
+  stance_reason_required      Int       @default(1)
+  stv_method                  String    @default("scottish") @db.VarChar
+  stv_quota                   String    @default("droop") @db.VarChar
+  stv_seats                   Int       @default(1)
+  tags                        String[]  @default([]) @db.VarChar
+  title                       String?   @db.VarChar
+  title_placeholder           String?   @db.VarChar
+  updated_at                  DateTime  @db.Timestamp(6)
+  weighted_voting             Boolean   @default(false)
+
+  @@index([discarded_at], map: "index_poll_templates_on_discarded_at")
+  @@index([discarded_by], map: "index_poll_templates_on_discarded_by")
+  @@index([hidden_at], map: "index_poll_templates_on_hidden_at")
+  @@index([hider_id], map: "index_poll_templates_on_hider_id")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model polls {
+  id                           Int                     @id @default(autoincrement())
+  agree_target                 Int?
+  anonymous                    Boolean                 @default(false)
+  attachments                  Json                    @default("[]")
+  author_id                    Int
+  chart_type                   String?                 @db.VarChar
+  choice_count_max             Int?
+  choice_count_min             Int?
+  closed_at                    DateTime?               @db.Timestamp(6)
+  closing_at                   DateTime?               @db.Timestamp(6)
+  content_locale               String?                 @db.VarChar
+  created_at                   DateTime?               @db.Timestamp(6)
+  custom_fields                Json                    @default("{}")
+  default_duration_in_days     Int?
+  details                      String?
+  details_format               String                  @default("md") @db.VarChar(10)
+  discarded_at                 DateTime?               @db.Timestamp(6)
+  discarded_by                 Int?
+  hide_results                 Int                     @default(0)
+  key                          String                  @unique(map: "index_polls_on_key") @db.VarChar
+  limit_reason_length          Boolean                 @default(true)
+  link_previews                Json                    @default("[]")
+  notify_on_closing_soon       Int                     @default(0)
+  notify_on_open               Boolean                 @default(true)
+  opened_at                    DateTime?               @db.Timestamp(6)
+  opening_at                   DateTime?               @db.Timestamp(6)
+  points_per_voter             Int?
+  poll_option_name_format      String?                 @db.VarChar
+  poll_template_id             Int?
+  poll_template_key            String?                 @db.VarChar
+  poll_type                    String                  @db.VarChar
+  process_name                 String?                 @db.VarChar
+  process_subtitle             String?                 @db.VarChar
+  process_url                  String?                 @db.VarChar
+  quorum_pct                   Int?
+  reason_prompt                String?                 @db.VarChar
+  score_max                    Int?
+  score_min                    Int?
+  scores_by_option             Json                    @default("[]")
+  show_none_of_the_above       Boolean                 @default(false)
+  shuffle_options              Boolean                 @default(false)
+  specified_voters_only        Boolean                 @default(false)
+  stance_reason_required       Int                     @default(1)
+  stv_method                   String?                 @db.VarChar
+  stv_quota                    String?                 @db.VarChar
+  stv_seats                    Int?
+  tags                         String[]                @default([]) @db.VarChar
+  template                     Boolean                 @default(false)
+  title                        String                  @db.VarChar
+  topic_id                     BigInt?
+  updated_at                   DateTime?               @db.Timestamp(6)
+  versions_count               Int?                    @default(0)
+  vote_count_none_of_the_above Int                     @default(0)
+  vote_count_eligible          Int                     @default(0)
+  vote_count_uncast            Int                     @default(0)
+  weighted_voting              Boolean                 @default(false)
+  anonymous_ballots            anonymous_ballots[]
+  anonymous_poll_voters        anonymous_poll_voters[]
+  outcomes                     outcomes[]
+  poll_options                 poll_options[]
+  topics                       topics?                 @relation(fields: [topic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_861a79e923")
+  stances                      stances[]
+
+  @@index([author_id], map: "index_polls_on_author_id")
+  @@index([closed_at, closing_at], map: "index_polls_on_closed_at_and_closing_at")
+  @@index([closed_at, topic_id], map: "index_polls_on_closed_at_and_topic_id")
+  @@index([discarded_by], map: "index_polls_on_discarded_by")
+  @@index([opening_at], map: "index_polls_on_pending_opening_at", where: raw("((opened_at IS NULL) AND (closed_at IS NULL) AND (discarded_at IS NULL) AND (opening_at IS NOT NULL))"))
+  @@index([tags], map: "index_polls_on_tags", type: Gin)
+  @@index([topic_id], map: "index_polls_on_topic_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model push_subscriptions {
+  id              BigInt    @id @default(autoincrement())
+  auth_key        String    @db.VarChar
+  created_at      DateTime  @db.Timestamp(6)
+  endpoint        String
+  endpoint_digest String    @unique(map: "index_active_push_subscriptions_on_endpoint_digest", where: raw("(revoked_at IS NULL)")) @db.VarChar
+  expires_at      DateTime? @db.Timestamp(6)
+  failure_count   Int       @default(0)
+  last_seen_at    DateTime? @db.Timestamp(6)
+  name            String?   @db.VarChar
+  p256dh_key      String    @db.VarChar
+  revoked_at      DateTime? @db.Timestamp(6)
+  session_id      BigInt
+  updated_at      DateTime  @db.Timestamp(6)
+  user_agent      String?   @db.VarChar
+  user_id         Int
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_43d43720fc")
+  sessions        sessions  @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_855264bb6c")
+
+  @@index([session_id], map: "index_push_subscriptions_on_session_id")
+  @@index([user_id], map: "index_push_subscriptions_on_user_id")
+  @@index([user_id, revoked_at], map: "index_push_subscriptions_on_user_id_and_revoked_at")
+}
+
+model reactions {
+  id             Int       @id @default(autoincrement())
+  created_at     DateTime? @db.Timestamp(6)
+  reactable_id   Int?
+  reactable_type String    @default("Comment") @db.VarChar
+  reaction       String    @default("+1") @db.VarChar
+  updated_at     DateTime? @db.Timestamp(6)
+  user_id        Int?
+
+  @@index([created_at], map: "index_reactions_on_created_at")
+  @@index([reactable_id, reactable_type], map: "index_reactions_on_reactable_id_and_reactable_type")
+  @@index([user_id], map: "index_reactions_on_user_id")
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
+}
+
+model sessions {
+  id                 BigInt               @id @default(autoincrement())
+  created_at         DateTime             @db.Timestamp(6)
+  ip_address         String?              @db.VarChar
+  revoked_at         DateTime?            @db.Timestamp(6)
+  updated_at         DateTime             @db.Timestamp(6)
+  user_agent         String?              @db.VarChar
+  user_id            Int
+  push_subscriptions push_subscriptions[]
+  users              users                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_758836b4f0")
+
+  @@index([revoked_at], map: "index_sessions_on_revoked_at", where: raw("(revoked_at IS NOT NULL)"))
+  @@index([user_id], map: "index_sessions_on_user_id")
+}
+
+model solid_cable_messages {
+  id           BigInt   @id @default(autoincrement())
+  channel      Bytes
+  channel_hash BigInt
+  created_at   DateTime @db.Timestamp(6)
+  payload      Bytes
+
+  @@index([channel], map: "index_solid_cable_messages_on_channel")
+  @@index([channel_hash], map: "index_solid_cable_messages_on_channel_hash")
+  @@index([created_at], map: "index_solid_cable_messages_on_created_at")
+}
+
+model solid_cache_entries {
+  id         BigInt   @id @default(autoincrement())
+  byte_size  Int
+  created_at DateTime @db.Timestamp(6)
+  key        Bytes
+  key_hash   BigInt   @unique(map: "index_solid_cache_entries_on_key_hash")
+  value      Bytes
+
+  @@index([byte_size], map: "index_solid_cache_entries_on_byte_size")
+  @@index([key_hash, byte_size], map: "index_solid_cache_entries_on_key_hash_and_byte_size")
+}
+
+model solid_queue_batch_executions {
+  id                  BigInt              @id @default(autoincrement())
+  batch_id            BigInt
+  created_at          DateTime            @db.Timestamp(6)
+  job_id              BigInt              @unique(map: "index_solid_queue_batch_executions_on_job_id")
+  solid_queue_batches solid_queue_batches @relation(fields: [batch_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7c5e073422")
+  solid_queue_jobs    solid_queue_jobs    @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_bc9f981155")
+
+  @@index([batch_id], map: "index_solid_queue_batch_executions_on_batch_id")
+}
+
+model solid_queue_batches {
+  id                           BigInt                         @id @default(autoincrement())
+  active_job_batch_id          String?                        @unique(map: "index_solid_queue_batches_on_active_job_batch_id") @db.VarChar
+  completed_jobs               Int                            @default(0)
+  created_at                   DateTime                       @db.Timestamp(6)
+  description                  String?                        @db.VarChar
+  enqueued_at                  DateTime?                      @db.Timestamp(6)
+  failed_at                    DateTime?                      @db.Timestamp(6)
+  failed_jobs                  Int                            @default(0)
+  finished_at                  DateTime?                      @db.Timestamp(6)
+  metadata                     String?
+  on_failure                   String?
+  on_finish                    String?
+  on_success                   String?
+  total_jobs                   Int                            @default(0)
+  updated_at                   DateTime                       @db.Timestamp(6)
+  solid_queue_batch_executions solid_queue_batch_executions[]
+
+  @@index([finished_at], map: "index_solid_queue_batches_on_finished_at")
+}
+
+model solid_queue_blocked_executions {
+  id               BigInt           @id @default(autoincrement())
+  concurrency_key  String           @db.VarChar
+  created_at       DateTime         @db.Timestamp(6)
+  expires_at       DateTime         @db.Timestamp(6)
+  job_id           BigInt           @unique(map: "index_solid_queue_blocked_executions_on_job_id")
+  priority         Int              @default(0)
+  queue_name       String           @db.VarChar
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4cd34e2228")
+
+  @@index([expires_at, concurrency_key], map: "index_solid_queue_blocked_executions_for_maintenance")
+  @@index([concurrency_key, priority, job_id], map: "index_solid_queue_blocked_executions_for_release")
+}
+
+model solid_queue_claimed_executions {
+  id               BigInt           @id @default(autoincrement())
+  created_at       DateTime         @db.Timestamp(6)
+  job_id           BigInt           @unique(map: "index_solid_queue_claimed_executions_on_job_id")
+  process_id       BigInt?
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9cfe4d4944")
+
+  @@index([process_id, job_id], map: "index_solid_queue_claimed_executions_on_process_id_and_job_id")
+}
+
+model solid_queue_failed_executions {
+  id               BigInt           @id @default(autoincrement())
+  created_at       DateTime         @db.Timestamp(6)
+  error            String?
+  job_id           BigInt           @unique(map: "index_solid_queue_failed_executions_on_job_id")
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_39bbc7a631")
+}
+
+model solid_queue_jobs {
+  id                               BigInt                            @id @default(autoincrement())
+  active_job_id                    String?                           @db.VarChar
+  arguments                        String?
+  batch_id                         BigInt?
+  class_name                       String                            @db.VarChar
+  concurrency_key                  String?                           @db.VarChar
+  created_at                       DateTime                          @db.Timestamp(6)
+  finished_at                      DateTime?                         @db.Timestamp(6)
+  priority                         Int                               @default(0)
+  queue_name                       String                            @db.VarChar
+  scheduled_at                     DateTime?                         @db.Timestamp(6)
+  updated_at                       DateTime                          @db.Timestamp(6)
+  solid_queue_batch_executions     solid_queue_batch_executions?
+  solid_queue_blocked_executions   solid_queue_blocked_executions?
+  solid_queue_claimed_executions   solid_queue_claimed_executions?
+  solid_queue_failed_executions    solid_queue_failed_executions?
+  solid_queue_ready_executions     solid_queue_ready_executions?
+  solid_queue_recurring_executions solid_queue_recurring_executions?
+  solid_queue_scheduled_executions solid_queue_scheduled_executions?
+
+  @@index([scheduled_at, finished_at], map: "index_solid_queue_jobs_for_alerting")
+  @@index([queue_name, finished_at], map: "index_solid_queue_jobs_for_filtering")
+  @@index([active_job_id], map: "index_solid_queue_jobs_on_active_job_id")
+  @@index([batch_id], map: "index_solid_queue_jobs_on_batch_id")
+  @@index([class_name], map: "index_solid_queue_jobs_on_class_name")
+  @@index([finished_at], map: "index_solid_queue_jobs_on_finished_at")
+}
+
+model solid_queue_pauses {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  queue_name String   @unique(map: "index_solid_queue_pauses_on_queue_name") @db.VarChar
+}
+
+model solid_queue_processes {
+  id                BigInt   @id @default(autoincrement())
+  created_at        DateTime @db.Timestamp(6)
+  hostname          String?  @db.VarChar
+  kind              String   @db.VarChar
+  last_heartbeat_at DateTime @db.Timestamp(6)
+  metadata          String?
+  name              String   @db.VarChar
+  pid               Int
+  supervisor_id     BigInt?
+
+  @@unique([name, supervisor_id], map: "index_solid_queue_processes_on_name_and_supervisor_id")
+  @@index([last_heartbeat_at], map: "index_solid_queue_processes_on_last_heartbeat_at")
+  @@index([supervisor_id], map: "index_solid_queue_processes_on_supervisor_id")
+}
+
+model solid_queue_ready_executions {
+  id               BigInt           @id @default(autoincrement())
+  created_at       DateTime         @db.Timestamp(6)
+  job_id           BigInt           @unique(map: "index_solid_queue_ready_executions_on_job_id")
+  priority         Int              @default(0)
+  queue_name       String           @db.VarChar
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_81fcbd66af")
+
+  @@index([priority, job_id], map: "index_solid_queue_poll_all")
+  @@index([queue_name, priority, job_id], map: "index_solid_queue_poll_by_queue")
+}
+
+model solid_queue_recurring_executions {
+  id               BigInt           @id @default(autoincrement())
+  created_at       DateTime         @db.Timestamp(6)
+  job_id           BigInt           @unique(map: "index_solid_queue_recurring_executions_on_job_id")
+  run_at           DateTime         @db.Timestamp(6)
+  task_key         String           @db.VarChar
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_318a5533ed")
+
+  @@unique([task_key, run_at], map: "index_solid_queue_recurring_executions_on_task_key_and_run_at")
+}
+
+model solid_queue_recurring_tasks {
+  id          BigInt   @id @default(autoincrement())
+  arguments   String?
+  class_name  String?  @db.VarChar
+  command     String?  @db.VarChar(2048)
+  created_at  DateTime @db.Timestamp(6)
+  description String?
+  key         String   @unique(map: "index_solid_queue_recurring_tasks_on_key") @db.VarChar
+  priority    Int?     @default(0)
+  queue_name  String?  @db.VarChar
+  schedule    String   @db.VarChar
+  static      Boolean  @default(true)
+  updated_at  DateTime @db.Timestamp(6)
+
+  @@index([static], map: "index_solid_queue_recurring_tasks_on_static")
+}
+
+model solid_queue_scheduled_executions {
+  id               BigInt           @id @default(autoincrement())
+  created_at       DateTime         @db.Timestamp(6)
+  job_id           BigInt           @unique(map: "index_solid_queue_scheduled_executions_on_job_id")
+  priority         Int              @default(0)
+  queue_name       String           @db.VarChar
+  scheduled_at     DateTime         @db.Timestamp(6)
+  solid_queue_jobs solid_queue_jobs @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_c4316f352d")
+
+  @@index([scheduled_at, priority, job_id], map: "index_solid_queue_dispatch_all")
+}
+
+model solid_queue_semaphores {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  expires_at DateTime @db.Timestamp(6)
+  key        String   @unique(map: "index_solid_queue_semaphores_on_key") @db.VarChar
+  updated_at DateTime @db.Timestamp(6)
+  value      Int      @default(1)
+
+  @@index([expires_at], map: "index_solid_queue_semaphores_on_expires_at")
+  @@index([key, value], map: "index_solid_queue_semaphores_on_key_and_value")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spam_rule_hits {
+  id              BigInt     @id @default(autoincrement())
+  spam_rule_id    BigInt
+  action          String     @db.VarChar
+  bucket_at       DateTime   @db.Timestamp(6)
+  count           BigInt     @default(0)
+  last_matched_at DateTime   @db.Timestamp(6)
+  spam_rules      spam_rules @relation(fields: [spam_rule_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_05fc51451f")
+
+  @@unique([spam_rule_id, action, bucket_at], map: "index_spam_rule_hits_on_spam_rule_id_and_action_and_bucket_at")
+  @@index([bucket_at], map: "index_spam_rule_hits_on_bucket_at")
+  @@index([spam_rule_id], map: "index_spam_rule_hits_on_spam_rule_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spam_rules {
+  id             BigInt           @id @default(autoincrement())
+  kind           String           @db.VarChar
+  pattern        String
+  reason         String?
+  expires_at     DateTime?        @db.Timestamp(6)
+  discarded_at   DateTime?        @db.Timestamp(6)
+  created_at     DateTime         @db.Timestamp(6)
+  updated_at     DateTime         @db.Timestamp(6)
+  spam_rule_hits spam_rule_hits[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model stance_choices {
+  id             Int          @id @default(autoincrement())
+  created_at     DateTime?    @db.Timestamp(6)
+  poll_option_id Int
+  score          Int          @default(1)
+  stance_id      Int
+  updated_at     DateTime?    @db.Timestamp(6)
+  poll_options   poll_options @relation(fields: [poll_option_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5fe105c062")
+  stances        stances      @relation(fields: [stance_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_dd52b0505a")
+
+  @@unique([stance_id, poll_option_id], map: "index_stance_choices_on_stance_id_and_poll_option_id")
+  @@index([poll_option_id], map: "index_stance_choices_on_poll_option_id")
+  @@index([stance_id], map: "index_stance_choices_on_stance_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an index with non-default null sort order and requires additional setup for migrations. Visit https://pris.ly/d/default-index-null-ordering for more info.
+model stances {
+  id                                  Int              @id @default(autoincrement())
+  accepted_at                         DateTime?        @db.Timestamp(6)
+  attachments                         Json             @default("[]")
+  cast_at                             DateTime?        @db.Timestamp(6)
+  content_locale                      String?          @db.VarChar
+  created_at                          DateTime?        @db.Timestamp(6)
+  inviter_id                          Int?
+  latest                              Boolean          @default(true)
+  link_previews                       Json             @default("[]")
+  none_of_the_above                   Boolean          @default(false)
+  option_scores                       Json             @default("{}")
+  participant_id                      Int
+  poll_id                             Int
+  reason                              String?          @db.VarChar
+  reason_format                       String           @default("md") @db.VarChar(10)
+  redacted_at                         DateTime?        @db.Timestamp(6)
+  redactor_id                         Int?
+  revoked_at                          DateTime?        @db.Timestamp(6)
+  revoker_id                          Int?
+  token                               String?          @unique(map: "index_stances_on_token") @db.VarChar
+  updated_at                          DateTime?        @db.Timestamp(6)
+  versions_count                      Int?             @default(0)
+  weight                              Decimal          @default(1.0) @db.Decimal(12, 3)
+  stance_choices                      stance_choices[]
+  users_stances_revoker_idTousers     users?           @relation("stances_revoker_idTousers", fields: [revoker_id], references: [id], onUpdate: NoAction, map: "fk_rails_40f679246d")
+  users_stances_redactor_idTousers    users?           @relation("stances_redactor_idTousers", fields: [redactor_id], references: [id], onUpdate: NoAction, map: "fk_rails_832b51543a")
+  polls                               polls            @relation(fields: [poll_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_f580fa74ad")
+  users_stances_inviter_idTousers     users?           @relation("stances_inviter_idTousers", fields: [inviter_id], references: [id], onUpdate: NoAction, map: "fk_rails_fa118674d1")
+  users_stances_participant_idTousers users            @relation("stances_participant_idTousers", fields: [participant_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_fa7c1370b3")
+
+  @@unique([poll_id, participant_id, latest], map: "index_stances_on_poll_id_and_participant_id_and_latest", where: raw("(latest = true)"))
+  @@index([cast_at, id], map: "index_stances_on_cast_at_and_id_for_relay", where: raw("((cast_at IS NOT NULL) AND (redacted_at IS NULL))"))
+  @@index([created_at], map: "index_stances_on_created_at")
+  @@index([inviter_id], map: "index_stances_on_inviter_id")
+  @@index([participant_id], map: "index_stances_on_participant_id")
+  @@index([poll_id], map: "index_stances_on_poll_id")
+  @@index([poll_id, cast_at], map: "index_stances_on_poll_id_and_cast_at")
+  @@index([redactor_id], map: "index_stances_on_redactor_id")
+  @@index([revoker_id], map: "index_stances_on_revoker_id")
+}
+
+model subscription_update_receipts {
+  id              BigInt         @id @default(autoincrement())
+  created_at      DateTime       @db.Timestamp(6)
+  event_id        String         @unique(map: "index_subscription_update_receipts_on_event_id") @db.VarChar
+  payload_digest  String         @db.VarChar
+  processed_at    DateTime?      @db.Timestamp(6)
+  subscription_id Int?
+  updated_at      DateTime       @db.Timestamp(6)
+  subscriptions   subscriptions? @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_d0a7a8c82a")
+
+  @@index([subscription_id], map: "index_subscription_update_receipts_on_subscription_id")
+}
+
+model subscriptions {
+  id                              Int                            @id @default(autoincrement())
+  activated_at                    DateTime?                      @db.Timestamp(6)
+  allow_guests                    Boolean                        @default(true)
+  allow_subgroups                 Boolean                        @default(true)
+  billing_service_price_point_id  String?                        @db.VarChar
+  billing_service_product_id      String?                        @db.VarChar
+  billing_service_subscription_id String?                        @unique(map: "index_subscriptions_on_billing_service_id", where: raw("(billing_service_subscription_id IS NOT NULL)")) @db.VarChar
+  billing_service_updated_at      DateTime?                      @db.Timestamp(6)
+  canceled_at                     DateTime?                      @db.Timestamp(6)
+  chargify_subscription_id        Int?
+  created_at                      DateTime?                      @db.Timestamp(6)
+  expires_at                      DateTime?                      @db.Timestamp(6)
+  info                            Json?
+  lead_status                     String?                        @db.VarChar
+  max_members                     Int?
+  max_orgs                        Int?
+  max_threads                     Int?
+  members_count                   Int?
+  owner_id                        Int?
+  payment_method                  String                         @default("none") @db.VarChar
+  plan                            String?                        @default("free") @db.VarChar
+  renewed_at                      DateTime?                      @db.Timestamp(6)
+  renews_at                       DateTime?                      @db.Timestamp(6)
+  state                           String                         @default("active") @db.VarChar
+  updated_at                      DateTime?                      @db.Timestamp(6)
+  subscription_update_receipts    subscription_update_receipts[]
+
+  @@index([owner_id], map: "index_subscriptions_on_owner_id")
+  @@index([plan], map: "index_subscriptions_on_plan")
+  @@index([expires_at, id], map: "index_subscriptions_on_trial_expiry_for_relay", where: raw("(((plan)::text = 'trial'::text) AND (expires_at IS NOT NULL))"))
+}
+
+model taggings {
+  id            Int       @id @default(autoincrement())
+  created_at    DateTime? @db.Timestamp(6)
+  tag_id        Int
+  taggable_id   Int
+  taggable_type String    @db.VarChar
+  updated_at    DateTime? @db.Timestamp(6)
+  tags          tags      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9fcd2e236b")
+
+  @@index([tag_id], map: "index_taggings_on_tag_id")
+  @@index([taggable_type, taggable_id], map: "index_taggings_on_taggable_type_and_taggable_id")
+}
+
+model tags {
+  id             Int        @id @default(autoincrement())
+  color          String?    @db.VarChar
+  created_at     DateTime?  @db.Timestamp(6)
+  group_id       Int
+  name           String     @db.Citext
+  priority       Int        @default(0)
+  updated_at     DateTime?  @db.Timestamp(6)
+  used_group_ids Int[]      @default([])
+  taggings       taggings[]
+  groups         groups     @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e94b1a3eb4")
+
+  @@unique([group_id, name], map: "index_tags_on_group_id_and_name")
+  @@index([group_id], map: "index_tags_on_group_id")
+  @@index([name], map: "index_tags_on_name")
+  @@index([used_group_ids], map: "index_tags_on_used_group_ids", type: Gin)
+}
+
+model tasks {
+  id           BigInt        @id @default(autoincrement())
+  author_id    BigInt
+  created_at   DateTime      @db.Timestamp(6)
+  discarded_at DateTime?     @db.Timestamp(6)
+  doer_id      Int?
+  done_at      DateTime?     @db.Timestamp(6)
+  due_on       DateTime?     @db.Date
+  name         String        @db.VarChar
+  record_id    BigInt?
+  record_type  String?       @db.VarChar
+  remind       Int?
+  remind_at    DateTime?     @db.Timestamp(6)
+  uid          Int
+  updated_at   DateTime      @db.Timestamp(6)
+  tasks_users  tasks_users[]
+
+  @@index([author_id], map: "index_tasks_on_author_id")
+  @@index([discarded_at], map: "index_tasks_on_discarded_at")
+  @@index([doer_id], map: "index_tasks_on_doer_id")
+  @@index([due_on], map: "index_tasks_on_due_on")
+  @@index([record_type, record_id], map: "index_tasks_on_record_type_and_record_id")
+  @@index([remind_at], map: "index_tasks_on_remind_at")
+}
+
+model tasks_users {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  task_id    BigInt
+  updated_at DateTime @db.Timestamp(6)
+  user_id    Int
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_438e319f2f")
+  tasks      tasks    @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9e3a948eaa")
+
+  @@index([task_id], map: "index_tasks_users_on_task_id")
+  @@index([user_id], map: "index_tasks_users_on_user_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model topic_items {
+  id                Int           @id @default(autoincrement())
+  child_count       Int           @default(0)
+  created_at        DateTime?     @db.Timestamp(6)
+  depth             Int           @default(0)
+  itemable_id       Int
+  itemable_type     String        @db.VarChar(255)
+  kind              String        @db.VarChar(255)
+  parent_id         Int?
+  pinned            Boolean       @default(false)
+  pinned_title      String?
+  position          Int           @default(0)
+  position_key      String?       @db.VarChar
+  sequence_id       Int?
+  tags              String[]      @default([]) @db.VarChar
+  topic_id          BigInt
+  updated_at        DateTime?     @db.Timestamp(6)
+  user_id           Int?
+  topics            topics        @relation(fields: [topic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_e9a6de7263")
+  topic_items       topic_items?  @relation("topic_itemsTotopic_items", fields: [parent_id, topic_id], references: [id, topic_id], onDelete: Cascade, onUpdate: NoAction, map: "topic_items_parent_same_topic")
+  other_topic_items topic_items[] @relation("topic_itemsTotopic_items")
+
+  @@unique([id, topic_id], map: "index_topic_items_on_id_and_topic_id")
+  @@unique([topic_id, sequence_id], map: "index_topic_items_on_topic_id_and_sequence_id")
+  @@unique([itemable_type, itemable_id, kind], map: "index_topic_items_on_unique_discussion_root", where: raw("(((itemable_type)::text = 'Discussion'::text) AND ((kind)::text = 'new_discussion'::text))"))
+  @@unique([itemable_type, itemable_id, kind], map: "index_topic_items_on_unique_poll_root", where: raw("(((itemable_type)::text = 'Poll'::text) AND ((kind)::text = 'poll_created'::text))"))
+  @@index([created_at], map: "index_topic_items_on_created_at")
+  @@index([itemable_id, kind], map: "index_topic_items_on_itemable_id_and_kind")
+  @@index([itemable_type, itemable_id], map: "index_topic_items_on_itemable_type_and_itemable_id")
+  @@index([parent_id], map: "index_topic_items_on_parent_id")
+  @@index([parent_id, topic_id], map: "index_topic_items_on_parent_id_and_topic_id", where: raw("(topic_id IS NOT NULL)"))
+  @@index([position_key], map: "index_topic_items_on_position_key")
+  @@index([tags], map: "index_topic_items_on_tags", type: Gin)
+  @@index([topic_id], map: "index_topic_items_on_topic_id")
+  @@index([topic_id, depth, sequence_id], map: "index_topic_items_on_topic_id_depth_sequence_id")
+  @@index([topic_id, sequence_id], map: "index_topic_items_on_topic_id_sequence_id_pinned", where: raw("(pinned = true)"))
+  @@index([user_id], map: "index_topic_items_on_user_id")
+  @@index([topic_id], map: "index_topic_items_with_tags_on_topic_id", where: raw("(cardinality(tags) > 0)"))
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model topic_readers {
+  id                 Int       @id @default(autoincrement())
+  accepted_at        DateTime? @db.Timestamp(6)
+  admin              Boolean   @default(false)
+  created_at         DateTime? @db.Timestamp(6)
+  dismissed_at       DateTime? @db.Timestamp(6)
+  guest              Boolean   @default(false)
+  inviter_id         Int?
+  last_read_at       DateTime? @db.Timestamp(6)
+  read_ranges_string String?   @db.VarChar
+  revoked_at         DateTime? @db.Timestamp(6)
+  revoker_id         Int?
+  token              String?   @unique(map: "index_discussion_readers_on_token") @db.VarChar
+  topic_id           BigInt
+  updated_at         DateTime? @db.Timestamp(6)
+  user_id            Int
+  volume_email       Int       @default(2)
+  volume_push        Int       @default(2)
+  users              users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_6e2f364f27")
+  topics             topics    @relation(fields: [topic_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7ce9e0ce13")
+
+  @@unique([topic_id, user_id], map: "index_topic_readers_on_topic_id_and_user_id")
+  @@index([guest], map: "discussion_readers_guests", where: raw("(guest = true)"))
+  @@index([user_id, topic_id], map: "index_topic_readers_guest_user_id", where: raw("(guest = true)"))
+  @@index([revoker_id], map: "index_topic_readers_on_revoker_id")
+  @@index([user_id], map: "index_topic_readers_on_user_id")
+  @@index([inviter_id], map: "inviter_id_not_null", where: raw("(inviter_id IS NOT NULL)"))
+}
+
+model topics {
+  id                     BigInt          @id @default(autoincrement())
+  active_polls_count     Int             @default(0)
+  allow_comments         Boolean         @default(true)
+  allow_reactions        Boolean         @default(true)
+  attachments_admin_only Boolean         @default(false)
+  comment_length_max     Int?
+  created_at             DateTime        @db.Timestamp(6)
+  discarded_at           DateTime?       @db.Timestamp(6)
+  discarded_by           Int?
+  group_id               Int?
+  has_tagged_replies     Boolean         @default(false)
+  items_count            Int             @default(0)
+  last_activity_at       DateTime?       @db.Timestamp(6)
+  locked_at              DateTime?       @db.Timestamp(6)
+  locker_id              Int?
+  max_depth              Int             @default(3)
+  newest_first           Boolean         @default(false)
+  pinned_at              DateTime?       @db.Timestamp(6)
+  polls_one_at_a_time    Boolean         @default(false)
+  private                Boolean         @default(true)
+  ranges_string          String?         @db.VarChar
+  seen_by_count          Int             @default(0)
+  tags                   String[]        @default([]) @db.VarChar
+  topicable_id           Int
+  topicable_type         String          @db.VarChar
+  updated_at             DateTime        @db.Timestamp(6)
+  discussions            discussions[]
+  polls                  polls[]
+  topic_items            topic_items[]
+  topic_readers          topic_readers[]
+  groups                 groups?         @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_b9878cbc48")
+
+  @@unique([topicable_type, topicable_id], map: "index_topics_on_topicable_type_and_topicable_id")
+  @@index([discarded_at], map: "index_topics_on_discarded_at_null", where: raw("(discarded_at IS NULL)"))
+  @@index([discarded_by], map: "index_topics_on_discarded_by")
+  @@index([group_id], map: "index_topics_on_group_id")
+  @@index([group_id, last_activity_at(sort: Desc)], map: "index_topics_on_group_last_activity_inbox", where: raw("(discarded_at IS NULL)"))
+  @@index([last_activity_at(sort: Desc)], map: "index_topics_on_last_activity_at")
+  @@index([locked_at], map: "index_topics_on_locked_at")
+  @@index([locker_id], map: "index_topics_on_locker_id")
+  @@index([tags], map: "index_topics_on_tags", type: Gin)
+}
+
+model translations {
+  id                Int                    @id @default(autoincrement())
+  created_at        DateTime               @db.Timestamp(6)
+  fields            Unsupported("hstore")?
+  language          String?                @db.VarChar(255)
+  translatable_id   Int?
+  translatable_type String?                @db.VarChar(255)
+  updated_at        DateTime               @db.Timestamp(6)
+
+  @@index([language], map: "index_translations_on_language")
+  @@index([translatable_type, translatable_id], map: "index_translations_on_translatable_type_and_translatable_id")
+}
+
+model trial_invitation_recipients {
+  id                                                    BigInt   @id @default(autoincrement())
+  ip_address                                            String   @db.Inet
+  actor_id                                              Int
+  recipient_id                                          Int
+  invited_at                                            DateTime @db.Timestamp(6)
+  users_trial_invitation_recipients_actor_idTousers     users    @relation("trial_invitation_recipients_actor_idTousers", fields: [actor_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_122c3d29a2")
+  users_trial_invitation_recipients_recipient_idTousers users    @relation("trial_invitation_recipients_recipient_idTousers", fields: [recipient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_bd9e4b490b")
+
+  @@unique([ip_address, actor_id, recipient_id], map: "index_trial_invitation_recipients_identity")
+  @@index([invited_at], map: "index_trial_invitation_recipients_on_invited_at")
+  @@index([ip_address, invited_at], map: "index_trial_invitation_recipients_on_ip_address_and_invited_at")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                                                          Int                           @id @default(autoincrement())
+  api_key                                                                     String                        @db.VarChar
+  attachments                                                                 Json                          @default("[]")
+  auto_translate                                                              Boolean                       @default(false)
+  autodetect_time_zone                                                        Boolean                       @default(true)
+  avatar_initials                                                             String?                       @db.VarChar(255)
+  avatar_kind                                                                 String                        @default("initials") @db.VarChar(255)
+  bot                                                                         Boolean                       @default(false)
+  city                                                                        String?                       @db.VarChar
+  content_locale                                                              String?                       @db.VarChar
+  country                                                                     String?                       @db.VarChar
+  created_at                                                                  DateTime?                     @db.Timestamp(6)
+  current_sign_in_at                                                          DateTime?                     @db.Timestamp(6)
+  current_sign_in_ip                                                          String?                       @db.Inet
+  date_time_pref                                                              String?                       @db.VarChar
+  deactivated_at                                                              DateTime?                     @db.Timestamp(6)
+  deactivator_id                                                              Int?
+  detected_locale                                                             String?                       @db.VarChar(255)
+  email                                                                       String?                       @unique(map: "index_users_on_email") @db.Citext
+  email_api_key                                                               String                        @db.VarChar(255)
+  email_catch_up_day                                                          Int?                          @default(7)
+  email_newsletter                                                            Boolean                       @default(false)
+  email_sha256                                                                String?                       @db.VarChar
+  email_verified                                                              Boolean                       @default(false)
+  experiences                                                                 Json                          @default("{}")
+  failed_attempts                                                             Int                           @default(0)
+  is_admin                                                                    Boolean?                      @default(false)
+  key                                                                         String?                       @unique(map: "index_users_on_key") @db.VarChar(255)
+  last_seen_at                                                                DateTime?                     @db.Timestamp(6)
+  last_sign_in_at                                                             DateTime?                     @db.Timestamp(6)
+  last_sign_in_ip                                                             String?                       @db.Inet
+  legal_accepted_at                                                           DateTime?                     @db.Timestamp(6)
+  link_previews                                                               Json                          @default("[]")
+  location                                                                    String                        @default("") @db.VarChar
+  locked_at                                                                   DateTime?                     @db.Timestamp(6)
+  memberships_count                                                           Int                           @default(0)
+  name                                                                        String?                       @db.VarChar(255)
+  password_digest                                                             String?                       @default("") @db.VarChar(128)
+  region                                                                      String?                       @db.VarChar
+  secret_token                                                                String                        @default(dbgenerated("public.gen_random_uuid()")) @db.VarChar
+  selected_locale                                                             String?                       @db.VarChar(255)
+  short_bio                                                                   String                        @default("") @db.VarChar
+  short_bio_format                                                            String                        @default("md") @db.VarChar(10)
+  sign_in_count                                                               Int?                          @default(0)
+  time_zone                                                                   String?                       @db.VarChar(255)
+  unsubscribe_token                                                           String                        @unique(map: "index_users_on_unsubscribe_token") @db.VarChar(255)
+  updated_at                                                                  DateTime?                     @db.Timestamp(6)
+  username                                                                    String?                       @unique(map: "index_users_on_username") @db.VarChar(255)
+  volume_email_default                                                        Int                           @default(2)
+  volume_push_default                                                         Int                           @default(2)
+  webauthn_id                                                                 String?                       @unique(map: "index_users_on_webauthn_id") @db.VarChar
+  account_completion_proofs                                                   account_completion_proofs[]
+  anonymous_poll_voters_anonymous_poll_voters_inviter_idTousers               anonymous_poll_voters[]       @relation("anonymous_poll_voters_inviter_idTousers")
+  anonymous_poll_voters_anonymous_poll_voters_voter_idTousers                 anonymous_poll_voters[]       @relation("anonymous_poll_voters_voter_idTousers")
+  email_suppressions                                                          email_suppressions[]
+  group_follows                                                               group_follows[]
+  memberships                                                                 memberships[]
+  mobile_authorization_codes                                                  mobile_authorization_codes[]
+  mobile_devices                                                              mobile_devices[]
+  notifications                                                               notifications[]
+  passkey_challenges                                                          passkey_challenges[]
+  passkey_credentials                                                         passkey_credentials[]
+  push_subscriptions                                                          push_subscriptions[]
+  sessions                                                                    sessions[]
+  stances_stances_revoker_idTousers                                           stances[]                     @relation("stances_revoker_idTousers")
+  stances_stances_redactor_idTousers                                          stances[]                     @relation("stances_redactor_idTousers")
+  stances_stances_inviter_idTousers                                           stances[]                     @relation("stances_inviter_idTousers")
+  stances_stances_participant_idTousers                                       stances[]                     @relation("stances_participant_idTousers")
+  tasks_users                                                                 tasks_users[]
+  topic_readers                                                               topic_readers[]
+  trial_invitation_recipients_trial_invitation_recipients_actor_idTousers     trial_invitation_recipients[] @relation("trial_invitation_recipients_actor_idTousers")
+  trial_invitation_recipients_trial_invitation_recipients_recipient_idTousers trial_invitation_recipients[] @relation("trial_invitation_recipients_recipient_idTousers")
+
+  @@index([api_key], map: "index_users_on_api_key")
+  @@index([created_at, id], map: "index_users_on_created_at_and_id_for_abuse_review")
+  @@index([deactivator_id], map: "index_users_on_deactivator_id")
+  @@index([email_verified], map: "index_users_on_email_verified")
+}
+
+model versions {
+  id             Int       @id @default(autoincrement())
+  created_at     DateTime? @db.Timestamp(6)
+  event          String    @db.VarChar(255)
+  item_id        Int
+  item_type      String    @db.VarChar(255)
+  object_changes Json?
+  whodunnit      Int?
+
+  @@index([item_type, item_id], map: "index_versions_on_item_type_and_item_id")
+}

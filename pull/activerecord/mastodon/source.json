@@ -1,0 +1,2852 @@
+{
+  "source": "activerecord/mastodon",
+  "about": "[Mastodon](https://github.com/mastodon/mastodon)'s db/schema.rb",
+  "repo": "mastodon/mastodon",
+  "commit": "6c5d3bb4f25b26679cf6d113593e8c2e174a6b39",
+  "path": "db/schema.rb",
+  "license": "AGPL-3.0",
+  "dialect": "postgresql",
+  "tables": 124,
+  "models": 124,
+  "prisma": "8.1.0-dev.9",
+  "pulled_at": "2026-11-25T20:04:03.201Z",
+  "sql": {
+    "prisma": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.account_conversations",
+          "lines": [
+            "- participant_account_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ participant_account_ids bigint[] DEFAULT ARRAY[]",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.account_stats",
+          "lines": [
+            "- INDEX USING btree (last_status_at DESC NULLS LAST, account_id)",
+            "+ INDEX USING btree (last_status_at DESC, account_id)"
+          ]
+        },
+        {
+          "name": "public.accounts",
+          "lines": [
+            "- INDEX USING btree (url text_pattern_ops) WHERE (url IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text))",
+            "- INDEX USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\"))))",
+            "+ INDEX USING btree (url) WHERE (url IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.conversations",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.custom_filters",
+          "lines": [
+            "- context character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ context character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.global_follow_recommendations",
+          "lines": [
+            "- reason character varying[] NOT NULL",
+            "+ reason character varying[]"
+          ]
+        },
+        {
+          "name": "public.instances",
+          "only": "source"
+        },
+        {
+          "name": "public.media_attachments",
+          "lines": [
+            "- UNIQUE INDEX USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (shortcode) WHERE (shortcode IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_tokens",
+          "lines": [
+            "- UNIQUE INDEX USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (refresh_token) WHERE (refresh_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.polls",
+          "lines": [
+            "- cached_tallies bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ cached_tallies bigint[] DEFAULT ARRAY[]",
+            "- options character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ options character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.reports",
+          "lines": [
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.statuses",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tags",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((name)::text) text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.username_blocks",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((username)::text))"
+          ]
+        },
+        {
+          "name": "public.users",
+          "lines": [
+            "- UNIQUE INDEX USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (reset_password_token) WHERE (reset_password_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.webhooks",
+          "lines": [
+            "- events character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ events character varying[] DEFAULT ARRAY[]"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE SEQUENCE public.accounts_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collection_items_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collections_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE MATERIALIZED VIEW public.instances AS WITH domain_counts(domain, accounts_count) AS (SELECT accounts.domain, count(*) AS accounts_count FROM public.accounts WHERE (accounts.domain IS NOT NULL) GROUP BY accounts.domain) SELECT domain_counts.domain, domain_counts.accounts_count FROM domain_counts UNION SELECT domain_blocks.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_blocks LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text))) UNION SELECT domain_allows.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_allows LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text))) WITH NO DATA",
+        "CREATE SEQUENCE public.media_attachments_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.notification_requests_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.quotes_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.statuses_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE VIEW public.user_ips AS SELECT user_id, ip, max(used_at) AS used_at FROM (SELECT users.id AS user_id, users.sign_up_ip AS ip, users.created_at AS used_at FROM public.users WHERE (users.sign_up_ip IS NOT NULL) UNION ALL SELECT session_activations.user_id, session_activations.ip, session_activations.updated_at FROM public.session_activations UNION ALL SELECT login_activities.user_id, login_activities.ip, login_activities.created_at FROM public.login_activities WHERE (login_activities.success = true)) t0 GROUP BY user_id, ip"
+      ],
+      "onlyHere": []
+    },
+    "drizzle": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.account_conversations",
+          "lines": [
+            "- participant_account_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ participant_account_ids bigint[] DEFAULT ARRAY[]",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.account_stats",
+          "lines": [
+            "- INDEX USING btree (last_status_at DESC NULLS LAST, account_id)",
+            "+ INDEX USING btree (last_status_at DESC, account_id)"
+          ]
+        },
+        {
+          "name": "public.accounts",
+          "lines": [
+            "- INDEX USING btree (url text_pattern_ops) WHERE (url IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text))",
+            "- INDEX USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\"))))",
+            "+ INDEX USING btree (url) WHERE (url IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.conversations",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.custom_filters",
+          "lines": [
+            "- context character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ context character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.global_follow_recommendations",
+          "lines": [
+            "- reason character varying[] NOT NULL",
+            "+ reason character varying[]"
+          ]
+        },
+        {
+          "name": "public.instances",
+          "only": "source"
+        },
+        {
+          "name": "public.media_attachments",
+          "lines": [
+            "- UNIQUE INDEX USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (shortcode) WHERE (shortcode IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_tokens",
+          "lines": [
+            "- UNIQUE INDEX USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (refresh_token) WHERE (refresh_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.polls",
+          "lines": [
+            "- cached_tallies bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ cached_tallies bigint[] DEFAULT ARRAY[]",
+            "- options character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ options character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.reports",
+          "lines": [
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.statuses",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tags",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((name)::text) text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.username_blocks",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((username)::text))"
+          ]
+        },
+        {
+          "name": "public.users",
+          "lines": [
+            "- UNIQUE INDEX USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (reset_password_token) WHERE (reset_password_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.webhooks",
+          "lines": [
+            "- events character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ events character varying[] DEFAULT ARRAY[]"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE SEQUENCE public.accounts_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collection_items_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collections_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE MATERIALIZED VIEW public.instances AS WITH domain_counts(domain, accounts_count) AS (SELECT accounts.domain, count(*) AS accounts_count FROM public.accounts WHERE (accounts.domain IS NOT NULL) GROUP BY accounts.domain) SELECT domain_counts.domain, domain_counts.accounts_count FROM domain_counts UNION SELECT domain_blocks.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_blocks LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text))) UNION SELECT domain_allows.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_allows LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text))) WITH NO DATA",
+        "CREATE SEQUENCE public.media_attachments_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.notification_requests_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.quotes_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.statuses_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE VIEW public.user_ips AS SELECT user_id, ip, max(used_at) AS used_at FROM (SELECT users.id AS user_id, users.sign_up_ip AS ip, users.created_at AS used_at FROM public.users WHERE (users.sign_up_ip IS NOT NULL) UNION ALL SELECT session_activations.user_id, session_activations.ip, session_activations.updated_at FROM public.session_activations UNION ALL SELECT login_activities.user_id, login_activities.ip, login_activities.created_at FROM public.login_activities WHERE (login_activities.success = true)) t0 GROUP BY user_id, ip"
+      ],
+      "onlyHere": [],
+      "prisma": "names"
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.account_conversations",
+          "lines": [
+            "- participant_account_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ participant_account_ids bigint[] DEFAULT ARRAY[]",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.account_stats",
+          "lines": [
+            "- INDEX USING btree (last_status_at DESC NULLS LAST, account_id)",
+            "+ INDEX USING btree (last_status_at DESC, account_id)"
+          ]
+        },
+        {
+          "name": "public.accounts",
+          "lines": [
+            "- INDEX USING btree (url text_pattern_ops) WHERE (url IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text))",
+            "- INDEX USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\"))))",
+            "+ INDEX USING btree (url) WHERE (url IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.conversations",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.custom_filters",
+          "lines": [
+            "- context character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ context character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.global_follow_recommendations",
+          "lines": [
+            "- reason character varying[] NOT NULL",
+            "+ reason character varying[]"
+          ]
+        },
+        {
+          "name": "public.instances",
+          "only": "source"
+        },
+        {
+          "name": "public.media_attachments",
+          "lines": [
+            "- UNIQUE INDEX USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (shortcode) WHERE (shortcode IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_tokens",
+          "lines": [
+            "- UNIQUE INDEX USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (refresh_token) WHERE (refresh_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.polls",
+          "lines": [
+            "- cached_tallies bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ cached_tallies bigint[] DEFAULT ARRAY[]",
+            "- options character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ options character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.reports",
+          "lines": [
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.statuses",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tags",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((name)::text) text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.username_blocks",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((username)::text))"
+          ]
+        },
+        {
+          "name": "public.users",
+          "lines": [
+            "- UNIQUE INDEX USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (reset_password_token) WHERE (reset_password_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.webhooks",
+          "lines": [
+            "- events character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ events character varying[] DEFAULT ARRAY[]"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE SEQUENCE public.accounts_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collection_items_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collections_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE MATERIALIZED VIEW public.instances AS WITH domain_counts(domain, accounts_count) AS (SELECT accounts.domain, count(*) AS accounts_count FROM public.accounts WHERE (accounts.domain IS NOT NULL) GROUP BY accounts.domain) SELECT domain_counts.domain, domain_counts.accounts_count FROM domain_counts UNION SELECT domain_blocks.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_blocks LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text))) UNION SELECT domain_allows.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_allows LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text))) WITH NO DATA",
+        "CREATE SEQUENCE public.media_attachments_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.notification_requests_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.quotes_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.statuses_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE VIEW public.user_ips AS SELECT user_id, ip, max(used_at) AS used_at FROM (SELECT users.id AS user_id, users.sign_up_ip AS ip, users.created_at AS used_at FROM public.users WHERE (users.sign_up_ip IS NOT NULL) UNION ALL SELECT session_activations.user_id, session_activations.ip, session_activations.updated_at FROM public.session_activations UNION ALL SELECT login_activities.user_id, login_activities.ip, login_activities.created_at FROM public.login_activities WHERE (login_activities.success = true)) t0 GROUP BY user_id, ip"
+      ],
+      "onlyHere": [],
+      "prisma": "names"
+    },
+    "django": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.account_aliases",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- acct character varying DEFAULT ''::character varying NOT NULL",
+            "+ acct character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- uri character varying DEFAULT ''::character varying NOT NULL",
+            "+ uri character varying NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_conversations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- lock_version integer DEFAULT 0 NOT NULL",
+            "+ lock_version integer NOT NULL",
+            "- participant_account_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ participant_account_ids bigint[] NOT NULL",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] NOT NULL",
+            "- unread boolean DEFAULT false NOT NULL",
+            "+ unread boolean NOT NULL",
+            "- FOREIGN KEY (conversation_id) REFERENCES public.conversations(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (conversation_id) REFERENCES public.conversations(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_deletion_requests",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_domain_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_migrations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- acct character varying DEFAULT ''::character varying NOT NULL",
+            "+ acct character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- followers_count bigint DEFAULT 0 NOT NULL",
+            "+ followers_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (target_account_id) WHERE (target_account_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.account_moderation_notes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_notes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_pins",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_reach_filters",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- saturated boolean DEFAULT false NOT NULL",
+            "+ saturated boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_relationship_severance_events",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- followers_count integer DEFAULT 0 NOT NULL",
+            "+ followers_count integer NOT NULL",
+            "- following_count integer DEFAULT 0 NOT NULL",
+            "+ following_count integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (relationship_severance_event_id) REFERENCES public.relationship_severance_events(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (relationship_severance_event_id) REFERENCES public.relationship_severance_events(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_stats",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- followers_count bigint DEFAULT 0 NOT NULL",
+            "+ followers_count bigint NOT NULL",
+            "- following_count bigint DEFAULT 0 NOT NULL",
+            "+ following_count bigint NOT NULL",
+            "- last_status_at timestamp without time zone",
+            "+ last_status_at timestamp with time zone",
+            "- statuses_count bigint DEFAULT 0 NOT NULL",
+            "+ statuses_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (last_status_at DESC NULLS LAST, account_id)",
+            "+ INDEX USING btree (last_status_at DESC, account_id)"
+          ]
+        },
+        {
+          "name": "public.account_statuses_cleanup_policies",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- enabled boolean DEFAULT true NOT NULL",
+            "+ enabled boolean NOT NULL",
+            "- keep_direct boolean DEFAULT true NOT NULL",
+            "+ keep_direct boolean NOT NULL",
+            "- keep_media boolean DEFAULT false NOT NULL",
+            "+ keep_media boolean NOT NULL",
+            "- keep_pinned boolean DEFAULT true NOT NULL",
+            "+ keep_pinned boolean NOT NULL",
+            "- keep_polls boolean DEFAULT false NOT NULL",
+            "+ keep_polls boolean NOT NULL",
+            "- keep_self_bookmark boolean DEFAULT true NOT NULL",
+            "+ keep_self_bookmark boolean NOT NULL",
+            "- keep_self_fav boolean DEFAULT true NOT NULL",
+            "+ keep_self_fav boolean NOT NULL",
+            "- min_status_age integer DEFAULT 1209600 NOT NULL",
+            "+ min_status_age integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_summaries",
+          "lines": [
+            "- account_id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ account_id bigint NOT NULL",
+            "- sensitive boolean DEFAULT false NOT NULL",
+            "+ sensitive boolean NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.account_warning_presets",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- title character varying DEFAULT ''::character varying NOT NULL",
+            "+ title character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- action_category character varying DEFAULT 'all_actions'::character varying NOT NULL",
+            "+ action_category character varying NOT NULL"
+          ]
+        },
+        {
+          "name": "public.account_warnings",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- action integer DEFAULT 0 NOT NULL",
+            "+ action integer NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- overruled_at timestamp without time zone",
+            "+ overruled_at timestamp with time zone",
+            "- status_ids character varying[]",
+            "+ status_ids character varying[] NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (report_id) REFERENCES public.reports(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (report_id) REFERENCES public.reports(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.accounts",
+          "lines": [
+            "- also_known_as character varying[]",
+            "+ also_known_as character varying[] NOT NULL",
+            "- attribution_domains character varying[] DEFAULT ARRAY[]",
+            "+ attribution_domains character varying[] NOT NULL",
+            "- avatar_description character varying DEFAULT ''::character varying NOT NULL",
+            "+ avatar_description character varying NOT NULL",
+            "- avatar_updated_at timestamp without time zone",
+            "+ avatar_updated_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- display_name character varying DEFAULT ''::character varying NOT NULL",
+            "+ display_name character varying NOT NULL",
+            "- feature_approval_policy integer DEFAULT 0 NOT NULL",
+            "+ feature_approval_policy integer NOT NULL",
+            "- followers_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ followers_url character varying NOT NULL",
+            "- following_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ following_url character varying NOT NULL",
+            "- header_description character varying DEFAULT ''::character varying NOT NULL",
+            "+ header_description character varying NOT NULL",
+            "- header_remote_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ header_remote_url character varying NOT NULL",
+            "- header_updated_at timestamp without time zone",
+            "+ header_updated_at timestamp with time zone",
+            "- id_scheme integer DEFAULT 1",
+            "+ id_scheme integer",
+            "- inbox_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ inbox_url character varying NOT NULL",
+            "- indexable boolean DEFAULT false NOT NULL",
+            "+ indexable boolean NOT NULL",
+            "- last_webfingered_at timestamp without time zone",
+            "+ last_webfingered_at timestamp with time zone",
+            "- locked boolean DEFAULT false NOT NULL",
+            "+ locked boolean NOT NULL",
+            "- memorial boolean DEFAULT false NOT NULL",
+            "+ memorial boolean NOT NULL",
+            "- note text DEFAULT ''::text NOT NULL",
+            "+ note text NOT NULL",
+            "- outbox_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ outbox_url character varying NOT NULL",
+            "- protocol integer DEFAULT 0 NOT NULL",
+            "+ protocol integer NOT NULL",
+            "- public_key text DEFAULT ''::text NOT NULL",
+            "+ public_key text NOT NULL",
+            "- requested_deletion_at timestamp without time zone",
+            "+ requested_deletion_at timestamp with time zone",
+            "- requested_review_at timestamp without time zone",
+            "+ requested_review_at timestamp with time zone",
+            "- reviewed_at timestamp without time zone",
+            "+ reviewed_at timestamp with time zone",
+            "- sensitized_at timestamp without time zone",
+            "+ sensitized_at timestamp with time zone",
+            "- shared_inbox_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ shared_inbox_url character varying NOT NULL",
+            "- show_featured boolean DEFAULT true NOT NULL",
+            "+ show_featured boolean NOT NULL",
+            "- show_media boolean DEFAULT true NOT NULL",
+            "+ show_media boolean NOT NULL",
+            "- show_media_replies boolean DEFAULT true NOT NULL",
+            "+ show_media_replies boolean NOT NULL",
+            "- silenced_at timestamp without time zone",
+            "+ silenced_at timestamp with time zone",
+            "- suspended_at timestamp without time zone",
+            "+ suspended_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- username character varying DEFAULT ''::character varying NOT NULL",
+            "+ username character varying NOT NULL",
+            "- FOREIGN KEY (moved_to_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (moved_to_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (moved_to_account_id) WHERE (moved_to_account_id IS NOT NULL)",
+            "- INDEX USING btree (url text_pattern_ops) WHERE (url IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text))",
+            "- INDEX USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\"))))",
+            "+ INDEX USING btree (uri varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.admin_action_logs",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- action character varying DEFAULT ''::character varying NOT NULL",
+            "+ action character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (moderation_subscription_id) WHERE (moderation_subscription_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.admin_server_checks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- status smallint DEFAULT 0 NOT NULL",
+            "+ status smallint NOT NULL",
+            "- severity smallint DEFAULT 0 NOT NULL",
+            "+ severity smallint NOT NULL",
+            "- ignored boolean DEFAULT false NOT NULL",
+            "+ ignored boolean NOT NULL",
+            "- checked_at timestamp without time zone",
+            "+ checked_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (key varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.announcement_mutes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (announcement_id) REFERENCES public.announcements(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (announcement_id) REFERENCES public.announcements(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.announcement_reactions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- name character varying DEFAULT ''::character varying NOT NULL",
+            "+ name character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (announcement_id) REFERENCES public.announcements(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (announcement_id) REFERENCES public.announcements(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (custom_emoji_id) REFERENCES public.custom_emojis(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (custom_emoji_id) REFERENCES public.custom_emojis(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (custom_emoji_id) WHERE (custom_emoji_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.announcements",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- all_day boolean DEFAULT false NOT NULL",
+            "+ all_day boolean NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- ends_at timestamp without time zone",
+            "+ ends_at timestamp with time zone",
+            "- notification_sent_at timestamp without time zone",
+            "+ notification_sent_at timestamp with time zone",
+            "- published boolean DEFAULT false NOT NULL",
+            "+ published boolean NOT NULL",
+            "- published_at timestamp without time zone",
+            "+ published_at timestamp with time zone",
+            "- scheduled_at timestamp without time zone",
+            "+ scheduled_at timestamp with time zone",
+            "- starts_at timestamp without time zone",
+            "+ starts_at timestamp with time zone",
+            "- status_ids bigint[]",
+            "+ status_ids bigint[] NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.annual_report_statuses_per_account_counts",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY"
+          ]
+        },
+        {
+          "name": "public.appeals",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- approved_at timestamp without time zone",
+            "+ approved_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- rejected_at timestamp without time zone",
+            "+ rejected_at timestamp with time zone",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (rejected_by_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (rejected_by_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (approved_by_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (approved_by_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_warning_id) REFERENCES public.account_warnings(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_warning_id) REFERENCES public.account_warnings(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (approved_by_account_id) WHERE (approved_by_account_id IS NOT NULL)",
+            "- INDEX USING btree (rejected_by_account_id) WHERE (rejected_by_account_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.ar_internal_metadata",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (key varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.backups",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- dump_updated_at timestamp without time zone",
+            "+ dump_updated_at timestamp with time zone",
+            "- processed boolean DEFAULT false NOT NULL",
+            "+ processed boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.bookmarks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.bulk_import_rows",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (bulk_import_id) REFERENCES public.bulk_imports(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (bulk_import_id) REFERENCES public.bulk_imports(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.bulk_imports",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- finished_at timestamp without time zone",
+            "+ finished_at timestamp with time zone",
+            "- imported_items integer DEFAULT 0 NOT NULL",
+            "+ imported_items integer NOT NULL",
+            "- likely_mismatched boolean DEFAULT false NOT NULL",
+            "+ likely_mismatched boolean NOT NULL",
+            "- missing_status boolean DEFAULT false NOT NULL",
+            "+ missing_status boolean NOT NULL",
+            "- original_filename character varying DEFAULT ''::character varying NOT NULL",
+            "+ original_filename character varying NOT NULL",
+            "- overwrite boolean DEFAULT false NOT NULL",
+            "+ overwrite boolean NOT NULL",
+            "- processed_items integer DEFAULT 0 NOT NULL",
+            "+ processed_items integer NOT NULL",
+            "- total_items integer DEFAULT 0 NOT NULL",
+            "+ total_items integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (id) WHERE (state = 0)"
+          ]
+        },
+        {
+          "name": "public.canonical_email_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- canonical_email_hash character varying DEFAULT ''::character varying NOT NULL",
+            "+ canonical_email_hash character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (reference_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (reference_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (canonical_email_hash varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.collection_items",
+          "lines": [
+            "- approval_last_verified_at timestamp without time zone",
+            "+ approval_last_verified_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- \"position\" integer DEFAULT 1 NOT NULL",
+            "+ \"position\" integer NOT NULL",
+            "- state integer DEFAULT 0 NOT NULL",
+            "+ state integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id)",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (collection_id) REFERENCES public.collections(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (approval_uri) WHERE (approval_uri IS NOT NULL)",
+            "- INDEX USING btree (state) WHERE (state = ANY (ARRAY[2, 3]))",
+            "- UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.collection_reports",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (collection_id) REFERENCES public.collections(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (report_id) REFERENCES public.reports(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (report_id) REFERENCES public.reports(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.collections",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- item_count integer DEFAULT 0 NOT NULL",
+            "+ item_count integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id)",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (tag_id) REFERENCES public.tags(id)",
+            "+ FOREIGN KEY (tag_id) REFERENCES public.tags(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.conversation_mutes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (conversation_id) REFERENCES public.conversations(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (conversation_id) REFERENCES public.conversations(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.conversations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- UNIQUE INDEX USING btree (parent_status_id) WHERE (parent_status_id IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.custom_emoji_categories",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (featured_emoji_id) REFERENCES public.custom_emojis(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (featured_emoji_id) REFERENCES public.custom_emojis(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (name varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.custom_emojis",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- disabled boolean DEFAULT false NOT NULL",
+            "+ disabled boolean NOT NULL",
+            "- image_updated_at timestamp without time zone",
+            "+ image_updated_at timestamp with time zone",
+            "- shortcode character varying DEFAULT ''::character varying NOT NULL",
+            "+ shortcode character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- visible_in_picker boolean DEFAULT true NOT NULL",
+            "+ visible_in_picker boolean NOT NULL"
+          ]
+        },
+        {
+          "name": "public.custom_filter_keywords",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- keyword text DEFAULT ''::text NOT NULL",
+            "+ keyword text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- whole_word boolean DEFAULT true NOT NULL",
+            "+ whole_word boolean NOT NULL",
+            "- FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.custom_filter_statuses",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.custom_filters",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- action integer DEFAULT 0 NOT NULL",
+            "+ action integer NOT NULL",
+            "- context character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ context character varying[] NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- phrase text DEFAULT ''::text NOT NULL",
+            "+ phrase text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.domain_allows",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- domain character varying DEFAULT ''::character varying NOT NULL",
+            "+ domain character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (domain varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.domain_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- domain character varying DEFAULT ''::character varying NOT NULL",
+            "+ domain character varying NOT NULL",
+            "- obfuscate boolean DEFAULT false NOT NULL",
+            "+ obfuscate boolean NOT NULL",
+            "- reject_media boolean DEFAULT false NOT NULL",
+            "+ reject_media boolean NOT NULL",
+            "- reject_reports boolean DEFAULT false NOT NULL",
+            "+ reject_reports boolean NOT NULL",
+            "- severity integer DEFAULT 0",
+            "+ severity integer",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (domain varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.email_domain_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- allow_with_approval boolean DEFAULT false NOT NULL",
+            "+ allow_with_approval boolean NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- domain character varying DEFAULT ''::character varying NOT NULL",
+            "+ domain character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (parent_id) REFERENCES public.email_domain_blocks(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (parent_id) REFERENCES public.email_domain_blocks(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (domain varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.email_subscriptions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- confirmed_at timestamp without time zone",
+            "+ confirmed_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (confirmation_token) WHERE (confirmation_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.fasp_backfill_requests",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- fulfilled boolean DEFAULT false NOT NULL",
+            "+ fulfilled boolean NOT NULL",
+            "- max_count integer DEFAULT 100 NOT NULL",
+            "+ max_count integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id)",
+            "+ FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.fasp_capabilities",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- enabled boolean DEFAULT false NOT NULL",
+            "+ enabled boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id)",
+            "+ FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.fasp_debug_callbacks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id)",
+            "+ FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.fasp_follow_recommendations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (recommended_account_id) REFERENCES public.accounts(id)",
+            "+ FOREIGN KEY (recommended_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (requesting_account_id) REFERENCES public.accounts(id)",
+            "+ FOREIGN KEY (requesting_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.fasp_providers",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- confirmed boolean DEFAULT false NOT NULL",
+            "+ confirmed boolean NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- delivery_last_failed_at timestamp without time zone",
+            "+ delivery_last_failed_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (base_url varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.fasp_subscriptions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id)",
+            "+ FOREIGN KEY (fasp_provider_id) REFERENCES public.fasp_providers(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.favourites",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.featured_tags",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- last_status_at timestamp without time zone",
+            "+ last_status_at timestamp with time zone",
+            "- statuses_count bigint DEFAULT 0 NOT NULL",
+            "+ statuses_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (tag_id) REFERENCES public.tags(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.follow_recommendation_mutes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.follow_recommendation_suppressions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.follow_requests",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- languages character varying[]",
+            "+ languages character varying[] NOT NULL",
+            "- notify boolean DEFAULT false NOT NULL",
+            "+ notify boolean NOT NULL",
+            "- show_reblogs boolean DEFAULT true NOT NULL",
+            "+ show_reblogs boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.follows",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- languages character varying[]",
+            "+ languages character varying[] NOT NULL",
+            "- notify boolean DEFAULT false NOT NULL",
+            "+ notify boolean NOT NULL",
+            "- show_reblogs boolean DEFAULT true NOT NULL",
+            "+ show_reblogs boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.generated_annual_reports",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- viewed_at timestamp without time zone",
+            "+ viewed_at timestamp with time zone",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.global_follow_recommendations",
+          "lines": [
+            "- account_id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ account_id bigint NOT NULL",
+            "- rank numeric NOT NULL",
+            "+ rank numeric(65,30) NOT NULL",
+            "- stale boolean DEFAULT false NOT NULL",
+            "+ stale boolean NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.identities",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- provider character varying DEFAULT ''::character varying NOT NULL",
+            "+ provider character varying NOT NULL",
+            "- uid character varying DEFAULT ''::character varying NOT NULL",
+            "+ uid character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.instance_moderation_notes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.instances",
+          "only": "source"
+        },
+        {
+          "name": "public.invites",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- autofollow boolean DEFAULT false NOT NULL",
+            "+ autofollow boolean NOT NULL",
+            "- code character varying DEFAULT ''::character varying NOT NULL",
+            "+ code character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- uses integer DEFAULT 0 NOT NULL",
+            "+ uses integer NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (code varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.ip_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- comment text DEFAULT ''::text NOT NULL",
+            "+ comment text NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- ip inet DEFAULT '0.0.0.0'::inet NOT NULL",
+            "+ ip inet NOT NULL",
+            "- severity integer DEFAULT 0 NOT NULL",
+            "+ severity integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.keypairs",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- revoked boolean DEFAULT false NOT NULL",
+            "+ revoked boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (uri varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.list_accounts",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- FOREIGN KEY (follow_id) REFERENCES public.follows(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (follow_id) REFERENCES public.follows(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (list_id) REFERENCES public.lists(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (list_id) REFERENCES public.lists(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (follow_request_id) REFERENCES public.follow_requests(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (follow_request_id) REFERENCES public.follow_requests(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (follow_id) WHERE (follow_id IS NOT NULL)",
+            "- INDEX USING btree (follow_request_id) WHERE (follow_request_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.lists",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- exclusive boolean DEFAULT false NOT NULL",
+            "+ exclusive boolean NOT NULL",
+            "- replies_policy integer DEFAULT 0 NOT NULL",
+            "+ replies_policy integer NOT NULL",
+            "- title character varying DEFAULT ''::character varying NOT NULL",
+            "+ title character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.login_activities",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone",
+            "+ created_at timestamp with time zone",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.markers",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- last_read_id bigint DEFAULT 0 NOT NULL",
+            "+ last_read_id bigint NOT NULL",
+            "- lock_version integer DEFAULT 0 NOT NULL",
+            "+ lock_version integer NOT NULL",
+            "- timeline character varying DEFAULT ''::character varying NOT NULL",
+            "+ timeline character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.media_attachments",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- file_updated_at timestamp without time zone",
+            "+ file_updated_at timestamp with time zone",
+            "- remote_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ remote_url character varying NOT NULL",
+            "- thumbnail_updated_at timestamp without time zone",
+            "+ thumbnail_updated_at timestamp with time zone",
+            "- type integer DEFAULT 0 NOT NULL",
+            "+ type integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (scheduled_status_id) REFERENCES public.scheduled_statuses(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (scheduled_status_id) REFERENCES public.scheduled_statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (scheduled_status_id) WHERE (scheduled_status_id IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.mentions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- silent boolean DEFAULT false NOT NULL",
+            "+ silent boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.moderation_subscription_advisories",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id)",
+            "+ FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.moderation_subscriptions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- apply_automatically boolean DEFAULT false NOT NULL",
+            "+ apply_automatically boolean NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- last_synced_at timestamp without time zone",
+            "+ last_synced_at timestamp with time zone",
+            "- override_unattributed boolean DEFAULT false NOT NULL",
+            "+ override_unattributed boolean NOT NULL",
+            "- preserve_relationships boolean DEFAULT true NOT NULL",
+            "+ preserve_relationships boolean NOT NULL",
+            "- retract_automatically boolean DEFAULT true NOT NULL",
+            "+ retract_automatically boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.moderation_suggestions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- state integer DEFAULT 0 NOT NULL",
+            "+ state integer NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (moderation_subscription_id) REFERENCES public.moderation_subscriptions(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.mutes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- hide_notifications boolean DEFAULT true NOT NULL",
+            "+ hide_notifications boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.notification_permissions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.notification_policies",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- for_bots integer DEFAULT 0 NOT NULL",
+            "+ for_bots integer NOT NULL",
+            "- for_limited_accounts integer DEFAULT 1 NOT NULL",
+            "+ for_limited_accounts integer NOT NULL",
+            "- for_new_accounts integer DEFAULT 0 NOT NULL",
+            "+ for_new_accounts integer NOT NULL",
+            "- for_not_followers integer DEFAULT 0 NOT NULL",
+            "+ for_not_followers integer NOT NULL",
+            "- for_not_following integer DEFAULT 0 NOT NULL",
+            "+ for_not_following integer NOT NULL",
+            "- for_private_mentions integer DEFAULT 1 NOT NULL",
+            "+ for_private_mentions integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.notification_requests",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- notifications_count bigint DEFAULT 0 NOT NULL",
+            "+ notifications_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (last_status_id) REFERENCES public.statuses(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (last_status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.notifications",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- filtered boolean DEFAULT false NOT NULL",
+            "+ filtered boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (from_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (account_id, group_key) WHERE (group_key IS NOT NULL)",
+            "- INDEX USING btree (account_id, id DESC, type) WHERE (filtered = false)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_grants",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- revoked_at timestamp without time zone",
+            "+ revoked_at timestamp with time zone",
+            "- FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (resource_owner_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (resource_owner_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (token varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_tokens",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- last_used_at timestamp without time zone",
+            "+ last_used_at timestamp with time zone",
+            "- revoked_at timestamp without time zone",
+            "+ revoked_at timestamp with time zone",
+            "- FOREIGN KEY (resource_owner_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (resource_owner_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL)",
+            "- INDEX USING btree (resource_owner_id) WHERE (resource_owner_id IS NOT NULL)",
+            "+ INDEX USING btree (token varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.oauth_applications",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- confidential boolean DEFAULT true NOT NULL",
+            "+ confidential boolean NOT NULL",
+            "- created_at timestamp without time zone",
+            "+ created_at timestamp with time zone",
+            "- scopes character varying DEFAULT ''::character varying NOT NULL",
+            "+ scopes character varying NOT NULL",
+            "- superapp boolean DEFAULT false NOT NULL",
+            "+ superapp boolean NOT NULL",
+            "- updated_at timestamp without time zone",
+            "+ updated_at timestamp with time zone",
+            "- FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (owner_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (superapp) WHERE (superapp = true)",
+            "+ INDEX USING btree (uid varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.pghero_space_stats",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- captured_at timestamp without time zone",
+            "+ captured_at timestamp with time zone"
+          ]
+        },
+        {
+          "name": "public.poll_votes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- choice integer DEFAULT 0 NOT NULL",
+            "+ choice integer NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (poll_id) REFERENCES public.polls(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (poll_id) REFERENCES public.polls(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.polls",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- cached_tallies bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ cached_tallies bigint[] NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- expires_at timestamp without time zone",
+            "+ expires_at timestamp with time zone",
+            "- hide_totals boolean DEFAULT false NOT NULL",
+            "+ hide_totals boolean NOT NULL",
+            "- last_fetched_at timestamp without time zone",
+            "+ last_fetched_at timestamp with time zone",
+            "- lock_version integer DEFAULT 0 NOT NULL",
+            "+ lock_version integer NOT NULL",
+            "- multiple boolean DEFAULT false NOT NULL",
+            "+ multiple boolean NOT NULL",
+            "- options character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ options character varying[] NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- votes_count bigint DEFAULT 0 NOT NULL",
+            "+ votes_count bigint NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.preview_card_providers",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- domain character varying DEFAULT ''::character varying NOT NULL",
+            "+ domain character varying NOT NULL",
+            "- icon_updated_at timestamp without time zone",
+            "+ icon_updated_at timestamp with time zone",
+            "- requested_review_at timestamp without time zone",
+            "+ requested_review_at timestamp with time zone",
+            "- reviewed_at timestamp without time zone",
+            "+ reviewed_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (domain varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.preview_card_trends",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- allowed boolean DEFAULT false NOT NULL",
+            "+ allowed boolean NOT NULL",
+            "- rank integer DEFAULT 0 NOT NULL",
+            "+ rank integer NOT NULL",
+            "- score double precision DEFAULT 0 NOT NULL",
+            "+ score double precision NOT NULL",
+            "- FOREIGN KEY (preview_card_id) REFERENCES public.preview_cards(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (preview_card_id) REFERENCES public.preview_cards(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.preview_cards",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- author_name character varying DEFAULT ''::character varying NOT NULL",
+            "+ author_name character varying NOT NULL",
+            "- author_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ author_url character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- description character varying DEFAULT ''::character varying NOT NULL",
+            "+ description character varying NOT NULL",
+            "- embed_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ embed_url character varying NOT NULL",
+            "- height integer DEFAULT 0 NOT NULL",
+            "+ height integer NOT NULL",
+            "- html text DEFAULT ''::text NOT NULL",
+            "+ html text NOT NULL",
+            "- image_description character varying DEFAULT ''::character varying NOT NULL",
+            "+ image_description character varying NOT NULL",
+            "- image_updated_at timestamp without time zone",
+            "+ image_updated_at timestamp with time zone",
+            "- max_score_at timestamp without time zone",
+            "+ max_score_at timestamp with time zone",
+            "- provider_name character varying DEFAULT ''::character varying NOT NULL",
+            "+ provider_name character varying NOT NULL",
+            "- provider_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ provider_url character varying NOT NULL",
+            "- published_at timestamp without time zone",
+            "+ published_at timestamp with time zone",
+            "- title character varying DEFAULT ''::character varying NOT NULL",
+            "+ title character varying NOT NULL",
+            "- type integer DEFAULT 0 NOT NULL",
+            "+ type integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- url character varying DEFAULT ''::character varying NOT NULL",
+            "+ url character varying NOT NULL",
+            "- width integer DEFAULT 0 NOT NULL",
+            "+ width integer NOT NULL",
+            "- FOREIGN KEY (unverified_author_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (unverified_author_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (author_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (author_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (author_account_id) WHERE (author_account_id IS NOT NULL)",
+            "- INDEX USING btree (unverified_author_account_id, id) WHERE (unverified_author_account_id IS NOT NULL)",
+            "+ INDEX USING btree (url varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.quotes",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- legacy boolean DEFAULT false NOT NULL",
+            "+ legacy boolean NOT NULL",
+            "- state integer DEFAULT 0 NOT NULL",
+            "+ state integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (quoted_status_id) REFERENCES public.statuses(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (quoted_status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (quoted_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (quoted_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (activity_uri) WHERE (activity_uri IS NOT NULL)",
+            "- INDEX USING btree (approval_uri) WHERE (approval_uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.relationship_severance_events",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- purged boolean DEFAULT false NOT NULL",
+            "+ purged boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.relays",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- inbox_url character varying DEFAULT ''::character varying NOT NULL",
+            "+ inbox_url character varying NOT NULL",
+            "- state integer DEFAULT 0 NOT NULL",
+            "+ state integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.report_notes",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (report_id) REFERENCES public.reports(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (report_id) REFERENCES public.reports(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.reports",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- action_taken_at timestamp without time zone",
+            "+ action_taken_at timestamp with time zone",
+            "- category integer DEFAULT 0 NOT NULL",
+            "+ category integer NOT NULL",
+            "- comment text DEFAULT ''::text NOT NULL",
+            "+ comment text NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- rule_ids bigint[]",
+            "+ rule_ids bigint[] NOT NULL",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (action_taken_by_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (action_taken_by_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (target_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (application_id) REFERENCES public.oauth_applications(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (assigned_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (assigned_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (action_taken_by_account_id) WHERE (action_taken_by_account_id IS NOT NULL)",
+            "- INDEX USING btree (assigned_account_id) WHERE (assigned_account_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.rule_translations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- hint text DEFAULT ''::text NOT NULL",
+            "+ hint text NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (rule_id) REFERENCES public.rules(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (rule_id) REFERENCES public.rules(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.rules",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- deleted_at timestamp without time zone",
+            "+ deleted_at timestamp with time zone",
+            "- hint text DEFAULT ''::text NOT NULL",
+            "+ hint text NOT NULL",
+            "- priority integer DEFAULT 0 NOT NULL",
+            "+ priority integer NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.scheduled_statuses",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- scheduled_at timestamp without time zone",
+            "+ scheduled_at timestamp with time zone",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.schema_migrations",
+          "lines": [
+            "+ INDEX USING btree (version varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.session_activations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- user_agent character varying DEFAULT ''::character varying NOT NULL",
+            "+ user_agent character varying NOT NULL",
+            "- FOREIGN KEY (access_token_id) REFERENCES public.oauth_access_tokens(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (access_token_id) REFERENCES public.oauth_access_tokens(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (session_id varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.settings",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone",
+            "+ created_at timestamp with time zone",
+            "- updated_at timestamp without time zone",
+            "+ updated_at timestamp with time zone",
+            "+ INDEX USING btree (var varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.severed_relationships",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- languages character varying[]",
+            "+ languages character varying[] NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (relationship_severance_event_id) REFERENCES public.relationship_severance_events(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (relationship_severance_event_id) REFERENCES public.relationship_severance_events(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (local_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (local_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (remote_account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (remote_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.site_uploads",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- file_updated_at timestamp without time zone",
+            "+ file_updated_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- var character varying DEFAULT ''::character varying NOT NULL",
+            "+ var character varying NOT NULL",
+            "+ INDEX USING btree (var varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.software_deprecations",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (branch varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.software_updates",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- release_notes character varying DEFAULT ''::character varying NOT NULL",
+            "+ release_notes character varying NOT NULL",
+            "- type integer DEFAULT 0 NOT NULL",
+            "+ type integer NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- urgent boolean DEFAULT false NOT NULL",
+            "+ urgent boolean NOT NULL",
+            "+ INDEX USING btree (version varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.status_edits",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- media_descriptions text[]",
+            "+ media_descriptions text[] NOT NULL",
+            "- ordered_media_attachment_ids bigint[]",
+            "+ ordered_media_attachment_ids bigint[] NOT NULL",
+            "- poll_options character varying[]",
+            "+ poll_options character varying[] NOT NULL",
+            "- spoiler_text text DEFAULT ''::text NOT NULL",
+            "+ spoiler_text text NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.status_pins",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.status_stats",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- favourites_count bigint DEFAULT 0 NOT NULL",
+            "+ favourites_count bigint NOT NULL",
+            "- quotes_count bigint DEFAULT 0 NOT NULL",
+            "+ quotes_count bigint NOT NULL",
+            "- reblogs_count bigint DEFAULT 0 NOT NULL",
+            "+ reblogs_count bigint NOT NULL",
+            "- replies_count bigint DEFAULT 0 NOT NULL",
+            "+ replies_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.status_trends",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- allowed boolean DEFAULT false NOT NULL",
+            "+ allowed boolean NOT NULL",
+            "- rank integer DEFAULT 0 NOT NULL",
+            "+ rank integer NOT NULL",
+            "- score double precision DEFAULT 0 NOT NULL",
+            "+ score double precision NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.statuses",
+          "lines": [
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- deleted_at timestamp without time zone",
+            "+ deleted_at timestamp with time zone",
+            "- edited_at timestamp without time zone",
+            "+ edited_at timestamp with time zone",
+            "- fetched_replies_at timestamp without time zone",
+            "+ fetched_replies_at timestamp with time zone",
+            "- ordered_media_attachment_ids bigint[]",
+            "+ ordered_media_attachment_ids bigint[] NOT NULL",
+            "- quote_approval_policy integer DEFAULT 0 NOT NULL",
+            "+ quote_approval_policy integer NOT NULL",
+            "- reply boolean DEFAULT false NOT NULL",
+            "+ reply boolean NOT NULL",
+            "- sensitive boolean DEFAULT false NOT NULL",
+            "+ sensitive boolean NOT NULL",
+            "- spoiler_text text DEFAULT ''::text NOT NULL",
+            "+ spoiler_text text NOT NULL",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- visibility integer DEFAULT 0 NOT NULL",
+            "+ visibility integer NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (in_reply_to_account_id) REFERENCES public.accounts(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (in_reply_to_account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (reblog_of_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (reblog_of_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (in_reply_to_id) REFERENCES public.statuses(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (in_reply_to_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (account_id, id DESC, visibility, updated_at) WHERE (deleted_at IS NULL)",
+            "- INDEX USING btree (id DESC, account_id) WHERE ((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))",
+            "- INDEX USING btree (deleted_at) WHERE (deleted_at IS NOT NULL)",
+            "- INDEX USING btree (in_reply_to_account_id) WHERE (in_reply_to_account_id IS NOT NULL)",
+            "- INDEX USING btree (in_reply_to_id) WHERE (in_reply_to_id IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "- INDEX USING btree (id DESC, language, account_id) WHERE ((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
+          ]
+        },
+        {
+          "name": "public.statuses_tags",
+          "lines": [
+            "- FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (tag_id) REFERENCES public.tags(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.tag_follows",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (tag_id) REFERENCES public.tags(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.tag_trends",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- allowed boolean DEFAULT false NOT NULL",
+            "+ allowed boolean NOT NULL",
+            "- language character varying DEFAULT ''::character varying NOT NULL",
+            "+ language character varying NOT NULL",
+            "- rank integer DEFAULT 0 NOT NULL",
+            "+ rank integer NOT NULL",
+            "- score double precision DEFAULT 0 NOT NULL",
+            "+ score double precision NOT NULL",
+            "- FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (tag_id) REFERENCES public.tags(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.tagged_objects",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (status_id) REFERENCES public.statuses(id) DEFERRABLE INITIALLY DEFERRED",
+            "- UNIQUE INDEX USING btree (status_id, object_type, object_id) WHERE ((object_type IS NOT NULL) AND (object_id IS NOT NULL))",
+            "- UNIQUE INDEX USING btree (status_id, uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tags",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- last_status_at timestamp without time zone",
+            "+ last_status_at timestamp with time zone",
+            "- max_score_at timestamp without time zone",
+            "+ max_score_at timestamp with time zone",
+            "- name character varying DEFAULT ''::character varying NOT NULL",
+            "+ name character varying NOT NULL",
+            "- requested_review_at timestamp without time zone",
+            "+ requested_review_at timestamp with time zone",
+            "- reviewed_at timestamp without time zone",
+            "+ reviewed_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- UNIQUE INDEX USING btree (lower((name)::text) text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.terms_of_services",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- changelog text DEFAULT ''::text NOT NULL",
+            "+ changelog text NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- notification_sent_at timestamp without time zone",
+            "+ notification_sent_at timestamp with time zone",
+            "- published_at timestamp without time zone",
+            "+ published_at timestamp with time zone",
+            "- text text DEFAULT ''::text NOT NULL",
+            "+ text text NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- UNIQUE INDEX USING btree (effective_date) WHERE (effective_date IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tombstones",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.unavailable_domains",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- domain character varying DEFAULT ''::character varying NOT NULL",
+            "+ domain character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (domain varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.user_invite_requests",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.user_roles",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- collection_limit integer DEFAULT 10 NOT NULL",
+            "+ collection_limit integer NOT NULL",
+            "- color character varying DEFAULT ''::character varying NOT NULL",
+            "+ color character varying NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- highlighted boolean DEFAULT false NOT NULL",
+            "+ highlighted boolean NOT NULL",
+            "- name character varying DEFAULT ''::character varying NOT NULL",
+            "+ name character varying NOT NULL",
+            "- permissions bigint DEFAULT 0 NOT NULL",
+            "+ permissions bigint NOT NULL",
+            "- \"position\" integer DEFAULT 0 NOT NULL",
+            "+ \"position\" integer NOT NULL",
+            "- require_2fa boolean DEFAULT false NOT NULL",
+            "+ require_2fa boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL"
+          ]
+        },
+        {
+          "name": "public.username_blocks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- allow_with_approval boolean DEFAULT false NOT NULL",
+            "+ allow_with_approval boolean NOT NULL",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- exact boolean DEFAULT false NOT NULL",
+            "+ exact boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- UNIQUE INDEX USING btree (lower((username)::text))"
+          ]
+        },
+        {
+          "name": "public.users",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- age_verified_at timestamp without time zone",
+            "+ age_verified_at timestamp with time zone",
+            "- approved boolean DEFAULT true NOT NULL",
+            "+ approved boolean NOT NULL",
+            "- chosen_languages character varying[]",
+            "+ chosen_languages character varying[] NOT NULL",
+            "- confirmation_sent_at timestamp without time zone",
+            "+ confirmation_sent_at timestamp with time zone",
+            "- confirmed_at timestamp without time zone",
+            "+ confirmed_at timestamp with time zone",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- current_sign_in_at timestamp without time zone",
+            "+ current_sign_in_at timestamp with time zone",
+            "- disabled boolean DEFAULT false NOT NULL",
+            "+ disabled boolean NOT NULL",
+            "- email character varying DEFAULT ''::character varying NOT NULL",
+            "+ email character varying NOT NULL",
+            "- encrypted_password character varying DEFAULT ''::character varying NOT NULL",
+            "+ encrypted_password character varying NOT NULL",
+            "- last_emailed_at timestamp without time zone",
+            "+ last_emailed_at timestamp with time zone",
+            "- last_sign_in_at timestamp without time zone",
+            "+ last_sign_in_at timestamp with time zone",
+            "- otp_backup_codes character varying[]",
+            "+ otp_backup_codes character varying[] NOT NULL",
+            "- otp_required_for_login boolean DEFAULT false NOT NULL",
+            "+ otp_required_for_login boolean NOT NULL",
+            "- require_tos_interstitial boolean DEFAULT false NOT NULL",
+            "+ require_tos_interstitial boolean NOT NULL",
+            "- reset_password_sent_at timestamp without time zone",
+            "+ reset_password_sent_at timestamp with time zone",
+            "- sign_in_count integer DEFAULT 0 NOT NULL",
+            "+ sign_in_count integer NOT NULL",
+            "- sign_in_token_sent_at timestamp without time zone",
+            "+ sign_in_token_sent_at timestamp with time zone",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (account_id) REFERENCES public.accounts(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (account_id) REFERENCES public.accounts(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (role_id) REFERENCES public.user_roles(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (role_id) REFERENCES public.user_roles(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (invite_id) REFERENCES public.invites(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (invite_id) REFERENCES public.invites(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (created_by_application_id) REFERENCES public.oauth_applications(id) ON DELETE SET NULL",
+            "+ FOREIGN KEY (created_by_application_id) REFERENCES public.oauth_applications(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (created_by_application_id) WHERE (created_by_application_id IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL)",
+            "- INDEX USING btree (role_id) WHERE (role_id IS NOT NULL)",
+            "- INDEX USING btree (unconfirmed_email) WHERE (unconfirmed_email IS NOT NULL)",
+            "+ INDEX USING btree (confirmation_token varchar_pattern_ops)",
+            "+ INDEX USING btree (email varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.web_push_subscriptions",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- standard boolean DEFAULT false NOT NULL",
+            "+ standard boolean NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (access_token_id) REFERENCES public.oauth_access_tokens(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (access_token_id) REFERENCES public.oauth_access_tokens(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "- INDEX USING btree (access_token_id) WHERE (access_token_id IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.web_settings",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED"
+          ]
+        },
+        {
+          "name": "public.webauthn_credentials",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- sign_count bigint DEFAULT 0 NOT NULL",
+            "+ sign_count bigint NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "- FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (external_id varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.webhooks",
+          "lines": [
+            "- id bigint NOT NULL DEFAULT nextval(<its sequence>)",
+            "+ id bigint NOT NULL GENERATED BY DEFAULT AS IDENTITY",
+            "- created_at timestamp without time zone NOT NULL",
+            "+ created_at timestamp with time zone NOT NULL",
+            "- enabled boolean DEFAULT true NOT NULL",
+            "+ enabled boolean NOT NULL",
+            "- events character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ events character varying[] NOT NULL",
+            "- secret character varying DEFAULT ''::character varying NOT NULL",
+            "+ secret character varying NOT NULL",
+            "- updated_at timestamp without time zone NOT NULL",
+            "+ updated_at timestamp with time zone NOT NULL",
+            "+ INDEX USING btree (url varchar_pattern_ops)"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE SEQUENCE public.accounts_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collection_items_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collections_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE MATERIALIZED VIEW public.instances AS WITH domain_counts(domain, accounts_count) AS (SELECT accounts.domain, count(*) AS accounts_count FROM public.accounts WHERE (accounts.domain IS NOT NULL) GROUP BY accounts.domain) SELECT domain_counts.domain, domain_counts.accounts_count FROM domain_counts UNION SELECT domain_blocks.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_blocks LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text))) UNION SELECT domain_allows.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_allows LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text))) WITH NO DATA",
+        "CREATE SEQUENCE public.media_attachments_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.notification_requests_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.quotes_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.statuses_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE VIEW public.user_ips AS SELECT user_id, ip, max(used_at) AS used_at FROM (SELECT users.id AS user_id, users.sign_up_ip AS ip, users.created_at AS used_at FROM public.users WHERE (users.sign_up_ip IS NOT NULL) UNION ALL SELECT session_activations.user_id, session_activations.ip, session_activations.updated_at FROM public.session_activations UNION ALL SELECT login_activities.user_id, login_activities.ip, login_activities.created_at FROM public.login_activities WHERE (login_activities.success = true)) t0 GROUP BY user_id, ip"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:122"
+    },
+    "gorm": {
+      "status": "error",
+      "error": "ERROR: multiple default values specified for column \"id\" of table \"accounts\" (SQLSTATE 42601)"
+    },
+    "sea-orm": {
+      "status": "error",
+      "error": "\"invites\": Execution Error: error returned from database: relation \"users\" does not exist"
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "error",
+      "error": "Property 'AccountConversations.ParticipantAccountIds' cannot be used as a key because it has type 'List<long>' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'List<long>' with a type that can be compared."
+    },
+    "exposed": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.account_conversations",
+          "lines": [
+            "- participant_account_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ participant_account_ids bigint[] DEFAULT ARRAY[]",
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.account_stats",
+          "lines": [
+            "- INDEX USING btree (last_status_at DESC NULLS LAST, account_id)",
+            "+ INDEX USING btree (last_status_at DESC, account_id)"
+          ]
+        },
+        {
+          "name": "public.accounts",
+          "lines": [
+            "- INDEX USING btree (url text_pattern_ops) WHERE (url IS NOT NULL)",
+            "- UNIQUE INDEX USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text))",
+            "- INDEX USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\"))))",
+            "+ INDEX USING btree (url) WHERE (url IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.conversations",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.custom_filters",
+          "lines": [
+            "- context character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ context character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.global_follow_recommendations",
+          "lines": [
+            "- reason character varying[] NOT NULL",
+            "+ reason character varying[]"
+          ]
+        },
+        {
+          "name": "public.instances",
+          "only": "source"
+        },
+        {
+          "name": "public.media_attachments",
+          "lines": [
+            "- UNIQUE INDEX USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (shortcode) WHERE (shortcode IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.oauth_access_tokens",
+          "lines": [
+            "- UNIQUE INDEX USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (refresh_token) WHERE (refresh_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.polls",
+          "lines": [
+            "- cached_tallies bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ cached_tallies bigint[] DEFAULT ARRAY[]",
+            "- options character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ options character varying[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.reports",
+          "lines": [
+            "- status_ids bigint[] DEFAULT ARRAY[] NOT NULL",
+            "+ status_ids bigint[] DEFAULT ARRAY[]"
+          ]
+        },
+        {
+          "name": "public.statuses",
+          "lines": [
+            "- UNIQUE INDEX USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (uri) WHERE (uri IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.tags",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((name)::text) text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.username_blocks",
+          "lines": [
+            "- UNIQUE INDEX USING btree (lower((username)::text))"
+          ]
+        },
+        {
+          "name": "public.users",
+          "lines": [
+            "- UNIQUE INDEX USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL)",
+            "+ UNIQUE INDEX USING btree (reset_password_token) WHERE (reset_password_token IS NOT NULL)"
+          ]
+        },
+        {
+          "name": "public.webhooks",
+          "lines": [
+            "- events character varying[] DEFAULT ARRAY[] NOT NULL",
+            "+ events character varying[] DEFAULT ARRAY[]"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE SEQUENCE public.accounts_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collection_items_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.collections_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE MATERIALIZED VIEW public.instances AS WITH domain_counts(domain, accounts_count) AS (SELECT accounts.domain, count(*) AS accounts_count FROM public.accounts WHERE (accounts.domain IS NOT NULL) GROUP BY accounts.domain) SELECT domain_counts.domain, domain_counts.accounts_count FROM domain_counts UNION SELECT domain_blocks.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_blocks LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text))) UNION SELECT domain_allows.domain, COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count FROM (public.domain_allows LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text))) WITH NO DATA",
+        "CREATE SEQUENCE public.media_attachments_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.notification_requests_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.quotes_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE SEQUENCE public.statuses_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1",
+        "CREATE VIEW public.user_ips AS SELECT user_id, ip, max(used_at) AS used_at FROM (SELECT users.id AS user_id, users.sign_up_ip AS ip, users.created_at AS used_at FROM public.users WHERE (users.sign_up_ip IS NOT NULL) UNION ALL SELECT session_activations.user_id, session_activations.ip, session_activations.updated_at FROM public.session_activations UNION ALL SELECT login_activities.user_id, login_activities.ip, login_activities.created_at FROM public.login_activities WHERE (login_activities.success = true)) t0 GROUP BY user_id, ip"
+      ],
+      "onlyHere": [],
+      "prisma": "names"
+    }
+  },
+  "hekireki": "0.55.0",
+  "checked_at": "2026-11-25T20:07:06.173Z"
+}

@@ -1,0 +1,1929 @@
+--- source.sql
++++ sql/exposed.sql
+@@ -17,8 +17,8 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     acct character varying DEFAULT ''::character varying NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying DEFAULT ''::character varying NOT NULL
+ );
+ 
+@@ -37,8 +37,8 @@
+     conversation_id bigint NOT NULL,
+     last_status_id bigint,
+     lock_version integer DEFAULT 0 NOT NULL,
+-    participant_account_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+-    status_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
++    participant_account_ids bigint[] DEFAULT '{}'::bigint[],
++    status_ids bigint[] DEFAULT '{}'::bigint[],
+     unread boolean DEFAULT false NOT NULL
+ );
+ 
+@@ -54,8 +54,8 @@
+ CREATE TABLE public.account_deletion_requests (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    created_at timestamp(6) without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_deletion_requests_id_seq
+@@ -70,9 +70,9 @@
+ CREATE TABLE public.account_domain_blocks (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     domain character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_domain_blocks_id_seq
+@@ -88,10 +88,10 @@
+     id bigint NOT NULL,
+     account_id bigint,
+     acct character varying DEFAULT ''::character varying NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     followers_count bigint DEFAULT 0 NOT NULL,
+     target_account_id bigint,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_migrations_id_seq
+@@ -107,9 +107,9 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     content text NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_moderation_notes_id_seq
+@@ -125,9 +125,9 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     comment text NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_notes_id_seq
+@@ -142,9 +142,9 @@
+ CREATE TABLE public.account_pins (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_pins_id_seq
+@@ -197,12 +197,12 @@
+ CREATE TABLE public.account_stats (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     followers_count bigint DEFAULT 0 NOT NULL,
+     following_count bigint DEFAULT 0 NOT NULL,
+-    last_status_at timestamp without time zone,
++    last_status_at timestamp(6) without time zone,
+     statuses_count bigint DEFAULT 0 NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_stats_id_seq
+@@ -257,10 +257,10 @@
+ 
+ CREATE TABLE public.account_warning_presets (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     text text DEFAULT ''::text NOT NULL,
+     title character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     action_category character varying DEFAULT 'all_actions'::character varying NOT NULL
+ );
+ 
+@@ -277,13 +277,13 @@
+     id bigint NOT NULL,
+     account_id bigint,
+     action integer DEFAULT 0 NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    overruled_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    overruled_at timestamp(6) without time zone,
+     report_id bigint,
+     status_ids character varying[],
+     target_account_id bigint,
+     text text DEFAULT ''::text NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.account_warnings_id_seq
+@@ -306,9 +306,9 @@
+     avatar_file_size integer,
+     avatar_remote_url character varying,
+     avatar_storage_schema_version integer,
+-    avatar_updated_at timestamp without time zone,
++    avatar_updated_at timestamp(6) without time zone,
+     collections_url character varying,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     discoverable boolean,
+     display_name character varying DEFAULT ''::character varying NOT NULL,
+     domain character varying,
+@@ -323,12 +323,12 @@
+     header_file_size integer,
+     header_remote_url character varying DEFAULT ''::character varying NOT NULL,
+     header_storage_schema_version integer,
+-    header_updated_at timestamp without time zone,
++    header_updated_at timestamp(6) without time zone,
+     hide_collections boolean,
+     id_scheme integer DEFAULT 1,
+     inbox_url character varying DEFAULT ''::character varying NOT NULL,
+     indexable boolean DEFAULT false NOT NULL,
+-    last_webfingered_at timestamp without time zone,
++    last_webfingered_at timestamp(6) without time zone,
+     locked boolean DEFAULT false NOT NULL,
+     memorial boolean DEFAULT false NOT NULL,
+     moved_to_account_id bigint,
+@@ -337,30 +337,23 @@
+     protocol integer DEFAULT 0 NOT NULL,
+     public_key text DEFAULT ''::text NOT NULL,
+     requested_deletion_at timestamp(6) without time zone,
+-    requested_review_at timestamp without time zone,
+-    reviewed_at timestamp without time zone,
+-    sensitized_at timestamp without time zone,
++    requested_review_at timestamp(6) without time zone,
++    reviewed_at timestamp(6) without time zone,
++    sensitized_at timestamp(6) without time zone,
+     shared_inbox_url character varying DEFAULT ''::character varying NOT NULL,
+     show_featured boolean DEFAULT true NOT NULL,
+     show_media boolean DEFAULT true NOT NULL,
+     show_media_replies boolean DEFAULT true NOT NULL,
+-    silenced_at timestamp without time zone,
+-    suspended_at timestamp without time zone,
++    silenced_at timestamp(6) without time zone,
++    suspended_at timestamp(6) without time zone,
+     suspension_origin integer,
+     trendable boolean,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying,
+     url character varying,
+     username character varying DEFAULT ''::character varying NOT NULL
+ );
+ 
+-CREATE SEQUENCE public.accounts_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.accounts_tags (
+     account_id bigint NOT NULL,
+     tag_id bigint NOT NULL
+@@ -370,7 +363,7 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     action character varying DEFAULT ''::character varying NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     human_identifier character varying,
+     moderation_subscription_id bigint,
+     permalink character varying,
+@@ -379,7 +372,7 @@
+     route_param character varying,
+     target_id bigint,
+     target_type character varying,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.admin_action_logs_id_seq
+@@ -416,8 +409,8 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     announcement_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    created_at timestamp(6) without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.announcement_mutes_id_seq
+@@ -433,10 +426,10 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     announcement_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     custom_emoji_id bigint,
+     name character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.announcement_reactions_id_seq
+@@ -451,16 +444,16 @@
+ CREATE TABLE public.announcements (
+     id bigint NOT NULL,
+     all_day boolean DEFAULT false NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    ends_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    ends_at timestamp(6) without time zone,
+     notification_sent_at timestamp(6) without time zone,
+     published boolean DEFAULT false NOT NULL,
+-    published_at timestamp without time zone,
+-    scheduled_at timestamp without time zone,
+-    starts_at timestamp without time zone,
++    published_at timestamp(6) without time zone,
++    scheduled_at timestamp(6) without time zone,
++    starts_at timestamp(6) without time zone,
+     status_ids bigint[],
+     text text DEFAULT ''::text NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.announcements_id_seq
+@@ -492,10 +485,10 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     account_warning_id bigint NOT NULL,
+-    approved_at timestamp without time zone,
++    approved_at timestamp(6) without time zone,
+     approved_by_account_id bigint,
+     created_at timestamp(6) without time zone NOT NULL,
+-    rejected_at timestamp without time zone,
++    rejected_at timestamp(6) without time zone,
+     rejected_by_account_id bigint,
+     text text DEFAULT ''::text NOT NULL,
+     updated_at timestamp(6) without time zone NOT NULL
+@@ -519,13 +512,13 @@
+ 
+ CREATE TABLE public.backups (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     dump_content_type character varying,
+     dump_file_name character varying,
+     dump_file_size bigint,
+-    dump_updated_at timestamp without time zone,
++    dump_updated_at timestamp(6) without time zone,
+     processed boolean DEFAULT false NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint
+ );
+ 
+@@ -541,9 +534,9 @@
+ CREATE TABLE public.blocks (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -559,9 +552,9 @@
+ CREATE TABLE public.bookmarks (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     status_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.bookmarks_id_seq
+@@ -594,7 +587,7 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     created_at timestamp(6) without time zone NOT NULL,
+-    finished_at timestamp without time zone,
++    finished_at timestamp(6) without time zone,
+     imported_items integer DEFAULT 0 NOT NULL,
+     likely_mismatched boolean DEFAULT false NOT NULL,
+     missing_status boolean DEFAULT false NOT NULL,
+@@ -648,13 +641,6 @@
+     uri character varying
+ );
+ 
+-CREATE SEQUENCE public.collection_items_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.collection_reports (
+     id bigint NOT NULL,
+     collection_id bigint NOT NULL,
+@@ -691,13 +677,6 @@
+     url character varying
+ );
+ 
+-CREATE SEQUENCE public.collections_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.conversation_mutes (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+@@ -715,10 +694,10 @@
+ 
+ CREATE TABLE public.conversations (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     parent_account_id bigint,
+     parent_status_id bigint,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -733,10 +712,10 @@
+ 
+ CREATE TABLE public.custom_emoji_categories (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     featured_emoji_id bigint,
+     name character varying,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.custom_emoji_categories_id_seq
+@@ -751,7 +730,7 @@
+ CREATE TABLE public.custom_emojis (
+     id bigint NOT NULL,
+     category_id bigint,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     disabled boolean DEFAULT false NOT NULL,
+     domain character varying,
+     image_content_type character varying,
+@@ -759,9 +738,9 @@
+     image_file_size integer,
+     image_remote_url character varying,
+     image_storage_schema_version integer,
+-    image_updated_at timestamp without time zone,
++    image_updated_at timestamp(6) without time zone,
+     shortcode character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying,
+     visible_in_picker boolean DEFAULT true NOT NULL
+ );
+@@ -814,11 +793,11 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     action integer DEFAULT 0 NOT NULL,
+-    context character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    expires_at timestamp without time zone,
++    context character varying[] DEFAULT '{}'::character varying[],
++    created_at timestamp(6) without time zone NOT NULL,
++    expires_at timestamp(6) without time zone,
+     phrase text DEFAULT ''::text NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.custom_filters_id_seq
+@@ -832,10 +811,10 @@
+ 
+ CREATE TABLE public.domain_allows (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     domain character varying DEFAULT ''::character varying NOT NULL,
+     moderation_subscription_id bigint,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.domain_allows_id_seq
+@@ -849,7 +828,7 @@
+ 
+ CREATE TABLE public.domain_blocks (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     domain character varying DEFAULT ''::character varying NOT NULL,
+     moderation_subscription_id bigint,
+     obfuscate boolean DEFAULT false NOT NULL,
+@@ -858,7 +837,7 @@
+     reject_media boolean DEFAULT false NOT NULL,
+     reject_reports boolean DEFAULT false NOT NULL,
+     severity integer DEFAULT 0,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.domain_blocks_id_seq
+@@ -873,10 +852,10 @@
+ CREATE TABLE public.email_domain_blocks (
+     id bigint NOT NULL,
+     allow_with_approval boolean DEFAULT false NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     domain character varying DEFAULT ''::character varying NOT NULL,
+     parent_id bigint,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.email_domain_blocks_id_seq
+@@ -1034,9 +1013,9 @@
+ CREATE TABLE public.favourites (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     status_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.favourites_id_seq
+@@ -1051,12 +1030,12 @@
+ CREATE TABLE public.featured_tags (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    last_status_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    last_status_at timestamp(6) without time zone,
+     name character varying,
+     statuses_count bigint DEFAULT 0 NOT NULL,
+     tag_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.featured_tags_id_seq
+@@ -1104,12 +1083,12 @@
+ CREATE TABLE public.follow_requests (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     languages character varying[],
+     notify boolean DEFAULT false NOT NULL,
+     show_reblogs boolean DEFAULT true NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -1125,12 +1104,12 @@
+ CREATE TABLE public.follows (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     languages character varying[],
+     notify boolean DEFAULT false NOT NULL,
+     show_reblogs boolean DEFAULT true NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -1167,7 +1146,7 @@
+ CREATE TABLE public.global_follow_recommendations (
+     account_id bigint NOT NULL,
+     rank numeric NOT NULL,
+-    reason character varying[] NOT NULL,
++    reason character varying[],
+     stale boolean DEFAULT false NOT NULL
+ );
+ 
+@@ -1182,10 +1161,10 @@
+ 
+ CREATE TABLE public.identities (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     provider character varying DEFAULT ''::character varying NOT NULL,
+     uid character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint
+ );
+ 
+@@ -1216,38 +1195,15 @@
+ 
+ ALTER SEQUENCE public.instance_moderation_notes_id_seq OWNED BY public.instance_moderation_notes.id;
+ 
+-CREATE MATERIALIZED VIEW public.instances AS
+- WITH domain_counts(domain, accounts_count) AS (
+-         SELECT accounts.domain,
+-            count(*) AS accounts_count
+-           FROM public.accounts
+-          WHERE (accounts.domain IS NOT NULL)
+-          GROUP BY accounts.domain
+-        )
+- SELECT domain_counts.domain,
+-    domain_counts.accounts_count
+-   FROM domain_counts
+-UNION
+- SELECT domain_blocks.domain,
+-    COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count
+-   FROM (public.domain_blocks
+-     LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_blocks.domain)::text)))
+-UNION
+- SELECT domain_allows.domain,
+-    COALESCE(domain_counts.accounts_count, (0)::bigint) AS accounts_count
+-   FROM (public.domain_allows
+-     LEFT JOIN domain_counts ON (((domain_counts.domain)::text = (domain_allows.domain)::text)))
+-  WITH NO DATA;
+-
+ CREATE TABLE public.invites (
+     id bigint NOT NULL,
+     autofollow boolean DEFAULT false NOT NULL,
+     code character varying DEFAULT ''::character varying NOT NULL,
+     comment text,
+-    created_at timestamp without time zone NOT NULL,
+-    expires_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    expires_at timestamp(6) without time zone,
+     max_uses integer,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint NOT NULL,
+     uses integer DEFAULT 0 NOT NULL
+ );
+@@ -1264,11 +1220,11 @@
+ CREATE TABLE public.ip_blocks (
+     id bigint NOT NULL,
+     comment text DEFAULT ''::text NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    expires_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    expires_at timestamp(6) without time zone,
+     ip inet DEFAULT '0.0.0.0'::inet NOT NULL,
+     severity integer DEFAULT 0 NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.ip_blocks_id_seq
+@@ -1323,11 +1279,11 @@
+ CREATE TABLE public.lists (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     exclusive boolean DEFAULT false NOT NULL,
+     replies_policy integer DEFAULT 0 NOT NULL,
+     title character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.lists_id_seq
+@@ -1342,7 +1298,7 @@
+ CREATE TABLE public.login_activities (
+     id bigint NOT NULL,
+     authentication_method character varying,
+-    created_at timestamp without time zone,
++    created_at timestamp(6) without time zone,
+     failure_reason character varying,
+     ip inet,
+     provider character varying,
+@@ -1362,11 +1318,11 @@
+ 
+ CREATE TABLE public.markers (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     last_read_id bigint DEFAULT 0 NOT NULL,
+     lock_version integer DEFAULT 0 NOT NULL,
+     timeline character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint NOT NULL
+ );
+ 
+@@ -1383,14 +1339,14 @@
+     id bigint DEFAULT public.timestamp_id('media_attachments'::text) NOT NULL,
+     account_id bigint,
+     blurhash character varying,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     description text,
+     file_content_type character varying,
+     file_file_name character varying,
+     file_file_size integer,
+     file_meta json,
+     file_storage_schema_version integer,
+-    file_updated_at timestamp without time zone,
++    file_updated_at timestamp(6) without time zone,
+     processing integer,
+     remote_url character varying DEFAULT ''::character varying NOT NULL,
+     scheduled_status_id bigint,
+@@ -1401,25 +1357,18 @@
+     thumbnail_file_size integer,
+     thumbnail_remote_url character varying,
+     thumbnail_storage_schema_version integer,
+-    thumbnail_updated_at timestamp without time zone,
++    thumbnail_updated_at timestamp(6) without time zone,
+     type integer DEFAULT 0 NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+-CREATE SEQUENCE public.media_attachments_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.mentions (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     silent boolean DEFAULT false NOT NULL,
+     status_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.mentions_id_seq
+@@ -1498,11 +1447,11 @@
+ CREATE TABLE public.mutes (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    expires_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    expires_at timestamp(6) without time zone,
+     hide_notifications boolean DEFAULT true NOT NULL,
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.mutes_id_seq
+@@ -1563,24 +1512,17 @@
+     updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+-CREATE SEQUENCE public.notification_requests_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.notifications (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     activity_id bigint NOT NULL,
+     activity_type character varying NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     filtered boolean DEFAULT false NOT NULL,
+     from_account_id bigint NOT NULL,
+     group_key character varying,
+     type character varying,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.notifications_id_seq
+@@ -1597,11 +1539,11 @@
+     application_id bigint NOT NULL,
+     code_challenge character varying,
+     code_challenge_method character varying,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     expires_in integer NOT NULL,
+     redirect_uri text NOT NULL,
+     resource_owner_id bigint NOT NULL,
+-    revoked_at timestamp without time zone,
++    revoked_at timestamp(6) without time zone,
+     scopes character varying,
+     token character varying NOT NULL
+ );
+@@ -1618,13 +1560,13 @@
+ CREATE TABLE public.oauth_access_tokens (
+     id bigint NOT NULL,
+     application_id bigint,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     expires_in integer,
+-    last_used_at timestamp without time zone,
++    last_used_at timestamp(6) without time zone,
+     last_used_ip inet,
+     refresh_token character varying,
+     resource_owner_id bigint,
+-    revoked_at timestamp without time zone,
++    revoked_at timestamp(6) without time zone,
+     scopes character varying,
+     token character varying NOT NULL
+ );
+@@ -1641,7 +1583,7 @@
+ CREATE TABLE public.oauth_applications (
+     id bigint NOT NULL,
+     confidential boolean DEFAULT true NOT NULL,
+-    created_at timestamp without time zone,
++    created_at timestamp(6) without time zone,
+     name character varying NOT NULL,
+     owner_id bigint,
+     owner_type character varying,
+@@ -1650,7 +1592,7 @@
+     secret character varying NOT NULL,
+     superapp boolean DEFAULT false NOT NULL,
+     uid character varying NOT NULL,
+-    updated_at timestamp without time zone,
++    updated_at timestamp(6) without time zone,
+     website character varying
+ );
+ 
+@@ -1665,7 +1607,7 @@
+ 
+ CREATE TABLE public.pghero_space_stats (
+     id bigint NOT NULL,
+-    captured_at timestamp without time zone,
++    captured_at timestamp(6) without time zone,
+     database text,
+     relation text,
+     schema text,
+@@ -1685,9 +1627,9 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     choice integer DEFAULT 0 NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     poll_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -1703,16 +1645,16 @@
+ CREATE TABLE public.polls (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    cached_tallies bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    expires_at timestamp without time zone,
++    cached_tallies bigint[] DEFAULT '{}'::bigint[],
++    created_at timestamp(6) without time zone NOT NULL,
++    expires_at timestamp(6) without time zone,
+     hide_totals boolean DEFAULT false NOT NULL,
+-    last_fetched_at timestamp without time zone,
++    last_fetched_at timestamp(6) without time zone,
+     lock_version integer DEFAULT 0 NOT NULL,
+     multiple boolean DEFAULT false NOT NULL,
+-    options character varying[] DEFAULT '{}'::character varying[] NOT NULL,
++    options character varying[] DEFAULT '{}'::character varying[],
+     status_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     voters_count bigint,
+     votes_count bigint DEFAULT 0 NOT NULL
+ );
+@@ -1733,9 +1675,9 @@
+     icon_content_type character varying,
+     icon_file_name character varying,
+     icon_file_size bigint,
+-    icon_updated_at timestamp without time zone,
+-    requested_review_at timestamp without time zone,
+-    reviewed_at timestamp without time zone,
++    icon_updated_at timestamp(6) without time zone,
++    requested_review_at timestamp(6) without time zone,
++    reviewed_at timestamp(6) without time zone,
+     trendable boolean,
+     updated_at timestamp(6) without time zone NOT NULL
+ );
+@@ -1773,7 +1715,7 @@
+     author_name character varying DEFAULT ''::character varying NOT NULL,
+     author_url character varying DEFAULT ''::character varying NOT NULL,
+     blurhash character varying,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     description character varying DEFAULT ''::character varying NOT NULL,
+     embed_url character varying DEFAULT ''::character varying NOT NULL,
+     height integer DEFAULT 0 NOT NULL,
+@@ -1783,11 +1725,11 @@
+     image_file_name character varying,
+     image_file_size integer,
+     image_storage_schema_version integer,
+-    image_updated_at timestamp without time zone,
++    image_updated_at timestamp(6) without time zone,
+     language character varying,
+     link_type integer,
+     max_score double precision,
+-    max_score_at timestamp without time zone,
++    max_score_at timestamp(6) without time zone,
+     provider_name character varying DEFAULT ''::character varying NOT NULL,
+     provider_url character varying DEFAULT ''::character varying NOT NULL,
+     published_at timestamp(6) without time zone,
+@@ -1795,7 +1737,7 @@
+     trendable boolean,
+     type integer DEFAULT 0 NOT NULL,
+     unverified_author_account_id bigint,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     url character varying DEFAULT ''::character varying NOT NULL,
+     width integer DEFAULT 0 NOT NULL
+ );
+@@ -1829,13 +1771,6 @@
+     updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+-CREATE SEQUENCE public.quotes_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.relationship_severance_events (
+     id bigint NOT NULL,
+     created_at timestamp(6) without time zone NOT NULL,
+@@ -1856,11 +1791,11 @@
+ 
+ CREATE TABLE public.relays (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     follow_activity_id character varying,
+     inbox_url character varying DEFAULT ''::character varying NOT NULL,
+     state integer DEFAULT 0 NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.relays_id_seq
+@@ -1876,9 +1811,9 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     content text NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     report_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.report_notes_id_seq
+@@ -1893,18 +1828,18 @@
+ CREATE TABLE public.reports (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    action_taken_at timestamp without time zone,
++    action_taken_at timestamp(6) without time zone,
+     action_taken_by_account_id bigint,
+     application_id bigint,
+     assigned_account_id bigint,
+     category integer DEFAULT 0 NOT NULL,
+     comment text DEFAULT ''::text NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     forwarded boolean,
+     rule_ids bigint[],
+-    status_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
++    status_ids bigint[] DEFAULT '{}'::bigint[],
+     target_account_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying
+ );
+ 
+@@ -1938,12 +1873,12 @@
+ 
+ CREATE TABLE public.rules (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
+-    deleted_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    deleted_at timestamp(6) without time zone,
+     hint text DEFAULT ''::text NOT NULL,
+     priority integer DEFAULT 0 NOT NULL,
+     text text DEFAULT ''::text NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.rules_id_seq
+@@ -1959,7 +1894,7 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     params jsonb,
+-    scheduled_at timestamp without time zone
++    scheduled_at timestamp(6) without time zone
+ );
+ 
+ CREATE SEQUENCE public.scheduled_statuses_id_seq
+@@ -1978,10 +1913,10 @@
+ CREATE TABLE public.session_activations (
+     id bigint NOT NULL,
+     access_token_id bigint,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     ip inet,
+     session_id character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_agent character varying DEFAULT ''::character varying NOT NULL,
+     user_id bigint NOT NULL,
+     web_push_subscription_id bigint
+@@ -1998,8 +1933,8 @@
+ 
+ CREATE TABLE public.settings (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone,
+-    updated_at timestamp without time zone,
++    created_at timestamp(6) without time zone,
++    updated_at timestamp(6) without time zone,
+     value text,
+     var character varying NOT NULL
+ );
+@@ -2038,13 +1973,13 @@
+ CREATE TABLE public.site_uploads (
+     id bigint NOT NULL,
+     blurhash character varying,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     file_content_type character varying,
+     file_file_name character varying,
+     file_file_size integer,
+-    file_updated_at timestamp without time zone,
++    file_updated_at timestamp(6) without time zone,
+     meta json,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     var character varying DEFAULT ''::character varying NOT NULL
+ );
+ 
+@@ -2122,9 +2057,9 @@
+ CREATE TABLE public.status_pins (
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     status_id bigint NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.status_pins_id_seq
+@@ -2138,7 +2073,7 @@
+ 
+ CREATE TABLE public.status_stats (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     favourites_count bigint DEFAULT 0 NOT NULL,
+     quotes_count bigint DEFAULT 0 NOT NULL,
+     reblogs_count bigint DEFAULT 0 NOT NULL,
+@@ -2146,7 +2081,7 @@
+     status_id bigint NOT NULL,
+     untrusted_favourites_count bigint,
+     untrusted_reblogs_count bigint,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.status_stats_id_seq
+@@ -2182,9 +2117,9 @@
+     account_id bigint NOT NULL,
+     application_id bigint,
+     conversation_id bigint,
+-    created_at timestamp without time zone NOT NULL,
+-    deleted_at timestamp without time zone,
+-    edited_at timestamp without time zone,
++    created_at timestamp(6) without time zone NOT NULL,
++    deleted_at timestamp(6) without time zone,
++    edited_at timestamp(6) without time zone,
+     fetched_replies_at timestamp(6) without time zone,
+     in_reply_to_account_id bigint,
+     in_reply_to_id bigint,
+@@ -2199,19 +2134,12 @@
+     spoiler_text text DEFAULT ''::text NOT NULL,
+     text text DEFAULT ''::text NOT NULL,
+     trendable boolean,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying,
+     url character varying,
+     visibility integer DEFAULT 0 NOT NULL
+ );
+ 
+-CREATE SEQUENCE public.statuses_id_seq
+-    START WITH 1
+-    INCREMENT BY 1
+-    NO MINVALUE
+-    NO MAXVALUE
+-    CACHE 1;
+-
+ CREATE TABLE public.statuses_tags (
+     status_id bigint NOT NULL,
+     tag_id bigint NOT NULL
+@@ -2274,17 +2202,17 @@
+ 
+ CREATE TABLE public.tags (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     display_name character varying,
+-    last_status_at timestamp without time zone,
++    last_status_at timestamp(6) without time zone,
+     listable boolean,
+     max_score double precision,
+-    max_score_at timestamp without time zone,
++    max_score_at timestamp(6) without time zone,
+     name character varying DEFAULT ''::character varying NOT NULL,
+-    requested_review_at timestamp without time zone,
+-    reviewed_at timestamp without time zone,
++    requested_review_at timestamp(6) without time zone,
++    reviewed_at timestamp(6) without time zone,
+     trendable boolean,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     usable boolean
+ );
+ 
+@@ -2321,8 +2249,8 @@
+     id bigint NOT NULL,
+     account_id bigint NOT NULL,
+     by_moderator boolean,
+-    created_at timestamp without time zone NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     uri character varying NOT NULL
+ );
+ 
+@@ -2337,9 +2265,9 @@
+ 
+ CREATE TABLE public.unavailable_domains (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     domain character varying DEFAULT ''::character varying NOT NULL,
+-    updated_at timestamp without time zone NOT NULL
++    updated_at timestamp(6) without time zone NOT NULL
+ );
+ 
+ CREATE SEQUENCE public.unavailable_domains_id_seq
+@@ -2353,9 +2281,9 @@
+ 
+ CREATE TABLE public.user_invite_requests (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     text text,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint NOT NULL
+ );
+ 
+@@ -2368,67 +2296,6 @@
+ 
+ ALTER SEQUENCE public.user_invite_requests_id_seq OWNED BY public.user_invite_requests.id;
+ 
+-CREATE TABLE public.users (
+-    id bigint NOT NULL,
+-    account_id bigint NOT NULL,
+-    age_verified_at timestamp(6) without time zone,
+-    approved boolean DEFAULT true NOT NULL,
+-    chosen_languages character varying[],
+-    confirmation_sent_at timestamp without time zone,
+-    confirmation_token character varying,
+-    confirmed_at timestamp without time zone,
+-    consumed_timestep integer,
+-    created_at timestamp without time zone NOT NULL,
+-    created_by_application_id bigint,
+-    current_sign_in_at timestamp without time zone,
+-    disabled boolean DEFAULT false NOT NULL,
+-    email character varying DEFAULT ''::character varying NOT NULL,
+-    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
+-    invite_id bigint,
+-    last_emailed_at timestamp without time zone,
+-    last_sign_in_at timestamp without time zone,
+-    locale character varying,
+-    otp_backup_codes character varying[],
+-    otp_required_for_login boolean DEFAULT false NOT NULL,
+-    otp_secret character varying,
+-    require_tos_interstitial boolean DEFAULT false NOT NULL,
+-    reset_password_sent_at timestamp without time zone,
+-    reset_password_token character varying,
+-    role_id bigint,
+-    settings text,
+-    sign_in_count integer DEFAULT 0 NOT NULL,
+-    sign_in_token character varying,
+-    sign_in_token_sent_at timestamp without time zone,
+-    sign_up_ip inet,
+-    skip_sign_in_token boolean,
+-    time_zone character varying,
+-    unconfirmed_email character varying,
+-    updated_at timestamp without time zone NOT NULL,
+-    webauthn_id character varying
+-);
+-
+-CREATE VIEW public.user_ips AS
+- SELECT user_id,
+-    ip,
+-    max(used_at) AS used_at
+-   FROM ( SELECT users.id AS user_id,
+-            users.sign_up_ip AS ip,
+-            users.created_at AS used_at
+-           FROM public.users
+-          WHERE (users.sign_up_ip IS NOT NULL)
+-        UNION ALL
+-         SELECT session_activations.user_id,
+-            session_activations.ip,
+-            session_activations.updated_at
+-           FROM public.session_activations
+-        UNION ALL
+-         SELECT login_activities.user_id,
+-            login_activities.ip,
+-            login_activities.created_at
+-           FROM public.login_activities
+-          WHERE (login_activities.success = true)) t0
+-  GROUP BY user_id, ip;
+-
+ CREATE TABLE public.user_roles (
+     id bigint NOT NULL,
+     collection_limit integer DEFAULT 10 NOT NULL,
+@@ -2470,6 +2337,45 @@
+ 
+ ALTER SEQUENCE public.username_blocks_id_seq OWNED BY public.username_blocks.id;
+ 
++CREATE TABLE public.users (
++    id bigint NOT NULL,
++    account_id bigint NOT NULL,
++    age_verified_at timestamp(6) without time zone,
++    approved boolean DEFAULT true NOT NULL,
++    chosen_languages character varying[],
++    confirmation_sent_at timestamp(6) without time zone,
++    confirmation_token character varying,
++    confirmed_at timestamp(6) without time zone,
++    consumed_timestep integer,
++    created_at timestamp(6) without time zone NOT NULL,
++    created_by_application_id bigint,
++    current_sign_in_at timestamp(6) without time zone,
++    disabled boolean DEFAULT false NOT NULL,
++    email character varying DEFAULT ''::character varying NOT NULL,
++    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
++    invite_id bigint,
++    last_emailed_at timestamp(6) without time zone,
++    last_sign_in_at timestamp(6) without time zone,
++    locale character varying,
++    otp_backup_codes character varying[],
++    otp_required_for_login boolean DEFAULT false NOT NULL,
++    otp_secret character varying,
++    require_tos_interstitial boolean DEFAULT false NOT NULL,
++    reset_password_sent_at timestamp(6) without time zone,
++    reset_password_token character varying,
++    role_id bigint,
++    settings text,
++    sign_in_count integer DEFAULT 0 NOT NULL,
++    sign_in_token character varying,
++    sign_in_token_sent_at timestamp(6) without time zone,
++    sign_up_ip inet,
++    skip_sign_in_token boolean,
++    time_zone character varying,
++    unconfirmed_email character varying,
++    updated_at timestamp(6) without time zone NOT NULL,
++    webauthn_id character varying
++);
++
+ CREATE SEQUENCE public.users_id_seq
+     START WITH 1
+     INCREMENT BY 1
+@@ -2482,13 +2388,13 @@
+ CREATE TABLE public.web_push_subscriptions (
+     id bigint NOT NULL,
+     access_token_id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     data json,
+     endpoint character varying NOT NULL,
+     key_auth character varying NOT NULL,
+     key_p256dh character varying NOT NULL,
+     standard boolean DEFAULT false NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint NOT NULL
+ );
+ 
+@@ -2503,9 +2409,9 @@
+ 
+ CREATE TABLE public.web_settings (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     data json,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint NOT NULL
+ );
+ 
+@@ -2520,12 +2426,12 @@
+ 
+ CREATE TABLE public.webauthn_credentials (
+     id bigint NOT NULL,
+-    created_at timestamp without time zone NOT NULL,
++    created_at timestamp(6) without time zone NOT NULL,
+     external_id character varying NOT NULL,
+     nickname character varying NOT NULL,
+     public_key character varying NOT NULL,
+     sign_count bigint DEFAULT 0 NOT NULL,
+-    updated_at timestamp without time zone NOT NULL,
++    updated_at timestamp(6) without time zone NOT NULL,
+     user_id bigint
+ );
+ 
+@@ -2542,7 +2448,7 @@
+     id bigint NOT NULL,
+     created_at timestamp(6) without time zone NOT NULL,
+     enabled boolean DEFAULT true NOT NULL,
+-    events character varying[] DEFAULT '{}'::character varying[] NOT NULL,
++    events character varying[] DEFAULT '{}'::character varying[],
+     secret character varying DEFAULT ''::character varying NOT NULL,
+     template text,
+     updated_at timestamp(6) without time zone NOT NULL,
+@@ -2962,6 +2868,228 @@
+ ALTER TABLE ONLY public.identities
+     ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
+ 
++ALTER TABLE ONLY public.account_relationship_severance_events
++    ADD CONSTRAINT idx_on_account_id_relationship_severance_event_id_7bd82bf20e UNIQUE (account_id, relationship_severance_event_id);
++
++ALTER TABLE ONLY public.follow_recommendation_mutes
++    ADD CONSTRAINT idx_on_account_id_target_account_id_a8c8ddf44e UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.fasp_capabilities
++    ADD CONSTRAINT idx_on_fasp_provider_id_name_version_68e2668987 UNIQUE (fasp_provider_id, name, version);
++
++ALTER TABLE ONLY public.moderation_suggestions
++    ADD CONSTRAINT idx_on_target_type_target_key_action_4f6ab01ebc UNIQUE (target_type, target_key, action);
++
++ALTER TABLE ONLY public.moderation_subscription_advisories
++    ADD CONSTRAINT idx_on_target_type_target_key_moderation_subscripti_a3f09c29b9 UNIQUE (target_type, target_key, moderation_subscription_id);
++
++ALTER TABLE ONLY public.annual_report_statuses_per_account_counts
++    ADD CONSTRAINT idx_on_year_account_id_ff3e167cef UNIQUE (year, account_id);
++
++ALTER TABLE ONLY public.account_aliases
++    ADD CONSTRAINT index_account_aliases_on_account_id_and_uri UNIQUE (account_id, uri);
++
++ALTER TABLE ONLY public.account_domain_blocks
++    ADD CONSTRAINT index_account_domain_blocks_on_account_id_and_domain UNIQUE (account_id, domain);
++
++ALTER TABLE ONLY public.account_notes
++    ADD CONSTRAINT index_account_notes_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.account_pins
++    ADD CONSTRAINT index_account_pins_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.account_reach_filters
++    ADD CONSTRAINT index_account_reach_filters_on_account_id UNIQUE (account_id);
++
++ALTER TABLE ONLY public.account_stats
++    ADD CONSTRAINT index_account_stats_on_account_id UNIQUE (account_id);
++
++ALTER TABLE ONLY public.accounts
++    ADD CONSTRAINT index_accounts_on_uri UNIQUE (uri);
++
++ALTER TABLE ONLY public.admin_server_checks
++    ADD CONSTRAINT index_admin_server_checks_on_key UNIQUE (key);
++
++ALTER TABLE ONLY public.announcement_mutes
++    ADD CONSTRAINT index_announcement_mutes_on_account_id_and_announcement_id UNIQUE (account_id, announcement_id);
++
++ALTER TABLE ONLY public.announcement_reactions
++    ADD CONSTRAINT index_announcement_reactions_on_account_id_and_announcement_id UNIQUE (account_id, announcement_id, name);
++
++ALTER TABLE ONLY public.appeals
++    ADD CONSTRAINT index_appeals_on_account_warning_id UNIQUE (account_warning_id);
++
++ALTER TABLE ONLY public.blocks
++    ADD CONSTRAINT index_blocks_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.bookmarks
++    ADD CONSTRAINT index_bookmarks_on_account_id_and_status_id UNIQUE (account_id, status_id);
++
++ALTER TABLE ONLY public.canonical_email_blocks
++    ADD CONSTRAINT index_canonical_email_blocks_on_canonical_email_hash UNIQUE (canonical_email_hash);
++
++ALTER TABLE ONLY public.collection_items
++    ADD CONSTRAINT index_collection_items_on_account_id_and_collection_id UNIQUE (account_id, collection_id);
++
++ALTER TABLE ONLY public.conversation_mutes
++    ADD CONSTRAINT index_conversation_mutes_on_account_id_and_conversation_id UNIQUE (account_id, conversation_id);
++
++ALTER TABLE ONLY public.custom_emoji_categories
++    ADD CONSTRAINT index_custom_emoji_categories_on_name UNIQUE (name);
++
++ALTER TABLE ONLY public.custom_emojis
++    ADD CONSTRAINT index_custom_emojis_on_shortcode_and_domain UNIQUE (shortcode, domain);
++
++ALTER TABLE ONLY public.custom_filter_statuses
++    ADD CONSTRAINT index_custom_filter_statuses_on_status_id_and_custom_filter_id UNIQUE (status_id, custom_filter_id);
++
++ALTER TABLE ONLY public.domain_allows
++    ADD CONSTRAINT index_domain_allows_on_domain UNIQUE (domain);
++
++ALTER TABLE ONLY public.domain_blocks
++    ADD CONSTRAINT index_domain_blocks_on_domain UNIQUE (domain);
++
++ALTER TABLE ONLY public.email_domain_blocks
++    ADD CONSTRAINT index_email_domain_blocks_on_domain UNIQUE (domain);
++
++ALTER TABLE ONLY public.email_subscriptions
++    ADD CONSTRAINT index_email_subscriptions_on_account_id_and_email UNIQUE (account_id, email);
++
++ALTER TABLE ONLY public.fasp_providers
++    ADD CONSTRAINT index_fasp_providers_on_base_url UNIQUE (base_url);
++
++ALTER TABLE ONLY public.favourites
++    ADD CONSTRAINT index_favourites_on_account_id_and_status_id UNIQUE (account_id, status_id);
++
++ALTER TABLE ONLY public.featured_tags
++    ADD CONSTRAINT index_featured_tags_on_account_id_and_tag_id UNIQUE (account_id, tag_id);
++
++ALTER TABLE ONLY public.follow_recommendation_suppressions
++    ADD CONSTRAINT index_follow_recommendation_suppressions_on_account_id UNIQUE (account_id);
++
++ALTER TABLE ONLY public.follow_requests
++    ADD CONSTRAINT index_follow_requests_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.follows
++    ADD CONSTRAINT index_follows_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.generated_annual_reports
++    ADD CONSTRAINT index_generated_annual_reports_on_account_id_and_year UNIQUE (account_id, year);
++
++ALTER TABLE ONLY public.identities
++    ADD CONSTRAINT index_identities_on_uid_and_provider UNIQUE (uid, provider);
++
++ALTER TABLE ONLY public.invites
++    ADD CONSTRAINT index_invites_on_code UNIQUE (code);
++
++ALTER TABLE ONLY public.ip_blocks
++    ADD CONSTRAINT index_ip_blocks_on_ip UNIQUE (ip);
++
++ALTER TABLE ONLY public.keypairs
++    ADD CONSTRAINT index_keypairs_on_account_id_and_local_fragment UNIQUE (account_id, local_fragment);
++
++ALTER TABLE ONLY public.keypairs
++    ADD CONSTRAINT index_keypairs_on_uri UNIQUE (uri);
++
++ALTER TABLE ONLY public.list_accounts
++    ADD CONSTRAINT index_list_accounts_on_account_id_and_list_id UNIQUE (account_id, list_id);
++
++ALTER TABLE ONLY public.markers
++    ADD CONSTRAINT index_markers_on_user_id_and_timeline UNIQUE (user_id, timeline);
++
++ALTER TABLE ONLY public.mentions
++    ADD CONSTRAINT index_mentions_on_account_id_and_status_id UNIQUE (account_id, status_id);
++
++ALTER TABLE ONLY public.mutes
++    ADD CONSTRAINT index_mutes_on_account_id_and_target_account_id UNIQUE (account_id, target_account_id);
++
++ALTER TABLE ONLY public.notification_policies
++    ADD CONSTRAINT index_notification_policies_on_account_id UNIQUE (account_id);
++
++ALTER TABLE ONLY public.notification_requests
++    ADD CONSTRAINT index_notification_requests_on_account_id_and_from_account_id UNIQUE (account_id, from_account_id);
++
++ALTER TABLE ONLY public.oauth_access_grants
++    ADD CONSTRAINT index_oauth_access_grants_on_token UNIQUE (token);
++
++ALTER TABLE ONLY public.oauth_access_tokens
++    ADD CONSTRAINT index_oauth_access_tokens_on_token UNIQUE (token);
++
++ALTER TABLE ONLY public.oauth_applications
++    ADD CONSTRAINT index_oauth_applications_on_uid UNIQUE (uid);
++
++ALTER TABLE ONLY public.preview_card_providers
++    ADD CONSTRAINT index_preview_card_providers_on_domain UNIQUE (domain);
++
++ALTER TABLE ONLY public.preview_card_trends
++    ADD CONSTRAINT index_preview_card_trends_on_preview_card_id UNIQUE (preview_card_id);
++
++ALTER TABLE ONLY public.preview_cards
++    ADD CONSTRAINT index_preview_cards_on_url UNIQUE (url);
++
++ALTER TABLE ONLY public.quotes
++    ADD CONSTRAINT index_quotes_on_status_id UNIQUE (status_id);
++
++ALTER TABLE ONLY public.rule_translations
++    ADD CONSTRAINT index_rule_translations_on_rule_id_and_language UNIQUE (rule_id, language);
++
++ALTER TABLE ONLY public.session_activations
++    ADD CONSTRAINT index_session_activations_on_session_id UNIQUE (session_id);
++
++ALTER TABLE ONLY public.settings
++    ADD CONSTRAINT index_settings_on_var UNIQUE (var);
++
++ALTER TABLE ONLY public.severed_relationships
++    ADD CONSTRAINT index_severed_relationships_on_unique_tuples UNIQUE (relationship_severance_event_id, local_account_id, direction, remote_account_id);
++
++ALTER TABLE ONLY public.site_uploads
++    ADD CONSTRAINT index_site_uploads_on_var UNIQUE (var);
++
++ALTER TABLE ONLY public.software_deprecations
++    ADD CONSTRAINT index_software_deprecations_on_branch UNIQUE (branch);
++
++ALTER TABLE ONLY public.software_updates
++    ADD CONSTRAINT index_software_updates_on_version UNIQUE (version);
++
++ALTER TABLE ONLY public.status_pins
++    ADD CONSTRAINT index_status_pins_on_account_id_and_status_id UNIQUE (account_id, status_id);
++
++ALTER TABLE ONLY public.status_stats
++    ADD CONSTRAINT index_status_stats_on_status_id UNIQUE (status_id);
++
++ALTER TABLE ONLY public.status_trends
++    ADD CONSTRAINT index_status_trends_on_status_id UNIQUE (status_id);
++
++ALTER TABLE ONLY public.tag_follows
++    ADD CONSTRAINT index_tag_follows_on_account_id_and_tag_id UNIQUE (account_id, tag_id);
++
++ALTER TABLE ONLY public.tag_trends
++    ADD CONSTRAINT index_tag_trends_on_tag_id_and_language UNIQUE (tag_id, language);
++
++ALTER TABLE ONLY public.unavailable_domains
++    ADD CONSTRAINT index_unavailable_domains_on_domain UNIQUE (domain);
++
++ALTER TABLE ONLY public.account_conversations
++    ADD CONSTRAINT index_unique_conversations UNIQUE (account_id, conversation_id, participant_account_ids);
++
++ALTER TABLE ONLY public.users
++    ADD CONSTRAINT index_users_on_confirmation_token UNIQUE (confirmation_token);
++
++ALTER TABLE ONLY public.users
++    ADD CONSTRAINT index_users_on_email UNIQUE (email);
++
++ALTER TABLE ONLY public.web_settings
++    ADD CONSTRAINT index_web_settings_on_user_id UNIQUE (user_id);
++
++ALTER TABLE ONLY public.webauthn_credentials
++    ADD CONSTRAINT index_webauthn_credentials_on_external_id UNIQUE (external_id);
++
++ALTER TABLE ONLY public.webauthn_credentials
++    ADD CONSTRAINT index_webauthn_credentials_on_user_id_and_nickname UNIQUE (user_id, nickname);
++
++ALTER TABLE ONLY public.webhooks
++    ADD CONSTRAINT index_webhooks_on_url UNIQUE (url);
++
+ ALTER TABLE ONLY public.instance_moderation_notes
+     ADD CONSTRAINT instance_moderation_notes_pkey PRIMARY KEY (id);
+ 
+@@ -3156,30 +3284,14 @@
+ 
+ CREATE INDEX idx_on_account_id_language_sensitive_250461e1eb ON public.account_summaries USING btree (account_id, language, sensitive);
+ 
+-CREATE UNIQUE INDEX idx_on_account_id_relationship_severance_event_id_7bd82bf20e ON public.account_relationship_severance_events USING btree (account_id, relationship_severance_event_id);
+-
+-CREATE UNIQUE INDEX idx_on_account_id_target_account_id_a8c8ddf44e ON public.follow_recommendation_mutes USING btree (account_id, target_account_id);
+-
+-CREATE UNIQUE INDEX idx_on_fasp_provider_id_name_version_68e2668987 ON public.fasp_capabilities USING btree (fasp_provider_id, name, version);
+-
+ CREATE INDEX idx_on_relationship_severance_event_id_403f53e707 ON public.account_relationship_severance_events USING btree (relationship_severance_event_id);
+ 
+ CREATE UNIQUE INDEX idx_on_status_id_object_type_object_id_d6ebe374bd ON public.tagged_objects USING btree (status_id, object_type, object_id) WHERE ((object_type IS NOT NULL) AND (object_id IS NOT NULL));
+ 
+-CREATE UNIQUE INDEX idx_on_target_type_target_key_action_4f6ab01ebc ON public.moderation_suggestions USING btree (target_type, target_key, action);
+-
+-CREATE UNIQUE INDEX idx_on_target_type_target_key_moderation_subscripti_a3f09c29b9 ON public.moderation_subscription_advisories USING btree (target_type, target_key, moderation_subscription_id);
+-
+-CREATE UNIQUE INDEX idx_on_year_account_id_ff3e167cef ON public.annual_report_statuses_per_account_counts USING btree (year, account_id);
+-
+-CREATE UNIQUE INDEX index_account_aliases_on_account_id_and_uri ON public.account_aliases USING btree (account_id, uri);
+-
+ CREATE INDEX index_account_conversations_on_conversation_id ON public.account_conversations USING btree (conversation_id);
+ 
+ CREATE INDEX index_account_deletion_requests_on_account_id ON public.account_deletion_requests USING btree (account_id);
+ 
+-CREATE UNIQUE INDEX index_account_domain_blocks_on_account_id_and_domain ON public.account_domain_blocks USING btree (account_id, domain);
+-
+ CREATE INDEX index_account_migrations_on_account_id ON public.account_migrations USING btree (account_id);
+ 
+ CREATE INDEX index_account_migrations_on_target_account_id ON public.account_migrations USING btree (target_account_id) WHERE (target_account_id IS NOT NULL);
+@@ -3188,19 +3300,11 @@
+ 
+ CREATE INDEX index_account_moderation_notes_on_target_account_id ON public.account_moderation_notes USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_account_notes_on_account_id_and_target_account_id ON public.account_notes USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_account_notes_on_target_account_id ON public.account_notes USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_account_pins_on_account_id_and_target_account_id ON public.account_pins USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_account_pins_on_target_account_id ON public.account_pins USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_account_reach_filters_on_account_id ON public.account_reach_filters USING btree (account_id);
+-
+-CREATE UNIQUE INDEX index_account_stats_on_account_id ON public.account_stats USING btree (account_id);
+-
+-CREATE INDEX index_account_stats_on_last_status_at_and_account_id ON public.account_stats USING btree (last_status_at DESC NULLS LAST, account_id);
++CREATE INDEX index_account_stats_on_last_status_at_and_account_id ON public.account_stats USING btree (last_status_at DESC, account_id);
+ 
+ CREATE INDEX index_account_statuses_cleanup_policies_on_account_id ON public.account_statuses_cleanup_policies USING btree (account_id);
+ 
+@@ -3212,11 +3316,7 @@
+ 
+ CREATE INDEX index_accounts_on_moved_to_account_id ON public.accounts USING btree (moved_to_account_id) WHERE (moved_to_account_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_accounts_on_uri ON public.accounts USING btree (uri);
+-
+-CREATE INDEX index_accounts_on_url ON public.accounts USING btree (url text_pattern_ops) WHERE (url IS NOT NULL);
+-
+-CREATE UNIQUE INDEX index_accounts_on_username_and_domain_lower ON public.accounts USING btree (lower((username)::text), COALESCE(lower((domain)::text), ''::text));
++CREATE INDEX index_accounts_on_url ON public.accounts USING btree (url) WHERE (url IS NOT NULL);
+ 
+ CREATE INDEX index_accounts_tags_on_account_id_and_tag_id ON public.accounts_tags USING btree (account_id, tag_id);
+ 
+@@ -3226,34 +3326,22 @@
+ 
+ CREATE INDEX index_admin_action_logs_on_target_type_and_target_id ON public.admin_action_logs USING btree (target_type, target_id);
+ 
+-CREATE UNIQUE INDEX index_admin_server_checks_on_key ON public.admin_server_checks USING btree (key);
+-
+-CREATE UNIQUE INDEX index_announcement_mutes_on_account_id_and_announcement_id ON public.announcement_mutes USING btree (account_id, announcement_id);
+-
+ CREATE INDEX index_announcement_mutes_on_announcement_id ON public.announcement_mutes USING btree (announcement_id);
+ 
+-CREATE UNIQUE INDEX index_announcement_reactions_on_account_id_and_announcement_id ON public.announcement_reactions USING btree (account_id, announcement_id, name);
+-
+ CREATE INDEX index_announcement_reactions_on_announcement_id ON public.announcement_reactions USING btree (announcement_id);
+ 
+ CREATE INDEX index_announcement_reactions_on_custom_emoji_id ON public.announcement_reactions USING btree (custom_emoji_id) WHERE (custom_emoji_id IS NOT NULL);
+ 
+ CREATE INDEX index_appeals_on_account_id ON public.appeals USING btree (account_id);
+ 
+-CREATE UNIQUE INDEX index_appeals_on_account_warning_id ON public.appeals USING btree (account_warning_id);
+-
+ CREATE INDEX index_appeals_on_approved_by_account_id ON public.appeals USING btree (approved_by_account_id) WHERE (approved_by_account_id IS NOT NULL);
+ 
+ CREATE INDEX index_appeals_on_rejected_by_account_id ON public.appeals USING btree (rejected_by_account_id) WHERE (rejected_by_account_id IS NOT NULL);
+ 
+ CREATE INDEX index_backups_on_user_id ON public.backups USING btree (user_id);
+ 
+-CREATE UNIQUE INDEX index_blocks_on_account_id_and_target_account_id ON public.blocks USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_blocks_on_target_account_id ON public.blocks USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_bookmarks_on_account_id_and_status_id ON public.bookmarks USING btree (account_id, status_id);
+-
+ CREATE INDEX index_bookmarks_on_status_id ON public.bookmarks USING btree (status_id);
+ 
+ CREATE INDEX index_bulk_import_rows_on_bulk_import_id ON public.bulk_import_rows USING btree (bulk_import_id);
+@@ -3262,12 +3350,8 @@
+ 
+ CREATE INDEX index_bulk_imports_unconfirmed ON public.bulk_imports USING btree (id) WHERE (state = 0);
+ 
+-CREATE UNIQUE INDEX index_canonical_email_blocks_on_canonical_email_hash ON public.canonical_email_blocks USING btree (canonical_email_hash);
+-
+ CREATE INDEX index_canonical_email_blocks_on_reference_account_id ON public.canonical_email_blocks USING btree (reference_account_id);
+ 
+-CREATE UNIQUE INDEX index_collection_items_on_account_id_and_collection_id ON public.collection_items USING btree (account_id, collection_id);
+-
+ CREATE UNIQUE INDEX index_collection_items_on_approval_uri ON public.collection_items USING btree (approval_uri) WHERE (approval_uri IS NOT NULL);
+ 
+ CREATE INDEX index_collection_items_on_collection_id ON public.collection_items USING btree (collection_id);
+@@ -3286,36 +3370,20 @@
+ 
+ CREATE UNIQUE INDEX index_collections_on_uri ON public.collections USING btree (uri) WHERE (uri IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_conversation_mutes_on_account_id_and_conversation_id ON public.conversation_mutes USING btree (account_id, conversation_id);
+-
+ CREATE UNIQUE INDEX index_conversations_on_parent_status_id ON public.conversations USING btree (parent_status_id) WHERE (parent_status_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_conversations_on_uri ON public.conversations USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL);
+-
+-CREATE UNIQUE INDEX index_custom_emoji_categories_on_name ON public.custom_emoji_categories USING btree (name);
+-
+-CREATE UNIQUE INDEX index_custom_emojis_on_shortcode_and_domain ON public.custom_emojis USING btree (shortcode, domain);
++CREATE UNIQUE INDEX index_conversations_on_uri ON public.conversations USING btree (uri) WHERE (uri IS NOT NULL);
+ 
+ CREATE INDEX index_custom_filter_keywords_on_custom_filter_id ON public.custom_filter_keywords USING btree (custom_filter_id);
+ 
+ CREATE INDEX index_custom_filter_statuses_on_custom_filter_id ON public.custom_filter_statuses USING btree (custom_filter_id);
+ 
+-CREATE UNIQUE INDEX index_custom_filter_statuses_on_status_id_and_custom_filter_id ON public.custom_filter_statuses USING btree (status_id, custom_filter_id);
+-
+ CREATE INDEX index_custom_filters_on_account_id ON public.custom_filters USING btree (account_id);
+ 
+-CREATE UNIQUE INDEX index_domain_allows_on_domain ON public.domain_allows USING btree (domain);
+-
+ CREATE INDEX index_domain_allows_on_moderation_subscription_id ON public.domain_allows USING btree (moderation_subscription_id);
+ 
+-CREATE UNIQUE INDEX index_domain_blocks_on_domain ON public.domain_blocks USING btree (domain);
+-
+ CREATE INDEX index_domain_blocks_on_moderation_subscription_id ON public.domain_blocks USING btree (moderation_subscription_id);
+ 
+-CREATE UNIQUE INDEX index_email_domain_blocks_on_domain ON public.email_domain_blocks USING btree (domain);
+-
+-CREATE UNIQUE INDEX index_email_subscriptions_on_account_id_and_email ON public.email_subscriptions USING btree (account_id, email);
+-
+ CREATE UNIQUE INDEX index_email_subscriptions_on_confirmation_token ON public.email_subscriptions USING btree (confirmation_token) WHERE (confirmation_token IS NOT NULL);
+ 
+ CREATE INDEX index_fasp_backfill_requests_on_fasp_provider_id ON public.fasp_backfill_requests USING btree (fasp_provider_id);
+@@ -3328,58 +3396,28 @@
+ 
+ CREATE INDEX index_fasp_follow_recommendations_on_requesting_account_id ON public.fasp_follow_recommendations USING btree (requesting_account_id);
+ 
+-CREATE UNIQUE INDEX index_fasp_providers_on_base_url ON public.fasp_providers USING btree (base_url);
+-
+ CREATE INDEX index_fasp_subscriptions_on_fasp_provider_id ON public.fasp_subscriptions USING btree (fasp_provider_id);
+ 
+ CREATE INDEX index_favourites_on_account_id_and_id ON public.favourites USING btree (account_id, id);
+ 
+-CREATE UNIQUE INDEX index_favourites_on_account_id_and_status_id ON public.favourites USING btree (account_id, status_id);
+-
+ CREATE INDEX index_favourites_on_status_id ON public.favourites USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_featured_tags_on_account_id_and_tag_id ON public.featured_tags USING btree (account_id, tag_id);
+-
+ CREATE INDEX index_featured_tags_on_tag_id ON public.featured_tags USING btree (tag_id);
+ 
+ CREATE INDEX index_follow_recommendation_mutes_on_target_account_id ON public.follow_recommendation_mutes USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_follow_recommendation_suppressions_on_account_id ON public.follow_recommendation_suppressions USING btree (account_id);
+-
+-CREATE UNIQUE INDEX index_follow_requests_on_account_id_and_target_account_id ON public.follow_requests USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_follow_requests_on_target_account_id_and_account_id ON public.follow_requests USING btree (target_account_id, account_id);
+ 
+-CREATE UNIQUE INDEX index_follows_on_account_id_and_target_account_id ON public.follows USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_follows_on_target_account_id_and_account_id ON public.follows USING btree (target_account_id, account_id);
+ 
+-CREATE UNIQUE INDEX index_generated_annual_reports_on_account_id_and_year ON public.generated_annual_reports USING btree (account_id, year);
+-
+ CREATE INDEX index_global_follow_recommendations_on_rank ON public.global_follow_recommendations USING btree (rank);
+ 
+-CREATE UNIQUE INDEX index_identities_on_uid_and_provider ON public.identities USING btree (uid, provider);
+-
+ CREATE INDEX index_identities_on_user_id ON public.identities USING btree (user_id);
+ 
+ CREATE INDEX index_instance_moderation_notes_on_domain ON public.instance_moderation_notes USING btree (domain);
+ 
+-CREATE UNIQUE INDEX index_instances_on_domain ON public.instances USING btree (domain);
+-
+-CREATE INDEX index_instances_on_reverse_domain ON public.instances USING btree (reverse(('.'::text || (domain)::text)), domain);
+-
+-CREATE UNIQUE INDEX index_invites_on_code ON public.invites USING btree (code);
+-
+ CREATE INDEX index_invites_on_user_id ON public.invites USING btree (user_id);
+ 
+-CREATE UNIQUE INDEX index_ip_blocks_on_ip ON public.ip_blocks USING btree (ip);
+-
+-CREATE UNIQUE INDEX index_keypairs_on_account_id_and_local_fragment ON public.keypairs USING btree (account_id, local_fragment);
+-
+-CREATE UNIQUE INDEX index_keypairs_on_uri ON public.keypairs USING btree (uri);
+-
+-CREATE UNIQUE INDEX index_list_accounts_on_account_id_and_list_id ON public.list_accounts USING btree (account_id, list_id);
+-
+ CREATE INDEX index_list_accounts_on_follow_id ON public.list_accounts USING btree (follow_id) WHERE (follow_id IS NOT NULL);
+ 
+ CREATE INDEX index_list_accounts_on_follow_request_id ON public.list_accounts USING btree (follow_request_id) WHERE (follow_request_id IS NOT NULL);
+@@ -3390,36 +3428,26 @@
+ 
+ CREATE INDEX index_login_activities_on_user_id ON public.login_activities USING btree (user_id);
+ 
+-CREATE UNIQUE INDEX index_markers_on_user_id_and_timeline ON public.markers USING btree (user_id, timeline);
+-
+ CREATE INDEX index_media_attachments_on_account_id_and_status_id ON public.media_attachments USING btree (account_id, status_id DESC);
+ 
+ CREATE INDEX index_media_attachments_on_scheduled_status_id ON public.media_attachments USING btree (scheduled_status_id) WHERE (scheduled_status_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_media_attachments_on_shortcode ON public.media_attachments USING btree (shortcode text_pattern_ops) WHERE (shortcode IS NOT NULL);
++CREATE UNIQUE INDEX index_media_attachments_on_shortcode ON public.media_attachments USING btree (shortcode) WHERE (shortcode IS NOT NULL);
+ 
+ CREATE INDEX index_media_attachments_on_status_id ON public.media_attachments USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_mentions_on_account_id_and_status_id ON public.mentions USING btree (account_id, status_id);
+-
+ CREATE INDEX index_mentions_on_status_id ON public.mentions USING btree (status_id);
+ 
+ CREATE INDEX index_moderation_advisories_on_moderation_subscription_id ON public.moderation_subscription_advisories USING btree (moderation_subscription_id);
+ 
+ CREATE INDEX index_moderation_suggestions_on_moderation_subscription_id ON public.moderation_suggestions USING btree (moderation_subscription_id);
+ 
+-CREATE UNIQUE INDEX index_mutes_on_account_id_and_target_account_id ON public.mutes USING btree (account_id, target_account_id);
+-
+ CREATE INDEX index_mutes_on_target_account_id ON public.mutes USING btree (target_account_id);
+ 
+ CREATE INDEX index_notification_permissions_on_account_id ON public.notification_permissions USING btree (account_id);
+ 
+ CREATE INDEX index_notification_permissions_on_from_account_id ON public.notification_permissions USING btree (from_account_id);
+ 
+-CREATE UNIQUE INDEX index_notification_policies_on_account_id ON public.notification_policies USING btree (account_id);
+-
+-CREATE UNIQUE INDEX index_notification_requests_on_account_id_and_from_account_id ON public.notification_requests USING btree (account_id, from_account_id);
+-
+ CREATE INDEX index_notification_requests_on_from_account_id ON public.notification_requests USING btree (from_account_id);
+ 
+ CREATE INDEX index_notification_requests_on_last_status_id ON public.notification_requests USING btree (last_status_id);
+@@ -3436,20 +3464,14 @@
+ 
+ CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON public.oauth_access_grants USING btree (resource_owner_id);
+ 
+-CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON public.oauth_access_grants USING btree (token);
+-
+-CREATE UNIQUE INDEX index_oauth_access_tokens_on_refresh_token ON public.oauth_access_tokens USING btree (refresh_token text_pattern_ops) WHERE (refresh_token IS NOT NULL);
++CREATE UNIQUE INDEX index_oauth_access_tokens_on_refresh_token ON public.oauth_access_tokens USING btree (refresh_token) WHERE (refresh_token IS NOT NULL);
+ 
+ CREATE INDEX index_oauth_access_tokens_on_resource_owner_id ON public.oauth_access_tokens USING btree (resource_owner_id) WHERE (resource_owner_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_oauth_access_tokens_on_token ON public.oauth_access_tokens USING btree (token);
+-
+ CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON public.oauth_applications USING btree (owner_id, owner_type);
+ 
+ CREATE INDEX index_oauth_applications_on_superapp ON public.oauth_applications USING btree (superapp) WHERE (superapp = true);
+ 
+-CREATE UNIQUE INDEX index_oauth_applications_on_uid ON public.oauth_applications USING btree (uid);
+-
+ CREATE INDEX index_pghero_space_stats_on_database_and_captured_at ON public.pghero_space_stats USING btree (database, captured_at);
+ 
+ CREATE INDEX index_poll_votes_on_account_id ON public.poll_votes USING btree (account_id);
+@@ -3460,16 +3482,10 @@
+ 
+ CREATE INDEX index_polls_on_status_id ON public.polls USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_preview_card_providers_on_domain ON public.preview_card_providers USING btree (domain);
+-
+-CREATE UNIQUE INDEX index_preview_card_trends_on_preview_card_id ON public.preview_card_trends USING btree (preview_card_id);
+-
+ CREATE INDEX index_preview_cards_on_author_account_id ON public.preview_cards USING btree (author_account_id) WHERE (author_account_id IS NOT NULL);
+ 
+ CREATE INDEX index_preview_cards_on_unverified_author_account_id_and_id ON public.preview_cards USING btree (unverified_author_account_id, id) WHERE (unverified_author_account_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_preview_cards_on_url ON public.preview_cards USING btree (url);
+-
+ CREATE INDEX index_quotes_on_account_id_and_quoted_account_id_and_id ON public.quotes USING btree (account_id, quoted_account_id, id);
+ 
+ CREATE UNIQUE INDEX index_quotes_on_activity_uri ON public.quotes USING btree (activity_uri) WHERE (activity_uri IS NOT NULL);
+@@ -3480,8 +3496,6 @@
+ 
+ CREATE INDEX index_quotes_on_quoted_status_id_and_id ON public.quotes USING btree (quoted_status_id, id);
+ 
+-CREATE UNIQUE INDEX index_quotes_on_status_id ON public.quotes USING btree (status_id);
+-
+ CREATE INDEX index_relationship_severance_events_on_type_and_target_name ON public.relationship_severance_events USING btree (type, target_name);
+ 
+ CREATE INDEX index_report_notes_on_account_id ON public.report_notes USING btree (account_id);
+@@ -3496,46 +3510,26 @@
+ 
+ CREATE INDEX index_reports_on_target_account_id ON public.reports USING btree (target_account_id);
+ 
+-CREATE UNIQUE INDEX index_rule_translations_on_rule_id_and_language ON public.rule_translations USING btree (rule_id, language);
+-
+ CREATE INDEX index_scheduled_statuses_on_account_id ON public.scheduled_statuses USING btree (account_id);
+ 
+ CREATE INDEX index_scheduled_statuses_on_scheduled_at ON public.scheduled_statuses USING btree (scheduled_at);
+ 
+ CREATE INDEX index_session_activations_on_access_token_id ON public.session_activations USING btree (access_token_id);
+ 
+-CREATE UNIQUE INDEX index_session_activations_on_session_id ON public.session_activations USING btree (session_id);
+-
+ CREATE INDEX index_session_activations_on_user_id ON public.session_activations USING btree (user_id);
+ 
+-CREATE UNIQUE INDEX index_settings_on_var ON public.settings USING btree (var);
+-
+ CREATE INDEX index_severed_relationships_on_local_account_and_event ON public.severed_relationships USING btree (local_account_id, relationship_severance_event_id);
+ 
+ CREATE INDEX index_severed_relationships_on_remote_account_id ON public.severed_relationships USING btree (remote_account_id);
+ 
+-CREATE UNIQUE INDEX index_severed_relationships_on_unique_tuples ON public.severed_relationships USING btree (relationship_severance_event_id, local_account_id, direction, remote_account_id);
+-
+-CREATE UNIQUE INDEX index_site_uploads_on_var ON public.site_uploads USING btree (var);
+-
+-CREATE UNIQUE INDEX index_software_deprecations_on_branch ON public.software_deprecations USING btree (branch);
+-
+-CREATE UNIQUE INDEX index_software_updates_on_version ON public.software_updates USING btree (version);
+-
+ CREATE INDEX index_status_edits_on_account_id ON public.status_edits USING btree (account_id);
+ 
+ CREATE INDEX index_status_edits_on_status_id ON public.status_edits USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_status_pins_on_account_id_and_status_id ON public.status_pins USING btree (account_id, status_id);
+-
+ CREATE INDEX index_status_pins_on_status_id ON public.status_pins USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_status_stats_on_status_id ON public.status_stats USING btree (status_id);
+-
+ CREATE INDEX index_status_trends_on_account_id ON public.status_trends USING btree (account_id);
+ 
+-CREATE UNIQUE INDEX index_status_trends_on_status_id ON public.status_trends USING btree (status_id);
+-
+ CREATE INDEX index_statuses_20190820 ON public.statuses USING btree (account_id, id DESC, visibility, updated_at) WHERE (deleted_at IS NULL);
+ 
+ CREATE INDEX index_statuses_local_20190824 ON public.statuses USING btree (id DESC, account_id) WHERE ((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)));
+@@ -3552,49 +3546,33 @@
+ 
+ CREATE INDEX index_statuses_on_reblog_of_id_and_account_id ON public.statuses USING btree (reblog_of_id, account_id);
+ 
+-CREATE UNIQUE INDEX index_statuses_on_uri ON public.statuses USING btree (uri text_pattern_ops) WHERE (uri IS NOT NULL);
++CREATE UNIQUE INDEX index_statuses_on_uri ON public.statuses USING btree (uri) WHERE (uri IS NOT NULL);
+ 
+ CREATE INDEX index_statuses_public_20250129 ON public.statuses USING btree (id DESC, language, account_id) WHERE ((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)));
+ 
+ CREATE INDEX index_statuses_tags_on_status_id ON public.statuses_tags USING btree (status_id);
+ 
+-CREATE UNIQUE INDEX index_tag_follows_on_account_id_and_tag_id ON public.tag_follows USING btree (account_id, tag_id);
+-
+ CREATE INDEX index_tag_follows_on_tag_id ON public.tag_follows USING btree (tag_id);
+ 
+-CREATE UNIQUE INDEX index_tag_trends_on_tag_id_and_language ON public.tag_trends USING btree (tag_id, language);
+-
+ CREATE INDEX index_tagged_objects_on_object ON public.tagged_objects USING btree (object_type, object_id);
+ 
+ CREATE UNIQUE INDEX index_tagged_objects_on_status_id_and_uri ON public.tagged_objects USING btree (status_id, uri) WHERE (uri IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_tags_on_name_lower_btree ON public.tags USING btree (lower((name)::text) text_pattern_ops);
+-
+ CREATE UNIQUE INDEX index_terms_of_services_on_effective_date ON public.terms_of_services USING btree (effective_date) WHERE (effective_date IS NOT NULL);
+ 
+ CREATE INDEX index_tombstones_on_account_id ON public.tombstones USING btree (account_id);
+ 
+ CREATE INDEX index_tombstones_on_uri ON public.tombstones USING btree (uri);
+ 
+-CREATE UNIQUE INDEX index_unavailable_domains_on_domain ON public.unavailable_domains USING btree (domain);
+-
+-CREATE UNIQUE INDEX index_unique_conversations ON public.account_conversations USING btree (account_id, conversation_id, participant_account_ids);
+-
+ CREATE INDEX index_user_invite_requests_on_user_id ON public.user_invite_requests USING btree (user_id);
+ 
+ CREATE INDEX index_username_blocks_on_normalized_username ON public.username_blocks USING btree (normalized_username);
+ 
+-CREATE UNIQUE INDEX index_username_blocks_on_username_lower_btree ON public.username_blocks USING btree (lower((username)::text));
+-
+ CREATE INDEX index_users_on_account_id ON public.users USING btree (account_id);
+ 
+-CREATE UNIQUE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
+-
+ CREATE INDEX index_users_on_created_by_application_id ON public.users USING btree (created_by_application_id) WHERE (created_by_application_id IS NOT NULL);
+ 
+-CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
+-
+-CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING btree (reset_password_token text_pattern_ops) WHERE (reset_password_token IS NOT NULL);
++CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING btree (reset_password_token) WHERE (reset_password_token IS NOT NULL);
+ 
+ CREATE INDEX index_users_on_role_id ON public.users USING btree (role_id) WHERE (role_id IS NOT NULL);
+ 
+@@ -3604,16 +3582,6 @@
+ 
+ CREATE INDEX index_web_push_subscriptions_on_user_id ON public.web_push_subscriptions USING btree (user_id);
+ 
+-CREATE UNIQUE INDEX index_web_settings_on_user_id ON public.web_settings USING btree (user_id);
+-
+-CREATE UNIQUE INDEX index_webauthn_credentials_on_external_id ON public.webauthn_credentials USING btree (external_id);
+-
+-CREATE UNIQUE INDEX index_webauthn_credentials_on_user_id_and_nickname ON public.webauthn_credentials USING btree (user_id, nickname);
+-
+-CREATE UNIQUE INDEX index_webhooks_on_url ON public.webhooks USING btree (url);
+-
+-CREATE INDEX search_index ON public.accounts USING gin ((((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::"char") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::"char")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::"char"))));
+-
+ ALTER TABLE ONLY public.web_settings
+     ADD CONSTRAINT fk_11910667b2 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+ 

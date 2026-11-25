@@ -1,0 +1,2058 @@
+// activerecord/mastodon: the tables that Active Record creates from Mastodon's db/schema.rb,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+
+datasource db {
+  provider = "postgresql"
+}
+
+// The preview features the schema needs.
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+model account_aliases {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  acct       String   @default("") @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  uri        String   @default("") @db.VarChar
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_fc91575d08")
+
+  @@unique([account_id, uri], map: "index_account_aliases_on_account_id_and_uri")
+}
+
+model account_conversations {
+  id                      BigInt        @id @default(autoincrement())
+  account_id              BigInt
+  conversation_id         BigInt
+  last_status_id          BigInt?
+  lock_version            Int           @default(0)
+  participant_account_ids BigInt[]      @default([])
+  status_ids              BigInt[]      @default([])
+  unread                  Boolean       @default(false)
+  conversations           conversations @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_1491654f9f")
+  accounts                accounts      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_6f5278b6e9")
+
+  @@unique([account_id, conversation_id, participant_account_ids], map: "index_unique_conversations")
+  @@index([conversation_id], map: "index_account_conversations_on_conversation_id")
+}
+
+model account_deletion_requests {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_45bf2626b9")
+
+  @@index([account_id], map: "index_account_deletion_requests_on_account_id")
+}
+
+model account_domain_blocks {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  domain     String   @db.VarChar
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_206c6029bd")
+
+  @@unique([account_id, domain], map: "index_account_domain_blocks_on_account_id_and_domain")
+}
+
+model account_migrations {
+  id                                                      BigInt    @id @default(autoincrement())
+  account_id                                              BigInt?
+  acct                                                    String    @default("") @db.VarChar
+  created_at                                              DateTime  @db.Timestamp(6)
+  followers_count                                         BigInt    @default(0)
+  target_account_id                                       BigInt?
+  updated_at                                              DateTime  @db.Timestamp(6)
+  accounts_account_migrations_account_idToaccounts        accounts? @relation("account_migrations_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_c9f701caaf")
+  accounts_account_migrations_target_account_idToaccounts accounts? @relation("account_migrations_target_account_idToaccounts", fields: [target_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_d9a8dad070")
+
+  @@index([account_id], map: "index_account_migrations_on_account_id")
+  @@index([target_account_id], map: "index_account_migrations_on_target_account_id", where: raw("(target_account_id IS NOT NULL)"))
+}
+
+model account_moderation_notes {
+  id                                                            BigInt   @id @default(autoincrement())
+  account_id                                                    BigInt
+  content                                                       String
+  created_at                                                    DateTime @db.Timestamp(6)
+  target_account_id                                             BigInt
+  updated_at                                                    DateTime @db.Timestamp(6)
+  accounts_account_moderation_notes_account_idToaccounts        accounts @relation("account_moderation_notes_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_3f8b75089b")
+  accounts_account_moderation_notes_target_account_idToaccounts accounts @relation("account_moderation_notes_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_dd62ed5ac3")
+
+  @@index([account_id], map: "index_account_moderation_notes_on_account_id")
+  @@index([target_account_id], map: "index_account_moderation_notes_on_target_account_id")
+}
+
+model account_notes {
+  id                                                 BigInt   @id @default(autoincrement())
+  account_id                                         BigInt
+  comment                                            String
+  created_at                                         DateTime @db.Timestamp(6)
+  target_account_id                                  BigInt
+  updated_at                                         DateTime @db.Timestamp(6)
+  accounts_account_notes_target_account_idToaccounts accounts @relation("account_notes_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_2801b48f1a")
+  accounts_account_notes_account_idToaccounts        accounts @relation("account_notes_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4ee4503c69")
+
+  @@unique([account_id, target_account_id], map: "index_account_notes_on_account_id_and_target_account_id")
+  @@index([target_account_id], map: "index_account_notes_on_target_account_id")
+}
+
+model account_pins {
+  id                                                BigInt   @id @default(autoincrement())
+  account_id                                        BigInt
+  created_at                                        DateTime @db.Timestamp(6)
+  target_account_id                                 BigInt
+  updated_at                                        DateTime @db.Timestamp(6)
+  accounts_account_pins_target_account_idToaccounts accounts @relation("account_pins_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a176e26c37")
+  accounts_account_pins_account_idToaccounts        accounts @relation("account_pins_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d44979e5dd")
+
+  @@unique([account_id, target_account_id], map: "index_account_pins_on_account_id_and_target_account_id")
+  @@index([target_account_id], map: "index_account_pins_on_target_account_id")
+}
+
+model account_reach_filters {
+  id           BigInt   @id @default(autoincrement())
+  account_id   BigInt   @unique(map: "index_account_reach_filters_on_account_id")
+  bloom_filter Bytes?
+  created_at   DateTime @db.Timestamp(6)
+  salt         String   @db.VarChar
+  saturated    Boolean  @default(false)
+  updated_at   DateTime @db.Timestamp(6)
+  accounts     accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f1ab63c96b")
+}
+
+model account_relationship_severance_events {
+  id                              BigInt                        @id @default(autoincrement())
+  account_id                      BigInt
+  created_at                      DateTime                      @db.Timestamp(6)
+  followers_count                 Int                           @default(0)
+  following_count                 Int                           @default(0)
+  relationship_severance_event_id BigInt
+  updated_at                      DateTime                      @db.Timestamp(6)
+  accounts                        accounts                      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_030c916965")
+  relationship_severance_events   relationship_severance_events @relation(fields: [relationship_severance_event_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_8a34c3a361")
+
+  @@unique([account_id, relationship_severance_event_id], map: "idx_on_account_id_relationship_severance_event_id_7bd82bf20e")
+  @@index([relationship_severance_event_id], map: "idx_on_relationship_severance_event_id_403f53e707")
+}
+
+/// This model contains an index with non-default null sort order and requires additional setup for migrations. Visit https://pris.ly/d/default-index-null-ordering for more info.
+model account_stats {
+  id              BigInt    @id @default(autoincrement())
+  account_id      BigInt    @unique(map: "index_account_stats_on_account_id")
+  created_at      DateTime  @db.Timestamp(6)
+  followers_count BigInt    @default(0)
+  following_count BigInt    @default(0)
+  last_status_at  DateTime? @db.Timestamp(6)
+  statuses_count  BigInt    @default(0)
+  updated_at      DateTime  @db.Timestamp(6)
+  accounts        accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_215bb31ff1")
+
+  @@index([last_status_at(sort: Desc), account_id], map: "index_account_stats_on_last_status_at_and_account_id")
+}
+
+model account_statuses_cleanup_policies {
+  id                 BigInt   @id @default(autoincrement())
+  account_id         BigInt
+  created_at         DateTime @db.Timestamp(6)
+  enabled            Boolean  @default(true)
+  keep_direct        Boolean  @default(true)
+  keep_media         Boolean  @default(false)
+  keep_pinned        Boolean  @default(true)
+  keep_polls         Boolean  @default(false)
+  keep_self_bookmark Boolean  @default(true)
+  keep_self_fav      Boolean  @default(true)
+  min_favs           Int?
+  min_reblogs        Int?
+  min_status_age     Int      @default(1209600)
+  updated_at         DateTime @db.Timestamp(6)
+  accounts           accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_23d5f73cfe")
+
+  @@index([account_id], map: "index_account_statuses_cleanup_policies_on_account_id")
+}
+
+model account_summaries {
+  account_id BigInt   @id @default(autoincrement())
+  language   String?  @db.VarChar
+  sensitive  Boolean  @default(false)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4ea43ef304")
+
+  @@index([account_id, language, sensitive], map: "idx_on_account_id_language_sensitive_250461e1eb")
+}
+
+model account_warning_presets {
+  id              BigInt   @id @default(autoincrement())
+  created_at      DateTime @db.Timestamp(6)
+  text            String   @default("")
+  title           String   @default("") @db.VarChar
+  updated_at      DateTime @db.Timestamp(6)
+  action_category String   @default("all_actions") @db.VarChar
+}
+
+model account_warnings {
+  id                                                    BigInt    @id @default(autoincrement())
+  account_id                                            BigInt?
+  action                                                Int       @default(0)
+  created_at                                            DateTime  @db.Timestamp(6)
+  overruled_at                                          DateTime? @db.Timestamp(6)
+  report_id                                             BigInt?
+  status_ids                                            String[]  @db.VarChar
+  target_account_id                                     BigInt?
+  text                                                  String    @default("")
+  updated_at                                            DateTime  @db.Timestamp(6)
+  reports                                               reports?  @relation(fields: [report_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_8f2bab4b16")
+  accounts_account_warnings_account_idToaccounts        accounts? @relation("account_warnings_account_idToaccounts", fields: [account_id], references: [id], onUpdate: NoAction, map: "fk_rails_a65a1bf71b")
+  accounts_account_warnings_target_account_idToaccounts accounts? @relation("account_warnings_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a7ebbb1e37")
+  appeals                                               appeals?
+
+  @@index([account_id], map: "index_account_warnings_on_account_id")
+  @@index([target_account_id], map: "index_account_warnings_on_target_account_id")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model accounts {
+  id                                                                                       BigInt                                  @id @default(dbgenerated("timestamp_id('accounts'::text)"))
+  actor_type                                                                               String?                                 @db.VarChar
+  also_known_as                                                                            String[]                                @db.VarChar
+  attribution_domains                                                                      String[]                                @default([]) @db.VarChar
+  avatar_content_type                                                                      String?                                 @db.VarChar
+  avatar_description                                                                       String                                  @default("") @db.VarChar
+  avatar_file_name                                                                         String?                                 @db.VarChar
+  avatar_file_size                                                                         Int?
+  avatar_remote_url                                                                        String?                                 @db.VarChar
+  avatar_storage_schema_version                                                            Int?
+  avatar_updated_at                                                                        DateTime?                               @db.Timestamp(6)
+  collections_url                                                                          String?                                 @db.VarChar
+  created_at                                                                               DateTime                                @db.Timestamp(6)
+  discoverable                                                                             Boolean?
+  display_name                                                                             String                                  @default("") @db.VarChar
+  domain                                                                                   String?                                 @db.VarChar
+  feature_approval_policy                                                                  Int                                     @default(0)
+  featured_collection_url                                                                  String?                                 @db.VarChar
+  fields                                                                                   Json?
+  followers_url                                                                            String                                  @default("") @db.VarChar
+  following_url                                                                            String                                  @default("") @db.VarChar
+  header_content_type                                                                      String?                                 @db.VarChar
+  header_description                                                                       String                                  @default("") @db.VarChar
+  header_file_name                                                                         String?                                 @db.VarChar
+  header_file_size                                                                         Int?
+  header_remote_url                                                                        String                                  @default("") @db.VarChar
+  header_storage_schema_version                                                            Int?
+  header_updated_at                                                                        DateTime?                               @db.Timestamp(6)
+  hide_collections                                                                         Boolean?
+  id_scheme                                                                                Int?                                    @default(1)
+  inbox_url                                                                                String                                  @default("") @db.VarChar
+  indexable                                                                                Boolean                                 @default(false)
+  last_webfingered_at                                                                      DateTime?                               @db.Timestamp(6)
+  locked                                                                                   Boolean                                 @default(false)
+  memorial                                                                                 Boolean                                 @default(false)
+  moved_to_account_id                                                                      BigInt?
+  note                                                                                     String                                  @default("")
+  outbox_url                                                                               String                                  @default("") @db.VarChar
+  protocol                                                                                 Int                                     @default(0)
+  public_key                                                                               String                                  @default("")
+  requested_deletion_at                                                                    DateTime?                               @db.Timestamp(6)
+  requested_review_at                                                                      DateTime?                               @db.Timestamp(6)
+  reviewed_at                                                                              DateTime?                               @db.Timestamp(6)
+  sensitized_at                                                                            DateTime?                               @db.Timestamp(6)
+  shared_inbox_url                                                                         String                                  @default("") @db.VarChar
+  show_featured                                                                            Boolean                                 @default(true)
+  show_media                                                                               Boolean                                 @default(true)
+  show_media_replies                                                                       Boolean                                 @default(true)
+  silenced_at                                                                              DateTime?                               @db.Timestamp(6)
+  suspended_at                                                                             DateTime?                               @db.Timestamp(6)
+  suspension_origin                                                                        Int?
+  trendable                                                                                Boolean?
+  updated_at                                                                               DateTime                                @db.Timestamp(6)
+  uri                                                                                      String?                                 @unique(map: "index_accounts_on_uri") @db.VarChar
+  url                                                                                      String?                                 @db.VarChar
+  username                                                                                 String                                  @default("") @db.VarChar
+  account_aliases                                                                          account_aliases[]
+  account_conversations                                                                    account_conversations[]
+  account_deletion_requests                                                                account_deletion_requests[]
+  account_domain_blocks                                                                    account_domain_blocks[]
+  account_migrations_account_migrations_account_idToaccounts                               account_migrations[]                    @relation("account_migrations_account_idToaccounts")
+  account_migrations_account_migrations_target_account_idToaccounts                        account_migrations[]                    @relation("account_migrations_target_account_idToaccounts")
+  account_moderation_notes_account_moderation_notes_account_idToaccounts                   account_moderation_notes[]              @relation("account_moderation_notes_account_idToaccounts")
+  account_moderation_notes_account_moderation_notes_target_account_idToaccounts            account_moderation_notes[]              @relation("account_moderation_notes_target_account_idToaccounts")
+  account_notes_account_notes_target_account_idToaccounts                                  account_notes[]                         @relation("account_notes_target_account_idToaccounts")
+  account_notes_account_notes_account_idToaccounts                                         account_notes[]                         @relation("account_notes_account_idToaccounts")
+  account_pins_account_pins_target_account_idToaccounts                                    account_pins[]                          @relation("account_pins_target_account_idToaccounts")
+  account_pins_account_pins_account_idToaccounts                                           account_pins[]                          @relation("account_pins_account_idToaccounts")
+  account_reach_filters                                                                    account_reach_filters?
+  account_relationship_severance_events                                                    account_relationship_severance_events[]
+  account_stats                                                                            account_stats?
+  account_statuses_cleanup_policies                                                        account_statuses_cleanup_policies[]
+  account_summaries                                                                        account_summaries?
+  account_warnings_account_warnings_account_idToaccounts                                   account_warnings[]                      @relation("account_warnings_account_idToaccounts")
+  account_warnings_account_warnings_target_account_idToaccounts                            account_warnings[]                      @relation("account_warnings_target_account_idToaccounts")
+  accounts                                                                                 accounts?                               @relation("accountsToaccounts", fields: [moved_to_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_2320833084")
+  other_accounts                                                                           accounts[]                              @relation("accountsToaccounts")
+  admin_action_logs                                                                        admin_action_logs[]
+  announcement_mutes                                                                       announcement_mutes[]
+  announcement_reactions                                                                   announcement_reactions[]
+  appeals_appeals_rejected_by_account_idToaccounts                                         appeals[]                               @relation("appeals_rejected_by_account_idToaccounts")
+  appeals_appeals_approved_by_account_idToaccounts                                         appeals[]                               @relation("appeals_approved_by_account_idToaccounts")
+  appeals_appeals_account_idToaccounts                                                     appeals[]                               @relation("appeals_account_idToaccounts")
+  blocks_blocks_account_idToaccounts                                                       blocks[]                                @relation("blocks_account_idToaccounts")
+  blocks_blocks_target_account_idToaccounts                                                blocks[]                                @relation("blocks_target_account_idToaccounts")
+  bookmarks                                                                                bookmarks[]
+  bulk_imports                                                                             bulk_imports[]
+  canonical_email_blocks                                                                   canonical_email_blocks[]
+  collection_items                                                                         collection_items[]
+  collections                                                                              collections[]
+  conversation_mutes                                                                       conversation_mutes[]
+  custom_filters                                                                           custom_filters[]
+  email_subscriptions                                                                      email_subscriptions[]
+  fasp_follow_recommendations_fasp_follow_recommendations_recommended_account_idToaccounts fasp_follow_recommendations[]           @relation("fasp_follow_recommendations_recommended_account_idToaccounts")
+  fasp_follow_recommendations_fasp_follow_recommendations_requesting_account_idToaccounts  fasp_follow_recommendations[]           @relation("fasp_follow_recommendations_requesting_account_idToaccounts")
+  favourites                                                                               favourites[]
+  featured_tags                                                                            featured_tags[]
+  follow_recommendation_mutes_follow_recommendation_mutes_target_account_idToaccounts      follow_recommendation_mutes[]           @relation("follow_recommendation_mutes_target_account_idToaccounts")
+  follow_recommendation_mutes_follow_recommendation_mutes_account_idToaccounts             follow_recommendation_mutes[]           @relation("follow_recommendation_mutes_account_idToaccounts")
+  follow_recommendation_suppressions                                                       follow_recommendation_suppressions?
+  follow_requests_follow_requests_account_idToaccounts                                     follow_requests[]                       @relation("follow_requests_account_idToaccounts")
+  follow_requests_follow_requests_target_account_idToaccounts                              follow_requests[]                       @relation("follow_requests_target_account_idToaccounts")
+  follows_follows_account_idToaccounts                                                     follows[]                               @relation("follows_account_idToaccounts")
+  follows_follows_target_account_idToaccounts                                              follows[]                               @relation("follows_target_account_idToaccounts")
+  generated_annual_reports                                                                 generated_annual_reports[]
+  global_follow_recommendations                                                            global_follow_recommendations?
+  instance_moderation_notes                                                                instance_moderation_notes[]
+  keypairs                                                                                 keypairs[]
+  list_accounts                                                                            list_accounts[]
+  lists                                                                                    lists[]
+  media_attachments                                                                        media_attachments[]
+  mentions                                                                                 mentions[]
+  mutes_mutes_account_idToaccounts                                                         mutes[]                                 @relation("mutes_account_idToaccounts")
+  mutes_mutes_target_account_idToaccounts                                                  mutes[]                                 @relation("mutes_target_account_idToaccounts")
+  notification_permissions_notification_permissions_account_idToaccounts                   notification_permissions[]              @relation("notification_permissions_account_idToaccounts")
+  notification_permissions_notification_permissions_from_account_idToaccounts              notification_permissions[]              @relation("notification_permissions_from_account_idToaccounts")
+  notification_policies                                                                    notification_policies?
+  notification_requests_notification_requests_from_account_idToaccounts                    notification_requests[]                 @relation("notification_requests_from_account_idToaccounts")
+  notification_requests_notification_requests_account_idToaccounts                         notification_requests[]                 @relation("notification_requests_account_idToaccounts")
+  notifications_notifications_account_idToaccounts                                         notifications[]                         @relation("notifications_account_idToaccounts")
+  notifications_notifications_from_account_idToaccounts                                    notifications[]                         @relation("notifications_from_account_idToaccounts")
+  poll_votes                                                                               poll_votes[]
+  polls                                                                                    polls[]
+  preview_cards_preview_cards_unverified_author_account_idToaccounts                       preview_cards[]                         @relation("preview_cards_unverified_author_account_idToaccounts")
+  preview_cards_preview_cards_author_account_idToaccounts                                  preview_cards[]                         @relation("preview_cards_author_account_idToaccounts")
+  quotes_quotes_account_idToaccounts                                                       quotes[]                                @relation("quotes_account_idToaccounts")
+  quotes_quotes_quoted_account_idToaccounts                                                quotes[]                                @relation("quotes_quoted_account_idToaccounts")
+  report_notes                                                                             report_notes[]
+  reports_reports_account_idToaccounts                                                     reports[]                               @relation("reports_account_idToaccounts")
+  reports_reports_action_taken_by_account_idToaccounts                                     reports[]                               @relation("reports_action_taken_by_account_idToaccounts")
+  reports_reports_target_account_idToaccounts                                              reports[]                               @relation("reports_target_account_idToaccounts")
+  reports_reports_assigned_account_idToaccounts                                            reports[]                               @relation("reports_assigned_account_idToaccounts")
+  scheduled_statuses                                                                       scheduled_statuses[]
+  severed_relationships_severed_relationships_local_account_idToaccounts                   severed_relationships[]                 @relation("severed_relationships_local_account_idToaccounts")
+  severed_relationships_severed_relationships_remote_account_idToaccounts                  severed_relationships[]                 @relation("severed_relationships_remote_account_idToaccounts")
+  status_edits                                                                             status_edits[]
+  status_pins                                                                              status_pins[]
+  status_trends                                                                            status_trends[]
+  statuses_statuses_account_idToaccounts                                                   statuses[]                              @relation("statuses_account_idToaccounts")
+  statuses_statuses_in_reply_to_account_idToaccounts                                       statuses[]                              @relation("statuses_in_reply_to_account_idToaccounts")
+  tag_follows                                                                              tag_follows[]
+  tombstones                                                                               tombstones[]
+  users                                                                                    users[]
+
+  @@index([domain, id], map: "index_accounts_on_domain_and_id")
+  @@index([moved_to_account_id], map: "index_accounts_on_moved_to_account_id", where: raw("(moved_to_account_id IS NOT NULL)"))
+  @@index([url], map: "index_accounts_on_url", where: raw("(url IS NOT NULL)"))
+}
+
+model accounts_tags {
+  account_id BigInt
+  tag_id     BigInt
+
+  @@id([tag_id, account_id])
+  @@index([account_id, tag_id], map: "index_accounts_tags_on_account_id_and_tag_id")
+}
+
+model admin_action_logs {
+  id                         BigInt   @id @default(autoincrement())
+  account_id                 BigInt
+  action                     String   @default("") @db.VarChar
+  created_at                 DateTime @db.Timestamp(6)
+  human_identifier           String?  @db.VarChar
+  moderation_subscription_id BigInt?
+  permalink                  String?  @db.VarChar
+  recorded_changes           Json?
+  recorded_changes_format    String?  @db.VarChar
+  route_param                String?  @db.VarChar
+  target_id                  BigInt?
+  target_type                String?  @db.VarChar
+  updated_at                 DateTime @db.Timestamp(6)
+  accounts                   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a7667297fa")
+
+  @@index([account_id], map: "index_admin_action_logs_on_account_id")
+  @@index([moderation_subscription_id], map: "index_admin_action_logs_on_moderation_subscription_id", where: raw("(moderation_subscription_id IS NOT NULL)"))
+  @@index([target_type, target_id], map: "index_admin_action_logs_on_target_type_and_target_id")
+}
+
+model admin_server_checks {
+  id         BigInt    @id @default(autoincrement())
+  key        String    @unique(map: "index_admin_server_checks_on_key") @db.VarChar
+  status     Int       @default(0) @db.SmallInt
+  severity   Int       @default(0) @db.SmallInt
+  ignored    Boolean   @default(false)
+  data       Json?
+  checked_at DateTime? @db.Timestamp(6)
+  created_at DateTime  @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+}
+
+model announcement_mutes {
+  id              BigInt        @id @default(autoincrement())
+  account_id      BigInt
+  announcement_id BigInt
+  created_at      DateTime      @db.Timestamp(6)
+  updated_at      DateTime      @db.Timestamp(6)
+  accounts        accounts      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9c99f8e835")
+  announcements   announcements @relation(fields: [announcement_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e35401adf1")
+
+  @@unique([account_id, announcement_id], map: "index_announcement_mutes_on_account_id_and_announcement_id")
+  @@index([announcement_id], map: "index_announcement_mutes_on_announcement_id")
+}
+
+model announcement_reactions {
+  id              BigInt         @id @default(autoincrement())
+  account_id      BigInt
+  announcement_id BigInt
+  created_at      DateTime       @db.Timestamp(6)
+  custom_emoji_id BigInt?
+  name            String         @default("") @db.VarChar
+  updated_at      DateTime       @db.Timestamp(6)
+  accounts        accounts       @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7444ad831f")
+  announcements   announcements  @relation(fields: [announcement_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a1226eaa5c")
+  custom_emojis   custom_emojis? @relation(fields: [custom_emoji_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_b742c91c0e")
+
+  @@unique([account_id, announcement_id, name], map: "index_announcement_reactions_on_account_id_and_announcement_id")
+  @@index([announcement_id], map: "index_announcement_reactions_on_announcement_id")
+  @@index([custom_emoji_id], map: "index_announcement_reactions_on_custom_emoji_id", where: raw("(custom_emoji_id IS NOT NULL)"))
+}
+
+model announcements {
+  id                     BigInt                   @id @default(autoincrement())
+  all_day                Boolean                  @default(false)
+  created_at             DateTime                 @db.Timestamp(6)
+  ends_at                DateTime?                @db.Timestamp(6)
+  notification_sent_at   DateTime?                @db.Timestamp(6)
+  published              Boolean                  @default(false)
+  published_at           DateTime?                @db.Timestamp(6)
+  scheduled_at           DateTime?                @db.Timestamp(6)
+  starts_at              DateTime?                @db.Timestamp(6)
+  status_ids             BigInt[]
+  text                   String                   @default("")
+  updated_at             DateTime                 @db.Timestamp(6)
+  announcement_mutes     announcement_mutes[]
+  announcement_reactions announcement_reactions[]
+}
+
+model annual_report_statuses_per_account_counts {
+  id             BigInt @id @default(autoincrement())
+  account_id     BigInt
+  statuses_count BigInt
+  year           Int
+
+  @@unique([year, account_id], map: "idx_on_year_account_id_ff3e167cef")
+}
+
+model appeals {
+  id                                                BigInt           @id @default(autoincrement())
+  account_id                                        BigInt
+  account_warning_id                                BigInt           @unique(map: "index_appeals_on_account_warning_id")
+  approved_at                                       DateTime?        @db.Timestamp(6)
+  approved_by_account_id                            BigInt?
+  created_at                                        DateTime         @db.Timestamp(6)
+  rejected_at                                       DateTime?        @db.Timestamp(6)
+  rejected_by_account_id                            BigInt?
+  text                                              String           @default("")
+  updated_at                                        DateTime         @db.Timestamp(6)
+  accounts_appeals_rejected_by_account_idToaccounts accounts?        @relation("appeals_rejected_by_account_idToaccounts", fields: [rejected_by_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_501c3a6e13")
+  accounts_appeals_approved_by_account_idToaccounts accounts?        @relation("appeals_approved_by_account_idToaccounts", fields: [approved_by_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_9deb2f63ad")
+  account_warnings                                  account_warnings @relation(fields: [account_warning_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a99f14546e")
+  accounts_appeals_account_idToaccounts             accounts         @relation("appeals_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_ea84881569")
+
+  @@index([account_id], map: "index_appeals_on_account_id")
+  @@index([approved_by_account_id], map: "index_appeals_on_approved_by_account_id", where: raw("(approved_by_account_id IS NOT NULL)"))
+  @@index([rejected_by_account_id], map: "index_appeals_on_rejected_by_account_id", where: raw("(rejected_by_account_id IS NOT NULL)"))
+}
+
+model ar_internal_metadata {
+  key        String   @id @db.VarChar
+  value      String?  @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model backups {
+  id                BigInt    @id @default(autoincrement())
+  created_at        DateTime  @db.Timestamp(6)
+  dump_content_type String?   @db.VarChar
+  dump_file_name    String?   @db.VarChar
+  dump_file_size    BigInt?
+  dump_updated_at   DateTime? @db.Timestamp(6)
+  processed         Boolean   @default(false)
+  updated_at        DateTime  @db.Timestamp(6)
+  user_id           BigInt?
+  users             users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_rails_096669d221")
+
+  @@index([user_id], map: "index_backups_on_user_id")
+}
+
+model blocks {
+  id                                          BigInt   @id @default(autoincrement())
+  account_id                                  BigInt
+  created_at                                  DateTime @db.Timestamp(6)
+  target_account_id                           BigInt
+  updated_at                                  DateTime @db.Timestamp(6)
+  uri                                         String?  @db.VarChar
+  accounts_blocks_account_idToaccounts        accounts @relation("blocks_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_4269e03e65")
+  accounts_blocks_target_account_idToaccounts accounts @relation("blocks_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_9571bfabc1")
+
+  @@unique([account_id, target_account_id], map: "index_blocks_on_account_id_and_target_account_id")
+  @@index([target_account_id], map: "index_blocks_on_target_account_id")
+}
+
+model bookmarks {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  status_id  BigInt
+  updated_at DateTime @db.Timestamp(6)
+  statuses   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_11207ffcfd")
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_9f6ac182a6")
+
+  @@unique([account_id, status_id], map: "index_bookmarks_on_account_id_and_status_id")
+  @@index([status_id], map: "index_bookmarks_on_status_id")
+}
+
+model bulk_import_rows {
+  id             BigInt       @id @default(autoincrement())
+  bulk_import_id BigInt
+  created_at     DateTime     @db.Timestamp(6)
+  data           Json?
+  updated_at     DateTime     @db.Timestamp(6)
+  bulk_imports   bulk_imports @relation(fields: [bulk_import_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d39af34335")
+
+  @@index([bulk_import_id], map: "index_bulk_import_rows_on_bulk_import_id")
+}
+
+model bulk_imports {
+  id                BigInt             @id @default(autoincrement())
+  account_id        BigInt
+  created_at        DateTime           @db.Timestamp(6)
+  finished_at       DateTime?          @db.Timestamp(6)
+  imported_items    Int                @default(0)
+  likely_mismatched Boolean            @default(false)
+  missing_status    Boolean            @default(false)
+  original_filename String             @default("") @db.VarChar
+  overwrite         Boolean            @default(false)
+  processed_items   Int                @default(0)
+  state             Int
+  total_items       Int                @default(0)
+  type              Int
+  updated_at        DateTime           @db.Timestamp(6)
+  bulk_import_rows  bulk_import_rows[]
+  accounts          accounts           @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_1d89c0f8b2")
+
+  @@index([account_id], map: "index_bulk_imports_on_account_id")
+  @@index([id], map: "index_bulk_imports_unconfirmed", where: raw("(state = 0)"))
+}
+
+model canonical_email_blocks {
+  id                   BigInt    @id @default(autoincrement())
+  canonical_email_hash String    @unique(map: "index_canonical_email_blocks_on_canonical_email_hash") @default("") @db.VarChar
+  created_at           DateTime  @db.Timestamp(6)
+  reference_account_id BigInt?
+  updated_at           DateTime  @db.Timestamp(6)
+  accounts             accounts? @relation(fields: [reference_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_1ecb262096")
+
+  @@index([reference_account_id], map: "index_canonical_email_blocks_on_reference_account_id")
+}
+
+model collection_items {
+  id                        BigInt      @id @default(dbgenerated("timestamp_id('collection_items'::text)"))
+  account_id                BigInt?
+  activity_uri              String?     @db.VarChar
+  approval_last_verified_at DateTime?   @db.Timestamp(6)
+  approval_uri              String?     @unique(map: "index_collection_items_on_approval_uri", where: raw("(approval_uri IS NOT NULL)")) @db.VarChar
+  collection_id             BigInt
+  created_at                DateTime    @db.Timestamp(6)
+  object_uri                String?     @db.VarChar
+  position                  Int         @default(1)
+  state                     Int         @default(0)
+  updated_at                DateTime    @db.Timestamp(6)
+  uri                       String?     @unique(map: "index_collection_items_on_uri", where: raw("(uri IS NOT NULL)")) @db.VarChar
+  accounts                  accounts?   @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_2eb992658d")
+  collections               collections @relation(fields: [collection_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_b1a778644b")
+
+  @@unique([account_id, collection_id], map: "index_collection_items_on_account_id_and_collection_id")
+  @@index([collection_id], map: "index_collection_items_on_collection_id")
+  @@index([state], map: "index_collection_items_on_state", where: raw("(state = ANY (ARRAY[2, 3]))"))
+}
+
+model collection_reports {
+  id            BigInt      @id @default(autoincrement())
+  collection_id BigInt
+  created_at    DateTime    @db.Timestamp(6)
+  report_id     BigInt
+  updated_at    DateTime    @db.Timestamp(6)
+  collections   collections @relation(fields: [collection_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_0720c1a3d6")
+  reports       reports     @relation(fields: [report_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4a504bd5e6")
+
+  @@index([collection_id], map: "index_collection_reports_on_collection_id")
+  @@index([report_id], map: "index_collection_reports_on_report_id")
+}
+
+model collections {
+  id                       BigInt               @id @default(dbgenerated("timestamp_id('collections'::text)"))
+  account_id               BigInt
+  created_at               DateTime             @db.Timestamp(6)
+  description              String?
+  description_html         String?
+  discoverable             Boolean
+  item_count               Int                  @default(0)
+  language                 String?              @db.VarChar
+  local                    Boolean
+  name                     String               @db.VarChar
+  original_number_of_items Int?
+  sensitive                Boolean
+  tag_id                   BigInt?
+  updated_at               DateTime             @db.Timestamp(6)
+  uri                      String?              @unique(map: "index_collections_on_uri", where: raw("(uri IS NOT NULL)")) @db.VarChar
+  url                      String?              @db.VarChar
+  collection_items         collection_items[]
+  collection_reports       collection_reports[]
+  accounts                 accounts             @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_544f142936")
+  tags                     tags?                @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_70f13aad15")
+
+  @@index([account_id], map: "index_collections_on_account_id")
+  @@index([tag_id], map: "index_collections_on_tag_id")
+}
+
+model conversation_mutes {
+  id              BigInt        @id @default(autoincrement())
+  account_id      BigInt
+  conversation_id BigInt
+  accounts        accounts      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_225b4212bb")
+  conversations   conversations @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5ab139311f")
+
+  @@unique([account_id, conversation_id], map: "index_conversation_mutes_on_account_id_and_conversation_id")
+}
+
+model conversations {
+  id                    BigInt                  @id @default(autoincrement())
+  created_at            DateTime                @db.Timestamp(6)
+  parent_account_id     BigInt?
+  parent_status_id      BigInt?                 @unique(map: "index_conversations_on_parent_status_id", where: raw("(parent_status_id IS NOT NULL)"))
+  updated_at            DateTime                @db.Timestamp(6)
+  uri                   String?                 @unique(map: "index_conversations_on_uri", where: raw("(uri IS NOT NULL)")) @db.VarChar
+  account_conversations account_conversations[]
+  conversation_mutes    conversation_mutes[]
+}
+
+model custom_emoji_categories {
+  id                BigInt         @id @default(autoincrement())
+  created_at        DateTime       @db.Timestamp(6)
+  featured_emoji_id BigInt?
+  name              String?        @unique(map: "index_custom_emoji_categories_on_name") @db.VarChar
+  updated_at        DateTime       @db.Timestamp(6)
+  custom_emojis     custom_emojis? @relation(fields: [featured_emoji_id], references: [id], onUpdate: NoAction, map: "fk_rails_ad7840c8cf")
+}
+
+model custom_emojis {
+  id                           BigInt                    @id @default(autoincrement())
+  category_id                  BigInt?
+  created_at                   DateTime                  @db.Timestamp(6)
+  disabled                     Boolean                   @default(false)
+  domain                       String?                   @db.VarChar
+  image_content_type           String?                   @db.VarChar
+  image_file_name              String?                   @db.VarChar
+  image_file_size              Int?
+  image_remote_url             String?                   @db.VarChar
+  image_storage_schema_version Int?
+  image_updated_at             DateTime?                 @db.Timestamp(6)
+  shortcode                    String                    @default("") @db.VarChar
+  updated_at                   DateTime                  @db.Timestamp(6)
+  uri                          String?                   @db.VarChar
+  visible_in_picker            Boolean                   @default(true)
+  announcement_reactions       announcement_reactions[]
+  custom_emoji_categories      custom_emoji_categories[]
+
+  @@unique([shortcode, domain], map: "index_custom_emojis_on_shortcode_and_domain")
+}
+
+model custom_filter_keywords {
+  id               BigInt         @id @default(autoincrement())
+  created_at       DateTime       @db.Timestamp(6)
+  custom_filter_id BigInt
+  keyword          String         @default("")
+  updated_at       DateTime       @db.Timestamp(6)
+  whole_word       Boolean        @default(true)
+  custom_filters   custom_filters @relation(fields: [custom_filter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5a49a74012")
+
+  @@index([custom_filter_id], map: "index_custom_filter_keywords_on_custom_filter_id")
+}
+
+model custom_filter_statuses {
+  id               BigInt         @id @default(autoincrement())
+  created_at       DateTime       @db.Timestamp(6)
+  custom_filter_id BigInt
+  status_id        BigInt
+  updated_at       DateTime       @db.Timestamp(6)
+  statuses         statuses       @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_2f6d20c0cf")
+  custom_filters   custom_filters @relation(fields: [custom_filter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e2ddaf5b14")
+
+  @@unique([status_id, custom_filter_id], map: "index_custom_filter_statuses_on_status_id_and_custom_filter_id")
+  @@index([custom_filter_id], map: "index_custom_filter_statuses_on_custom_filter_id")
+}
+
+model custom_filters {
+  id                     BigInt                   @id @default(autoincrement())
+  account_id             BigInt
+  action                 Int                      @default(0)
+  context                String[]                 @default([]) @db.VarChar
+  created_at             DateTime                 @db.Timestamp(6)
+  expires_at             DateTime?                @db.Timestamp(6)
+  phrase                 String                   @default("")
+  updated_at             DateTime                 @db.Timestamp(6)
+  custom_filter_keywords custom_filter_keywords[]
+  custom_filter_statuses custom_filter_statuses[]
+  accounts               accounts                 @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_8b8d786993")
+
+  @@index([account_id], map: "index_custom_filters_on_account_id")
+}
+
+model domain_allows {
+  id                         BigInt                    @id @default(autoincrement())
+  created_at                 DateTime                  @db.Timestamp(6)
+  domain                     String                    @unique(map: "index_domain_allows_on_domain") @default("") @db.VarChar
+  moderation_subscription_id BigInt?
+  updated_at                 DateTime                  @db.Timestamp(6)
+  moderation_subscriptions   moderation_subscriptions? @relation(fields: [moderation_subscription_id], references: [id], onUpdate: NoAction, map: "fk_rails_1be18c8bad")
+
+  @@index([moderation_subscription_id], map: "index_domain_allows_on_moderation_subscription_id")
+}
+
+model domain_blocks {
+  id                         BigInt                    @id @default(autoincrement())
+  created_at                 DateTime                  @db.Timestamp(6)
+  domain                     String                    @unique(map: "index_domain_blocks_on_domain") @default("") @db.VarChar
+  moderation_subscription_id BigInt?
+  obfuscate                  Boolean                   @default(false)
+  private_comment            String?
+  public_comment             String?
+  reject_media               Boolean                   @default(false)
+  reject_reports             Boolean                   @default(false)
+  severity                   Int?                      @default(0)
+  updated_at                 DateTime                  @db.Timestamp(6)
+  moderation_subscriptions   moderation_subscriptions? @relation(fields: [moderation_subscription_id], references: [id], onUpdate: NoAction, map: "fk_rails_0d4a303c6d")
+
+  @@index([moderation_subscription_id], map: "index_domain_blocks_on_moderation_subscription_id")
+}
+
+model email_domain_blocks {
+  id                        BigInt                @id @default(autoincrement())
+  allow_with_approval       Boolean               @default(false)
+  created_at                DateTime              @db.Timestamp(6)
+  domain                    String                @unique(map: "index_email_domain_blocks_on_domain") @default("") @db.VarChar
+  parent_id                 BigInt?
+  updated_at                DateTime              @db.Timestamp(6)
+  email_domain_blocks       email_domain_blocks?  @relation("email_domain_blocksToemail_domain_blocks", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_408efe0a15")
+  other_email_domain_blocks email_domain_blocks[] @relation("email_domain_blocksToemail_domain_blocks")
+}
+
+model email_subscriptions {
+  id                 BigInt    @id @default(autoincrement())
+  account_id         BigInt
+  confirmation_token String?   @unique(map: "index_email_subscriptions_on_confirmation_token", where: raw("(confirmation_token IS NOT NULL)")) @db.VarChar
+  confirmed_at       DateTime? @db.Timestamp(6)
+  created_at         DateTime  @db.Timestamp(6)
+  email              String    @db.VarChar
+  locale             String    @db.VarChar
+  updated_at         DateTime  @db.Timestamp(6)
+  accounts           accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_282940e759")
+
+  @@unique([account_id, email], map: "index_email_subscriptions_on_account_id_and_email")
+}
+
+model fasp_backfill_requests {
+  id               BigInt         @id @default(autoincrement())
+  category         String         @db.VarChar
+  created_at       DateTime       @db.Timestamp(6)
+  cursor           String?        @db.VarChar
+  fasp_provider_id BigInt
+  fulfilled        Boolean        @default(false)
+  max_count        Int            @default(100)
+  updated_at       DateTime       @db.Timestamp(6)
+  fasp_providers   fasp_providers @relation(fields: [fasp_provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_760d761775")
+
+  @@index([fasp_provider_id], map: "index_fasp_backfill_requests_on_fasp_provider_id")
+}
+
+model fasp_capabilities {
+  id               BigInt         @id @default(autoincrement())
+  created_at       DateTime       @db.Timestamp(6)
+  enabled          Boolean        @default(false)
+  fasp_provider_id BigInt
+  name             String         @db.VarChar
+  updated_at       DateTime       @db.Timestamp(6)
+  version          String         @db.VarChar
+  fasp_providers   fasp_providers @relation(fields: [fasp_provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_a6c03d8c46")
+
+  @@unique([fasp_provider_id, name, version], map: "idx_on_fasp_provider_id_name_version_68e2668987")
+  @@index([fasp_provider_id], map: "index_fasp_capabilities_on_fasp_provider_id")
+}
+
+model fasp_debug_callbacks {
+  id               BigInt         @id @default(autoincrement())
+  created_at       DateTime       @db.Timestamp(6)
+  fasp_provider_id BigInt
+  ip               String         @db.VarChar
+  request_body     String
+  updated_at       DateTime       @db.Timestamp(6)
+  fasp_providers   fasp_providers @relation(fields: [fasp_provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_c1650087cd")
+
+  @@index([fasp_provider_id], map: "index_fasp_debug_callbacks_on_fasp_provider_id")
+}
+
+model fasp_follow_recommendations {
+  id                                                                    BigInt   @id @default(autoincrement())
+  created_at                                                            DateTime @db.Timestamp(6)
+  recommended_account_id                                                BigInt
+  requesting_account_id                                                 BigInt
+  updated_at                                                            DateTime @db.Timestamp(6)
+  accounts_fasp_follow_recommendations_recommended_account_idToaccounts accounts @relation("fasp_follow_recommendations_recommended_account_idToaccounts", fields: [recommended_account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_5c63a5fd1b")
+  accounts_fasp_follow_recommendations_requesting_account_idToaccounts  accounts @relation("fasp_follow_recommendations_requesting_account_idToaccounts", fields: [requesting_account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_71623d7e2c")
+
+  @@index([recommended_account_id], map: "index_fasp_follow_recommendations_on_recommended_account_id")
+  @@index([requesting_account_id], map: "index_fasp_follow_recommendations_on_requesting_account_id")
+}
+
+model fasp_providers {
+  id                      BigInt                   @id @default(autoincrement())
+  base_url                String                   @unique(map: "index_fasp_providers_on_base_url") @db.VarChar
+  confirmed               Boolean                  @default(false)
+  contact_email           String?                  @db.VarChar
+  created_at              DateTime                 @db.Timestamp(6)
+  delivery_last_failed_at DateTime?                @db.Timestamp(6)
+  fediverse_account       String?                  @db.VarChar
+  name                    String                   @db.VarChar
+  privacy_policy          Json?
+  provider_public_key_pem String                   @db.VarChar
+  remote_identifier       String                   @db.VarChar
+  server_private_key_pem  String                   @db.VarChar
+  sign_in_url             String?                  @db.VarChar
+  updated_at              DateTime                 @db.Timestamp(6)
+  fasp_backfill_requests  fasp_backfill_requests[]
+  fasp_capabilities       fasp_capabilities[]
+  fasp_debug_callbacks    fasp_debug_callbacks[]
+  fasp_subscriptions      fasp_subscriptions[]
+}
+
+model fasp_subscriptions {
+  id                  BigInt         @id @default(autoincrement())
+  category            String         @db.VarChar
+  created_at          DateTime       @db.Timestamp(6)
+  fasp_provider_id    BigInt
+  max_batch_size      Int
+  subscription_type   String         @db.VarChar
+  threshold_likes     Int?
+  threshold_replies   Int?
+  threshold_shares    Int?
+  threshold_timeframe Int?
+  updated_at          DateTime       @db.Timestamp(6)
+  fasp_providers      fasp_providers @relation(fields: [fasp_provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_4c021f5938")
+
+  @@index([fasp_provider_id], map: "index_fasp_subscriptions_on_fasp_provider_id")
+}
+
+model favourites {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  status_id  BigInt
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_5eb6c2b873")
+  statuses   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_b0e856845e")
+
+  @@unique([account_id, status_id], map: "index_favourites_on_account_id_and_status_id")
+  @@index([account_id, id], map: "index_favourites_on_account_id_and_id")
+  @@index([status_id], map: "index_favourites_on_status_id")
+}
+
+model featured_tags {
+  id             BigInt    @id @default(autoincrement())
+  account_id     BigInt
+  created_at     DateTime  @db.Timestamp(6)
+  last_status_at DateTime? @db.Timestamp(6)
+  name           String?   @db.VarChar
+  statuses_count BigInt    @default(0)
+  tag_id         BigInt
+  updated_at     DateTime  @db.Timestamp(6)
+  accounts       accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_174efcf15f")
+  tags           tags      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_23a9055c7c")
+
+  @@unique([account_id, tag_id], map: "index_featured_tags_on_account_id_and_tag_id")
+  @@index([tag_id], map: "index_featured_tags_on_tag_id")
+}
+
+model follow_recommendation_mutes {
+  id                                                               BigInt   @id @default(autoincrement())
+  account_id                                                       BigInt
+  created_at                                                       DateTime @db.Timestamp(6)
+  target_account_id                                                BigInt
+  updated_at                                                       DateTime @db.Timestamp(6)
+  accounts_follow_recommendation_mutes_target_account_idToaccounts accounts @relation("follow_recommendation_mutes_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a9f09ec9a8")
+  accounts_follow_recommendation_mutes_account_idToaccounts        accounts @relation("follow_recommendation_mutes_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d36abd69ea")
+
+  @@unique([account_id, target_account_id], map: "idx_on_account_id_target_account_id_a8c8ddf44e")
+  @@index([target_account_id], map: "index_follow_recommendation_mutes_on_target_account_id")
+}
+
+model follow_recommendation_suppressions {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt   @unique(map: "index_follow_recommendation_suppressions_on_account_id")
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_dfb9a1dbe2")
+}
+
+model follow_requests {
+  id                                                   BigInt          @id @default(autoincrement())
+  account_id                                           BigInt
+  created_at                                           DateTime        @db.Timestamp(6)
+  languages                                            String[]        @db.VarChar
+  notify                                               Boolean         @default(false)
+  show_reblogs                                         Boolean         @default(true)
+  target_account_id                                    BigInt
+  updated_at                                           DateTime        @db.Timestamp(6)
+  uri                                                  String?         @db.VarChar
+  accounts_follow_requests_account_idToaccounts        accounts        @relation("follow_requests_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_76d644b0e7")
+  accounts_follow_requests_target_account_idToaccounts accounts        @relation("follow_requests_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_9291ec025d")
+  list_accounts                                        list_accounts[]
+
+  @@unique([account_id, target_account_id], map: "index_follow_requests_on_account_id_and_target_account_id")
+  @@index([target_account_id, account_id], map: "index_follow_requests_on_target_account_id_and_account_id")
+}
+
+model follows {
+  id                                           BigInt          @id @default(autoincrement())
+  account_id                                   BigInt
+  created_at                                   DateTime        @db.Timestamp(6)
+  languages                                    String[]        @db.VarChar
+  notify                                       Boolean         @default(false)
+  show_reblogs                                 Boolean         @default(true)
+  target_account_id                            BigInt
+  updated_at                                   DateTime        @db.Timestamp(6)
+  uri                                          String?         @db.VarChar
+  accounts_follows_account_idToaccounts        accounts        @relation("follows_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_32ed1b5560")
+  accounts_follows_target_account_idToaccounts accounts        @relation("follows_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_745ca29eac")
+  list_accounts                                list_accounts[]
+
+  @@unique([account_id, target_account_id], map: "index_follows_on_account_id_and_target_account_id")
+  @@index([target_account_id, account_id], map: "index_follows_on_target_account_id_and_account_id")
+}
+
+model generated_annual_reports {
+  id             BigInt    @id @default(autoincrement())
+  account_id     BigInt
+  created_at     DateTime  @db.Timestamp(6)
+  data           Json
+  schema_version Int
+  share_key      String?   @db.VarChar
+  updated_at     DateTime  @db.Timestamp(6)
+  viewed_at      DateTime? @db.Timestamp(6)
+  year           Int
+  accounts       accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4ca37f035c")
+
+  @@unique([account_id, year], map: "index_generated_annual_reports_on_account_id_and_year")
+}
+
+model global_follow_recommendations {
+  account_id BigInt   @id @default(autoincrement())
+  rank       Decimal  @db.Decimal
+  reason     String[] @db.VarChar
+  stale      Boolean  @default(false)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_bacefde68a")
+
+  @@index([rank], map: "index_global_follow_recommendations_on_rank")
+}
+
+model identities {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  provider   String   @default("") @db.VarChar
+  uid        String   @default("") @db.VarChar
+  updated_at DateTime @db.Timestamp(6)
+  user_id    BigInt?
+  users      users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_bea040f377")
+
+  @@unique([uid, provider], map: "index_identities_on_uid_and_provider")
+  @@index([user_id], map: "index_identities_on_user_id")
+}
+
+model instance_moderation_notes {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  content    String?
+  created_at DateTime @db.Timestamp(6)
+  domain     String   @db.VarChar
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_62f919e09b")
+
+  @@index([domain], map: "index_instance_moderation_notes_on_domain")
+}
+
+model invites {
+  id                             BigInt    @id @default(autoincrement())
+  autofollow                     Boolean   @default(false)
+  code                           String    @unique(map: "index_invites_on_code") @default("") @db.VarChar
+  comment                        String?
+  created_at                     DateTime  @db.Timestamp(6)
+  expires_at                     DateTime? @db.Timestamp(6)
+  max_uses                       Int?
+  updated_at                     DateTime  @db.Timestamp(6)
+  user_id                        BigInt
+  uses                           Int       @default(0)
+  users_invites_user_idTousers   users     @relation("invites_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_ff69dbb2ac")
+  users_users_invite_idToinvites users[]   @relation("users_invite_idToinvites")
+
+  @@index([user_id], map: "index_invites_on_user_id")
+}
+
+model ip_blocks {
+  id         BigInt    @id @default(autoincrement())
+  comment    String    @default("")
+  created_at DateTime  @db.Timestamp(6)
+  expires_at DateTime? @db.Timestamp(6)
+  ip         String    @unique(map: "index_ip_blocks_on_ip") @default("0.0.0.0") @db.Inet
+  severity   Int       @default(0)
+  updated_at DateTime  @db.Timestamp(6)
+}
+
+model keypairs {
+  id             BigInt    @id @default(autoincrement())
+  account_id     BigInt
+  created_at     DateTime  @db.Timestamp(6)
+  expires_at     DateTime? @db.Timestamp(6)
+  local_fragment String?   @db.VarChar
+  private_key    String?   @db.VarChar
+  public_key     String    @db.VarChar
+  revoked        Boolean   @default(false)
+  type           Int
+  updated_at     DateTime  @db.Timestamp(6)
+  uri            String?   @unique(map: "index_keypairs_on_uri") @db.VarChar
+  accounts       accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f5ea7ac36a")
+
+  @@unique([account_id, local_fragment], map: "index_keypairs_on_account_id_and_local_fragment")
+}
+
+model list_accounts {
+  id                BigInt           @id @default(autoincrement())
+  account_id        BigInt
+  follow_id         BigInt?
+  follow_request_id BigInt?
+  list_id           BigInt
+  follows           follows?         @relation(fields: [follow_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_40f9cc29f1")
+  accounts          accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_85fee9d6ab")
+  lists             lists            @relation(fields: [list_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e54e356c88")
+  follow_requests   follow_requests? @relation(fields: [follow_request_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f11f9d1fcc")
+
+  @@unique([account_id, list_id], map: "index_list_accounts_on_account_id_and_list_id")
+  @@index([follow_id], map: "index_list_accounts_on_follow_id", where: raw("(follow_id IS NOT NULL)"))
+  @@index([follow_request_id], map: "index_list_accounts_on_follow_request_id", where: raw("(follow_request_id IS NOT NULL)"))
+  @@index([list_id, account_id], map: "index_list_accounts_on_list_id_and_account_id")
+}
+
+model lists {
+  id             BigInt          @id @default(autoincrement())
+  account_id     BigInt
+  created_at     DateTime        @db.Timestamp(6)
+  exclusive      Boolean         @default(false)
+  replies_policy Int             @default(0)
+  title          String          @default("") @db.VarChar
+  updated_at     DateTime        @db.Timestamp(6)
+  list_accounts  list_accounts[]
+  accounts       accounts        @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_3853b78dac")
+
+  @@index([account_id], map: "index_lists_on_account_id")
+}
+
+model login_activities {
+  id                    BigInt    @id @default(autoincrement())
+  authentication_method String?   @db.VarChar
+  created_at            DateTime? @db.Timestamp(6)
+  failure_reason        String?   @db.VarChar
+  ip                    String?   @db.Inet
+  provider              String?   @db.VarChar
+  success               Boolean?
+  user_agent            String?   @db.VarChar
+  user_id               BigInt
+  users                 users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e4b6396b41")
+
+  @@index([user_id], map: "index_login_activities_on_user_id")
+}
+
+model markers {
+  id           BigInt   @id @default(autoincrement())
+  created_at   DateTime @db.Timestamp(6)
+  last_read_id BigInt   @default(0)
+  lock_version Int      @default(0)
+  timeline     String   @default("") @db.VarChar
+  updated_at   DateTime @db.Timestamp(6)
+  user_id      BigInt
+  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a7009bc2b6")
+
+  @@unique([user_id, timeline], map: "index_markers_on_user_id_and_timeline")
+}
+
+model media_attachments {
+  id                               BigInt              @id @default(dbgenerated("timestamp_id('media_attachments'::text)"))
+  account_id                       BigInt?
+  blurhash                         String?             @db.VarChar
+  created_at                       DateTime            @db.Timestamp(6)
+  description                      String?
+  file_content_type                String?             @db.VarChar
+  file_file_name                   String?             @db.VarChar
+  file_file_size                   Int?
+  file_meta                        Json?               @db.Json
+  file_storage_schema_version      Int?
+  file_updated_at                  DateTime?           @db.Timestamp(6)
+  processing                       Int?
+  remote_url                       String              @default("") @db.VarChar
+  scheduled_status_id              BigInt?
+  shortcode                        String?             @unique(map: "index_media_attachments_on_shortcode", where: raw("(shortcode IS NOT NULL)")) @db.VarChar
+  status_id                        BigInt?
+  thumbnail_content_type           String?             @db.VarChar
+  thumbnail_file_name              String?             @db.VarChar
+  thumbnail_file_size              Int?
+  thumbnail_remote_url             String?             @db.VarChar
+  thumbnail_storage_schema_version Int?
+  thumbnail_updated_at             DateTime?           @db.Timestamp(6)
+  type                             Int                 @default(0)
+  updated_at                       DateTime            @db.Timestamp(6)
+  accounts                         accounts?           @relation(fields: [account_id], references: [id], onUpdate: NoAction, map: "fk_96dd81e81b")
+  scheduled_statuses               scheduled_statuses? @relation(fields: [scheduled_status_id], references: [id], onUpdate: NoAction, map: "fk_rails_31fc5aeef1")
+  statuses                         statuses?           @relation(fields: [status_id], references: [id], onUpdate: NoAction, map: "fk_rails_3ec0cfdd70")
+
+  @@index([account_id, status_id(sort: Desc)], map: "index_media_attachments_on_account_id_and_status_id")
+  @@index([scheduled_status_id], map: "index_media_attachments_on_scheduled_status_id", where: raw("(scheduled_status_id IS NOT NULL)"))
+  @@index([status_id], map: "index_media_attachments_on_status_id")
+}
+
+model mentions {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  silent     Boolean  @default(false)
+  status_id  BigInt
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_970d43f9d1")
+  statuses   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_59edbe2887")
+
+  @@unique([account_id, status_id], map: "index_mentions_on_account_id_and_status_id")
+  @@index([status_id], map: "index_mentions_on_status_id")
+}
+
+model moderation_subscription_advisories {
+  id                         BigInt                   @id @default(autoincrement())
+  action                     Int
+  created_at                 DateTime                 @db.Timestamp(6)
+  moderation_subscription_id BigInt
+  target_key                 String                   @db.VarChar
+  target_type                Int
+  updated_at                 DateTime                 @db.Timestamp(6)
+  moderation_subscriptions   moderation_subscriptions @relation(fields: [moderation_subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_373d44cfb0")
+
+  @@unique([target_type, target_key, moderation_subscription_id], map: "idx_on_target_type_target_key_moderation_subscripti_a3f09c29b9")
+  @@index([moderation_subscription_id], map: "index_moderation_advisories_on_moderation_subscription_id")
+}
+
+model moderation_subscriptions {
+  id                                 BigInt                               @id @default(autoincrement())
+  apply_automatically                Boolean                              @default(false)
+  created_at                         DateTime                             @db.Timestamp(6)
+  last_synced_at                     DateTime?                            @db.Timestamp(6)
+  list_action                        Int?
+  name                               String?                              @db.VarChar
+  override_unattributed              Boolean                              @default(false)
+  preserve_relationships             Boolean                              @default(true)
+  priority                           Int?
+  retract_automatically              Boolean                              @default(true)
+  type                               Int
+  updated_at                         DateTime                             @db.Timestamp(6)
+  url                                String                               @db.VarChar
+  domain_allows                      domain_allows[]
+  domain_blocks                      domain_blocks[]
+  moderation_subscription_advisories moderation_subscription_advisories[]
+  moderation_suggestions             moderation_suggestions[]
+}
+
+model moderation_suggestions {
+  id                         BigInt                    @id @default(autoincrement())
+  moderation_subscription_id BigInt?
+  state                      Int                       @default(0)
+  action                     Int
+  target_type                Int
+  target_key                 String                    @db.VarChar
+  created_at                 DateTime                  @db.Timestamp(6)
+  updated_at                 DateTime                  @db.Timestamp(6)
+  moderation_subscriptions   moderation_subscriptions? @relation(fields: [moderation_subscription_id], references: [id], onUpdate: NoAction, map: "fk_rails_189e624c8b")
+
+  @@unique([target_type, target_key, action], map: "idx_on_target_type_target_key_action_4f6ab01ebc")
+  @@index([moderation_subscription_id], map: "index_moderation_suggestions_on_moderation_subscription_id")
+}
+
+model mutes {
+  id                                         BigInt    @id @default(autoincrement())
+  account_id                                 BigInt
+  created_at                                 DateTime  @db.Timestamp(6)
+  expires_at                                 DateTime? @db.Timestamp(6)
+  hide_notifications                         Boolean   @default(true)
+  target_account_id                          BigInt
+  updated_at                                 DateTime  @db.Timestamp(6)
+  accounts_mutes_account_idToaccounts        accounts  @relation("mutes_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_b8d8daf315")
+  accounts_mutes_target_account_idToaccounts accounts  @relation("mutes_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_eecff219ea")
+
+  @@unique([account_id, target_account_id], map: "index_mutes_on_account_id_and_target_account_id")
+  @@index([target_account_id], map: "index_mutes_on_target_account_id")
+}
+
+model notification_permissions {
+  id                                                          BigInt   @id @default(autoincrement())
+  account_id                                                  BigInt
+  created_at                                                  DateTime @db.Timestamp(6)
+  from_account_id                                             BigInt
+  updated_at                                                  DateTime @db.Timestamp(6)
+  accounts_notification_permissions_account_idToaccounts      accounts @relation("notification_permissions_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7c0bed08df")
+  accounts_notification_permissions_from_account_idToaccounts accounts @relation("notification_permissions_from_account_idToaccounts", fields: [from_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_e3e0aaad70")
+
+  @@index([account_id], map: "index_notification_permissions_on_account_id")
+  @@index([from_account_id], map: "index_notification_permissions_on_from_account_id")
+}
+
+model notification_policies {
+  id                   BigInt   @id @default(autoincrement())
+  account_id           BigInt   @unique(map: "index_notification_policies_on_account_id")
+  created_at           DateTime @db.Timestamp(6)
+  for_bots             Int      @default(0)
+  for_limited_accounts Int      @default(1)
+  for_new_accounts     Int      @default(0)
+  for_not_followers    Int      @default(0)
+  for_not_following    Int      @default(0)
+  for_private_mentions Int      @default(1)
+  updated_at           DateTime @db.Timestamp(6)
+  accounts             accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_506d62f0da")
+}
+
+model notification_requests {
+  id                                                       BigInt    @id @default(dbgenerated("timestamp_id('notification_requests'::text)"))
+  account_id                                               BigInt
+  created_at                                               DateTime  @db.Timestamp(6)
+  from_account_id                                          BigInt
+  last_status_id                                           BigInt?
+  notifications_count                                      BigInt    @default(0)
+  updated_at                                               DateTime  @db.Timestamp(6)
+  accounts_notification_requests_from_account_idToaccounts accounts  @relation("notification_requests_from_account_idToaccounts", fields: [from_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5632f121b4")
+  statuses                                                 statuses? @relation(fields: [last_status_id], references: [id], onUpdate: NoAction, map: "fk_rails_61c7aa9c1f")
+  accounts_notification_requests_account_idToaccounts      accounts  @relation("notification_requests_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_881c7f71c4")
+
+  @@unique([account_id, from_account_id], map: "index_notification_requests_on_account_id_and_from_account_id")
+  @@index([from_account_id], map: "index_notification_requests_on_from_account_id")
+  @@index([last_status_id], map: "index_notification_requests_on_last_status_id")
+}
+
+model notifications {
+  id                                               BigInt   @id @default(autoincrement())
+  account_id                                       BigInt
+  activity_id                                      BigInt
+  activity_type                                    String   @db.VarChar
+  created_at                                       DateTime @db.Timestamp(6)
+  filtered                                         Boolean  @default(false)
+  from_account_id                                  BigInt
+  group_key                                        String?  @db.VarChar
+  type                                             String?  @db.VarChar
+  updated_at                                       DateTime @db.Timestamp(6)
+  accounts_notifications_account_idToaccounts      accounts @relation("notifications_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_c141c8ee55")
+  accounts_notifications_from_account_idToaccounts accounts @relation("notifications_from_account_idToaccounts", fields: [from_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fbd6b0bf9e")
+
+  @@index([account_id, group_key], map: "index_notifications_on_account_id_and_group_key", where: raw("(group_key IS NOT NULL)"))
+  @@index([account_id, id(sort: Desc), type], map: "index_notifications_on_account_id_and_id_and_type")
+  @@index([activity_id, activity_type], map: "index_notifications_on_activity_id_and_activity_type")
+  @@index([account_id, id(sort: Desc), type], map: "index_notifications_on_filtered", where: raw("(filtered = false)"))
+  @@index([from_account_id], map: "index_notifications_on_from_account_id")
+}
+
+model oauth_access_grants {
+  id                    BigInt             @id @default(autoincrement())
+  application_id        BigInt
+  code_challenge        String?            @db.VarChar
+  code_challenge_method String?            @db.VarChar
+  created_at            DateTime           @db.Timestamp(6)
+  expires_in            Int
+  redirect_uri          String
+  resource_owner_id     BigInt
+  revoked_at            DateTime?          @db.Timestamp(6)
+  scopes                String?            @db.VarChar
+  token                 String             @unique(map: "index_oauth_access_grants_on_token") @db.VarChar
+  oauth_applications    oauth_applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_34d54b0a33")
+  users                 users              @relation(fields: [resource_owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_63b044929b")
+
+  @@index([resource_owner_id], map: "index_oauth_access_grants_on_resource_owner_id")
+}
+
+model oauth_access_tokens {
+  id                     BigInt                   @id @default(autoincrement())
+  application_id         BigInt?
+  created_at             DateTime                 @db.Timestamp(6)
+  expires_in             Int?
+  last_used_at           DateTime?                @db.Timestamp(6)
+  last_used_ip           String?                  @db.Inet
+  refresh_token          String?                  @unique(map: "index_oauth_access_tokens_on_refresh_token", where: raw("(refresh_token IS NOT NULL)")) @db.VarChar
+  resource_owner_id      BigInt?
+  revoked_at             DateTime?                @db.Timestamp(6)
+  scopes                 String?                  @db.VarChar
+  token                  String                   @unique(map: "index_oauth_access_tokens_on_token") @db.VarChar
+  users                  users?                   @relation(fields: [resource_owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_e84df68546")
+  oauth_applications     oauth_applications?      @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_f5fc4c1ee3")
+  session_activations    session_activations[]
+  web_push_subscriptions web_push_subscriptions[]
+
+  @@index([resource_owner_id], map: "index_oauth_access_tokens_on_resource_owner_id", where: raw("(resource_owner_id IS NOT NULL)"))
+}
+
+model oauth_applications {
+  id                                                        BigInt                @id @default(autoincrement())
+  confidential                                              Boolean               @default(true)
+  created_at                                                DateTime?             @db.Timestamp(6)
+  name                                                      String                @db.VarChar
+  owner_id                                                  BigInt?
+  owner_type                                                String?               @db.VarChar
+  redirect_uri                                              String
+  scopes                                                    String                @default("") @db.VarChar
+  secret                                                    String                @db.VarChar
+  superapp                                                  Boolean               @default(false)
+  uid                                                       String                @unique(map: "index_oauth_applications_on_uid") @db.VarChar
+  updated_at                                                DateTime?             @db.Timestamp(6)
+  website                                                   String?               @db.VarChar
+  oauth_access_grants                                       oauth_access_grants[]
+  oauth_access_tokens                                       oauth_access_tokens[]
+  users_oauth_applications_owner_idTousers                  users?                @relation("oauth_applications_owner_idTousers", fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_b0988c7c0a")
+  reports                                                   reports[]
+  users_users_created_by_application_idTooauth_applications users[]               @relation("users_created_by_application_idTooauth_applications")
+
+  @@index([owner_id, owner_type], map: "index_oauth_applications_on_owner_id_and_owner_type")
+  @@index([superapp], map: "index_oauth_applications_on_superapp", where: raw("(superapp = true)"))
+}
+
+model pghero_space_stats {
+  id          BigInt    @id @default(autoincrement())
+  captured_at DateTime? @db.Timestamp(6)
+  database    String?
+  relation    String?
+  schema      String?
+  size        BigInt?
+
+  @@index([database, captured_at], map: "index_pghero_space_stats_on_database_and_captured_at")
+}
+
+model poll_votes {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  choice     Int      @default(0)
+  created_at DateTime @db.Timestamp(6)
+  poll_id    BigInt
+  updated_at DateTime @db.Timestamp(6)
+  uri        String?  @db.VarChar
+  polls      polls    @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a6e6974b7e")
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_b6c18cf44a")
+
+  @@index([account_id], map: "index_poll_votes_on_account_id")
+  @@index([poll_id], map: "index_poll_votes_on_poll_id")
+}
+
+model polls {
+  id              BigInt       @id @default(autoincrement())
+  account_id      BigInt
+  cached_tallies  BigInt[]     @default([])
+  created_at      DateTime     @db.Timestamp(6)
+  expires_at      DateTime?    @db.Timestamp(6)
+  hide_totals     Boolean      @default(false)
+  last_fetched_at DateTime?    @db.Timestamp(6)
+  lock_version    Int          @default(0)
+  multiple        Boolean      @default(false)
+  options         String[]     @default([]) @db.VarChar
+  status_id       BigInt
+  updated_at      DateTime     @db.Timestamp(6)
+  voters_count    BigInt?
+  votes_count     BigInt       @default(0)
+  poll_votes      poll_votes[]
+  statuses        statuses     @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_3e0d9f1115")
+  accounts        accounts     @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5b19a0c011")
+
+  @@index([account_id], map: "index_polls_on_account_id")
+  @@index([status_id], map: "index_polls_on_status_id")
+}
+
+model preview_card_providers {
+  id                  BigInt    @id @default(autoincrement())
+  created_at          DateTime  @db.Timestamp(6)
+  domain              String    @unique(map: "index_preview_card_providers_on_domain") @default("") @db.VarChar
+  icon_content_type   String?   @db.VarChar
+  icon_file_name      String?   @db.VarChar
+  icon_file_size      BigInt?
+  icon_updated_at     DateTime? @db.Timestamp(6)
+  requested_review_at DateTime? @db.Timestamp(6)
+  reviewed_at         DateTime? @db.Timestamp(6)
+  trendable           Boolean?
+  updated_at          DateTime  @db.Timestamp(6)
+}
+
+model preview_card_trends {
+  id              BigInt        @id @default(autoincrement())
+  allowed         Boolean       @default(false)
+  language        String?       @db.VarChar
+  preview_card_id BigInt        @unique(map: "index_preview_card_trends_on_preview_card_id")
+  rank            Int           @default(0)
+  score           Float         @default(0.0)
+  preview_cards   preview_cards @relation(fields: [preview_card_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_371593db34")
+}
+
+model preview_cards {
+  id                                                            BigInt               @id @default(autoincrement())
+  author_account_id                                             BigInt?
+  author_name                                                   String               @default("") @db.VarChar
+  author_url                                                    String               @default("") @db.VarChar
+  blurhash                                                      String?              @db.VarChar
+  created_at                                                    DateTime             @db.Timestamp(6)
+  description                                                   String               @default("") @db.VarChar
+  embed_url                                                     String               @default("") @db.VarChar
+  height                                                        Int                  @default(0)
+  html                                                          String               @default("")
+  image_content_type                                            String?              @db.VarChar
+  image_description                                             String               @default("") @db.VarChar
+  image_file_name                                               String?              @db.VarChar
+  image_file_size                                               Int?
+  image_storage_schema_version                                  Int?
+  image_updated_at                                              DateTime?            @db.Timestamp(6)
+  language                                                      String?              @db.VarChar
+  link_type                                                     Int?
+  max_score                                                     Float?
+  max_score_at                                                  DateTime?            @db.Timestamp(6)
+  provider_name                                                 String               @default("") @db.VarChar
+  provider_url                                                  String               @default("") @db.VarChar
+  published_at                                                  DateTime?            @db.Timestamp(6)
+  title                                                         String               @default("") @db.VarChar
+  trendable                                                     Boolean?
+  type                                                          Int                  @default(0)
+  unverified_author_account_id                                  BigInt?
+  updated_at                                                    DateTime             @db.Timestamp(6)
+  url                                                           String               @unique(map: "index_preview_cards_on_url") @default("") @db.VarChar
+  width                                                         Int                  @default(0)
+  preview_card_trends                                           preview_card_trends?
+  accounts_preview_cards_unverified_author_account_idToaccounts accounts?            @relation("preview_cards_unverified_author_account_idToaccounts", fields: [unverified_author_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_6fb2119894")
+  accounts_preview_cards_author_account_idToaccounts            accounts?            @relation("preview_cards_author_account_idToaccounts", fields: [author_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_dca4905b94")
+
+  @@index([author_account_id], map: "index_preview_cards_on_author_account_id", where: raw("(author_account_id IS NOT NULL)"))
+  @@index([unverified_author_account_id, id], map: "index_preview_cards_on_unverified_author_account_id_and_id", where: raw("(unverified_author_account_id IS NOT NULL)"))
+}
+
+model preview_cards_statuses {
+  preview_card_id BigInt
+  status_id       BigInt
+  url             String? @db.VarChar
+
+  @@id([status_id, preview_card_id])
+}
+
+model quotes {
+  id                                          BigInt    @id @default(dbgenerated("timestamp_id('quotes'::text)"))
+  account_id                                  BigInt
+  activity_uri                                String?   @unique(map: "index_quotes_on_activity_uri", where: raw("(activity_uri IS NOT NULL)")) @db.VarChar
+  approval_uri                                String?   @db.VarChar
+  created_at                                  DateTime  @db.Timestamp(6)
+  legacy                                      Boolean   @default(false)
+  quoted_account_id                           BigInt?
+  quoted_status_id                            BigInt?
+  state                                       Int       @default(0)
+  status_id                                   BigInt    @unique(map: "index_quotes_on_status_id")
+  updated_at                                  DateTime  @db.Timestamp(6)
+  accounts_quotes_account_idToaccounts        accounts  @relation("quotes_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_36d54169fc")
+  statuses_quotes_quoted_status_idTostatuses  statuses? @relation("quotes_quoted_status_idTostatuses", fields: [quoted_status_id], references: [id], onUpdate: NoAction, map: "fk_rails_38068caa0e")
+  statuses_quotes_status_idTostatuses         statuses  @relation("quotes_status_idTostatuses", fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_bd3ab4462c")
+  accounts_quotes_quoted_account_idToaccounts accounts? @relation("quotes_quoted_account_idToaccounts", fields: [quoted_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_bfc5276b70")
+
+  @@index([account_id, quoted_account_id, id], map: "index_quotes_on_account_id_and_quoted_account_id_and_id")
+  @@index([approval_uri], map: "index_quotes_on_approval_uri", where: raw("(approval_uri IS NOT NULL)"))
+  @@index([quoted_account_id], map: "index_quotes_on_quoted_account_id")
+  @@index([quoted_status_id, id], map: "index_quotes_on_quoted_status_id_and_id")
+}
+
+model relationship_severance_events {
+  id                                    BigInt                                  @id @default(autoincrement())
+  created_at                            DateTime                                @db.Timestamp(6)
+  purged                                Boolean                                 @default(false)
+  target_name                           String                                  @db.VarChar
+  type                                  Int
+  updated_at                            DateTime                                @db.Timestamp(6)
+  account_relationship_severance_events account_relationship_severance_events[]
+  severed_relationships                 severed_relationships[]
+
+  @@index([type, target_name], map: "index_relationship_severance_events_on_type_and_target_name")
+}
+
+model relays {
+  id                 BigInt   @id @default(autoincrement())
+  created_at         DateTime @db.Timestamp(6)
+  follow_activity_id String?  @db.VarChar
+  inbox_url          String   @default("") @db.VarChar
+  state              Int      @default(0)
+  updated_at         DateTime @db.Timestamp(6)
+}
+
+model report_notes {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  content    String
+  created_at DateTime @db.Timestamp(6)
+  report_id  BigInt
+  updated_at DateTime @db.Timestamp(6)
+  reports    reports  @relation(fields: [report_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_7fa83a61eb")
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_cae66353f3")
+
+  @@index([account_id], map: "index_report_notes_on_account_id")
+  @@index([report_id], map: "index_report_notes_on_report_id")
+}
+
+model reports {
+  id                                                    BigInt               @id @default(autoincrement())
+  account_id                                            BigInt
+  action_taken_at                                       DateTime?            @db.Timestamp(6)
+  action_taken_by_account_id                            BigInt?
+  application_id                                        BigInt?
+  assigned_account_id                                   BigInt?
+  category                                              Int                  @default(0)
+  comment                                               String               @default("")
+  created_at                                            DateTime             @db.Timestamp(6)
+  forwarded                                             Boolean?
+  rule_ids                                              BigInt[]
+  status_ids                                            BigInt[]             @default([])
+  target_account_id                                     BigInt
+  updated_at                                            DateTime             @db.Timestamp(6)
+  uri                                                   String?              @db.VarChar
+  account_warnings                                      account_warnings[]
+  collection_reports                                    collection_reports[]
+  report_notes                                          report_notes[]
+  accounts_reports_account_idToaccounts                 accounts             @relation("reports_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_4b81f7522c")
+  accounts_reports_action_taken_by_account_idToaccounts accounts?            @relation("reports_action_taken_by_account_idToaccounts", fields: [action_taken_by_account_id], references: [id], onUpdate: NoAction, map: "fk_bca45b75fd")
+  accounts_reports_target_account_idToaccounts          accounts             @relation("reports_target_account_idToaccounts", fields: [target_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_eb37af34f0")
+  oauth_applications                                    oauth_applications?  @relation(fields: [application_id], references: [id], onUpdate: NoAction, map: "fk_rails_3deb8c7acb")
+  accounts_reports_assigned_account_idToaccounts        accounts?            @relation("reports_assigned_account_idToaccounts", fields: [assigned_account_id], references: [id], onUpdate: NoAction, map: "fk_rails_4e7a498fb4")
+
+  @@index([account_id], map: "index_reports_on_account_id")
+  @@index([action_taken_by_account_id], map: "index_reports_on_action_taken_by_account_id", where: raw("(action_taken_by_account_id IS NOT NULL)"))
+  @@index([assigned_account_id], map: "index_reports_on_assigned_account_id", where: raw("(assigned_account_id IS NOT NULL)"))
+  @@index([target_account_id], map: "index_reports_on_target_account_id")
+}
+
+model rule_translations {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  hint       String   @default("")
+  language   String   @db.VarChar
+  rule_id    BigInt
+  text       String   @default("")
+  updated_at DateTime @db.Timestamp(6)
+  rules      rules    @relation(fields: [rule_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_d5fd439dde")
+
+  @@unique([rule_id, language], map: "index_rule_translations_on_rule_id_and_language")
+}
+
+model rules {
+  id                BigInt              @id @default(autoincrement())
+  created_at        DateTime            @db.Timestamp(6)
+  deleted_at        DateTime?           @db.Timestamp(6)
+  hint              String              @default("")
+  priority          Int                 @default(0)
+  text              String              @default("")
+  updated_at        DateTime            @db.Timestamp(6)
+  rule_translations rule_translations[]
+}
+
+model scheduled_statuses {
+  id                BigInt              @id @default(autoincrement())
+  account_id        BigInt
+  params            Json?
+  scheduled_at      DateTime?           @db.Timestamp(6)
+  media_attachments media_attachments[]
+  accounts          accounts            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_23bd9018f9")
+
+  @@index([account_id], map: "index_scheduled_statuses_on_account_id")
+  @@index([scheduled_at], map: "index_scheduled_statuses_on_scheduled_at")
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
+}
+
+model session_activations {
+  id                       BigInt               @id @default(autoincrement())
+  access_token_id          BigInt?
+  created_at               DateTime             @db.Timestamp(6)
+  ip                       String?              @db.Inet
+  session_id               String               @unique(map: "index_session_activations_on_session_id") @db.VarChar
+  updated_at               DateTime             @db.Timestamp(6)
+  user_agent               String               @default("") @db.VarChar
+  user_id                  BigInt
+  web_push_subscription_id BigInt?
+  oauth_access_tokens      oauth_access_tokens? @relation(fields: [access_token_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_957e5bda89")
+  users                    users                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_e5fda67334")
+
+  @@index([access_token_id], map: "index_session_activations_on_access_token_id")
+  @@index([user_id], map: "index_session_activations_on_user_id")
+}
+
+model settings {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+  value      String?
+  var        String    @unique(map: "index_settings_on_var") @db.VarChar
+}
+
+model severed_relationships {
+  id                                                         BigInt                        @id @default(autoincrement())
+  created_at                                                 DateTime                      @db.Timestamp(6)
+  direction                                                  Int
+  languages                                                  String[]                      @db.VarChar
+  local_account_id                                           BigInt
+  notify                                                     Boolean?
+  relationship_severance_event_id                            BigInt
+  remote_account_id                                          BigInt
+  show_reblogs                                               Boolean?
+  updated_at                                                 DateTime                      @db.Timestamp(6)
+  relationship_severance_events                              relationship_severance_events @relation(fields: [relationship_severance_event_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_5054494e1e")
+  accounts_severed_relationships_local_account_idToaccounts  accounts                      @relation("severed_relationships_local_account_idToaccounts", fields: [local_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_98ff099d4c")
+  accounts_severed_relationships_remote_account_idToaccounts accounts                      @relation("severed_relationships_remote_account_idToaccounts", fields: [remote_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f7afd97ba4")
+
+  @@unique([relationship_severance_event_id, local_account_id, direction, remote_account_id], map: "index_severed_relationships_on_unique_tuples")
+  @@index([local_account_id, relationship_severance_event_id], map: "index_severed_relationships_on_local_account_and_event")
+  @@index([remote_account_id], map: "index_severed_relationships_on_remote_account_id")
+}
+
+model site_uploads {
+  id                BigInt    @id @default(autoincrement())
+  blurhash          String?   @db.VarChar
+  created_at        DateTime  @db.Timestamp(6)
+  file_content_type String?   @db.VarChar
+  file_file_name    String?   @db.VarChar
+  file_file_size    Int?
+  file_updated_at   DateTime? @db.Timestamp(6)
+  meta              Json?     @db.Json
+  updated_at        DateTime  @db.Timestamp(6)
+  var               String    @unique(map: "index_site_uploads_on_var") @default("") @db.VarChar
+}
+
+model software_deprecations {
+  id             BigInt   @id @default(autoincrement())
+  branch         String   @unique(map: "index_software_deprecations_on_branch") @db.VarChar
+  created_at     DateTime @db.Timestamp(6)
+  end_of_support DateTime @db.Date
+  updated_at     DateTime @db.Timestamp(6)
+  warning_issued Int
+}
+
+model software_updates {
+  id             BigInt    @id @default(autoincrement())
+  created_at     DateTime  @db.Timestamp(6)
+  end_of_support DateTime? @db.Date
+  release_notes  String    @default("") @db.VarChar
+  type           Int       @default(0)
+  updated_at     DateTime  @db.Timestamp(6)
+  urgent         Boolean   @default(false)
+  version        String    @unique(map: "index_software_updates_on_version") @db.VarChar
+}
+
+model status_edits {
+  id                           BigInt    @id @default(autoincrement())
+  account_id                   BigInt?
+  created_at                   DateTime  @db.Timestamp(6)
+  media_descriptions           String[]
+  ordered_media_attachment_ids BigInt[]
+  poll_options                 String[]  @db.VarChar
+  quote_id                     BigInt?
+  sensitive                    Boolean?
+  spoiler_text                 String    @default("")
+  status_id                    BigInt
+  text                         String    @default("")
+  updated_at                   DateTime  @db.Timestamp(6)
+  statuses                     statuses  @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a960f234a0")
+  accounts                     accounts? @relation(fields: [account_id], references: [id], onUpdate: NoAction, map: "fk_rails_dc8988c545")
+
+  @@index([account_id], map: "index_status_edits_on_account_id")
+  @@index([status_id], map: "index_status_edits_on_status_id")
+}
+
+model status_pins {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  status_id  BigInt
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_d4cb435b62")
+  statuses   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_65c05552f1")
+
+  @@unique([account_id, status_id], map: "index_status_pins_on_account_id_and_status_id")
+  @@index([status_id], map: "index_status_pins_on_status_id")
+}
+
+model status_stats {
+  id                         BigInt   @id @default(autoincrement())
+  created_at                 DateTime @db.Timestamp(6)
+  favourites_count           BigInt   @default(0)
+  quotes_count               BigInt   @default(0)
+  reblogs_count              BigInt   @default(0)
+  replies_count              BigInt   @default(0)
+  status_id                  BigInt   @unique(map: "index_status_stats_on_status_id")
+  untrusted_favourites_count BigInt?
+  untrusted_reblogs_count    BigInt?
+  updated_at                 DateTime @db.Timestamp(6)
+  statuses                   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_4a247aac42")
+}
+
+model status_trends {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  allowed    Boolean  @default(false)
+  language   String?  @db.VarChar
+  rank       Int      @default(0)
+  score      Float    @default(0.0)
+  status_id  BigInt   @unique(map: "index_status_trends_on_status_id")
+  statuses   statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_68c610dc1a")
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a6b527ea49")
+
+  @@index([account_id], map: "index_status_trends_on_account_id")
+}
+
+model statuses {
+  id                                                 BigInt                   @id @default(dbgenerated("timestamp_id('statuses'::text)"))
+  account_id                                         BigInt
+  application_id                                     BigInt?
+  conversation_id                                    BigInt?
+  created_at                                         DateTime                 @db.Timestamp(6)
+  deleted_at                                         DateTime?                @db.Timestamp(6)
+  edited_at                                          DateTime?                @db.Timestamp(6)
+  fetched_replies_at                                 DateTime?                @db.Timestamp(6)
+  in_reply_to_account_id                             BigInt?
+  in_reply_to_id                                     BigInt?
+  language                                           String?                  @db.VarChar
+  local                                              Boolean?
+  ordered_media_attachment_ids                       BigInt[]
+  poll_id                                            BigInt?
+  quote_approval_policy                              Int                      @default(0)
+  reblog_of_id                                       BigInt?
+  reply                                              Boolean                  @default(false)
+  sensitive                                          Boolean                  @default(false)
+  spoiler_text                                       String                   @default("")
+  text                                               String                   @default("")
+  trendable                                          Boolean?
+  updated_at                                         DateTime                 @db.Timestamp(6)
+  uri                                                String?                  @unique(map: "index_statuses_on_uri", where: raw("(uri IS NOT NULL)")) @db.VarChar
+  url                                                String?                  @db.VarChar
+  visibility                                         Int                      @default(0)
+  bookmarks                                          bookmarks[]
+  custom_filter_statuses                             custom_filter_statuses[]
+  favourites                                         favourites[]
+  media_attachments                                  media_attachments[]
+  mentions                                           mentions[]
+  notification_requests                              notification_requests[]
+  polls                                              polls[]
+  quotes_quotes_quoted_status_idTostatuses           quotes[]                 @relation("quotes_quoted_status_idTostatuses")
+  quotes_quotes_status_idTostatuses                  quotes?                  @relation("quotes_status_idTostatuses")
+  status_edits                                       status_edits[]
+  status_pins                                        status_pins[]
+  status_stats                                       status_stats?
+  status_trends                                      status_trends?
+  accounts_statuses_account_idToaccounts             accounts                 @relation("statuses_account_idToaccounts", fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_9bda1543f7")
+  accounts_statuses_in_reply_to_account_idToaccounts accounts?                @relation("statuses_in_reply_to_account_idToaccounts", fields: [in_reply_to_account_id], references: [id], onUpdate: NoAction, map: "fk_c7fa917661")
+  statuses_statuses_reblog_of_idTostatuses           statuses?                @relation("statuses_reblog_of_idTostatuses", fields: [reblog_of_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_256483a9ab")
+  other_statuses_statuses_reblog_of_idTostatuses     statuses[]               @relation("statuses_reblog_of_idTostatuses")
+  statuses_statuses_in_reply_to_idTostatuses         statuses?                @relation("statuses_in_reply_to_idTostatuses", fields: [in_reply_to_id], references: [id], onUpdate: NoAction, map: "fk_rails_94a6f70399")
+  other_statuses_statuses_in_reply_to_idTostatuses   statuses[]               @relation("statuses_in_reply_to_idTostatuses")
+  statuses_tags                                      statuses_tags[]
+  tagged_objects                                     tagged_objects[]
+
+  @@index([account_id, id(sort: Desc), visibility, updated_at], map: "index_statuses_20190820", where: raw("(deleted_at IS NULL)"))
+  @@index([id(sort: Desc), account_id], map: "index_statuses_local_20190824", where: raw("((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"))
+  @@index([account_id], map: "index_statuses_on_account_id")
+  @@index([conversation_id], map: "index_statuses_on_conversation_id")
+  @@index([deleted_at], map: "index_statuses_on_deleted_at", where: raw("(deleted_at IS NOT NULL)"))
+  @@index([in_reply_to_account_id], map: "index_statuses_on_in_reply_to_account_id", where: raw("(in_reply_to_account_id IS NOT NULL)"))
+  @@index([in_reply_to_id], map: "index_statuses_on_in_reply_to_id", where: raw("(in_reply_to_id IS NOT NULL)"))
+  @@index([reblog_of_id, account_id], map: "index_statuses_on_reblog_of_id_and_account_id")
+  @@index([id(sort: Desc), language, account_id], map: "index_statuses_public_20250129", where: raw("((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"))
+}
+
+model statuses_tags {
+  status_id BigInt
+  tag_id    BigInt
+  tags      tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_3081861e21")
+  statuses  statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_df0fe11427")
+
+  @@id([tag_id, status_id])
+  @@index([status_id], map: "index_statuses_tags_on_status_id")
+}
+
+model tag_follows {
+  id         BigInt   @id @default(autoincrement())
+  account_id BigInt
+  created_at DateTime @db.Timestamp(6)
+  tag_id     BigInt
+  updated_at DateTime @db.Timestamp(6)
+  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_091e831473")
+  tags       tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_0deefe597f")
+
+  @@unique([account_id, tag_id], map: "index_tag_follows_on_account_id_and_tag_id")
+  @@index([tag_id], map: "index_tag_follows_on_tag_id")
+}
+
+model tag_trends {
+  id       BigInt  @id @default(autoincrement())
+  allowed  Boolean @default(false)
+  language String  @default("") @db.VarChar
+  rank     Int     @default(0)
+  score    Float   @default(0.0)
+  tag_id   BigInt
+  tags     tags    @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_3033046460")
+
+  @@unique([tag_id, language], map: "index_tag_trends_on_tag_id_and_language")
+}
+
+model tagged_objects {
+  id          BigInt   @id @default(autoincrement())
+  ap_type     String   @db.VarChar
+  created_at  DateTime @db.Timestamp(6)
+  object_id   BigInt?
+  object_type String?  @db.VarChar
+  status_id   BigInt
+  updated_at  DateTime @db.Timestamp(6)
+  uri         String?  @db.VarChar
+  statuses    statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_087c1d32f7")
+
+  @@unique([status_id, object_type, object_id], map: "idx_on_status_id_object_type_object_id_d6ebe374bd", where: raw("((object_type IS NOT NULL) AND (object_id IS NOT NULL))"))
+  @@unique([status_id, uri], map: "index_tagged_objects_on_status_id_and_uri", where: raw("(uri IS NOT NULL)"))
+  @@index([object_type, object_id], map: "index_tagged_objects_on_object")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model tags {
+  id                  BigInt          @id @default(autoincrement())
+  created_at          DateTime        @db.Timestamp(6)
+  display_name        String?         @db.VarChar
+  last_status_at      DateTime?       @db.Timestamp(6)
+  listable            Boolean?
+  max_score           Float?
+  max_score_at        DateTime?       @db.Timestamp(6)
+  name                String          @default("") @db.VarChar
+  requested_review_at DateTime?       @db.Timestamp(6)
+  reviewed_at         DateTime?       @db.Timestamp(6)
+  trendable           Boolean?
+  updated_at          DateTime        @db.Timestamp(6)
+  usable              Boolean?
+  collections         collections[]
+  featured_tags       featured_tags[]
+  statuses_tags       statuses_tags[]
+  tag_follows         tag_follows[]
+  tag_trends          tag_trends[]
+}
+
+model terms_of_services {
+  id                   BigInt    @id @default(autoincrement())
+  changelog            String    @default("")
+  created_at           DateTime  @db.Timestamp(6)
+  effective_date       DateTime? @unique(map: "index_terms_of_services_on_effective_date", where: raw("(effective_date IS NOT NULL)")) @db.Date
+  notification_sent_at DateTime? @db.Timestamp(6)
+  published_at         DateTime? @db.Timestamp(6)
+  text                 String    @default("")
+  updated_at           DateTime  @db.Timestamp(6)
+}
+
+model tombstones {
+  id           BigInt   @id @default(autoincrement())
+  account_id   BigInt
+  by_moderator Boolean?
+  created_at   DateTime @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  uri          String   @db.VarChar
+  accounts     accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_f95b861449")
+
+  @@index([account_id], map: "index_tombstones_on_account_id")
+  @@index([uri], map: "index_tombstones_on_uri")
+}
+
+model unavailable_domains {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  domain     String   @unique(map: "index_unavailable_domains_on_domain") @default("") @db.VarChar
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model user_invite_requests {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  text       String?
+  updated_at DateTime @db.Timestamp(6)
+  user_id    BigInt
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_3773f15361")
+
+  @@index([user_id], map: "index_user_invite_requests_on_user_id")
+}
+
+model user_roles {
+  id               BigInt   @id @default(autoincrement())
+  collection_limit Int      @default(10)
+  color            String   @default("") @db.VarChar
+  created_at       DateTime @db.Timestamp(6)
+  highlighted      Boolean  @default(false)
+  name             String   @default("") @db.VarChar
+  permissions      BigInt   @default(0)
+  position         Int      @default(0)
+  require_2fa      Boolean  @default(false)
+  updated_at       DateTime @db.Timestamp(6)
+  users            users[]
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model username_blocks {
+  id                  BigInt   @id @default(autoincrement())
+  allow_with_approval Boolean  @default(false)
+  created_at          DateTime @db.Timestamp(6)
+  exact               Boolean  @default(false)
+  normalized_username String   @db.VarChar
+  updated_at          DateTime @db.Timestamp(6)
+  username            String   @db.VarChar
+
+  @@index([normalized_username], map: "index_username_blocks_on_normalized_username")
+}
+
+model users {
+  id                                                                     BigInt                   @id @default(autoincrement())
+  account_id                                                             BigInt
+  age_verified_at                                                        DateTime?                @db.Timestamp(6)
+  approved                                                               Boolean                  @default(true)
+  chosen_languages                                                       String[]                 @db.VarChar
+  confirmation_sent_at                                                   DateTime?                @db.Timestamp(6)
+  confirmation_token                                                     String?                  @unique(map: "index_users_on_confirmation_token") @db.VarChar
+  confirmed_at                                                           DateTime?                @db.Timestamp(6)
+  consumed_timestep                                                      Int?
+  created_at                                                             DateTime                 @db.Timestamp(6)
+  created_by_application_id                                              BigInt?
+  current_sign_in_at                                                     DateTime?                @db.Timestamp(6)
+  disabled                                                               Boolean                  @default(false)
+  email                                                                  String                   @unique(map: "index_users_on_email") @default("") @db.VarChar
+  encrypted_password                                                     String                   @default("") @db.VarChar
+  invite_id                                                              BigInt?
+  last_emailed_at                                                        DateTime?                @db.Timestamp(6)
+  last_sign_in_at                                                        DateTime?                @db.Timestamp(6)
+  locale                                                                 String?                  @db.VarChar
+  otp_backup_codes                                                       String[]                 @db.VarChar
+  otp_required_for_login                                                 Boolean                  @default(false)
+  otp_secret                                                             String?                  @db.VarChar
+  require_tos_interstitial                                               Boolean                  @default(false)
+  reset_password_sent_at                                                 DateTime?                @db.Timestamp(6)
+  reset_password_token                                                   String?                  @unique(map: "index_users_on_reset_password_token", where: raw("(reset_password_token IS NOT NULL)")) @db.VarChar
+  role_id                                                                BigInt?
+  settings                                                               String?
+  sign_in_count                                                          Int                      @default(0)
+  sign_in_token                                                          String?                  @db.VarChar
+  sign_in_token_sent_at                                                  DateTime?                @db.Timestamp(6)
+  sign_up_ip                                                             String?                  @db.Inet
+  skip_sign_in_token                                                     Boolean?
+  time_zone                                                              String?                  @db.VarChar
+  unconfirmed_email                                                      String?                  @db.VarChar
+  updated_at                                                             DateTime                 @db.Timestamp(6)
+  webauthn_id                                                            String?                  @db.VarChar
+  backups                                                                backups[]
+  identities                                                             identities[]
+  invites_invites_user_idTousers                                         invites[]                @relation("invites_user_idTousers")
+  login_activities                                                       login_activities[]
+  markers                                                                markers[]
+  oauth_access_grants                                                    oauth_access_grants[]
+  oauth_access_tokens                                                    oauth_access_tokens[]
+  oauth_applications_oauth_applications_owner_idTousers                  oauth_applications[]     @relation("oauth_applications_owner_idTousers")
+  session_activations                                                    session_activations[]
+  user_invite_requests                                                   user_invite_requests[]
+  accounts                                                               accounts                 @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_50500f500d")
+  user_roles                                                             user_roles?              @relation(fields: [role_id], references: [id], onUpdate: NoAction, map: "fk_rails_642f17018b")
+  invites_users_invite_idToinvites                                       invites?                 @relation("users_invite_idToinvites", fields: [invite_id], references: [id], onUpdate: NoAction, map: "fk_rails_8fb2a43e88")
+  oauth_applications_users_created_by_application_idTooauth_applications oauth_applications?      @relation("users_created_by_application_idTooauth_applications", fields: [created_by_application_id], references: [id], onUpdate: NoAction, map: "fk_rails_ecc9536e7c")
+  web_push_subscriptions                                                 web_push_subscriptions[]
+  web_settings                                                           web_settings?
+  webauthn_credentials                                                   webauthn_credentials[]
+
+  @@index([account_id], map: "index_users_on_account_id")
+  @@index([created_by_application_id], map: "index_users_on_created_by_application_id", where: raw("(created_by_application_id IS NOT NULL)"))
+  @@index([role_id], map: "index_users_on_role_id", where: raw("(role_id IS NOT NULL)"))
+  @@index([unconfirmed_email], map: "index_users_on_unconfirmed_email", where: raw("(unconfirmed_email IS NOT NULL)"))
+}
+
+model web_push_subscriptions {
+  id                  BigInt              @id @default(autoincrement())
+  access_token_id     BigInt
+  created_at          DateTime            @db.Timestamp(6)
+  data                Json?               @db.Json
+  endpoint            String              @db.VarChar
+  key_auth            String              @db.VarChar
+  key_p256dh          String              @db.VarChar
+  standard            Boolean             @default(false)
+  updated_at          DateTime            @db.Timestamp(6)
+  user_id             BigInt
+  oauth_access_tokens oauth_access_tokens @relation(fields: [access_token_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_751a9f390b")
+  users               users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_b006f28dac")
+
+  @@index([access_token_id], map: "index_web_push_subscriptions_on_access_token_id", where: raw("(access_token_id IS NOT NULL)"))
+  @@index([user_id], map: "index_web_push_subscriptions_on_user_id")
+}
+
+model web_settings {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  data       Json?    @db.Json
+  updated_at DateTime @db.Timestamp(6)
+  user_id    BigInt   @unique(map: "index_web_settings_on_user_id")
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_11910667b2")
+}
+
+model webauthn_credentials {
+  id          BigInt   @id @default(autoincrement())
+  created_at  DateTime @db.Timestamp(6)
+  external_id String   @unique(map: "index_webauthn_credentials_on_external_id") @db.VarChar
+  nickname    String   @db.VarChar
+  public_key  String   @db.VarChar
+  sign_count  BigInt   @default(0)
+  updated_at  DateTime @db.Timestamp(6)
+  user_id     BigInt?
+  users       users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rails_a4355aef77")
+
+  @@unique([user_id, nickname], map: "index_webauthn_credentials_on_user_id_and_nickname")
+}
+
+model webhooks {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @db.Timestamp(6)
+  enabled    Boolean  @default(true)
+  events     String[] @default([]) @db.VarChar
+  secret     String   @default("") @db.VarChar
+  template   String?
+  updated_at DateTime @db.Timestamp(6)
+  url        String   @unique(map: "index_webhooks_on_url") @db.VarChar
+}

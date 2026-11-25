@@ -1,0 +1,1674 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 68,
+          "total": 80
+        },
+        "read": {
+          "ok": 55,
+          "total": 68
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 102,
+          "total": 102
+        },
+        "delete": {
+          "ok": 68,
+          "total": 68
+        }
+      },
+      "findings": 28,
+      "ddl": "error"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 68,
+          "total": 80
+        },
+        "read": {
+          "ok": 52,
+          "total": 68
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 68,
+          "total": 68
+        }
+      },
+      "findings": 46,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": true,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 68,
+          "total": 80
+        },
+        "read": {
+          "ok": 68,
+          "total": 68
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 102,
+          "total": 102
+        },
+        "delete": {
+          "ok": 68,
+          "total": 68
+        }
+      },
+      "findings": 13,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 76,
+          "total": 80
+        },
+        "read": {
+          "ok": 76,
+          "total": 76
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 128,
+          "total": 128
+        },
+        "delete": {
+          "ok": 76,
+          "total": 76
+        }
+      },
+      "findings": 5,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 42,
+          "total": 80
+        },
+        "read": {
+          "ok": 42,
+          "total": 42
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 26,
+          "total": 26
+        },
+        "delete": {
+          "ok": 39,
+          "total": 42
+        }
+      },
+      "findings": 42,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 56,
+          "total": 80
+        },
+        "read": {
+          "ok": 56,
+          "total": 56
+        },
+        "update": {
+          "ok": 46,
+          "total": 46
+        },
+        "relations": {
+          "ok": 54,
+          "total": 56
+        },
+        "delete": {
+          "ok": 56,
+          "total": 56
+        }
+      },
+      "findings": 27,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 75,
+          "total": 80
+        },
+        "read": {
+          "ok": 75,
+          "total": 75
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 128,
+          "total": 128
+        },
+        "delete": {
+          "ok": 75,
+          "total": 75
+        }
+      },
+      "findings": 6,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 68,
+          "total": 80
+        },
+        "read": {
+          "ok": 68,
+          "total": 68
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 102,
+          "total": 102
+        },
+        "delete": {
+          "ok": 68,
+          "total": 68
+        }
+      },
+      "findings": 13,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": true,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 81,
+          "total": 81
+        },
+        "insert": {
+          "ok": 68,
+          "total": 80
+        },
+        "read": {
+          "ok": 68,
+          "total": 68
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 100,
+          "total": 100
+        },
+        "delete": {
+          "ok": 68,
+          "total": 68
+        }
+      },
+      "findings": 13,
+      "ddl": "error"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 68,
+            "total": 80
+          },
+          "read": {
+            "ok": 55,
+            "total": 68
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 102,
+            "total": 102
+          },
+          "delete": {
+            "ok": 68,
+            "total": 68
+          }
+        },
+        "findings": [
+          {
+            "model": "account_completion_proofs",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "cannot insert a non-DEFAULT value into column \"parent_is_root\" — Failed query: insert into \"groups\" (\"id\", \"admin_memberships_count\", \"admin_tags\", \"admins_can_edit_user_content\", \"attachments\", \"category\", \"city\", \"content_locale\", \"country\", \"created_at\", \"creator_id\", \"description\", \"description_format\", \"discarded_at\", \"discarded_by\", \"discussion_privacy_options\", \"discussions_count\", \"full_name\", \"handle\", \"info\", \"is_visible_to_parent_members\", \"is_visible_to_public\", \"key\", \"link_previews\", \"listed_in_explore\", \"members_can_add_guests\", \"members_can_add_members\", \"members_can_announce\","
+          },
+          {
+            "model": "anonymous_ballots",
+            "check": "read",
+            "text": "key `poll_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_ballot_choices",
+            "check": "read",
+            "text": "key `poll_option_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `inviter_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `poll_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `voter_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\" — Failed query: insert into \"notification_deliveries\" (\"id\", \"channel\", \"created_at\", \"delivered_at\", \"email_message_id\", \"notification_id\", \"provider_message_id\", \"recipient_id\", \"recipient_type\", \"translation_values\", \"updated_at\", \"viewed_at\") values (default, $1, $2, $3, $4, $5, $6, $7, $8, default, $9, $10) returning \"id\", \"channel\", \"created_at\", \"delivered_at\", \"email_message_id\", \"notification_id\", \"provider_message_id\", \"recipient_id\", \"recipient_type\", \"translation_values\", \"upd"
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "email_suppressions",
+            "check": "read",
+            "text": "key `cleared_by_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "mobile_authorization_codes",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "passkey_challenges",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "passkey_credentials",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "sessions",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\" — Failed query: insert into \"spam_rules\" (\"id\", \"kind\", \"pattern\", \"reason\", \"expires_at\", \"discarded_at\", \"created_at\", \"updated_at\") values (default, $1, $2, $3, $4, $5, $6, $7) returning \"id\", \"kind\", \"pattern\", \"reason\", \"expires_at\", \"discarded_at\", \"created_at\", \"updated_at\""
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "subscription_update_receipts",
+            "check": "read",
+            "text": "key `subscription_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tasks_users",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Loaded Prisma config from prisma.config.mjs.\n\nError: ERROR: syntax error at or near \",\""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 68,
+            "total": 80
+          },
+          "read": {
+            "ok": 52,
+            "total": 68
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 68,
+            "total": 68
+          }
+        },
+        "findings": [
+          {
+            "model": "account_completion_proofs",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "account_completion_proofs",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "cannot insert a non-DEFAULT value into column \"parent_is_root\""
+          },
+          {
+            "model": "polls",
+            "check": "read",
+            "text": "`topic_id` is typed `ColumnType<string, bigint | number | string, bigint | number | string> | null` but came back as number"
+          },
+          {
+            "model": "anonymous_ballots",
+            "check": "read",
+            "text": "key `poll_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_ballots",
+            "check": "read",
+            "text": "`poll_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "anonymous_ballot_choices",
+            "check": "read",
+            "text": "key `poll_option_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_ballot_choices",
+            "check": "read",
+            "text": "`poll_option_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `inviter_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `poll_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "key `voter_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "`inviter_id` is typed `number | null` but came back as string"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "`poll_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "read",
+            "text": "`voter_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "discussions",
+            "check": "read",
+            "text": "`topic_id` is typed `ColumnType<string, bigint | number | string, bigint | number | string> | null` but came back as number"
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\""
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "email_suppressions",
+            "check": "read",
+            "text": "key `cleared_by_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "email_suppressions",
+            "check": "read",
+            "text": "`cleared_by_id` is typed `number | null` but came back as string"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "mobile_authorization_codes",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "mobile_authorization_codes",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "passkey_challenges",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "passkey_challenges",
+            "check": "read",
+            "text": "`user_id` is typed `number | null` but came back as string"
+          },
+          {
+            "model": "passkey_credentials",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "passkey_credentials",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "sessions",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "sessions",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\""
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "subscription_update_receipts",
+            "check": "read",
+            "text": "key `subscription_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "subscription_update_receipts",
+            "check": "read",
+            "text": "`subscription_id` is typed `number | null` but came back as string"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tasks_users",
+            "check": "read",
+            "text": "key `user_id` came back as \"1\", expected 1"
+          },
+          {
+            "model": "tasks_users",
+            "check": "read",
+            "text": "`user_id` is typed `number` but came back as string"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "topic_readers",
+            "check": "read",
+            "text": "`topic_id` is typed `ColumnType<string, bigint | number | string, bigint | number | string>` but came back as number"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 33, in main\n    spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 995, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/home/user/orm-generators-examples/pull/activerecord/loomio/generated/sqlalchemy/models.py\", line 401, in <module>\n    class Groups(Base):\n  File \"/home/user/orm-generators-examples/pull/activerecord/loomio/generated/sqlalchemy/models.py\", line 476, in Groups\n    groups_groups_parent_id_parent_is_root_togroups: Mapped[Optional[\"Groups\"]] = relationship(remote_side=[id], foreign_keys=[parent_id, parent_is_root], overlaps=\"groups_groups_parent_id_togroups,other_groups_groups_parent_id_togroups\", back_populates=\"other_groups_groups_parent_id_parent_is_root_togroups\")\n                                                                                                                               ^^^^^^^^^\nNameError: name 'parent_id' is not defined",
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 33, in main\n    spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 995, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/home/user/orm-generators-examples/pull/activerecord/loomio/generated/sqlalchemy/models.py\", line 401, in <module>\n    class Groups(Base):\n  File \"/home/user/orm-generators-examples/pull/activerecord/loomio/generated/sqlalchemy/models.py\", line 476, in Groups\n    groups_groups_parent_id_parent_is_root_togroups: Mapped[Optional[\"Groups\"]] = relationship(remote_side=[id], foreign_keys=[parent_id, parent_is_root], overlaps=\"groups_groups_parent_id_togroups,other_groups_groups_parent_id_togroups\", back_populates=\"other_groups_groups_parent_id_parent_is_root_togroups\")\n                                                                                                                               ^^^^^^^^^\nNameError: name 'parent_id' is not defined"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 68,
+            "total": 80
+          },
+          "read": {
+            "ok": 68,
+            "total": 68
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 102,
+            "total": 102
+          },
+          "delete": {
+            "ok": 68,
+            "total": 68
+          }
+        },
+        "findings": [
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: cannot insert a non-DEFAULT value into column \"parent_is_root\"\nDETAIL:  Column \"parent_is_root\" is a generated column."
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\"\nDETAIL:  Failing row contains (1, v196, 2024-01-02 03:04:05.197, 2024-01-02 03:04:05.198, v199, 1, v200, 9007199254740201, v202, {}, 2024-01-02 03:04:05.203, 2024-01-02 03:04:05.204)."
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\"\nDETAIL:  Failing row contains (1, v470, v471, v472, 2024-01-02 03:04:05.473, 2024-01-02 03:04:05.474, 2024-01-02 03:04:05.475, 2024-01-02 03:04:05.476)."
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression\nLINE 1: ...with time zone NULL, \"is_root\" boolean DEFAULT (((parent_id ...\n                                                             ^\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = execu"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 76,
+            "total": 80
+          },
+          "read": {
+            "ok": 76,
+            "total": 76
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 128,
+            "total": 128
+          },
+          "delete": {
+            "ok": 76,
+            "total": 76
+          }
+        },
+        "findings": [
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\" (SQLSTATE 23514)"
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\" (SQLSTATE 23514)"
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: cannot use column reference in DEFAULT expression (SQLSTATE 0A000)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 42,
+            "total": 80
+          },
+          "read": {
+            "ok": 42,
+            "total": 42
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 26,
+            "total": 26
+          },
+          "delete": {
+            "ok": 39,
+            "total": 42
+          }
+        },
+        "findings": [
+          {
+            "model": "users",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "Execution Error: error returned from database: update or delete on table \"users\" violates foreign key constraint \"fk_rails_225250860c\" on table \"passkey_credentials\""
+          },
+          {
+            "model": "account_completion_proofs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: cannot insert a non-DEFAULT value into column \"parent_is_root\""
+          },
+          {
+            "model": "topics",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "Execution Error: error returned from database: update or delete on table \"topics\" violates foreign key constraint \"fk_rails_5e49c0df8c\" on table \"discussions\""
+          },
+          {
+            "model": "polls",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"topic_id\": mismatched types; Rust type `core::option::Option<i64>` (as SQL type `INT8`) is not compatible with SQL type `INT4`"
+          },
+          {
+            "model": "anonymous_ballots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`polls`) did not go in"
+          },
+          {
+            "model": "poll_options",
+            "check": "insert",
+            "text": "not inserted: the parent row (`polls`) did not go in"
+          },
+          {
+            "model": "anonymous_ballot_choices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`anonymous_ballots`) did not go in"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "insert",
+            "text": "not inserted: the parent row (`polls`) did not go in"
+          },
+          {
+            "model": "discussions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"topic_id\": mismatched types; Rust type `core::option::Option<i64>` (as SQL type `INT8`) is not compatible with SQL type `INT4`"
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\""
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "email_suppressions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"cleared_by_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "legacy_anonymous_vote_reasons",
+            "check": "insert",
+            "text": "not inserted: the parent row (`anonymous_ballots`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "mobile_access_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_authorization_codes",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "mobile_push_registrations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_refresh_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_relay_authorizations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_web_session_tickets",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "outcomes",
+            "check": "insert",
+            "text": "not inserted: the parent row (`polls`) did not go in"
+          },
+          {
+            "model": "passkey_challenges",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "passkey_credentials",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`sessions`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\""
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "stances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`polls`) did not go in"
+          },
+          {
+            "model": "stance_choices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`poll_options`) did not go in"
+          },
+          {
+            "model": "subscriptions",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "Execution Error: error returned from database: update or delete on table \"subscriptions\" violates foreign key constraint \"fk_rails_d0a7a8c82a\" on table \"subscription_update_receipts\""
+          },
+          {
+            "model": "subscription_update_receipts",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"subscription_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tasks_users",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"user_id\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT8`"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "topic_readers",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"topic_id\": mismatched types; Rust type `core::option::Option<i64>` (as SQL type `INT8`) is not compatible with SQL type `INT4`"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"groups\": Execution Error: error returned from database: cannot use column reference in DEFAULT expression"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 56,
+            "total": 80
+          },
+          "read": {
+            "ok": 56,
+            "total": 56
+          },
+          "update": {
+            "ok": 46,
+            "total": 46
+          },
+          "relations": {
+            "ok": 54,
+            "total": 56
+          },
+          "delete": {
+            "ok": 56,
+            "total": 56
+          }
+        },
+        "findings": [
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected %Postgrex.INET{}, got \\\"10.0.0.8\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "account_completion_proofs",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "anonymous_poll_voters",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"constraint error when attempting to insert struct:\\n\\n    * \\\"notification_deliveries_channel\\\" (check_constraint)\\n\\nIf you would like to stop this constraint violation from raising an\\nexception and instead add it as an error to your changeset, please\\ncall `check_constraint/3` on your changeset with the constraint\\n`:name` as an option.\\n\\nThe changeset has not defined any constraint.\\n\""
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "mobile_access_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_authorization_codes",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "mobile_push_registrations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_refresh_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_relay_authorizations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "mobile_web_session_tickets",
+            "check": "insert",
+            "text": "not inserted: the parent row (`mobile_devices`) did not go in"
+          },
+          {
+            "model": "passkey_credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`sessions`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"constraint error when attempting to insert struct:\\n\\n    * \\\"spam_rules_kind\\\" (check_constraint)\\n\\nIf you would like to stop this constraint violation from raising an\\nexception and instead add it as an error to your changeset, please\\ncall `check_constraint/3` on your changeset with the constraint\\n`:name` as an option.\\n\\nThe changeset has not defined any constraint.\\n\""
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "stances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "stance_choices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`stances`) did not go in"
+          },
+          {
+            "model": "tasks_users",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "topic_readers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "trial_invitation_recipients",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "groups",
+            "check": "relations",
+            "text": "no relation for `groups_groups_parent_id_parent_is_rootTogroups` (toOne)"
+          },
+          {
+            "model": "groups",
+            "check": "relations",
+            "text": "no relation for `other_groups_groups_parent_id_parent_is_rootTogroups` (toMany)"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 75,
+            "total": 80
+          },
+          "read": {
+            "ok": 75,
+            "total": 75
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 128,
+            "total": 128
+          },
+          "delete": {
+            "ok": 75,
+            "total": 75
+          }
+        },
+        "findings": [
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::CheckViolation: PG::CheckViolation: ERROR:  new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\"\nDETAIL:  Failing row contains (1, v196, 2024-01-02 03:04:05.197, 2024-01-02 03:04:05.198, v199, 1, v200, 9007199254740201, v202, {}, 2024-01-02 03:04:05.203, 2024-01-02 03:04:05.204).\n"
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "partition_sequences",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute `[\"key\", \"id\"]`"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::CheckViolation: PG::CheckViolation: ERROR:  new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\"\nDETAIL:  Failing row contains (1, v470, v471, v472, 2024-01-02 03:04:05.473, 2024-01-02 03:04:05.474, 2024-01-02 03:04:05.475, 2024-01-02 03:04:05.476).\n"
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 68,
+            "total": 80
+          },
+          "read": {
+            "ok": 68,
+            "total": 68
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 102,
+            "total": 102
+          },
+          "delete": {
+            "ok": 68,
+            "total": 68
+          }
+        },
+        "findings": [
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[428C9]: <<Unknown error>>: 7 ERROR:  cannot insert a non-DEFAULT value into column \"parent_is_root\"\nDETAIL:  Column \"parent_is_root\" is a generated column. (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: loomio_eloquent, SQL: insert into \"groups\" (\"admin_memberships_count\", \"admins_can_edit_user_content\", \"attachments\", \"description_format\", \"discussion_privacy_options\", \"discussions_count\", \"info\", \"is_visible_to_parent_members\", \"is_visible_to_public\", \"link_previews\", \"listed_in_explore\", \"members_can_add_guests\", \"members_c"
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23514]: Check violation: 7 ERROR:  new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\"\nDETAIL:  Failing row contains (1, v196, 2024-01-02 03:04:05.197, 2024-01-02 03:04:05.198, v199, 1, v200, 9007199254740201, v202, {}, 2024-01-02 03:04:05.203, 2024-01-02 03:04:05.204). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: loomio_eloquent, SQL: insert into \"notification_deliveries\" (\"translation_values\", \"channel\", \"created_at\", \"delivered_at\", \"email_message_id\", \"notification_i"
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23514]: Check violation: 7 ERROR:  new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\"\nDETAIL:  Failing row contains (1, v470, v471, v472, 2024-01-02 03:04:05.473, 2024-01-02 03:04:05.474, 2024-01-02 03:04:05.475, 2024-01-02 03:04:05.476). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: loomio_eloquent, SQL: insert into \"spam_rules\" (\"kind\", \"pattern\", \"reason\", \"expires_at\", \"discarded_at\", \"created_at\", \"updated_at\") values (v470, v471, v472, 2024-01-02 03:04:05.473+00:00, 2024-01-02 03:04:05.474+00:"
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "fatal": "Property 'TrialInvitationRecipients.IpAddress' cannot be used as a key because it has type 'NpgsqlInet' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'NpgsqlInet' with a type that can be compared.",
+      "ddl": {
+        "error": "Property 'TrialInvitationRecipients.IpAddress' cannot be used as a key because it has type 'NpgsqlInet' which does not implement 'IComparable<T>', 'IComparable' or 'IStructuralComparable'. Use 'HasConversion' in 'OnModelCreating' to wrap 'NpgsqlInet' with a type that can be compared."
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 81,
+            "total": 81
+          },
+          "insert": {
+            "ok": 68,
+            "total": 80
+          },
+          "read": {
+            "ok": 68,
+            "total": 68
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 100,
+            "total": 100
+          },
+          "delete": {
+            "ok": 68,
+            "total": 68
+          }
+        },
+        "findings": [
+          {
+            "model": "groups",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: cannot insert a non-DEFAULT value into column \"parent_is_root\"\n  Detail: Column \"parent_is_root\" is a generated column."
+          },
+          {
+            "model": "notification_deliveries",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: new row for relation \"notification_deliveries\" violates check constraint \"notification_deliveries_channel\"\n  Detail: Failing row contains (3, v196, 2024-01-02 03:04:05.197, 2024-01-02 03:04:05.198, v199, 1, v200, 9007199254740201, v202, {}, 2024-01-02 03:04:05.203, 2024-01-02 03:04:05.204)."
+          },
+          {
+            "model": "notification_delivery_events",
+            "check": "insert",
+            "text": "not inserted: the parent row (`notification_deliveries`) did not go in"
+          },
+          {
+            "model": "group_follows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "group_handle_redirects",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "membership_requests",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "pending_emails",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "spam_rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: new row for relation \"spam_rules\" violates check constraint \"spam_rules_kind\"\n  Detail: Failing row contains (3, v470, v471, v472, 2024-01-02 03:04:05.473, 2024-01-02 03:04:05.474, 2024-01-02 03:04:05.475, 2024-01-02 03:04:05.476)."
+          },
+          {
+            "model": "spam_rule_hits",
+            "check": "insert",
+            "text": "not inserted: the parent row (`spam_rules`) did not go in"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`groups`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "topic_items",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Picked up JAVA_TOOL_OPTIONS: -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=32981 -Dhttp.nonProxyHosts=localhost|127.0.0.1 -Dorg.gradle.internal.repository.max.retries=8 -Dorg.gradle.internal.repository.initial.backoff=2000\nException in thread \"main\" org.jetbrains.exposed.v1.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: cannot use column reference in DEFAULT expression\n  Position: 2254\nSQL: [CREATE TABLE IF NOT EXISTS \"groups\" (id SERIAL, admin_memberships_count INT DEFAULT 0 NOT NULL, admin_tags VARCHAR NULL, admins_can_edit_user_content BOOLEAN DEFAULT TRUE NOT NULL, attachments JSONB DEFAULT '[]'::jsonb NOT NULL, category VARCHAR NULL, city VARCHAR NULL, content_locale VARCHAR NULL, country VARCHAR NULL, created_at TIMESTAMP(6) NULL, creator_id INT NULL, description TEXT NULL, description_format VARCHAR(10) DEFAULT 'md' NOT NULL, discarded_at TIMESTAMP(6) NULL, discarded_by INT NULL, discussion_privacy_options VARCHAR DEFAULT 'private_only' NOT NULL, discussions_count INT DEFAULT 0 NOT NULL, full_name VARCHAR(255) NULL, handle CITEXT NULL, info JSONB DEFAULT '{}'::jsonb NOT NULL, is_visible_to_parent_members BOOLEAN DEFAULT FALSE NOT NULL, is_visible_to_public BOOLEAN DEFAULT TRUE NOT NULL, \"key\" VARCHAR(255) NULL, link_previews JSONB DEFAULT '[]'::jsonb NOT NULL, listed_in_explore BOOLEAN DEFAULT FALSE NOT NULL, members_can_add_guests BOOLEAN DEFAULT TRUE NOT NULL, members_can_add_members BOOLEAN DEFAULT FALSE NOT NULL, members_can_announce BOOLEAN DEFAULT TRUE NOT NULL, members_can_create_subgroups BOOLEAN DEFAULT FALSE NOT NULL, members_can_create_tags BOOLEAN DEFAULT TRUE NOT NULL, members_can_create_templates BOOLEAN DEFAULT FALSE NOT NULL, members_can_delete_comments BOOLEAN DEFAULT TRUE NOT NULL, members_can_edit_comments BOOLEAN DEFAULT TRUE NULL, members_can_edit_discussions BOOLEAN DEFAULT TRUE NOT NULL, members_can_raise_motions BOOLEAN DEFAULT TRUE NOT NULL, members_can_start_discussions BOOLEAN DEFAULT TRUE NOT NULL, member"
+      }
+    }
+  ]
+}
