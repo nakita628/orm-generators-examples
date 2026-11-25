@@ -14,24 +14,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedBillingAccount")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The customer at the payment provider. Invoiced, never charged.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeCustomerId")]
+    #[sea_orm(column_name = "stripeCustomerId", column_type = "Text")]
     pub stripe_customer_id: String,
     /// The one metered subscription, and the item hosted usage is reported on.
     /// Null between the customer being created and the subscription existing,
     /// which is where a half-finished onboarding resumes from.
-    #[sea_orm(column_name = "usageSubscriptionId")]
+    #[sea_orm(column_name = "usageSubscriptionId", column_type = "Text")]
     pub usage_subscription_id: Option<String>,
-    #[sea_orm(column_name = "usageSubscriptionItemId")]
+    #[sea_orm(column_name = "usageSubscriptionItemId", column_type = "Text")]
     pub usage_subscription_item_id: Option<String>,
-    #[sea_orm(column_name = "termStartsAt")]
+    #[sea_orm(column_name = "termStartsAt", column_type = "custom(\"timestamp(3)\")")]
     pub term_starts_at: DateTime,
-    #[sea_orm(column_name = "termEndsAt")]
+    #[sea_orm(column_name = "termEndsAt", column_type = "custom(\"timestamp(3)\")")]
     pub term_ends_at: DateTime,
     /// Prepaid usage for the term, in USD cents. The credit grants add up to it.
     #[sea_orm(column_name = "commitUsdCents", default_value = 0)]
@@ -45,21 +46,29 @@ pub struct Model {
     /// `us_bank_transfer` or `eu_bank_transfer` when the customer pays into a
     /// virtual bank account at the provider. Null when it wires to LangWatch's
     /// own account and finance marks the invoice paid.
-    #[sea_orm(column_name = "bankTransferType")]
+    #[sea_orm(column_name = "bankTransferType", column_type = "Text")]
     pub bank_transfer_type: Option<String>,
-    #[sea_orm(column_name = "bankTransferCountry")]
+    #[sea_orm(column_name = "bankTransferCountry", column_type = "Text")]
     pub bank_transfer_country: Option<String>,
-    #[sea_orm(column_name = "billingEmail")]
+    #[sea_orm(column_name = "billingEmail", column_type = "Text")]
     pub billing_email: String,
     /// A renewal whose credit is waiting for the last usage invoice of the old
     /// term to be finalized: the new term's end and commit, and who asked.
-    #[sea_orm(column_name = "pendingRenewal")]
+    #[sea_orm(column_name = "pendingRenewal", column_type = "JsonBinary")]
     pub pending_renewal: Option<Json>,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -69,7 +78,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "ConnectedBillingAccount_organizationId_fkey"
     )]
     Organization,
 }

@@ -8,73 +8,99 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Team")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: Option<String>,
-    #[sea_orm(column_name = "defaultBrandId")]
+    #[sea_orm(column_name = "defaultBrandId", column_type = "Text")]
     pub default_brand_id: Option<String>,
-    #[sea_orm(default_value = "free")]
+    #[sea_orm(column_type = "Text", default_value = "free")]
     pub plan: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeId")]
+    #[sea_orm(column_name = "stripeId", column_type = "Text")]
     pub stripe_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "subscriptionId")]
+    #[sea_orm(column_name = "subscriptionId", column_type = "Text")]
     pub subscription_id: Option<String>,
-    #[sea_orm(column_name = "startsAt")]
+    #[sea_orm(column_name = "startsAt", column_type = "custom(\"timestamp(3)\")")]
     pub starts_at: Option<DateTime>,
-    #[sea_orm(column_name = "endsAt")]
+    #[sea_orm(column_name = "endsAt", column_type = "custom(\"timestamp(3)\")")]
     pub ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "pausedAt")]
+    #[sea_orm(column_name = "pausedAt", column_type = "custom(\"timestamp(3)\")")]
     pub paused_at: Option<DateTime>,
-    #[sea_orm(column_name = "pauseStartsAt")]
+    #[sea_orm(
+        column_name = "pauseStartsAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub pause_starts_at: Option<DateTime>,
-    #[sea_orm(column_name = "pauseEndsAt")]
+    #[sea_orm(column_name = "pauseEndsAt", column_type = "custom(\"timestamp(3)\")")]
     pub pause_ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "cancelledAt")]
+    #[sea_orm(column_name = "cancelledAt", column_type = "custom(\"timestamp(3)\")")]
     pub cancelled_at: Option<DateTime>,
-    #[sea_orm(column_name = "trialStartedAt")]
+    #[sea_orm(
+        column_name = "trialStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub trial_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "trialEndsAt")]
+    #[sea_orm(column_name = "trialEndsAt", column_type = "custom(\"timestamp(3)\")")]
     pub trial_ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "trialReminderRunId")]
+    #[sea_orm(column_name = "trialReminderRunId", column_type = "Text")]
     pub trial_reminder_run_id: Option<String>,
-    #[sea_orm(column_name = "trialExpiredRunId")]
+    #[sea_orm(column_name = "trialExpiredRunId", column_type = "Text")]
     pub trial_expired_run_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub limits: Option<Json>,
     #[sea_orm(column_name = "enableExcelAdvancedMode", default_value = false)]
     pub enable_excel_advanced_mode: bool,
     #[sea_orm(column_name = "replicateDataroomFolders", default_value = true)]
     pub replicate_dataroom_folders: bool,
-    #[sea_orm(default_value = "Etc/UTC")]
+    #[sea_orm(column_type = "Text", default_value = "Etc/UTC")]
     pub timezone: String,
     #[sea_orm(column_name = "ssoEnabled", default_value = false)]
     pub sso_enabled: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "ssoEmailDomain")]
+    #[sea_orm(column_name = "ssoEmailDomain", column_type = "Text")]
     pub sso_email_domain: Option<String>,
-    #[sea_orm(column_name = "ssoEnforcedAt")]
+    #[sea_orm(
+        column_name = "ssoEnforcedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub sso_enforced_at: Option<DateTime>,
-    #[sea_orm(column_name = "surveyData")]
+    #[sea_orm(column_name = "surveyData", column_type = "JsonBinary")]
     pub survey_data: Option<Json>,
     #[sea_orm(column_name = "agentsEnabled", default_value = false)]
     pub agents_enabled: bool,
-    #[sea_orm(column_name = "vectorStoreId")]
+    #[sea_orm(column_name = "vectorStoreId", column_type = "Text")]
     pub vector_store_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "ignoredDomains")]
+    #[sea_orm(
+        column_name = "ignoredDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub ignored_domains: Vec<String>,
-    #[sea_orm(column_name = "globalBlockList")]
+    #[sea_orm(
+        column_name = "globalBlockList",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub global_block_list: Vec<String>,
     #[sea_orm(column_name = "referralTrack")]
     pub referral_track: Option<ReferralTrack>,
-    #[sea_orm(column_name = "referralTrackSelectedAt")]
+    #[sea_orm(
+        column_name = "referralTrackSelectedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub referral_track_selected_at: Option<DateTime>,
-    #[sea_orm(column_name = "referralProfile")]
+    #[sea_orm(column_name = "referralProfile", column_type = "JsonBinary")]
     pub referral_profile: Option<Json>,
 }
 
@@ -84,7 +110,8 @@ pub enum Relation {
         belongs_to = "super::brand::Entity",
         from = "Column::DefaultBrandId",
         to = "super::brand::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Team_defaultBrandId_fkey"
     )]
     DefaultBrand,
     #[sea_orm(has_many = "super::user_team::Entity")]

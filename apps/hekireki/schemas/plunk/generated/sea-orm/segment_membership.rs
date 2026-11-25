@@ -7,18 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "segment_memberships")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "segmentId")]
+    #[sea_orm(column_name = "segmentId", column_type = "Text")]
     pub segment_id: String,
-    #[sea_orm(column_name = "enteredAt")]
+    #[sea_orm(
+        column_name = "enteredAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub entered_at: DateTime,
-    #[sea_orm(column_name = "exitedAt")]
+    #[sea_orm(column_name = "exitedAt", column_type = "custom(\"timestamp(3)\")")]
     pub exited_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -28,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::contact::Entity",
         from = "Column::ContactId",
         to = "super::contact::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "segment_memberships_contactId_fkey"
     )]
     Contact,
     #[sea_orm(
         belongs_to = "super::segment::Entity",
         from = "Column::SegmentId",
         to = "super::segment::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "segment_memberships_segmentId_fkey"
     )]
     Segment,
 }

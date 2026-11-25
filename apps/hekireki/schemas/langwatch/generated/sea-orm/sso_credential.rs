@@ -25,20 +25,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoCredential")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The connection whose registration minted this. Not a relation, matching
     /// `SsoConnection` itself: a projection rebuilt from events must not depend
     /// on relational state the log does not carry.
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
     /// oidc-client-id | oidc-client-secret | saml-idp-config
+    #[sea_orm(column_type = "Text")]
     pub kind: String,
+    #[sea_orm(column_type = "Text")]
     pub ciphertext: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -14,26 +14,31 @@ pub struct Model {
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "providerPhoneNumberId")]
+    #[sea_orm(column_name = "providerPhoneNumberId", column_type = "Text")]
     pub provider_phone_number_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "stripeCustomerId")]
+    #[sea_orm(column_name = "stripeCustomerId", column_type = "Text")]
     pub stripe_customer_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeSubscriptionId")]
+    #[sea_orm(column_name = "stripeSubscriptionId", column_type = "Text")]
     pub stripe_subscription_id: Option<String>,
     #[sea_orm(column_name = "subscriptionStatus")]
     pub subscription_status: Option<PhoneNumberSubscriptionStatus>,
-    #[sea_orm(column_name = "inboundAgentId")]
+    #[sea_orm(column_name = "inboundAgentId", column_type = "Text")]
     pub inbound_agent_id: Option<String>,
-    #[sea_orm(column_name = "outboundAgentId")]
+    #[sea_orm(column_name = "outboundAgentId", column_type = "Text")]
     pub outbound_agent_id: Option<String>,
 }
 
@@ -43,28 +48,32 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CalAiPhoneNumber_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CalAiPhoneNumber_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::agent::Entity",
         from = "Column::InboundAgentId",
         to = "super::agent::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "CalAiPhoneNumber_inboundAgentId_fkey"
     )]
     InboundAgent,
     #[sea_orm(
         belongs_to = "super::agent::Entity",
         from = "Column::OutboundAgentId",
         to = "super::agent::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "CalAiPhoneNumber_outboundAgentId_fkey"
     )]
     OutboundAgent,
 }

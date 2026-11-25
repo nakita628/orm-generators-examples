@@ -9,32 +9,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OidcSigningKey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub kid: String,
     #[sea_orm(default_value = "EXTERNAL_OIDC")]
     pub purpose: OidcSigningKeyPurpose,
     /// At most one STAGED and one ACTIVE key per purpose: enforced by a partial unique index in the migration.
     pub status: OidcSigningKeyStatus,
-    #[sea_orm(column_name = "publicJwk")]
+    #[sea_orm(column_name = "publicJwk", column_type = "JsonBinary")]
     pub public_jwk: Json,
-    #[sea_orm(column_name = "readyAt")]
+    #[sea_orm(column_name = "readyAt", column_type = "custom(\"timestamp(3)\")")]
     pub ready_at: DateTime,
-    #[sea_orm(column_name = "publicUntil")]
+    #[sea_orm(column_name = "publicUntil", column_type = "custom(\"timestamp(3)\")")]
     pub public_until: Option<DateTime>,
-    #[sea_orm(column_name = "generatedByUserId")]
+    #[sea_orm(column_name = "generatedByUserId", column_type = "Text")]
     pub generated_by_user_id: String,
-    #[sea_orm(column_name = "activatedAt")]
+    #[sea_orm(column_name = "activatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub activated_at: Option<DateTime>,
-    #[sea_orm(column_name = "activatedByUserId")]
+    #[sea_orm(column_name = "activatedByUserId", column_type = "Text")]
     pub activated_by_user_id: Option<String>,
-    #[sea_orm(column_name = "retiredAt")]
+    #[sea_orm(column_name = "retiredAt", column_type = "custom(\"timestamp(3)\")")]
     pub retired_at: Option<DateTime>,
-    #[sea_orm(column_name = "retiredByUserId")]
+    #[sea_orm(column_name = "retiredByUserId", column_type = "Text")]
     pub retired_by_user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

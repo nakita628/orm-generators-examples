@@ -7,16 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ContactResearch")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "researchStartedAt")]
+    #[sea_orm(
+        column_name = "researchStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub research_started_at: DateTime,
     pub found: bool,
+    #[sea_orm(column_type = "Text")]
     pub role: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub confidence: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub company: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub sources: Vec<String>,
 }
 

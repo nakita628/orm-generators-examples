@@ -7,23 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LlmPromptConfigVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub version: i32,
-    #[sea_orm(column_name = "commitMessage")]
+    #[sea_orm(column_name = "commitMessage", column_type = "Text")]
     pub commit_message: Option<String>,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "Text")]
     pub author_id: Option<String>,
-    #[sea_orm(column_name = "configId")]
+    #[sea_orm(column_name = "configId", column_type = "Text")]
     pub config_id: String,
-    #[sea_orm(column_name = "config")]
+    #[sea_orm(column_name = "config", column_type = "JsonBinary")]
     pub config_data: Json,
-    #[sea_orm(column_name = "schemaVersion")]
+    #[sea_orm(column_name = "schemaVersion", column_type = "Text")]
     pub schema_version: String,
-    #[sea_orm(column_name = "runtimeParameters", default_value = "{}")]
+    #[sea_orm(
+        column_name = "runtimeParameters",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub runtime_parameters: Json,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
 }
 
@@ -32,14 +41,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::AuthorId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "LlmPromptConfigVersion_authorId_fkey"
     )]
     Author,
     #[sea_orm(
         belongs_to = "super::llm_prompt_config::Entity",
         from = "Column::ConfigId",
         to = "super::llm_prompt_config::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LlmPromptConfigVersion_configId_fkey"
     )]
     Config,
     #[sea_orm(has_many = "super::prompt_tag_assignment::Entity")]

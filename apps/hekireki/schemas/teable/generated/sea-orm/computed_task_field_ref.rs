@@ -8,13 +8,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "computed_task_field_ref")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub task_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub field_id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
     #[sea_orm(default_value = false)]
     pub was_processing: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

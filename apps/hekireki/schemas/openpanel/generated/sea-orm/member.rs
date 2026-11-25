@@ -8,21 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "members")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "invitedById")]
+    #[sea_orm(column_name = "invitedById", column_type = "Text")]
     pub invited_by_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "projectScope", default_value = "all")]
     pub project_scope: ProjectScope,
+    #[sea_orm(column_type = "JsonBinary")]
     pub meta: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -32,21 +44,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "members_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::InvitedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "members_invitedById_fkey"
     )]
     InvitedBy,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "members_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::member_project::Entity")]

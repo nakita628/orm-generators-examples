@@ -14,12 +14,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AssetImport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = "DRAFT")]
     pub status: AssetImportStatus,
     #[sea_orm(default_value = "PREPARE")]
     pub phase: AssetImportPhase,
-    #[sea_orm(column_name = "fileName")]
+    #[sea_orm(column_name = "fileName", column_type = "Text")]
     pub file_name: Option<String>,
     #[sea_orm(column_name = "totalRows")]
     pub total_rows: i32,
@@ -27,35 +28,42 @@ pub struct Model {
     #[sea_orm(column_name = "processedRows", default_value = 0)]
     pub processed_rows: i32,
     /// Parsed rows (`StoredImportRow[]`). Cleared when the import completes.
+    #[sea_orm(column_type = "JsonBinary")]
     pub rows: Option<Json>,
     /// Name to id maps written by the PREPARE step (`ResolvedImportEntities`).
+    #[sea_orm(column_type = "JsonBinary")]
     pub resolved: Option<Json>,
     #[sea_orm(column_name = "canUseBarcodes", default_value = false)]
     pub can_use_barcodes: bool,
     /// User-facing reason the import failed. Null unless status is FAILED.
-    #[sea_orm(column_name = "errorMessage")]
+    #[sea_orm(column_name = "errorMessage", column_type = "Text")]
     pub error_message: Option<String>,
     /// Rows imported without a conflicting piece (`ImportWarning[]`), capped at 500.
+    #[sea_orm(column_type = "JsonBinary")]
     pub warnings: Option<Json>,
     /// Exact number of warnings, including any beyond the stored cap.
     #[sea_orm(column_name = "warningCount", default_value = 0)]
     pub warning_count: i32,
     /// A step holds the import until this time. Null when no step is running.
-    #[sea_orm(column_name = "lockedUntil")]
+    #[sea_orm(column_name = "lockedUntil", column_type = "custom(\"timestamp(3)\")")]
     pub locked_until: Option<DateTime>,
-    #[sea_orm(column_name = "confirmedAt")]
+    #[sea_orm(column_name = "confirmedAt", column_type = "custom(\"timestamp(3)\")")]
     pub confirmed_at: Option<DateTime>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 
@@ -66,7 +74,8 @@ pub enum Relation {
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetImport_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
@@ -74,7 +83,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetImport_organizationId_fkey"
     )]
     Organization,
 }

@@ -8,34 +8,48 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(
+        column_name = "emailVerified",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: Option<String>,
-    #[sea_orm(default_value = "free")]
+    #[sea_orm(column_type = "Text", default_value = "free")]
     pub plan: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeId")]
+    #[sea_orm(column_name = "stripeId", column_type = "Text")]
     pub stripe_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "subscriptionId")]
+    #[sea_orm(column_name = "subscriptionId", column_type = "Text")]
     pub subscription_id: Option<String>,
-    #[sea_orm(column_name = "startsAt")]
+    #[sea_orm(column_name = "startsAt", column_type = "custom(\"timestamp(3)\")")]
     pub starts_at: Option<DateTime>,
-    #[sea_orm(column_name = "endsAt")]
+    #[sea_orm(column_name = "endsAt", column_type = "custom(\"timestamp(3)\")")]
     pub ends_at: Option<DateTime>,
     #[sea_orm(column_name = "referralTrack")]
     pub referral_track: Option<ReferralTrack>,
-    #[sea_orm(column_name = "referralTrackSelectedAt")]
+    #[sea_orm(
+        column_name = "referralTrackSelectedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub referral_track_selected_at: Option<DateTime>,
-    #[sea_orm(column_name = "referralProfile")]
+    #[sea_orm(column_name = "referralProfile", column_type = "JsonBinary")]
     pub referral_profile: Option<Json>,
 }
 

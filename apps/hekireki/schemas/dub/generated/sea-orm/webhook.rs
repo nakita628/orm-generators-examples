@@ -9,29 +9,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Webhook")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: String,
-    #[sea_orm(column_name = "installationId")]
+    #[sea_orm(
+        column_name = "installationId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub installation_id: Option<String>,
     #[sea_orm(default_value = "user")]
     pub receiver: WebhookReceiver,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"longtext\")")]
     pub url: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub secret: String,
     pub triggers: Json,
     #[sea_orm(column_name = "linkScope")]
     pub link_scope: Option<LinkScope>,
     #[sea_orm(column_name = "consecutiveFailures", default_value = 0)]
     pub consecutive_failures: i32,
-    #[sea_orm(column_name = "lastFailedAt")]
+    #[sea_orm(column_name = "lastFailedAt", column_type = "custom(\"datetime(3)\")")]
     pub last_failed_at: Option<DateTime>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"datetime(3)\")")]
     pub disabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -41,14 +51,16 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Webhook_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::installed_integration::Entity",
         from = "Column::InstallationId",
         to = "super::installed_integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Webhook_installationId_fkey"
     )]
     InstalledIntegration,
     #[sea_orm(has_many = "super::link_webhook::Entity")]

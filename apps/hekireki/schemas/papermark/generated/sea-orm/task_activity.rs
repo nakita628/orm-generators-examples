@@ -7,22 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskActivity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "taskId")]
+    #[sea_orm(column_name = "taskId", column_type = "Text")]
     pub task_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
-    #[sea_orm(column_name = "fromStatus")]
+    #[sea_orm(column_name = "fromStatus", column_type = "Text")]
     pub from_status: Option<String>,
-    #[sea_orm(column_name = "toStatus")]
+    #[sea_orm(column_name = "toStatus", column_type = "Text")]
     pub to_status: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "viewerId")]
+    #[sea_orm(column_name = "viewerId", column_type = "Text")]
     pub viewer_id: Option<String>,
-    #[sea_orm(column_name = "viewId")]
+    #[sea_orm(column_name = "viewId", column_type = "Text")]
     pub view_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -32,28 +39,32 @@ pub enum Relation {
         belongs_to = "super::task::Entity",
         from = "Column::TaskId",
         to = "super::task::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskActivity_taskId_fkey"
     )]
     Task,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "TaskActivity_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::viewer::Entity",
         from = "Column::ViewerId",
         to = "super::viewer::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "TaskActivity_viewerId_fkey"
     )]
     Viewer,
     #[sea_orm(
         belongs_to = "super::view::Entity",
         from = "Column::ViewId",
         to = "super::view::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "TaskActivity_viewId_fkey"
     )]
     View,
 }

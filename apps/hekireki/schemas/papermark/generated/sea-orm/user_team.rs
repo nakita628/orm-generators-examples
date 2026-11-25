@@ -7,17 +7,17 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(default_value = "MEMBER")]
     pub role: Role,
-    #[sea_orm(default_value = "ACTIVE")]
+    #[sea_orm(column_type = "Text", default_value = "ACTIVE")]
     pub status: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "blockedAt")]
+    #[sea_orm(column_name = "blockedAt", column_type = "custom(\"timestamp(3)\")")]
     pub blocked_at: Option<DateTime>,
-    #[sea_orm(column_name = "notificationPreferences")]
+    #[sea_orm(column_name = "notificationPreferences", column_type = "JsonBinary")]
     pub notification_preferences: Option<Json>,
 }
 
@@ -27,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserTeam_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserTeam_teamId_fkey"
     )]
     Team,
 }

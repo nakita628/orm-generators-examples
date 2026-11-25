@@ -8,17 +8,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "score_configs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub data_type: ScoreConfigDataType,
     #[sea_orm(default_value = false)]
     pub is_archived: bool,
     pub min_value: Option<f64>,
     pub max_value: Option<f64>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub categories: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
 }
 
@@ -28,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "score_configs_project_id_fkey"
     )]
     Project,
 }

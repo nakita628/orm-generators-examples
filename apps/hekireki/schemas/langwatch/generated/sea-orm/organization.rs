@@ -11,20 +11,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// `customer` for every organization a person founds or an operator provisions; `system` for
     /// the install's one hidden organization the Ops checkup canaries run in, never listed to a person.
     /// Spec: modules/ops/specs/checkup-canary-project.feature.
-    #[sea_orm(default_value = "customer")]
+    #[sea_orm(column_type = "Text", default_value = "customer")]
     pub kind: String,
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "usageSpendingMaxLimit")]
     pub usage_spending_max_limit: Option<i32>,
@@ -37,13 +48,16 @@ pub struct Model {
     /// organization module the first time it is seen. Once set, a missing route refuses the
     /// organization instead of serving it from the shared ClickHouse. Null: never private.
     /// Spec: specs/private-dataplane/clickhouse-routing.feature.
-    #[sea_orm(column_name = "privateClickHouseLabel")]
+    #[sea_orm(column_name = "privateClickHouseLabel", column_type = "Text")]
     pub private_click_house_label: Option<String>,
     /// The same for `DATAPLANE_S3__<label>__<id>`. Spec: specs/private-dataplane/s3-routing.feature.
-    #[sea_orm(column_name = "privateS3Label")]
+    #[sea_orm(column_name = "privateS3Label", column_type = "Text")]
     pub private_s3_label: Option<String>,
     /// When either label was first recorded.
-    #[sea_orm(column_name = "privateDataplaneSeenAt")]
+    #[sea_orm(
+        column_name = "privateDataplaneSeenAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub private_dataplane_seen_at: Option<DateTime>,
     /// Phase 8 - admin-configurable max lifetime for CLI device-flow
     /// sessions, in days. 0 = unbounded (default, mirrors GitHub CLI /
@@ -72,7 +86,10 @@ pub struct Model {
     /// When the docs playground was last turned off, written in the same update as the switch. A
     /// docs session key minted at or before it never authenticates again, nor any key minted under
     /// one, so turning it back on revives none of them (ADR-185, amendment of 2026-11-14).
-    #[sea_orm(column_name = "docsPlaygroundSessionsDisabledAt")]
+    #[sea_orm(
+        column_name = "docsPlaygroundSessionsDisabledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub docs_playground_sessions_disabled_at: Option<DateTime>,
     /// How many consecutive failed sign-ins lock an account (GAC-09).
     /// 0 = never lock, which is the default and what every organization that
@@ -105,32 +122,35 @@ pub struct Model {
     /// forever by a polling page is not really bounded.
     #[sea_orm(column_name = "sessionMaxLifetimeMinutes", default_value = 0)]
     pub session_max_lifetime_minutes: i32,
-    #[sea_orm(column_name = "signupData")]
+    #[sea_orm(column_name = "signupData", column_type = "JsonBinary")]
     pub signup_data: Option<Json>,
     #[sea_orm(column_name = "signedDPA", default_value = false)]
     pub signed_dpa: bool,
-    #[sea_orm(column_name = "elasticsearchNodeUrl")]
+    #[sea_orm(column_name = "elasticsearchNodeUrl", column_type = "Text")]
     pub elasticsearch_node_url: Option<String>,
-    #[sea_orm(column_name = "elasticsearchApiKey")]
+    #[sea_orm(column_name = "elasticsearchApiKey", column_type = "Text")]
     pub elasticsearch_api_key: Option<String>,
     #[sea_orm(column_name = "useCustomElasticsearch", default_value = false)]
     pub use_custom_elasticsearch: bool,
-    #[sea_orm(column_name = "s3Endpoint")]
+    #[sea_orm(column_name = "s3Endpoint", column_type = "Text")]
     pub s3_endpoint: Option<String>,
-    #[sea_orm(column_name = "s3AccessKeyId")]
+    #[sea_orm(column_name = "s3AccessKeyId", column_type = "Text")]
     pub s3_access_key_id: Option<String>,
-    #[sea_orm(column_name = "s3SecretAccessKey")]
+    #[sea_orm(column_name = "s3SecretAccessKey", column_type = "Text")]
     pub s3_secret_access_key: Option<String>,
-    #[sea_orm(column_name = "s3Bucket")]
+    #[sea_orm(column_name = "s3Bucket", column_type = "Text")]
     pub s3_bucket: Option<String>,
     #[sea_orm(column_name = "useCustomS3", default_value = false)]
     pub use_custom_s3: bool,
-    #[sea_orm(column_name = "sentPlanLimitAlert")]
+    #[sea_orm(
+        column_name = "sentPlanLimitAlert",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub sent_plan_limit_alert: Option<DateTime>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "ssoDomain")]
+    #[sea_orm(column_name = "ssoDomain", column_type = "Text")]
     pub sso_domain: Option<String>,
-    #[sea_orm(column_name = "ssoProvider")]
+    #[sea_orm(column_name = "ssoProvider", column_type = "Text")]
     pub sso_provider: Option<String>,
     /// How colleagues on a matching domain get in (D12, ADR-117):
     /// `off` (invisible to them entirely) | `request` (they ask, an admin
@@ -140,7 +160,11 @@ pub struct Model {
     /// a default and never inferred - an administrator turns it on, names the
     /// domain in `joinDomains` while doing it, and the licence gate holds that
     /// value while letting `request` through.
-    #[sea_orm(column_name = "domainJoin", default_value = "request")]
+    #[sea_orm(
+        column_name = "domainJoin",
+        column_type = "Text",
+        default_value = "request"
+    )]
     pub domain_join: String,
     /// The organisation role handed to a person admitted without an invitation:
     /// a self-service domain join (`domainJoin`) or an SSO-admitted login.
@@ -153,7 +177,10 @@ pub struct Model {
     /// Empty means automatic joining admits nobody whatever `domainJoin` says -
     /// which is what keeps a setting left on from admitting a domain nobody
     /// ever agreed to.
-    #[sea_orm(column_name = "joinDomains")]
+    #[sea_orm(
+        column_name = "joinDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub join_domains: Vec<String>,
     #[sea_orm(column_name = "presenceEnabled", default_value = true)]
     pub presence_enabled: bool,
@@ -169,7 +196,7 @@ pub struct Model {
     /// accepts an email, a URL (internal ticketing system), or any other
     /// instruction. When null, callers fall back to the first ADMIN
     /// member's email (`resolveSupportContact` helper).
-    #[sea_orm(column_name = "supportContact")]
+    #[sea_orm(column_name = "supportContact", column_type = "Text")]
     pub support_contact: Option<String>,
     /// Signup intent, editable later as the org "Primary use" setting.
     /// AGENT_GOVERNANCE lands "/" on /me, LLM_OPS on the project home.
@@ -178,10 +205,10 @@ pub struct Model {
     /// ADR-038.
     #[sea_orm(column_name = "primaryIntent")]
     pub primary_intent: Option<OrganizationIntent>,
-    #[sea_orm(column_name = "promoCode")]
+    #[sea_orm(column_name = "promoCode", column_type = "Text")]
     pub promo_code: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeCustomerId")]
+    #[sea_orm(column_name = "stripeCustomerId", column_type = "Text")]
     pub stripe_customer_id: Option<String>,
     #[sea_orm(default_value = "EUR")]
     pub currency: Currency,
@@ -189,9 +216,15 @@ pub struct Model {
     pub pricing_model: PricingModel,
     #[sea_orm(column_type = "Text")]
     pub license: Option<String>,
-    #[sea_orm(column_name = "licenseExpiresAt")]
+    #[sea_orm(
+        column_name = "licenseExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub license_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "licenseLastValidatedAt")]
+    #[sea_orm(
+        column_name = "licenseLastValidatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub license_last_validated_at: Option<DateTime>,
     /// A customer that runs LangWatch self-hosted. The hosted usage, budgets and
     /// invoices of its connected installs attach to this organization (ADR-139).
@@ -204,25 +237,34 @@ pub struct Model {
     /// administrator who switched one off keeps it off across license changes
     /// (ADR-139, section 2). A license that names no service reaches nothing,
     /// whatever this column holds.
-    #[sea_orm(column_name = "connectServicesDisabled")]
+    #[sea_orm(
+        column_name = "connectServicesDisabled",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub connect_services_disabled: Vec<String>,
     /// When a member of this organization switched Instant Evals on from the
     /// search bar, which is the organization's consent to have judged text sent
     /// to the judge's provider. Null until then: a self-serve organization is
     /// never opted in on its behalf, and an enterprise one is switched on by an
     /// operator through the release flag after asking, never here.
-    #[sea_orm(column_name = "instantEvalsEnabledAt")]
+    #[sea_orm(
+        column_name = "instantEvalsEnabledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub instant_evals_enabled_at: Option<DateTime>,
     /// The member who switched them on, so the audit trail names a person and
     /// not just a moment.
-    #[sea_orm(column_name = "instantEvalsEnabledByUserId")]
+    #[sea_orm(column_name = "instantEvalsEnabledByUserId", column_type = "Text")]
     pub instant_evals_enabled_by_user_id: Option<String>,
     /// When the last license sync succeeded.
-    #[sea_orm(column_name = "connectLastSyncAt")]
+    #[sea_orm(
+        column_name = "connectLastSyncAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub connect_last_sync_at: Option<DateTime>,
     /// The code of the failure the last sync ended on, cleared on the next
     /// success. Settings, Connect renders the copy for it.
-    #[sea_orm(column_name = "connectLastSyncError")]
+    #[sea_orm(column_name = "connectLastSyncError", column_type = "Text")]
     pub connect_last_sync_error: Option<String>,
 }
 

@@ -9,44 +9,57 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Project")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "externalRef")]
+    #[sea_orm(column_name = "externalRef", column_type = "Text")]
     pub external_ref: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
     /// Set the first time the CLI `init` command completes against this project. Drives the dev onboarding progress.
-    #[sea_orm(column_name = "initializedAt")]
+    #[sea_orm(
+        column_name = "initializedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub initialized_at: Option<DateTime>,
     /// Runtime used when a deployment config does not specify one. Null preserves the legacy Node 20 fallback.
-    #[sea_orm(column_name = "defaultRuntime")]
+    #[sea_orm(column_name = "defaultRuntime", column_type = "Text")]
     pub default_runtime: Option<String>,
     #[sea_orm(default_value = "V2")]
     pub version: ProjectVersion,
     #[sea_orm(default_value = "V1")]
     pub engine: RunEngineVersion,
-    #[sea_orm(column_name = "builderProjectId")]
+    #[sea_orm(column_name = "builderProjectId", column_type = "Text")]
     pub builder_project_id: Option<String>,
-    #[sea_orm(column_name = "defaultWorkerGroupId")]
+    #[sea_orm(column_name = "defaultWorkerGroupId", column_type = "Text")]
     pub default_worker_group_id: Option<String>,
     /// Newly triggered deployed runs require the secret proxy (pinned in their annotations).
     #[sea_orm(column_name = "secretProxyEnabled", default_value = false)]
     pub secret_proxy_enabled: bool,
     /// The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
-    #[sea_orm(column_name = "allowedMasterQueues")]
+    #[sea_orm(
+        column_name = "allowedMasterQueues",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub allowed_worker_queues: Vec<String>,
-    #[sea_orm(column_name = "buildSettings")]
+    #[sea_orm(column_name = "buildSettings", column_type = "JsonBinary")]
     pub build_settings: Option<Json>,
-    #[sea_orm(column_name = "onboardingData")]
+    #[sea_orm(column_name = "onboardingData", column_type = "JsonBinary")]
     pub onboarding_data: Option<Json>,
 }
 
@@ -57,13 +70,15 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Project_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::worker_instance_group::Entity",
         from = "Column::DefaultWorkerGroupId",
-        to = "super::worker_instance_group::Column::Id"
+        to = "super::worker_instance_group::Column::Id",
+        fk_name = "Project_defaultWorkerGroupId_fkey"
     )]
     DefaultWorkerGroup,
     #[sea_orm(

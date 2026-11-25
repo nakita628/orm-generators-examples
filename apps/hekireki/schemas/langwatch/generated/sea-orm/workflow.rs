@@ -7,31 +7,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Workflow")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub icon: String,
+    #[sea_orm(column_type = "Text")]
     pub description: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "latestVersionId")]
+    #[sea_orm(column_name = "latestVersionId", column_type = "Text")]
     pub latest_version_id: Option<String>,
-    #[sea_orm(column_name = "currentVersionId")]
+    #[sea_orm(column_name = "currentVersionId", column_type = "Text")]
     pub current_version_id: Option<String>,
-    #[sea_orm(column_name = "publishedId")]
+    #[sea_orm(column_name = "publishedId", column_type = "Text")]
     pub published_id: Option<String>,
-    #[sea_orm(column_name = "publishedById")]
+    #[sea_orm(column_name = "publishedById", column_type = "Text")]
     pub published_by_id: Option<String>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
     #[sea_orm(column_name = "isEvaluator", default_value = false)]
     pub is_evaluator: bool,
     #[sea_orm(column_name = "isComponent", default_value = false)]
     pub is_component: bool,
-    #[sea_orm(column_name = "copiedFromWorkflowId")]
+    #[sea_orm(column_name = "copiedFromWorkflowId", column_type = "Text")]
     pub copied_from_workflow_id: Option<String>,
 }
 
@@ -40,7 +52,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Workflow_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -48,7 +61,8 @@ pub enum Relation {
         from = "Column::LatestVersionId",
         to = "super::workflow_version::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Workflow_latestVersionId_fkey"
     )]
     LatestVersion,
     #[sea_orm(
@@ -56,13 +70,15 @@ pub enum Relation {
         from = "Column::CurrentVersionId",
         to = "super::workflow_version::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Workflow_currentVersionId_fkey"
     )]
     CurrentVersion,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::PublishedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Workflow_publishedById_fkey"
     )]
     PublishedBy,
     #[sea_orm(
@@ -70,7 +86,8 @@ pub enum Relation {
         from = "Column::CopiedFromWorkflowId",
         to = "super::workflow::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Workflow_copiedFromWorkflowId_fkey"
     )]
     CopiedFrom,
     #[sea_orm(

@@ -8,22 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ViewerInvitation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "viewerId")]
+    #[sea_orm(column_name = "viewerId", column_type = "Text")]
     pub viewer_id: String,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: String,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
-    #[sea_orm(column_name = "invitedBy")]
+    #[sea_orm(column_name = "invitedBy", column_type = "Text")]
     pub invited_by: String,
-    #[sea_orm(column_name = "customMessage")]
+    #[sea_orm(column_name = "customMessage", column_type = "Text")]
     pub custom_message: Option<String>,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(
+        column_name = "sentAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub sent_at: DateTime,
     #[sea_orm(default_value = "SENT")]
     pub status: InvitationStatus,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -33,21 +42,24 @@ pub enum Relation {
         belongs_to = "super::viewer::Entity",
         from = "Column::ViewerId",
         to = "super::viewer::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ViewerInvitation_viewerId_fkey"
     )]
     Viewer,
     #[sea_orm(
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ViewerInvitation_linkId_fkey"
     )]
     Link,
     #[sea_orm(
         belongs_to = "super::viewer_group::Entity",
         from = "Column::GroupId",
         to = "super::viewer_group::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "ViewerInvitation_groupId_fkey"
     )]
     Group,
 }

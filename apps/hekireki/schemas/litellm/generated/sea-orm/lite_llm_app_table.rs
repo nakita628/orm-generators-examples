@@ -7,24 +7,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AppTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub app_id: String,
+    #[sea_orm(column_type = "Text")]
     pub app_group_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub resource_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub resource_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub alias: String,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
+    #[sea_orm(column_type = "Text")]
     pub spend_reset_window: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub default_tier_budget_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub default_customer_member_budget_id: Option<String>,
     #[sea_orm(default_value = true)]
     pub auto_create_customers: bool,
     pub customer_margin: Option<f64>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 
@@ -34,25 +53,29 @@ pub enum Relation {
         belongs_to = "super::lite_llm_app_group_table::Entity",
         from = "Column::AppGroupId",
         to = "super::lite_llm_app_group_table::Column::AppGroupId",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "LiteLLM_AppTable_app_group_id_fkey"
     )]
     AppGroup,
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::BudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_AppTable_budget_id_fkey"
     )]
     Budget,
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::DefaultTierBudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_AppTable_default_tier_budget_id_fkey"
     )]
     DefaultTierBudget,
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::DefaultCustomerMemberBudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_AppTable_default_customer_member_budget_id_fkey"
     )]
     DefaultCustomerMemberBudget,
     #[sea_orm(has_many = "super::lite_llm_app_customer_org_table::Entity")]

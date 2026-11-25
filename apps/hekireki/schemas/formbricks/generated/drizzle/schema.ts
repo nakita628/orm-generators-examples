@@ -3347,7 +3347,7 @@ export const feedbackSourceFormbricksMapping = pgTable(
       table.elementId,
     ),
     foreignKey({
-      name: 'FeedbackSourceFormbricksMapping_feedback_source_id_workspa_fkey',
+      name: 'FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk',
       columns: [table.feedbackSourceId, table.workspaceId],
       foreignColumns: [feedbackSource.id, feedbackSource.workspaceId],
     })
@@ -3397,7 +3397,7 @@ export const feedbackSourceFieldMapping = pgTable(
       table.targetFieldId,
     ),
     foreignKey({
-      name: 'FeedbackSourceFieldMapping_feedback_source_id_workspaceId_fkey',
+      name: 'FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey',
       columns: [table.feedbackSourceId, table.workspaceId],
       foreignColumns: [feedbackSource.id, feedbackSource.workspaceId],
     })

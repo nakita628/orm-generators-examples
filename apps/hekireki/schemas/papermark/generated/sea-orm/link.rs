@@ -9,23 +9,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Link")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "documentId")]
+    #[sea_orm(column_name = "documentId", column_type = "Text")]
     pub document_id: Option<String>,
-    #[sea_orm(column_name = "dataroomId")]
+    #[sea_orm(column_name = "dataroomId", column_type = "Text")]
     pub dataroom_id: Option<String>,
     #[sea_orm(column_name = "linkType", default_value = "DOCUMENT_LINK")]
     pub link_type: LinkType,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub slug: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
-    #[sea_orm(column_name = "allowList")]
+    #[sea_orm(
+        column_name = "allowList",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub allow_list: Vec<String>,
-    #[sea_orm(column_name = "denyList")]
+    #[sea_orm(
+        column_name = "denyList",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub deny_list: Vec<String>,
     #[sea_orm(column_name = "emailProtected", default_value = true)]
     pub email_protected: bool,
@@ -35,15 +46,19 @@ pub struct Model {
     pub allow_download: Option<bool>,
     #[sea_orm(column_name = "isArchived", default_value = false)]
     pub is_archived: bool,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
-    #[sea_orm(column_name = "domainId")]
+    #[sea_orm(column_name = "domainId", column_type = "Text")]
     pub domain_id: Option<String>,
-    #[sea_orm(column_name = "domainSlug")]
+    #[sea_orm(column_name = "domainSlug", column_type = "Text")]
     pub domain_slug: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "enableNotification", default_value = true)]
     pub enable_notification: Option<bool>,
@@ -57,31 +72,31 @@ pub struct Model {
     pub enable_confidential_view: Option<bool>,
     #[sea_orm(column_name = "enableAgreement", default_value = false)]
     pub enable_agreement: Option<bool>,
-    #[sea_orm(column_name = "agreementId")]
+    #[sea_orm(column_name = "agreementId", column_type = "Text")]
     pub agreement_id: Option<String>,
     #[sea_orm(column_name = "showBanner", default_value = false)]
     pub show_banner: Option<bool>,
     #[sea_orm(column_name = "enableWatermark", default_value = false)]
     pub enable_watermark: Option<bool>,
-    #[sea_orm(column_name = "watermarkConfig")]
+    #[sea_orm(column_name = "watermarkConfig", column_type = "JsonBinary")]
     pub watermark_config: Option<Json>,
     #[sea_orm(column_name = "audienceType", default_value = "GENERAL")]
     pub audience_type: LinkAudienceType,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
-    #[sea_orm(column_name = "permissionGroupId")]
+    #[sea_orm(column_name = "permissionGroupId", column_type = "Text")]
     pub permission_group_id: Option<String>,
-    #[sea_orm(column_name = "metaTitle")]
+    #[sea_orm(column_name = "metaTitle", column_type = "Text")]
     pub meta_title: Option<String>,
-    #[sea_orm(column_name = "metaDescription")]
+    #[sea_orm(column_name = "metaDescription", column_type = "Text")]
     pub meta_description: Option<String>,
-    #[sea_orm(column_name = "metaImage")]
+    #[sea_orm(column_name = "metaImage", column_type = "Text")]
     pub meta_image: Option<String>,
-    #[sea_orm(column_name = "metaFavicon")]
+    #[sea_orm(column_name = "metaFavicon", column_type = "Text")]
     pub meta_favicon: Option<String>,
     #[sea_orm(column_name = "enableCustomMetatag", default_value = false)]
     pub enable_custom_metatag: Option<bool>,
-    #[sea_orm(column_name = "welcomeMessage")]
+    #[sea_orm(column_name = "welcomeMessage", column_type = "Text")]
     pub welcome_message: Option<String>,
     #[sea_orm(column_name = "enableConversation", default_value = false)]
     pub enable_conversation: bool,
@@ -93,17 +108,20 @@ pub struct Model {
     pub is_file_request_only: Option<bool>,
     /// Deprecated: replaced by `uploadFolderIds`. Retained in the DB only so old
     /// rows can be inspected; no application code reads or writes this column.
-    #[sea_orm(column_name = "uploadFolderId")]
+    #[sea_orm(column_name = "uploadFolderId", column_type = "Text")]
     pub upload_folder_id: Option<String>,
-    #[sea_orm(column_name = "uploadFolderIds")]
+    #[sea_orm(
+        column_name = "uploadFolderIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub upload_folder_ids: Vec<String>,
     #[sea_orm(column_name = "enableIndexFile", default_value = false)]
     pub enable_index_file: Option<bool>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: Option<String>,
-    #[sea_orm(column_name = "brandId")]
+    #[sea_orm(column_name = "brandId", column_type = "Text")]
     pub brand_id: Option<String>,
-    #[sea_orm(column_name = "ownerId")]
+    #[sea_orm(column_name = "ownerId", column_type = "Text")]
     pub owner_id: Option<String>,
 }
 
@@ -113,63 +131,72 @@ pub enum Relation {
         belongs_to = "super::document::Entity",
         from = "Column::DocumentId",
         to = "super::document::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Link_documentId_fkey"
     )]
     Document,
     #[sea_orm(
         belongs_to = "super::dataroom::Entity",
         from = "Column::DataroomId",
         to = "super::dataroom::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Link_dataroomId_fkey"
     )]
     Dataroom,
     #[sea_orm(
         belongs_to = "super::domain::Entity",
         from = "Column::DomainId",
         to = "super::domain::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_domainId_fkey"
     )]
     Domain,
     #[sea_orm(
         belongs_to = "super::agreement::Entity",
         from = "Column::AgreementId",
         to = "super::agreement::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_agreementId_fkey"
     )]
     Agreement,
     #[sea_orm(
         belongs_to = "super::viewer_group::Entity",
         from = "Column::GroupId",
         to = "super::viewer_group::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_groupId_fkey"
     )]
     Group,
     #[sea_orm(
         belongs_to = "super::permission_group::Entity",
         from = "Column::PermissionGroupId",
         to = "super::permission_group::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_permissionGroupId_fkey"
     )]
     PermissionGroup,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Link_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::brand::Entity",
         from = "Column::BrandId",
         to = "super::brand::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_brandId_fkey"
     )]
     Brand,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_ownerId_fkey"
     )]
     Owner,
     #[sea_orm(has_many = "super::view::Entity")]

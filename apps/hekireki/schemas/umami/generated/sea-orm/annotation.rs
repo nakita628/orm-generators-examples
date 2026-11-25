@@ -17,7 +17,10 @@ pub struct Model {
     pub all_day: bool,
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub note: String,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub updated_at: Option<DateTimeWithTimeZone>,
@@ -28,7 +31,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::website::Entity",
         from = "Column::WebsiteId",
-        to = "super::website::Column::Id"
+        to = "super::website::Column::Id",
+        fk_name = "annotation_website_id_fkey"
     )]
     Website,
 }

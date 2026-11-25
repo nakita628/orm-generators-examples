@@ -8,22 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TagItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "tagId")]
+    #[sea_orm(column_name = "tagId", column_type = "Text")]
     pub tag_id: String,
     #[sea_orm(column_name = "itemType")]
     pub item_type: TagType,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: Option<String>,
-    #[sea_orm(column_name = "documentId")]
+    #[sea_orm(column_name = "documentId", column_type = "Text")]
     pub document_id: Option<String>,
-    #[sea_orm(column_name = "dataroomId")]
+    #[sea_orm(column_name = "dataroomId", column_type = "Text")]
     pub dataroom_id: Option<String>,
-    #[sea_orm(column_name = "taggedBy")]
+    #[sea_orm(column_name = "taggedBy", column_type = "Text")]
     pub tagged_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,28 +38,32 @@ pub enum Relation {
         belongs_to = "super::tag::Entity",
         from = "Column::TagId",
         to = "super::tag::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagItem_tagId_fkey"
     )]
     Tag,
     #[sea_orm(
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagItem_linkId_fkey"
     )]
     Link,
     #[sea_orm(
         belongs_to = "super::document::Entity",
         from = "Column::DocumentId",
         to = "super::document::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagItem_documentId_fkey"
     )]
     Document,
     #[sea_orm(
         belongs_to = "super::dataroom::Entity",
         from = "Column::DataroomId",
         to = "super::dataroom::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagItem_dataroomId_fkey"
     )]
     Dataroom,
 }

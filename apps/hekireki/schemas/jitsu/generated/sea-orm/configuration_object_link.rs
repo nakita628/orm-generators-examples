@@ -7,23 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConfigurationObjectLink")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = false)]
     pub deleted: Option<bool>,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(default_value = "push")]
+    #[sea_orm(column_type = "Text", default_value = "push")]
     pub r#type: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Option<Json>,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "fromId")]
+    #[sea_orm(column_name = "fromId", column_type = "Text")]
     pub from_id: String,
-    #[sea_orm(column_name = "toId")]
+    #[sea_orm(column_name = "toId", column_type = "Text")]
     pub to_id: String,
 }
 
@@ -32,19 +42,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
-        to = "super::workspace::Column::Id"
+        to = "super::workspace::Column::Id",
+        fk_name = "ConfigurationObjectLink_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::configuration_object::Entity",
         from = "Column::FromId",
-        to = "super::configuration_object::Column::Id"
+        to = "super::configuration_object::Column::Id",
+        fk_name = "ConfigurationObjectLink_fromId_fkey"
     )]
     From,
     #[sea_orm(
         belongs_to = "super::configuration_object::Entity",
         from = "Column::ToId",
-        to = "super::configuration_object::Column::Id"
+        to = "super::configuration_object::Column::Id",
+        fk_name = "ConfigurationObjectLink_toId_fkey"
     )]
     To,
 }

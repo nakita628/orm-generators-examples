@@ -151,12 +151,12 @@ func (*SpaceDataDbBinding) BeforeUpdate(tx *gorm.DB) error {
 
 type SpaceDataDbMigrationJob struct {
 	ID                   string            `gorm:"column:id;primaryKey" json:"id"`
-	SpaceID              string            `gorm:"column:space_id;index:space_data_db_migration_job_space_id_state_idx;not null" json:"space_id"`
+	SpaceID              string            `gorm:"column:space_id;index:space_data_db_migration_job_space_id_state_idx,priority:1;not null" json:"space_id"`
 	SourceConnectionID   *string           `gorm:"column:source_connection_id;index:space_data_db_migration_job_source_connection_id_idx" json:"source_connection_id"`
 	TargetConnectionID   *string           `gorm:"column:target_connection_id;index:space_data_db_migration_job_target_connection_id_idx" json:"target_connection_id"`
 	TargetMode           *string           `gorm:"column:target_mode;default:'migrate-space';not null" json:"target_mode"`
 	SwitchOnCompletion   bool              `gorm:"column:switch_on_completion;default:false;not null" json:"switch_on_completion"`
-	State                string            `gorm:"column:state;index:space_data_db_migration_job_space_id_state_idx;default:'pending';not null" json:"state"`
+	State                string            `gorm:"column:state;index:space_data_db_migration_job_space_id_state_idx,priority:2;default:'pending';not null" json:"state"`
 	TargetURLFingerprint string            `gorm:"column:target_url_fingerprint;not null" json:"target_url_fingerprint"`
 	TargetInternalSchema string            `gorm:"column:target_internal_schema;not null" json:"target_internal_schema"`
 	Inventory            datatypes.JSON    `gorm:"column:inventory" json:"inventory"`
@@ -201,12 +201,12 @@ func (*SpaceDataDbMigrationJob) BeforeUpdate(tx *gorm.DB) error {
 
 type BaseDataDbMoveJob struct {
 	ID                 string         `gorm:"column:id;primaryKey" json:"id"`
-	BaseID             string         `gorm:"column:base_id;index:base_data_db_move_job_base_id_state_idx;not null" json:"base_id"`
-	SourceSpaceID      string         `gorm:"column:source_space_id;index:base_data_db_move_job_source_space_id_state_idx;not null" json:"source_space_id"`
-	TargetSpaceID      string         `gorm:"column:target_space_id;index:base_data_db_move_job_target_space_id_state_idx;not null" json:"target_space_id"`
+	BaseID             string         `gorm:"column:base_id;index:base_data_db_move_job_base_id_state_idx,priority:1;not null" json:"base_id"`
+	SourceSpaceID      string         `gorm:"column:source_space_id;index:base_data_db_move_job_source_space_id_state_idx,priority:1;not null" json:"source_space_id"`
+	TargetSpaceID      string         `gorm:"column:target_space_id;index:base_data_db_move_job_target_space_id_state_idx,priority:1;not null" json:"target_space_id"`
 	SourceConnectionID *string        `gorm:"column:source_connection_id" json:"source_connection_id"`
 	TargetConnectionID *string        `gorm:"column:target_connection_id" json:"target_connection_id"`
-	State              string         `gorm:"column:state;index:base_data_db_move_job_base_id_state_idx;index:base_data_db_move_job_state_idx;index:base_data_db_move_job_source_space_id_state_idx;index:base_data_db_move_job_target_space_id_state_idx;default:'pending';not null" json:"state"`
+	State              string         `gorm:"column:state;index:base_data_db_move_job_base_id_state_idx,priority:2;index:base_data_db_move_job_state_idx;index:base_data_db_move_job_source_space_id_state_idx,priority:2;index:base_data_db_move_job_target_space_id_state_idx,priority:2;default:'pending';not null" json:"state"`
 	Inventory          datatypes.JSON `gorm:"column:inventory" json:"inventory"`
 	CopyStats          datatypes.JSON `gorm:"column:copy_stats" json:"copy_stats"`
 	ValidationStats    datatypes.JSON `gorm:"column:validation_stats" json:"validation_stats"`
@@ -250,9 +250,9 @@ func (*BaseDataDbMoveJob) BeforeUpdate(tx *gorm.DB) error {
 type PinResource struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	Type        string   `gorm:"column:type;not null" json:"type"`
-	ResourceID  string   `gorm:"column:resource_id;uniqueIndex:pin_resource_created_by_resource_id_key;not null" json:"resource_id"`
+	ResourceID  string   `gorm:"column:resource_id;uniqueIndex:pin_resource_created_by_resource_id_key,priority:2;not null" json:"resource_id"`
 	CreatedTime DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
-	CreatedBy   string   `gorm:"column:created_by;uniqueIndex:pin_resource_created_by_resource_id_key;not null" json:"created_by"`
+	CreatedBy   string   `gorm:"column:created_by;uniqueIndex:pin_resource_created_by_resource_id_key,priority:1;not null" json:"created_by"`
 	Order       float64  `gorm:"column:order;index:pin_resource_order_idx;type:double precision;not null" json:"order"`
 }
 
@@ -319,7 +319,7 @@ func (*Base) BeforeUpdate(tx *gorm.DB) error {
 
 type TableMeta struct {
 	ID                string              `gorm:"column:id;primaryKey" json:"id"`
-	BaseID            string              `gorm:"column:base_id;index:table_meta_base_id_deleted_time_idx;not null" json:"base_id"`
+	BaseID            string              `gorm:"column:base_id;index:table_meta_base_id_deleted_time_idx,priority:1;not null" json:"base_id"`
 	Name              string              `gorm:"column:name;not null" json:"name"`
 	Description       *string             `gorm:"column:description" json:"description"`
 	Icon              *string             `gorm:"column:icon" json:"icon"`
@@ -333,7 +333,7 @@ type TableMeta struct {
 	Order             float64             `gorm:"column:order;index:table_meta_order_idx;type:double precision;not null" json:"order"`
 	CreatedTime       DateTime            `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime  *DateTime           `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
-	DeletedTime       *DateTime           `gorm:"column:deleted_time;index:table_meta_base_id_deleted_time_idx;type:timestamp(3)" json:"deleted_time"`
+	DeletedTime       *DateTime           `gorm:"column:deleted_time;index:table_meta_base_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
 	CreatedBy         string              `gorm:"column:created_by;not null" json:"created_by"`
 	LastModifiedBy    *string             `gorm:"column:last_modified_by" json:"last_modified_by"`
 	Base              *Base               `gorm:"belongsTo"`
@@ -368,11 +368,11 @@ func (*TableMeta) BeforeUpdate(tx *gorm.DB) error {
 
 type TableQueryObservationShard struct {
 	SpaceID           *string        `gorm:"column:space_id" json:"space_id"`
-	BaseID            string         `gorm:"column:base_id;index:table_query_observation_shard_base_start_idx;not null" json:"base_id"`
-	TableID           string         `gorm:"column:table_id;primaryKey;index:table_query_observation_shard_table_start_idx;index:table_query_observation_shard_search_activity_idx" json:"table_id"`
-	QueryKind         string         `gorm:"column:query_kind;primaryKey;index:table_query_observation_shard_search_activity_idx" json:"query_kind"`
+	BaseID            string         `gorm:"column:base_id;index:table_query_observation_shard_base_start_idx,priority:1;not null" json:"base_id"`
+	TableID           string         `gorm:"column:table_id;primaryKey;index:table_query_observation_shard_table_start_idx,priority:1;index:table_query_observation_shard_search_activity_idx,priority:2" json:"table_id"`
+	QueryKind         string         `gorm:"column:query_kind;primaryKey;index:table_query_observation_shard_search_activity_idx,priority:1" json:"query_kind"`
 	ShapeHash         string         `gorm:"column:shape_hash;primaryKey" json:"shape_hash"`
-	WindowStart       DateTime       `gorm:"column:window_start;primaryKey;index:table_query_observation_shard_window_start_idx;index:table_query_observation_shard_table_start_idx;index:table_query_observation_shard_search_activity_idx;index:table_query_observation_shard_base_start_idx;type:timestamptz(6)" json:"window_start"`
+	WindowStart       DateTime       `gorm:"column:window_start;primaryKey;index:table_query_observation_shard_window_start_idx;index:table_query_observation_shard_table_start_idx,priority:2;index:table_query_observation_shard_search_activity_idx,priority:3;index:table_query_observation_shard_base_start_idx,priority:2;type:timestamptz(6)" json:"window_start"`
 	WriterID          string         `gorm:"column:writer_id;primaryKey" json:"writer_id"`
 	WindowSizeSeconds int            `gorm:"column:window_size_seconds;size:32;not null" json:"window_size_seconds"`
 	RequestCount      int            `gorm:"column:request_count;size:32;not null" json:"request_count"`
@@ -404,18 +404,18 @@ func (m *TableQueryObservationShard) BeforeCreate(tx *gorm.DB) error {
 type SchemaOperation struct {
 	ID               string         `gorm:"column:id;primaryKey" json:"id"`
 	Type             string         `gorm:"column:type;not null" json:"type"`
-	Status           string         `gorm:"column:status;index:schema_operation_status_next_run_at_idx;index:schema_operation_resource_status_idx;index:schema_operation_base_status_idx;index:schema_operation_table_status_idx;not null" json:"status"`
+	Status           string         `gorm:"column:status;index:schema_operation_status_next_run_at_idx,priority:1;index:schema_operation_resource_status_idx,priority:3;index:schema_operation_base_status_idx,priority:2;index:schema_operation_table_status_idx,priority:2;not null" json:"status"`
 	Phase            string         `gorm:"column:phase;not null" json:"phase"`
-	ResourceType     string         `gorm:"column:resource_type;index:schema_operation_resource_status_idx;not null" json:"resource_type"`
-	ResourceID       string         `gorm:"column:resource_id;index:schema_operation_resource_status_idx;not null" json:"resource_id"`
-	BaseID           *string        `gorm:"column:base_id;index:schema_operation_base_status_idx" json:"base_id"`
-	TableID          *string        `gorm:"column:table_id;index:schema_operation_table_status_idx" json:"table_id"`
+	ResourceType     string         `gorm:"column:resource_type;index:schema_operation_resource_status_idx,priority:1;not null" json:"resource_type"`
+	ResourceID       string         `gorm:"column:resource_id;index:schema_operation_resource_status_idx,priority:2;not null" json:"resource_id"`
+	BaseID           *string        `gorm:"column:base_id;index:schema_operation_base_status_idx,priority:1" json:"base_id"`
+	TableID          *string        `gorm:"column:table_id;index:schema_operation_table_status_idx,priority:1" json:"table_id"`
 	IdempotencyKey   string         `gorm:"column:idempotency_key;uniqueIndex:schema_operation_idempotency_key_key;not null" json:"idempotency_key"`
 	Payload          datatypes.JSON `gorm:"column:payload" json:"payload"`
 	Result           datatypes.JSON `gorm:"column:result" json:"result"`
 	Attempts         int            `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	MaxAttempts      *int           `gorm:"column:max_attempts;size:32;default:8;not null" json:"max_attempts"`
-	NextRunAt        DateTime       `gorm:"column:next_run_at;index:schema_operation_status_next_run_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
+	NextRunAt        DateTime       `gorm:"column:next_run_at;index:schema_operation_status_next_run_at_idx,priority:2;type:timestamptz(6);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
 	LockedAt         *DateTime      `gorm:"column:locked_at;type:timestamptz(6)" json:"locked_at"`
 	LockedBy         *string        `gorm:"column:locked_by" json:"locked_by"`
 	LastError        *string        `gorm:"column:last_error" json:"last_error"`
@@ -474,12 +474,12 @@ type Field struct {
 	HasError            *bool      `gorm:"column:has_error" json:"has_error"`
 	LookupLinkedFieldID *string    `gorm:"column:lookup_linked_field_id;index:field_lookup_linked_field_id_idx" json:"lookup_linked_field_id"`
 	LookupOptions       *string    `gorm:"column:lookup_options" json:"lookup_options"`
-	TableID             string     `gorm:"column:table_id;index:field_table_id_deleted_time_idx;not null" json:"table_id"`
+	TableID             string     `gorm:"column:table_id;index:field_table_id_deleted_time_idx,priority:1;not null" json:"table_id"`
 	Order               float64    `gorm:"column:order;type:double precision;not null" json:"order"`
 	Version             int        `gorm:"column:version;size:32;not null" json:"version"`
 	CreatedTime         DateTime   `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime    *DateTime  `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
-	DeletedTime         *DateTime  `gorm:"column:deleted_time;index:field_table_id_deleted_time_idx;type:timestamp(3)" json:"deleted_time"`
+	DeletedTime         *DateTime  `gorm:"column:deleted_time;index:field_table_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
 	CreatedBy           string     `gorm:"column:created_by;not null" json:"created_by"`
 	LastModifiedBy      *string    `gorm:"column:last_modified_by" json:"last_modified_by"`
 	Table               *TableMeta `gorm:"foreignKey:TableID;belongsTo"`
@@ -541,8 +541,8 @@ func (m *DomainEventOutbox) BeforeCreate(tx *gorm.DB) error {
 
 type DomainEventDelivery struct {
 	ID             string    `gorm:"column:id;primaryKey" json:"id"`
-	EventID        string    `gorm:"column:event_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key;not null" json:"event_id"`
-	ConsumerID     string    `gorm:"column:consumer_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key;not null" json:"consumer_id"`
+	EventID        string    `gorm:"column:event_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key,priority:1;not null" json:"event_id"`
+	ConsumerID     string    `gorm:"column:consumer_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key,priority:2;not null" json:"consumer_id"`
 	Status         string    `gorm:"column:status;not null" json:"status"`
 	Attempts       int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	MaxAttempts    *int      `gorm:"column:max_attempts;size:32;default:12;not null" json:"max_attempts"`
@@ -588,17 +588,17 @@ func (m *DomainEventInbox) BeforeCreate(tx *gorm.DB) error {
 
 type ComputedUpdateOutbox struct {
 	ID                      string                     `gorm:"column:id;primaryKey" json:"id"`
-	BaseID                  string                     `gorm:"column:base_id;index:computed_update_outbox_base_id_seed_table_id_idx;not null" json:"base_id"`
-	WorkerLane              *string                    `gorm:"column:worker_lane;index:computed_update_outbox_worker_lane_status_next_run_at_idx;default:'production';not null" json:"worker_lane"`
-	SeedTableID             string                     `gorm:"column:seed_table_id;index:computed_update_outbox_base_id_seed_table_id_idx;not null" json:"seed_table_id"`
+	BaseID                  string                     `gorm:"column:base_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:1;not null" json:"base_id"`
+	WorkerLane              *string                    `gorm:"column:worker_lane;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:1;default:'production';not null" json:"worker_lane"`
+	SeedTableID             string                     `gorm:"column:seed_table_id;index:computed_update_outbox_base_id_seed_table_id_idx,priority:2;not null" json:"seed_table_id"`
 	SeedRecordIds           datatypes.JSON             `gorm:"column:seed_record_ids" json:"seed_record_ids"`
 	ChangeType              string                     `gorm:"column:change_type;not null" json:"change_type"`
 	Steps                   datatypes.JSON             `gorm:"column:steps" json:"steps"`
 	Edges                   datatypes.JSON             `gorm:"column:edges" json:"edges"`
-	Status                  string                     `gorm:"column:status;index:computed_update_outbox_status_next_run_at_idx;index:computed_update_outbox_worker_lane_status_next_run_at_idx;not null" json:"status"`
+	Status                  string                     `gorm:"column:status;index:computed_update_outbox_status_next_run_at_idx,priority:1;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:2;not null" json:"status"`
 	Attempts                int                        `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	MaxAttempts             *int                       `gorm:"column:max_attempts;size:32;default:8;not null" json:"max_attempts"`
-	NextRunAt               DateTime                   `gorm:"column:next_run_at;index:computed_update_outbox_status_next_run_at_idx;index:computed_update_outbox_worker_lane_status_next_run_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
+	NextRunAt               DateTime                   `gorm:"column:next_run_at;index:computed_update_outbox_status_next_run_at_idx,priority:2;index:computed_update_outbox_worker_lane_status_next_run_at_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_run_at"`
 	LockedAt                *DateTime                  `gorm:"column:locked_at;type:timestamp(3)" json:"locked_at"`
 	LockedBy                *string                    `gorm:"column:locked_by" json:"locked_by"`
 	LastError               *string                    `gorm:"column:last_error" json:"last_error"`
@@ -651,9 +651,9 @@ func (*ComputedUpdateOutbox) BeforeUpdate(tx *gorm.DB) error {
 
 type ComputedUpdateOutboxSeed struct {
 	ID       string                `gorm:"column:id;primaryKey" json:"id"`
-	TaskID   string                `gorm:"column:task_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key;index:computed_update_outbox_seed_task_id_idx;not null" json:"task_id"`
-	TableID  string                `gorm:"column:table_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key;not null" json:"table_id"`
-	RecordID string                `gorm:"column:record_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key;not null" json:"record_id"`
+	TaskID   string                `gorm:"column:task_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key,priority:1;index:computed_update_outbox_seed_task_id_idx;not null" json:"task_id"`
+	TableID  string                `gorm:"column:table_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key,priority:2;not null" json:"table_id"`
+	RecordID string                `gorm:"column:record_id;uniqueIndex:computed_update_outbox_seed_task_id_table_id_record_id_key,priority:3;not null" json:"record_id"`
 	Task     *ComputedUpdateOutbox `gorm:"foreignKey:TaskID;belongsTo"`
 }
 
@@ -691,11 +691,11 @@ func (ComputedUpdateChangeFrontier) TableName() string {
 // chunks, handed to the continuation as seeds at stage completion.
 // Cleared when the chain's stage completes or the chain dead-letters.
 type ComputedUpdateStageLedger struct {
-	ScopeID  string `gorm:"column:scope_id;primaryKey;index:computed_update_stage_ledger_scope_id_kind_seq_idx" json:"scope_id"`
-	Kind     string `gorm:"column:kind;primaryKey;index:computed_update_stage_ledger_scope_id_kind_seq_idx" json:"kind"`
+	ScopeID  string `gorm:"column:scope_id;primaryKey;index:computed_update_stage_ledger_scope_id_kind_seq_idx,priority:1" json:"scope_id"`
+	Kind     string `gorm:"column:kind;primaryKey;index:computed_update_stage_ledger_scope_id_kind_seq_idx,priority:2" json:"kind"`
 	TableID  string `gorm:"column:table_id;primaryKey" json:"table_id"`
 	RecordID string `gorm:"column:record_id;primaryKey" json:"record_id"`
-	Seq      int64  `gorm:"column:seq;index:computed_update_stage_ledger_scope_id_kind_seq_idx;default:0;not null" json:"seq"`
+	Seq      int64  `gorm:"column:seq;index:computed_update_stage_ledger_scope_id_kind_seq_idx,priority:3;default:0;not null" json:"seq"`
 }
 
 func (ComputedUpdateStageLedger) TableName() string {
@@ -704,9 +704,9 @@ func (ComputedUpdateStageLedger) TableName() string {
 
 type ComputedUpdateDeadLetter struct {
 	ID                      string                         `gorm:"column:id;primaryKey" json:"id"`
-	BaseID                  string                         `gorm:"column:base_id;index:computed_update_dead_letter_base_id_seed_table_id_idx;not null" json:"base_id"`
+	BaseID                  string                         `gorm:"column:base_id;index:computed_update_dead_letter_base_id_seed_table_id_idx,priority:1;not null" json:"base_id"`
 	WorkerLane              *string                        `gorm:"column:worker_lane;default:'production';not null" json:"worker_lane"`
-	SeedTableID             string                         `gorm:"column:seed_table_id;index:computed_update_dead_letter_base_id_seed_table_id_idx;not null" json:"seed_table_id"`
+	SeedTableID             string                         `gorm:"column:seed_table_id;index:computed_update_dead_letter_base_id_seed_table_id_idx,priority:2;not null" json:"seed_table_id"`
 	SeedRecordIds           datatypes.JSON                 `gorm:"column:seed_record_ids" json:"seed_record_ids"`
 	ChangeType              string                         `gorm:"column:change_type;not null" json:"change_type"`
 	Steps                   datatypes.JSON                 `gorm:"column:steps" json:"steps"`
@@ -762,11 +762,11 @@ func (ComputedUpdateDeadLetterSeed) TableName() string {
 // retention window.
 type ComputedUpdateRunHistory struct {
 	TaskID           string             `gorm:"column:task_id;primaryKey" json:"task_id"`
-	BaseID           string             `gorm:"column:base_id;index:computed_update_run_history_base_id_completed_at_idx;not null" json:"base_id"`
+	BaseID           string             `gorm:"column:base_id;index:computed_update_run_history_base_id_completed_at_idx,priority:1;not null" json:"base_id"`
 	SeedTableID      string             `gorm:"column:seed_table_id;not null" json:"seed_table_id"`
 	ChangeType       string             `gorm:"column:change_type;not null" json:"change_type"`
 	RunID            string             `gorm:"column:run_id;index:computed_update_run_history_run_id_idx;not null" json:"run_id"`
-	OriginRunIds     ScalarList[string] `gorm:"column:origin_run_ids;index:computed_update_run_history_origin_run_ids_gin;type:text[]" json:"origin_run_ids"`
+	OriginRunIds     ScalarList[string] `gorm:"column:origin_run_ids;index:computed_update_run_history_origin_run_ids_gin,type:gin;type:text[]" json:"origin_run_ids"`
 	Steps            datatypes.JSON     `gorm:"column:steps" json:"steps"`
 	Edges            datatypes.JSON     `gorm:"column:edges" json:"edges"`
 	AffectedTableIds ScalarList[string] `gorm:"column:affected_table_ids;type:text[]" json:"affected_table_ids"`
@@ -786,7 +786,7 @@ type ComputedUpdateRunHistory struct {
 	SourceChangedAt         *DateTime          `gorm:"column:source_changed_at;type:timestamp(3)" json:"source_changed_at"`
 	EnqueuedAt              DateTime           `gorm:"column:enqueued_at;type:timestamp(3);not null" json:"enqueued_at"`
 	StartedAt               *DateTime          `gorm:"column:started_at;type:timestamp(3)" json:"started_at"`
-	CompletedAt             DateTime           `gorm:"column:completed_at;index:computed_update_run_history_base_id_completed_at_idx;index:computed_update_run_history_completed_at_idx;type:timestamp(3);not null" json:"completed_at"`
+	CompletedAt             DateTime           `gorm:"column:completed_at;index:computed_update_run_history_base_id_completed_at_idx,priority:2;index:computed_update_run_history_completed_at_idx;type:timestamp(3);not null" json:"completed_at"`
 	DurationMs              int                `gorm:"column:duration_ms;size:32;default:0;not null" json:"duration_ms"`
 }
 
@@ -796,8 +796,8 @@ func (ComputedUpdateRunHistory) TableName() string {
 
 type ComputedUpdatePauseScope struct {
 	ID          string    `gorm:"column:id;primaryKey" json:"id"`
-	ScopeType   string    `gorm:"column:scope_type;uniqueIndex:computed_update_pause_scope_scope_type_scope_id_key;not null" json:"scope_type"`
-	ScopeID     string    `gorm:"column:scope_id;uniqueIndex:computed_update_pause_scope_scope_type_scope_id_key;not null" json:"scope_id"`
+	ScopeType   string    `gorm:"column:scope_type;uniqueIndex:computed_update_pause_scope_scope_type_scope_id_key,priority:1;not null" json:"scope_type"`
+	ScopeID     string    `gorm:"column:scope_id;uniqueIndex:computed_update_pause_scope_scope_type_scope_id_key,priority:2;not null" json:"scope_id"`
 	PausedAt    DateTime  `gorm:"column:paused_at;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"paused_at"`
 	PausedBy    *string   `gorm:"column:paused_by" json:"paused_by"`
 	ResumeAt    *DateTime `gorm:"column:resume_at;index:computed_update_pause_scope_resume_at_idx;type:timestamp(3)" json:"resume_at"`
@@ -833,9 +833,9 @@ func (*ComputedUpdatePauseScope) BeforeUpdate(tx *gorm.DB) error {
 // Projection of async computed activity per field (not field schema meta).
 type ComputedFieldActivity struct {
 	FieldID               string         `gorm:"column:field_id;primaryKey" json:"field_id"`
-	TableID               string         `gorm:"column:table_id;index:computed_field_activity_table_id_status_idx;not null" json:"table_id"`
-	BaseID                string         `gorm:"column:base_id;index:computed_field_activity_base_id_status_idx;not null" json:"base_id"`
-	Status                string         `gorm:"column:status;index:computed_field_activity_table_id_status_idx;index:computed_field_activity_base_id_status_idx;not null" json:"status"`
+	TableID               string         `gorm:"column:table_id;index:computed_field_activity_table_id_status_idx,priority:1;not null" json:"table_id"`
+	BaseID                string         `gorm:"column:base_id;index:computed_field_activity_base_id_status_idx,priority:1;not null" json:"base_id"`
+	Status                string         `gorm:"column:status;index:computed_field_activity_table_id_status_idx,priority:2;index:computed_field_activity_base_id_status_idx,priority:2;not null" json:"status"`
 	ActiveTaskCount       int            `gorm:"column:active_task_count;size:32;default:0;not null" json:"active_task_count"`
 	ProcessingTaskCount   int            `gorm:"column:processing_task_count;size:32;default:0;not null" json:"processing_task_count"`
 	Generation            int64          `gorm:"column:generation;default:0;not null" json:"generation"`
@@ -866,8 +866,8 @@ func (m *ComputedFieldActivity) BeforeCreate(tx *gorm.DB) error {
 // Projection of async computed activity per table.
 type ComputedTableActivity struct {
 	TableID               string         `gorm:"column:table_id;primaryKey" json:"table_id"`
-	BaseID                string         `gorm:"column:base_id;index:computed_table_activity_base_id_status_idx;not null" json:"base_id"`
-	Status                string         `gorm:"column:status;index:computed_table_activity_base_id_status_idx;not null" json:"status"`
+	BaseID                string         `gorm:"column:base_id;index:computed_table_activity_base_id_status_idx,priority:1;not null" json:"base_id"`
+	Status                string         `gorm:"column:status;index:computed_table_activity_base_id_status_idx,priority:2;not null" json:"status"`
 	CalculatingFieldCount int            `gorm:"column:calculating_field_count;size:32;default:0;not null" json:"calculating_field_count"`
 	QueuedFieldCount      int            `gorm:"column:queued_field_count;size:32;default:0;not null" json:"queued_field_count"`
 	EstimatedComplexity   int64          `gorm:"column:estimated_complexity;default:0;not null" json:"estimated_complexity"`
@@ -914,7 +914,7 @@ type View struct {
 	ID               string     `gorm:"column:id;primaryKey" json:"id"`
 	Name             string     `gorm:"column:name;not null" json:"name"`
 	Description      *string    `gorm:"column:description" json:"description"`
-	TableID          string     `gorm:"column:table_id;index:view_table_id_deleted_time_idx;not null" json:"table_id"`
+	TableID          string     `gorm:"column:table_id;index:view_table_id_deleted_time_idx,priority:1;not null" json:"table_id"`
 	Type             string     `gorm:"column:type;not null" json:"type"`
 	Sort             *string    `gorm:"column:sort" json:"sort"`
 	Filter           *string    `gorm:"column:filter" json:"filter"`
@@ -929,7 +929,7 @@ type View struct {
 	ShareMeta        *string    `gorm:"column:share_meta" json:"share_meta"`
 	CreatedTime      DateTime   `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime *DateTime  `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
-	DeletedTime      *DateTime  `gorm:"column:deleted_time;index:view_table_id_deleted_time_idx;type:timestamp(3)" json:"deleted_time"`
+	DeletedTime      *DateTime  `gorm:"column:deleted_time;index:view_table_id_deleted_time_idx,priority:2;type:timestamp(3)" json:"deleted_time"`
 	CreatedBy        string     `gorm:"column:created_by;not null" json:"created_by"`
 	LastModifiedBy   *string    `gorm:"column:last_modified_by" json:"last_modified_by"`
 	Table            *TableMeta `gorm:"foreignKey:TableID;belongsTo"`
@@ -960,12 +960,12 @@ func (*View) BeforeUpdate(tx *gorm.DB) error {
 
 type Ops struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	Collection  string   `gorm:"column:collection;uniqueIndex:ops_collection_doc_id_version_key;index:ops_collection_created_time_idx;not null" json:"collection"`
-	DocID       string   `gorm:"column:doc_id;uniqueIndex:ops_collection_doc_id_version_key;not null" json:"doc_id"`
+	Collection  string   `gorm:"column:collection;uniqueIndex:ops_collection_doc_id_version_key,priority:1;index:ops_collection_created_time_idx,priority:1;not null" json:"collection"`
+	DocID       string   `gorm:"column:doc_id;uniqueIndex:ops_collection_doc_id_version_key,priority:2;not null" json:"doc_id"`
 	DocType     string   `gorm:"column:doc_type;not null" json:"doc_type"`
-	Version     int      `gorm:"column:version;uniqueIndex:ops_collection_doc_id_version_key;size:32;not null" json:"version"`
+	Version     int      `gorm:"column:version;uniqueIndex:ops_collection_doc_id_version_key,priority:3;size:32;not null" json:"version"`
 	Operation   string   `gorm:"column:operation;not null" json:"operation"`
-	CreatedTime DateTime `gorm:"column:created_time;index:ops_collection_created_time_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	CreatedTime DateTime `gorm:"column:created_time;index:ops_collection_created_time_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy   string   `gorm:"column:created_by;not null" json:"created_by"`
 }
 
@@ -986,8 +986,8 @@ func (m *Ops) BeforeCreate(tx *gorm.DB) error {
 
 type Reference struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	FromFieldID string   `gorm:"column:from_field_id;uniqueIndex:reference_to_field_id_from_field_id_key;index:reference_from_field_id_idx;not null" json:"from_field_id"`
-	ToFieldID   string   `gorm:"column:to_field_id;uniqueIndex:reference_to_field_id_from_field_id_key;index:reference_to_field_id_idx;not null" json:"to_field_id"`
+	FromFieldID string   `gorm:"column:from_field_id;uniqueIndex:reference_to_field_id_from_field_id_key,priority:2;index:reference_from_field_id_idx;not null" json:"from_field_id"`
+	ToFieldID   string   `gorm:"column:to_field_id;uniqueIndex:reference_to_field_id_from_field_id_key,priority:1;index:reference_to_field_id_idx;not null" json:"to_field_id"`
 	CreatedTime DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 }
 
@@ -1060,9 +1060,9 @@ type Account struct {
 	ID           string   `gorm:"column:id;primaryKey" json:"id"`
 	UserID       string   `gorm:"column:user_id;not null" json:"user_id"`
 	Type         string   `gorm:"column:type;not null" json:"type"`
-	Provider     string   `gorm:"column:provider;uniqueIndex:account_provider_provider_id_connection_id_key;not null" json:"provider"`
-	ProviderID   string   `gorm:"column:provider_id;uniqueIndex:account_provider_provider_id_connection_id_key;not null" json:"provider_id"`
-	ConnectionID string   `gorm:"column:connection_id;uniqueIndex:account_provider_provider_id_connection_id_key;default:'';not null" json:"connection_id"`
+	Provider     string   `gorm:"column:provider;uniqueIndex:account_provider_provider_id_connection_id_key,priority:1;not null" json:"provider"`
+	ProviderID   string   `gorm:"column:provider_id;uniqueIndex:account_provider_provider_id_connection_id_key,priority:2;not null" json:"provider_id"`
+	ConnectionID string   `gorm:"column:connection_id;uniqueIndex:account_provider_provider_id_connection_id_key,priority:3;default:'';not null" json:"connection_id"`
 	CreatedTime  DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	User         *User    `gorm:"belongsTo"`
 }
@@ -1118,9 +1118,9 @@ type AttachmentsTable struct {
 	AttachmentID     string    `gorm:"column:attachment_id;index:attachments_table_attachment_id_idx;not null" json:"attachment_id"`
 	Name             string    `gorm:"column:name;not null" json:"name"`
 	Token            string    `gorm:"column:token;not null" json:"token"`
-	TableID          string    `gorm:"column:table_id;index:attachments_table_table_id_record_id_idx;index:attachments_table_table_id_field_id_idx;not null" json:"table_id"`
-	RecordID         string    `gorm:"column:record_id;index:attachments_table_table_id_record_id_idx;not null" json:"record_id"`
-	FieldID          string    `gorm:"column:field_id;index:attachments_table_table_id_field_id_idx;not null" json:"field_id"`
+	TableID          string    `gorm:"column:table_id;index:attachments_table_table_id_record_id_idx,priority:1;index:attachments_table_table_id_field_id_idx,priority:1;not null" json:"table_id"`
+	RecordID         string    `gorm:"column:record_id;index:attachments_table_table_id_record_id_idx,priority:2;not null" json:"record_id"`
+	FieldID          string    `gorm:"column:field_id;index:attachments_table_table_id_field_id_idx,priority:2;not null" json:"field_id"`
 	CreatedTime      DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy        string    `gorm:"column:created_by;not null" json:"created_by"`
 	LastModifiedBy   *string   `gorm:"column:last_modified_by" json:"last_modified_by"`
@@ -1156,10 +1156,10 @@ func (*AttachmentsTable) BeforeUpdate(tx *gorm.DB) error {
 type Collaborator struct {
 	ID               string    `gorm:"column:id;primaryKey" json:"id"`
 	RoleName         string    `gorm:"column:role_name;not null" json:"role_name"`
-	ResourceType     string    `gorm:"column:resource_type;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key;not null" json:"resource_type"`
-	ResourceID       string    `gorm:"column:resource_id;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key;index:collaborator_resource_id_idx;not null" json:"resource_id"`
-	PrincipalID      string    `gorm:"column:principal_id;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key;index:collaborator_principal_id_idx;not null" json:"principal_id"`
-	PrincipalType    string    `gorm:"column:principal_type;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key;not null" json:"principal_type"`
+	ResourceType     string    `gorm:"column:resource_type;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key,priority:1;not null" json:"resource_type"`
+	ResourceID       string    `gorm:"column:resource_id;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key,priority:2;index:collaborator_resource_id_idx;not null" json:"resource_id"`
+	PrincipalID      string    `gorm:"column:principal_id;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key,priority:3;index:collaborator_principal_id_idx;not null" json:"principal_id"`
+	PrincipalType    string    `gorm:"column:principal_type;uniqueIndex:collaborator_resource_type_resource_id_principal_id_princip_key,priority:4;not null" json:"principal_type"`
 	CreatedBy        string    `gorm:"column:created_by;not null" json:"created_by"`
 	CreatedTime      DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime *DateTime `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
@@ -1262,14 +1262,14 @@ func (m *InvitationRecord) BeforeCreate(tx *gorm.DB) error {
 type Notification struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	FromUserID  string   `gorm:"column:from_user_id;not null" json:"from_user_id"`
-	ToUserID    string   `gorm:"column:to_user_id;index:notification_to_user_id_is_read_created_time_idx;not null" json:"to_user_id"`
+	ToUserID    string   `gorm:"column:to_user_id;index:notification_to_user_id_is_read_created_time_idx,priority:1;not null" json:"to_user_id"`
 	Type        string   `gorm:"column:type;not null" json:"type"`
 	Message     string   `gorm:"column:message;not null" json:"message"`
 	MessageI18n *string  `gorm:"column:message_i18n" json:"message_i18n"`
 	Severity    *string  `gorm:"column:severity;default:'info';not null" json:"severity"`
 	URLPath     *string  `gorm:"column:url_path" json:"url_path"`
-	IsRead      bool     `gorm:"column:is_read;index:notification_to_user_id_is_read_created_time_idx;default:false;not null" json:"is_read"`
-	CreatedTime DateTime `gorm:"column:created_time;index:notification_to_user_id_is_read_created_time_idx;index:notification_created_time_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	IsRead      bool     `gorm:"column:is_read;index:notification_to_user_id_is_read_created_time_idx,priority:2;default:false;not null" json:"is_read"`
+	CreatedTime DateTime `gorm:"column:created_time;index:notification_to_user_id_is_read_created_time_idx,priority:3;index:notification_created_time_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy   string   `gorm:"column:created_by;not null" json:"created_by"`
 }
 
@@ -1410,8 +1410,8 @@ func (*OAuthApp) BeforeUpdate(tx *gorm.DB) error {
 
 type OAuthAppAuthorized struct {
 	ID             string    `gorm:"column:id;primaryKey" json:"id"`
-	ClientID       string    `gorm:"column:client_id;uniqueIndex:oauth_app_authorized_client_id_user_id_key;not null" json:"client_id"`
-	UserID         string    `gorm:"column:user_id;uniqueIndex:oauth_app_authorized_client_id_user_id_key;not null" json:"user_id"`
+	ClientID       string    `gorm:"column:client_id;uniqueIndex:oauth_app_authorized_client_id_user_id_key,priority:1;not null" json:"client_id"`
+	UserID         string    `gorm:"column:user_id;uniqueIndex:oauth_app_authorized_client_id_user_id_key,priority:2;not null" json:"user_id"`
 	AuthorizedTime DateTime  `gorm:"column:authorized_time;type:timestamp(3);not null" json:"authorized_time"`
 	OAuthApp       *OAuthApp `gorm:"foreignKey:ClientID;references:ClientID;belongsTo"`
 }
@@ -1483,12 +1483,12 @@ func (m *OAuthAppToken) BeforeCreate(tx *gorm.DB) error {
 
 type RecordHistory struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	TableID     string   `gorm:"column:table_id;index:record_history_table_id_record_id_created_time_idx;index:record_history_table_id_created_time_idx;not null" json:"table_id"`
-	RecordID    string   `gorm:"column:record_id;index:record_history_table_id_record_id_created_time_idx;not null" json:"record_id"`
+	TableID     string   `gorm:"column:table_id;index:record_history_table_id_record_id_created_time_idx,priority:1;index:record_history_table_id_created_time_idx,priority:1;not null" json:"table_id"`
+	RecordID    string   `gorm:"column:record_id;index:record_history_table_id_record_id_created_time_idx,priority:2;not null" json:"record_id"`
 	FieldID     string   `gorm:"column:field_id;not null" json:"field_id"`
 	Before      string   `gorm:"column:before;not null" json:"before"`
 	After       string   `gorm:"column:after;not null" json:"after"`
-	CreatedTime DateTime `gorm:"column:created_time;index:record_history_table_id_record_id_created_time_idx;index:record_history_table_id_created_time_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	CreatedTime DateTime `gorm:"column:created_time;index:record_history_table_id_record_id_created_time_idx,priority:3;index:record_history_table_id_created_time_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy   string   `gorm:"column:created_by;not null" json:"created_by"`
 }
 
@@ -1509,8 +1509,8 @@ func (m *RecordHistory) BeforeCreate(tx *gorm.DB) error {
 
 type Trash struct {
 	ID           string   `gorm:"column:id;primaryKey" json:"id"`
-	ResourceType string   `gorm:"column:resource_type;uniqueIndex:trash_resource_type_resource_id_key;not null" json:"resource_type"`
-	ResourceID   string   `gorm:"column:resource_id;uniqueIndex:trash_resource_type_resource_id_key;not null" json:"resource_id"`
+	ResourceType string   `gorm:"column:resource_type;uniqueIndex:trash_resource_type_resource_id_key,priority:1;not null" json:"resource_type"`
+	ResourceID   string   `gorm:"column:resource_id;uniqueIndex:trash_resource_type_resource_id_key,priority:2;not null" json:"resource_id"`
 	ParentID     *string  `gorm:"column:parent_id" json:"parent_id"`
 	DeletedTime  DateTime `gorm:"column:deleted_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"deleted_time"`
 	DeletedBy    string   `gorm:"column:deleted_by;not null" json:"deleted_by"`
@@ -1557,8 +1557,8 @@ func (m *TableTrash) BeforeCreate(tx *gorm.DB) error {
 
 type RecordTrash struct {
 	ID                     string    `gorm:"column:id;primaryKey" json:"id"`
-	TableID                string    `gorm:"column:table_id;index:record_trash_table_id_record_id_idx;not null" json:"table_id"`
-	RecordID               string    `gorm:"column:record_id;index:record_trash_table_id_record_id_idx;not null" json:"record_id"`
+	TableID                string    `gorm:"column:table_id;index:record_trash_table_id_record_id_idx,priority:1;not null" json:"table_id"`
+	RecordID               string    `gorm:"column:record_id;index:record_trash_table_id_record_id_idx,priority:2;not null" json:"record_id"`
 	Snapshot               string    `gorm:"column:snapshot;not null" json:"snapshot"`
 	CreatedTime            DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy              string    `gorm:"column:created_by;not null" json:"created_by"`
@@ -1587,8 +1587,8 @@ func (m *RecordTrash) BeforeCreate(tx *gorm.DB) error {
 
 type RecordRemovalTombstone struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	TableID     string   `gorm:"column:table_id;index:record_removal_tombstone_table_id_record_id_idx;not null" json:"table_id"`
-	RecordID    string   `gorm:"column:record_id;index:record_removal_tombstone_table_id_record_id_idx;not null" json:"record_id"`
+	TableID     string   `gorm:"column:table_id;index:record_removal_tombstone_table_id_record_id_idx,priority:1;not null" json:"table_id"`
+	RecordID    string   `gorm:"column:record_id;index:record_removal_tombstone_table_id_record_id_idx,priority:2;not null" json:"record_id"`
 	Type        string   `gorm:"column:type;not null" json:"type"`
 	CreatedTime DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 }
@@ -1734,8 +1734,8 @@ func (*Dashboard) BeforeUpdate(tx *gorm.DB) error {
 
 type Comment struct {
 	ID               string    `gorm:"column:id;primaryKey" json:"id"`
-	TableID          string    `gorm:"column:table_id;index:comment_table_id_record_id_idx;not null" json:"table_id"`
-	RecordID         string    `gorm:"column:record_id;index:comment_table_id_record_id_idx;not null" json:"record_id"`
+	TableID          string    `gorm:"column:table_id;index:comment_table_id_record_id_idx,priority:1;not null" json:"table_id"`
+	RecordID         string    `gorm:"column:record_id;index:comment_table_id_record_id_idx,priority:2;not null" json:"record_id"`
 	QuoteID          *string   `gorm:"column:quote_Id" json:"quote_Id"`
 	Content          *string   `gorm:"column:content" json:"content"`
 	Reaction         *string   `gorm:"column:reaction" json:"reaction"`
@@ -1773,8 +1773,8 @@ func (*Comment) BeforeUpdate(tx *gorm.DB) error {
 
 type CommentSubscription struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	TableID     string   `gorm:"column:table_id;uniqueIndex:comment_subscription_table_id_record_id_key;index:comment_subscription_table_id_record_id_idx;not null" json:"table_id"`
-	RecordID    string   `gorm:"column:record_id;uniqueIndex:comment_subscription_table_id_record_id_key;index:comment_subscription_table_id_record_id_idx;not null" json:"record_id"`
+	TableID     string   `gorm:"column:table_id;uniqueIndex:comment_subscription_table_id_record_id_key,priority:1;index:comment_subscription_table_id_record_id_idx,priority:1;not null" json:"table_id"`
+	RecordID    string   `gorm:"column:record_id;uniqueIndex:comment_subscription_table_id_record_id_key,priority:2;index:comment_subscription_table_id_record_id_idx,priority:2;not null" json:"record_id"`
 	CreatedBy   string   `gorm:"column:created_by;not null" json:"created_by"`
 	CreatedTime DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 }
@@ -1908,10 +1908,10 @@ func (*PluginContextMenu) BeforeUpdate(tx *gorm.DB) error {
 
 type UserLastVisit struct {
 	ID               string   `gorm:"column:id;primaryKey" json:"id"`
-	UserID           string   `gorm:"column:user_id;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key;index:user_last_visit_user_id_resource_type_parent_resource_id_idx;not null" json:"user_id"`
-	ResourceType     string   `gorm:"column:resource_type;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key;index:user_last_visit_user_id_resource_type_parent_resource_id_idx;not null" json:"resource_type"`
-	ResourceID       string   `gorm:"column:resource_id;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key;not null" json:"resource_id"`
-	ParentResourceID string   `gorm:"column:parent_resource_id;index:user_last_visit_user_id_resource_type_parent_resource_id_idx;not null" json:"parent_resource_id"`
+	UserID           string   `gorm:"column:user_id;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key,priority:1;index:user_last_visit_user_id_resource_type_parent_resource_id_idx,priority:1;not null" json:"user_id"`
+	ResourceType     string   `gorm:"column:resource_type;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key,priority:2;index:user_last_visit_user_id_resource_type_parent_resource_id_idx,priority:2;not null" json:"resource_type"`
+	ResourceID       string   `gorm:"column:resource_id;uniqueIndex:user_last_visit_user_id_resource_type_resource_id_key,priority:3;not null" json:"resource_id"`
+	ParentResourceID string   `gorm:"column:parent_resource_id;index:user_last_visit_user_id_resource_type_parent_resource_id_idx,priority:3;not null" json:"parent_resource_id"`
 	LastVisitTime    DateTime `gorm:"column:last_visit_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"last_visit_time"`
 }
 
@@ -1932,9 +1932,9 @@ func (m *UserLastVisit) BeforeCreate(tx *gorm.DB) error {
 
 type UserBaseOrder struct {
 	ID               string    `gorm:"column:id;primaryKey" json:"id"`
-	UserID           string    `gorm:"column:user_id;uniqueIndex:user_base_order_user_id_base_id_key;index:user_base_order_user_id_order_idx;not null" json:"user_id"`
-	BaseID           string    `gorm:"column:base_id;uniqueIndex:user_base_order_user_id_base_id_key;index:user_base_order_base_id_idx;not null" json:"base_id"`
-	Order            float64   `gorm:"column:order;index:user_base_order_user_id_order_idx;type:double precision;not null" json:"order"`
+	UserID           string    `gorm:"column:user_id;uniqueIndex:user_base_order_user_id_base_id_key,priority:1;index:user_base_order_user_id_order_idx,priority:1;not null" json:"user_id"`
+	BaseID           string    `gorm:"column:base_id;uniqueIndex:user_base_order_user_id_base_id_key,priority:2;index:user_base_order_base_id_idx;not null" json:"base_id"`
+	Order            float64   `gorm:"column:order;index:user_base_order_user_id_order_idx,priority:2;type:double precision;not null" json:"order"`
 	CreatedTime      DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime *DateTime `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
 	User             *User     `gorm:"belongsTo"`
@@ -2063,8 +2063,8 @@ func (*TemplateCategory) BeforeUpdate(tx *gorm.DB) error {
 
 type Task struct {
 	ID               string    `gorm:"column:id;primaryKey" json:"id"`
-	Type             string    `gorm:"column:type;index:task_type_status_idx;not null" json:"type"`
-	Status           string    `gorm:"column:status;index:task_type_status_idx;not null" json:"status"`
+	Type             string    `gorm:"column:type;index:task_type_status_idx,priority:1;not null" json:"type"`
+	Status           string    `gorm:"column:status;index:task_type_status_idx,priority:2;not null" json:"status"`
 	Snapshot         *string   `gorm:"column:snapshot" json:"snapshot"`
 	CreatedTime      DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	LastModifiedTime *DateTime `gorm:"column:last_modified_time;type:timestamp(3)" json:"last_modified_time"`
@@ -2101,17 +2101,17 @@ func (*Task) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskRun struct {
 	ID               string             `gorm:"column:id;primaryKey" json:"id"`
-	TaskID           string             `gorm:"column:task_id;index:task_run_task_id_status_idx;not null" json:"task_id"`
-	BaseID           string             `gorm:"column:base_id;index:task_run_status_base_id_created_time_idx;not null" json:"base_id"`
-	Status           string             `gorm:"column:status;index:task_run_task_id_status_idx;index:task_run_status_base_id_created_time_idx;index:task_run_status_last_modified_time_idx;not null" json:"status"`
+	TaskID           string             `gorm:"column:task_id;index:task_run_task_id_status_idx,priority:1;not null" json:"task_id"`
+	BaseID           string             `gorm:"column:base_id;index:task_run_status_base_id_created_time_idx,priority:2;not null" json:"base_id"`
+	Status           string             `gorm:"column:status;index:task_run_task_id_status_idx,priority:2;index:task_run_status_base_id_created_time_idx,priority:1;index:task_run_status_last_modified_time_idx,priority:1;not null" json:"status"`
 	Snapshot         string             `gorm:"column:snapshot;not null" json:"snapshot"`
 	DependsOnRunIds  ScalarList[string] `gorm:"column:depends_on_run_ids;type:text[]" json:"depends_on_run_ids"`
 	Spent            *int               `gorm:"column:spent;size:32" json:"spent"`
 	Log              *string            `gorm:"column:log" json:"log"`
 	ErrorMsg         *string            `gorm:"column:error_msg" json:"error_msg"`
 	StartedTime      *DateTime          `gorm:"column:started_time;type:timestamp(3)" json:"started_time"`
-	CreatedTime      DateTime           `gorm:"column:created_time;index:task_run_status_base_id_created_time_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
-	LastModifiedTime *DateTime          `gorm:"column:last_modified_time;index:task_run_status_last_modified_time_idx;type:timestamp(3)" json:"last_modified_time"`
+	CreatedTime      DateTime           `gorm:"column:created_time;index:task_run_status_base_id_created_time_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
+	LastModifiedTime *DateTime          `gorm:"column:last_modified_time;index:task_run_status_last_modified_time_idx,priority:2;type:timestamp(3)" json:"last_modified_time"`
 	Task             *Task              `gorm:"belongsTo"`
 }
 
@@ -2143,8 +2143,8 @@ func (*TaskRun) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskReference struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	FromFieldID string   `gorm:"column:from_field_id;uniqueIndex:task_reference_to_field_id_from_field_id_key;index:task_reference_from_field_id_idx;not null" json:"from_field_id"`
-	ToFieldID   string   `gorm:"column:to_field_id;uniqueIndex:task_reference_to_field_id_from_field_id_key;index:task_reference_to_field_id_idx;not null" json:"to_field_id"`
+	FromFieldID string   `gorm:"column:from_field_id;uniqueIndex:task_reference_to_field_id_from_field_id_key,priority:2;index:task_reference_from_field_id_idx;not null" json:"from_field_id"`
+	ToFieldID   string   `gorm:"column:to_field_id;uniqueIndex:task_reference_to_field_id_from_field_id_key,priority:1;index:task_reference_to_field_id_idx;not null" json:"to_field_id"`
 	CreatedTime DateTime `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 }
 
@@ -2185,9 +2185,9 @@ func (m *Waitlist) BeforeCreate(tx *gorm.DB) error {
 type BaseNode struct {
 	ID               string     `gorm:"column:id;primaryKey" json:"id"`
 	ParentID         *string    `gorm:"column:parent_id" json:"parent_id"`
-	BaseID           string     `gorm:"column:base_id;uniqueIndex:base_node_base_id_resource_type_resource_id_key;not null" json:"base_id"`
-	ResourceType     string     `gorm:"column:resource_type;uniqueIndex:base_node_base_id_resource_type_resource_id_key;not null" json:"resource_type"`
-	ResourceID       string     `gorm:"column:resource_id;uniqueIndex:base_node_base_id_resource_type_resource_id_key;not null" json:"resource_id"`
+	BaseID           string     `gorm:"column:base_id;uniqueIndex:base_node_base_id_resource_type_resource_id_key,priority:1;not null" json:"base_id"`
+	ResourceType     string     `gorm:"column:resource_type;uniqueIndex:base_node_base_id_resource_type_resource_id_key,priority:2;not null" json:"resource_type"`
+	ResourceID       string     `gorm:"column:resource_id;uniqueIndex:base_node_base_id_resource_type_resource_id_key,priority:3;not null" json:"resource_id"`
 	Order            float64    `gorm:"column:order;type:double precision;not null" json:"order"`
 	CreatedTime      DateTime   `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy        string     `gorm:"column:created_by;not null" json:"created_by"`
@@ -2262,10 +2262,10 @@ func (*BaseNodeFolder) BeforeUpdate(tx *gorm.DB) error {
 
 type BaseShare struct {
 	ID               string    `gorm:"column:id;primaryKey" json:"id"`
-	BaseID           string    `gorm:"column:base_id;uniqueIndex:base_share_base_id_node_id_key;index:base_share_base_id_idx;not null" json:"base_id"`
+	BaseID           string    `gorm:"column:base_id;uniqueIndex:base_share_base_id_node_id_key,priority:1;index:base_share_base_id_idx;not null" json:"base_id"`
 	ShareID          string    `gorm:"column:share_id;uniqueIndex:base_share_share_id_key;not null" json:"share_id"`
 	Password         *string   `gorm:"column:password" json:"password"`
-	NodeID           *string   `gorm:"column:node_id;uniqueIndex:base_share_base_id_node_id_key" json:"node_id"`
+	NodeID           *string   `gorm:"column:node_id;uniqueIndex:base_share_base_id_node_id_key,priority:2" json:"node_id"`
 	AllowSave        *bool     `gorm:"column:allow_save" json:"allow_save"`
 	AllowCopy        *bool     `gorm:"column:allow_copy" json:"allow_copy"`
 	AllowEdit        *bool     `gorm:"column:allow_edit" json:"allow_edit"`
@@ -2304,8 +2304,8 @@ func (*BaseShare) BeforeUpdate(tx *gorm.DB) error {
 type ShortLink struct {
 	ID          string    `gorm:"column:id;primaryKey" json:"id"`
 	Code        string    `gorm:"column:code;uniqueIndex:short_link_code_key;type:varchar(32);not null" json:"code"`
-	Type        string    `gorm:"column:type;uniqueIndex:short_link_type_resource_id_key;type:varchar(32);not null" json:"type"`
-	ResourceID  string    `gorm:"column:resource_id;uniqueIndex:short_link_type_resource_id_key;not null" json:"resource_id"`
+	Type        string    `gorm:"column:type;uniqueIndex:short_link_type_resource_id_key,priority:1;type:varchar(32);not null" json:"type"`
+	ResourceID  string    `gorm:"column:resource_id;uniqueIndex:short_link_type_resource_id_key,priority:2;not null" json:"resource_id"`
 	CreatedTime DateTime  `gorm:"column:created_time;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"created_time"`
 	CreatedBy   string    `gorm:"column:created_by;not null" json:"created_by"`
 	DeletedTime *DateTime `gorm:"column:deleted_time;index:short_link_deleted_time_idx;type:timestamp(3)" json:"deleted_time"`

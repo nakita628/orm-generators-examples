@@ -13,11 +13,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoVerifiedDomainHolder")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 
@@ -27,7 +28,8 @@ pub enum Relation {
         belongs_to = "super::sso_verified_domain::Entity",
         from = "(Column::Domain, Column::OrganizationId)",
         to = "(super::sso_verified_domain::Column::Domain, super::sso_verified_domain::Column::OrganizationId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SsoVerifiedDomainHolder_domain_organizationId_fkey"
     )]
     Ownership,
 }

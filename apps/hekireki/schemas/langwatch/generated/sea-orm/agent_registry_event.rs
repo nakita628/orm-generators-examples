@@ -8,21 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgentRegistryEvent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub sequence: i64,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
-    #[sea_orm(column_name = "entryId")]
+    #[sea_orm(column_name = "entryId", column_type = "Text")]
     pub entry_id: String,
     #[sea_orm(column_name = "fromVersion")]
     pub from_version: Option<i32>,
     #[sea_orm(column_name = "toVersion")]
     pub to_version: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "deliveryRecordedAt")]
+    #[sea_orm(
+        column_name = "deliveryRecordedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub delivery_recorded_at: Option<DateTime>,
 }
 

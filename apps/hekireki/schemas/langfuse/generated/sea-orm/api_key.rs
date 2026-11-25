@@ -8,27 +8,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "api_keys")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub note: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub public_key: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub hashed_secret_key: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub fast_hashed_secret_key: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub display_secret_key: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
     #[sea_orm(default_value = false)]
     pub is_in_app_agent_key: bool,
+    #[sea_orm(column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "organization_id")]
+    #[sea_orm(column_name = "organization_id", column_type = "Text")]
     pub org_id: Option<String>,
     #[sea_orm(default_value = "PROJECT")]
     pub scope: ApiKeyScope,
+    #[sea_orm(column_type = "Text")]
     pub created_by_user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub created_by_api_key_id: Option<String>,
 }
 
@@ -38,35 +54,40 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "api_keys_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrgId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "api_keys_organization_id_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedByUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "api_keys_created_by_user_id_fkey"
     )]
     CreatedByUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "api_keys_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::api_key::Entity",
         from = "Column::CreatedByApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "api_keys_created_by_api_key_id_fkey"
     )]
     CreatedByApiKey,
     #[sea_orm(

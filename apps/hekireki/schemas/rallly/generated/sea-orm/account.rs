@@ -7,22 +7,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "accounts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
+    #[sea_orm(column_type = "Text")]
     pub provider_account_id: String,
     #[sea_orm(column_type = "Text")]
     pub refresh_token: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub access_token: Option<String>,
     pub expires_at: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub scope: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub id_token: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub access_token_expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub refresh_token_expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,7 +45,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "accounts_user_id_fkey"
     )]
     User,
 }

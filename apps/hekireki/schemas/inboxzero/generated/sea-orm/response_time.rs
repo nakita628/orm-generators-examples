@@ -7,22 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ResponseTime")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
-    #[sea_orm(column_name = "sentMessageId")]
+    #[sea_orm(column_name = "sentMessageId", column_type = "Text")]
     pub sent_message_id: String,
-    #[sea_orm(column_name = "receivedMessageId")]
+    #[sea_orm(column_name = "receivedMessageId", column_type = "Text")]
     pub received_message_id: String,
     #[sea_orm(column_name = "responseTimeMins")]
     pub response_time_mins: i32,
-    #[sea_orm(column_name = "receivedAt")]
+    #[sea_orm(column_name = "receivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub received_at: DateTime,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: DateTime,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -32,7 +37,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ResponseTime_emailAccountId_fkey"
     )]
     EmailAccount,
 }

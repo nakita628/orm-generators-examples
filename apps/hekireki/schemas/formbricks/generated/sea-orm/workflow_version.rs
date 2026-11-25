@@ -7,17 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     pub version: i32,
     /// [WorkflowExecutableDefinition]
+    #[sea_orm(column_type = "JsonBinary")]
     pub definition: Json,
-    #[sea_orm(column_name = "publishedAt")]
+    #[sea_orm(
+        column_name = "publishedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub published_at: DateTime,
-    #[sea_orm(column_name = "publishedBy")]
+    #[sea_orm(column_name = "publishedBy", column_type = "Text")]
     pub published_by: Option<String>,
 }
 
@@ -27,14 +33,16 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "(Column::WorkflowId, Column::WorkspaceId)",
         to = "(super::workflow::Column::Id, super::workflow::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowVersion_workflowId_workspaceId_fkey"
     )]
     Workflow,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::PublishedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WorkflowVersion_publishedBy_fkey"
     )]
     Publisher,
     #[sea_orm(has_many = "super::workflow_run::Entity")]

@@ -10,14 +10,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WebPushVapidKey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The uncompressed P-256 public key, base64url. The browser subscribes with it.
-    #[sea_orm(column_name = "publicKey")]
+    #[sea_orm(column_name = "publicKey", column_type = "Text")]
     pub public_key: String,
     /// The private key, base64url, encrypted with the process encryption key.
-    #[sea_orm(column_name = "privateKeyEncrypted")]
+    #[sea_orm(column_name = "privateKeyEncrypted", column_type = "Text")]
     pub private_key_encrypted: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

@@ -54,8 +54,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoVerifiedDomain")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 

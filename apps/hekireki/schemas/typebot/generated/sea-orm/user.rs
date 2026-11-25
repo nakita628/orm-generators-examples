@@ -8,34 +8,61 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastActivityAt")]
+    #[sea_orm(
+        column_name = "lastActivityAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_activity_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(
+        column_name = "emailVerified",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub company: Option<String>,
-    #[sea_orm(column_name = "onboardingCategories")]
+    #[sea_orm(column_name = "onboardingCategories", column_type = "JsonBinary")]
     pub onboarding_categories: Json,
+    #[sea_orm(column_type = "Text")]
     pub referral: Option<String>,
     #[sea_orm(column_name = "graphNavigation")]
     pub graph_navigation: Option<GraphNavigation>,
-    #[sea_orm(column_name = "preferredAppAppearance")]
+    #[sea_orm(column_name = "preferredAppAppearance", column_type = "Text")]
     pub preferred_app_appearance: Option<String>,
-    #[sea_orm(column_name = "displayedInAppNotifications")]
+    #[sea_orm(
+        column_name = "displayedInAppNotifications",
+        column_type = "JsonBinary"
+    )]
     pub displayed_in_app_notifications: Option<Json>,
-    #[sea_orm(column_name = "groupTitlesAutoGeneration")]
+    #[sea_orm(column_name = "groupTitlesAutoGeneration", column_type = "JsonBinary")]
     pub group_titles_auto_generation: Option<Json>,
-    #[sea_orm(column_name = "preferredLanguage")]
+    #[sea_orm(column_name = "preferredLanguage", column_type = "Text")]
     pub preferred_language: Option<String>,
-    #[sea_orm(column_name = "termsAcceptedAt")]
+    #[sea_orm(
+        column_name = "termsAcceptedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub terms_accepted_at: Option<DateTime>,
 }
 

@@ -26,31 +26,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Survey")]
 pub struct Model {
     /// [SurveyHiddenFields]
-    #[sea_orm(column_name = "hiddenFields", default_value = "{\"enabled\": false}")]
+    #[sea_orm(
+        column_name = "hiddenFields",
+        column_type = "JsonBinary",
+        default_value = "{\"enabled\": false}"
+    )]
     pub hidden_fields: Json,
     /// [SurveyVariables]
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub variables: Json,
     #[sea_orm(column_name = "ownershipInitialized", default_value = false)]
     pub ownership_initialized: bool,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "redirectUrl")]
+    #[sea_orm(column_name = "redirectUrl", column_type = "Text")]
     pub redirect_url: Option<String>,
     #[sea_orm(default_value = "app")]
     pub r#type: SurveyType,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
     /// ENG-3282: authorization facts, projected into SpiceDB by the survey outbox trigger. `ownerId` is
     /// the durable ownership source; `createdBy` stays pure attribution and is never rewritten.
     #[sea_orm(default_value = "workspace")]
     pub visibility: SurveyVisibility,
-    #[sea_orm(column_name = "ownerId")]
+    #[sea_orm(column_name = "ownerId", column_type = "Text")]
     pub owner_id: Option<String>,
     /// Incremented by every accepted visibility change; fences projection work. An INSERT starts at 0
     /// with `visibilityProjectedVersion` -1 (the `survey_visibility_pending` trigger): the initial
@@ -65,21 +76,30 @@ pub struct Model {
     /// in create/update data.
     #[sea_orm(column_name = "visibilityPending", default_value = false)]
     pub visibility_pending: bool,
-    #[sea_orm(column_name = "visibilityChangedAt")]
+    #[sea_orm(
+        column_name = "visibilityChangedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub visibility_changed_at: Option<DateTime>,
-    #[sea_orm(column_name = "visibilityChangedById")]
+    #[sea_orm(column_name = "visibilityChangedById", column_type = "Text")]
     pub visibility_changed_by_id: Option<String>,
     #[sea_orm(default_value = "draft")]
     pub status: SurveyStatus,
     /// [SurveyWelcomeCard]
-    #[sea_orm(column_name = "welcomeCard", default_value = "{\"enabled\": false}")]
+    #[sea_orm(
+        column_name = "welcomeCard",
+        column_type = "JsonBinary",
+        default_value = "{\"enabled\": false}"
+    )]
     pub welcome_card: Json,
     /// [SurveyQuestions]
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub questions: Json,
     /// [SurveyBlocks]
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::JsonBinary))")]
     pub blocks: Vec<Json>,
     /// [SurveyEnding]
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::JsonBinary))")]
     pub endings: Vec<Json>,
     #[sea_orm(column_name = "displayOption", default_value = "displayOnce")]
     pub display_option: displayOptions,
@@ -88,7 +108,7 @@ pub struct Model {
     #[sea_orm(column_name = "displayLimit")]
     pub display_limit: Option<i32>,
     /// [SurveyInlineTriggers]
-    #[sea_orm(column_name = "inlineTriggers")]
+    #[sea_orm(column_name = "inlineTriggers", column_type = "JsonBinary")]
     pub inline_triggers: Option<Json>,
     #[sea_orm(column_name = "autoClose")]
     pub auto_close: Option<i32>,
@@ -98,25 +118,27 @@ pub struct Model {
     pub auto_complete: Option<i32>,
     #[sea_orm(default_value = 0)]
     pub delay: i32,
-    #[sea_orm(column_name = "publishOn")]
+    #[sea_orm(column_name = "publishOn", column_type = "custom(\"timestamp(3)\")")]
     pub publish_on: Option<DateTime>,
-    #[sea_orm(column_name = "closeOn")]
+    #[sea_orm(column_name = "closeOn", column_type = "custom(\"timestamp(3)\")")]
     pub close_on: Option<DateTime>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
     /// [SurveyClosedMessage]
-    #[sea_orm(column_name = "surveyClosedMessage")]
+    #[sea_orm(column_name = "surveyClosedMessage", column_type = "JsonBinary")]
     pub survey_closed_message: Option<Json>,
-    #[sea_orm(column_name = "segmentId")]
+    #[sea_orm(column_name = "segmentId", column_type = "Text")]
     pub segment_id: Option<String>,
     /// [SurveyWorkspaceOverwrites]
-    #[sea_orm(column_name = "workspaceOverwrites")]
+    #[sea_orm(column_name = "workspaceOverwrites", column_type = "JsonBinary")]
     pub workspace_overwrites: Option<Json>,
     /// [SurveyStyling]
+    #[sea_orm(column_type = "JsonBinary")]
     pub styling: Option<Json>,
     /// [SurveySingleUse]
     #[sea_orm(
         column_name = "singleUse",
+        column_type = "JsonBinary",
         default_value = "{\"enabled\": false, \"isEncrypted\": true}"
     )]
     pub single_use: Option<Json>,
@@ -130,8 +152,12 @@ pub struct Model {
     pub is_capture_ip_enabled: bool,
     #[sea_orm(default_value = false)]
     pub is_anonymize_responses_enabled: bool,
+    #[sea_orm(column_type = "Text")]
     pub pin: Option<String>,
-    #[sea_orm(column_name = "displayPercentage")]
+    #[sea_orm(
+        column_name = "displayPercentage",
+        column_type = "Decimal(Some((65, 30)))"
+    )]
     pub display_percentage: Option<Decimal>,
     #[sea_orm(column_name = "showLanguageSwitch")]
     pub show_language_switch: Option<bool>,
@@ -140,28 +166,32 @@ pub struct Model {
     #[sea_orm(column_name = "autoSelectLanguage")]
     pub auto_select_language: Option<bool>,
     /// [SurveyRecaptcha]
-    #[sea_orm(default_value = "{\"enabled\": false, \"threshold\":0.1}")]
+    #[sea_orm(
+        column_type = "JsonBinary",
+        default_value = "{\"enabled\": false, \"threshold\":0.1}"
+    )]
     pub recaptcha: Option<Json>,
     /// [SurveyLinkMetadata]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Json,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: Option<String>,
-    #[sea_orm(column_name = "customHeadScripts")]
+    #[sea_orm(column_name = "customHeadScripts", column_type = "Text")]
     pub custom_head_scripts: Option<String>,
     #[sea_orm(column_name = "customHeadScriptsMode", default_value = "add")]
     pub custom_head_scripts_mode: Option<SurveyScriptMode>,
     /// [CustomCssStored] Survey custom CSS (ENG-2949): source plus trusted compiled output, written only
     /// by the shared custom CSS save service. null = no survey CSS. Kept outside `styling` (M2.07).
-    #[sea_orm(column_name = "customCss")]
+    #[sea_orm(column_name = "customCss", column_type = "JsonBinary")]
     pub custom_css: Option<Json>,
     /// [SurveyShowConditions] App surveys: conditions checked in the browser when a trigger fires
     /// (ENG-3873). null = no conditions, which is what every existing survey keeps.
-    #[sea_orm(column_name = "showConditions")]
+    #[sea_orm(column_name = "showConditions", column_type = "JsonBinary")]
     pub show_conditions: Option<Json>,
     /// [SurveyStartLogic] Rules before the first question (ENG-6932): block-rule format, run by the
     /// survey on load. null = none, which is what every existing survey keeps.
-    #[sea_orm(column_name = "startLogic")]
+    #[sea_orm(column_name = "startLogic", column_type = "JsonBinary")]
     pub start_logic: Option<Json>,
 }
 
@@ -171,26 +201,30 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Survey_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Survey_createdBy_fkey"
     )]
     Creator,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Survey_ownerId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::segment::Entity",
         from = "Column::SegmentId",
-        to = "super::segment::Column::Id"
+        to = "super::segment::Column::Id",
+        fk_name = "Survey_segmentId_fkey"
     )]
     Segment,
     #[sea_orm(has_many = "super::response::Entity")]

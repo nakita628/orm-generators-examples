@@ -16,14 +16,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SurveyAttributeFilter")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "attributeKeyId")]
+    #[sea_orm(column_name = "attributeKeyId", column_type = "Text")]
     pub attribute_key_id: String,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
     pub condition: SurveyAttributeFilterCondition,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
 }
 
@@ -33,14 +40,16 @@ pub enum Relation {
         belongs_to = "super::contact_attribute_key::Entity",
         from = "Column::AttributeKeyId",
         to = "super::contact_attribute_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SurveyAttributeFilter_attributeKeyId_fkey"
     )]
     AttributeKey,
     #[sea_orm(
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SurveyAttributeFilter_surveyId_fkey"
     )]
     Survey,
 }

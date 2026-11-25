@@ -7,26 +7,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub salt: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub phone: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub avatar: Option<String>,
     pub is_system: Option<bool>,
     pub is_admin: Option<bool>,
     pub is_trial_used: Option<bool>,
+    #[sea_orm(column_type = "Text")]
     pub lang: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub notify_meta: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_sign_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deactivated_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub permanent_deleted_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub ref_meta: Option<String>,
 }
 

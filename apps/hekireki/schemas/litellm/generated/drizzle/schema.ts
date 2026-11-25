@@ -466,7 +466,7 @@ export const liteLLMCustomerMemberTable = pgTable(
   },
   (table) => [
     index('LiteLLM_CustomerMemberTable_parent_org_id_idx').on(table.parent_org_id),
-    index('LiteLLM_CustomerMemberTable_parent_team_ids_idx').on(table.parent_team_ids),
+    index('LiteLLM_CustomerMemberTable_parent_team_ids_idx').using('gin', table.parent_team_ids),
     index('LiteLLM_CustomerMemberTable_budget_id_idx').on(table.budget_id),
     index('LiteLLM_CustomerMemberTable_budget_override_id_idx').on(table.budget_override_id),
     index('LiteLLM_CustomerMemberTable_spend_idx').on(table.spend),
@@ -2571,11 +2571,17 @@ export const liteLLMManagedFileTable = pgTable(
   (table) => [
     uniqueIndex('LiteLLM_ManagedFileTable_unified_file_id_key').on(table.unified_file_id),
     index('LiteLLM_ManagedFileTable_unified_file_id_idx').on(table.unified_file_id),
-    index('LiteLLM_ManagedFileTable_flat_model_file_ids_idx').on(table.flat_model_file_ids),
-    index('LiteLLM_ManagedFileTable_team_id_created_at_idx').on(table.team_id, table.created_at),
+    index('LiteLLM_ManagedFileTable_flat_model_file_ids_idx').using(
+      'gin',
+      table.flat_model_file_ids,
+    ),
+    index('LiteLLM_ManagedFileTable_team_id_created_at_idx').on(
+      table.team_id,
+      table.created_at.desc().nullsFirst(),
+    ),
     index('LiteLLM_ManagedFileTable_created_by_created_at_idx').on(
       table.created_by,
-      table.created_at,
+      table.created_at.desc().nullsFirst(),
     ),
   ],
 )
@@ -2611,7 +2617,10 @@ export const liteLLMManagedObjectTable = pgTable(
     uniqueIndex('LiteLLM_ManagedObjectTable_model_object_id_key').on(table.model_object_id),
     index('LiteLLM_ManagedObjectTable_unified_object_id_idx').on(table.unified_object_id),
     index('LiteLLM_ManagedObjectTable_model_object_id_idx').on(table.model_object_id),
-    index('LiteLLM_ManagedObjectTable_team_id_created_at_idx').on(table.team_id, table.created_at),
+    index('LiteLLM_ManagedObjectTable_team_id_created_at_idx').on(
+      table.team_id,
+      table.created_at.desc().nullsFirst(),
+    ),
   ],
 )
 
@@ -2654,7 +2663,7 @@ export const liteLLMManagedVectorStoreTable = pgTable(
     index('LiteLLM_ManagedVectorStoreTable_unified_resource_id_idx').on(table.unified_resource_id),
     index('LiteLLM_ManagedVectorStoreTable_team_id_created_at_idx').on(
       table.team_id,
-      table.created_at,
+      table.created_at.desc().nullsFirst(),
     ),
   ],
 )
@@ -3071,7 +3080,7 @@ export const liteLLMHealthCheckTable = pgTable(
     index('LiteLLM_HealthCheckTable_model_id_model_name_checked_at_idx').on(
       table.model_id,
       table.model_name,
-      table.checked_at,
+      table.checked_at.desc().nullsFirst(),
     ),
   ],
 )
@@ -3409,21 +3418,24 @@ export const liteLLMSkillSubmission = pgTable(
   (table) => [
     index('LiteLLM_SkillSubmission_submitted_by_created_at_id_idx').on(
       table.submitted_by,
-      table.created_at,
-      table.id,
+      table.created_at.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
     index('LiteLLM_SkillSubmission_submitted_by_status_created_at_id_idx').on(
       table.submitted_by,
       table.status,
-      table.created_at,
-      table.id,
+      table.created_at.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
     index('LiteLLM_SkillSubmission_status_created_at_id_idx').on(
       table.status,
-      table.created_at,
-      table.id,
+      table.created_at.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
-    index('LiteLLM_SkillSubmission_created_at_id_idx').on(table.created_at, table.id),
+    index('LiteLLM_SkillSubmission_created_at_id_idx').on(
+      table.created_at.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
+    ),
   ],
 )
 

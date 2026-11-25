@@ -7,31 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthApp")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "pictureId")]
+    #[sea_orm(column_name = "pictureId", column_type = "Text")]
     pub picture_id: Option<String>,
-    #[sea_orm(column_name = "redirectUrl")]
+    #[sea_orm(column_name = "redirectUrl", column_type = "Text")]
     pub redirect_url: String,
-    #[sea_orm(column_name = "redirectUris")]
+    #[sea_orm(column_name = "redirectUris", column_type = "Text")]
     pub redirect_uris: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "clientSecret")]
+    #[sea_orm(column_name = "clientSecret", column_type = "Text")]
     pub client_secret: Option<String>,
     #[sea_orm(default_value = false)]
     pub dynamic: bool,
-    #[sea_orm(column_name = "tokenEndpointAuthMethod")]
+    #[sea_orm(column_name = "tokenEndpointAuthMethod", column_type = "Text")]
     pub token_endpoint_auth_method: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -40,13 +47,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "OAuthApp_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::media::Entity",
         from = "Column::PictureId",
-        to = "super::media::Column::Id"
+        to = "super::media::Column::Id",
+        fk_name = "OAuthApp_pictureId_fkey"
     )]
     Picture,
     #[sea_orm(has_many = "super::oauth_authorization::Entity")]

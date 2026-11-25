@@ -8,52 +8,72 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GatewayRealtimeSession")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "virtualKeyId")]
+    #[sea_orm(column_name = "virtualKeyId", column_type = "Text")]
     pub virtual_key_id: String,
-    #[sea_orm(column_name = "modelProviderId")]
+    #[sea_orm(column_name = "modelProviderId", column_type = "Text")]
     pub model_provider_id: String,
+    #[sea_orm(column_type = "Text")]
     pub vendor: String,
-    #[sea_orm(column_name = "agentId")]
+    #[sea_orm(column_name = "agentId", column_type = "Text")]
     pub agent_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub model: String,
-    #[sea_orm(column_name = "requestedModel")]
+    #[sea_orm(column_name = "requestedModel", column_type = "Text")]
     pub requested_model: Option<String>,
-    #[sea_orm(column_name = "vendorConversationId")]
+    #[sea_orm(column_name = "vendorConversationId", column_type = "Text")]
     pub vendor_conversation_id: Option<String>,
     #[sea_orm(default_value = "OPEN")]
     pub status: GatewayRealtimeSessionStatus,
-    #[sea_orm(column_name = "mintedAt")]
+    #[sea_orm(
+        column_name = "mintedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub minted_at: DateTime,
-    #[sea_orm(column_name = "closedAt")]
+    #[sea_orm(column_name = "closedAt", column_type = "custom(\"timestamp(3)\")")]
     pub closed_at: Option<DateTime>,
-    #[sea_orm(column_name = "closeReason")]
+    #[sea_orm(column_name = "closeReason", column_type = "Text")]
     pub close_reason: Option<String>,
-    #[sea_orm(column_name = "traceId")]
+    #[sea_orm(column_name = "traceId", column_type = "Text")]
     pub trace_id: Option<String>,
-    #[sea_orm(column_name = "vendorCostRaw")]
+    #[sea_orm(column_name = "vendorCostRaw", column_type = "JsonBinary")]
     pub vendor_cost_raw: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub kind: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub metering: Option<String>,
-    #[sea_orm(column_name = "credentialExpiresAt")]
+    #[sea_orm(
+        column_name = "credentialExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub credential_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "transcriptionModel")]
+    #[sea_orm(column_name = "transcriptionModel", column_type = "Text")]
     pub transcription_model: Option<String>,
-    #[sea_orm(column_name = "endUserId")]
+    #[sea_orm(column_name = "endUserId", column_type = "Text")]
     pub end_user_id: Option<String>,
-    #[sea_orm(column_name = "lastReportAt")]
+    #[sea_orm(column_name = "lastReportAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_report_at: Option<DateTime>,
     #[sea_orm(column_name = "reportedCostNanoUsd", default_value = "0")]
     pub reported_cost_nano_usd: i64,
     #[sea_orm(column_name = "reportCount", default_value = 0)]
     pub report_count: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

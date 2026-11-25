@@ -10,10 +10,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Invoice")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "String(StringLen::N(191))")]
     pub workspace_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub number: Option<String>,
     #[sea_orm(default_value = "processing")]
     pub status: InvoiceStatus,
@@ -41,9 +43,13 @@ pub struct Model {
     pub stripe_charge_metadata: Option<Json>,
     #[sea_orm(column_name = "failedAttempts", default_value = 0)]
     pub failed_attempts: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "paidAt")]
+    #[sea_orm(column_name = "paidAt", column_type = "custom(\"datetime(3)\")")]
     pub paid_at: Option<DateTime>,
 }
 
@@ -52,7 +58,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::WorkspaceId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Invoice_workspaceId_fkey"
     )]
     Workspace,
 }

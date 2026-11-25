@@ -5,15 +5,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "invitation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub role: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "inviterId")]
+    #[sea_orm(column_name = "inviterId", column_type = "Text")]
     pub inviter_id: String,
 }
 
@@ -23,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "invitation_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::InviterId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "invitation_inviterId_fkey"
     )]
     Inviter,
 }

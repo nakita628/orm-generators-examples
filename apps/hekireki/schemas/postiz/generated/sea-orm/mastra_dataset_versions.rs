@@ -7,13 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_dataset_versions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "datasetId")]
+    #[sea_orm(column_name = "datasetId", column_type = "Text")]
     pub dataset_id: String,
     pub version: i32,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

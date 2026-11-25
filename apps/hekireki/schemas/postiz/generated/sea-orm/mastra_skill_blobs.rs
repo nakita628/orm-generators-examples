@@ -7,14 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_skill_blobs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub hash: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     pub size: i32,
-    #[sea_orm(column_name = "mimeType")]
+    #[sea_orm(column_name = "mimeType", column_type = "Text")]
     pub mime_type: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

@@ -11,7 +11,7 @@ import (
 )
 
 type User struct {
-	ID            string          `gorm:"column:id;primaryKey" json:"id"`
+	ID            string          `gorm:"column:id;primaryKey;not null" json:"id"`
 	Name          *string         `gorm:"column:name" json:"name"`
 	Email         string          `gorm:"column:email;uniqueIndex:User_email_key;not null" json:"email"`
 	EmailVerified *DateTime       `gorm:"column:emailVerified" json:"emailVerified"`
@@ -35,8 +35,8 @@ func (m *User) BeforeCreate(_ *gorm.DB) error {
 type Account struct {
 	UserID            string  `gorm:"column:userId;not null" json:"userId"`
 	Type              string  `gorm:"column:type;not null" json:"type"`
-	Provider          string  `gorm:"column:provider;primaryKey" json:"provider"`
-	ProviderAccountID string  `gorm:"column:providerAccountId;primaryKey" json:"providerAccountId"`
+	Provider          string  `gorm:"column:provider;primaryKey;not null" json:"provider"`
+	ProviderAccountID string  `gorm:"column:providerAccountId;primaryKey;not null" json:"providerAccountId"`
 	RefreshToken      *string `gorm:"column:refresh_token" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token" json:"access_token"`
 	ExpiresAt         *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -52,7 +52,7 @@ func (Account) TableName() string {
 }
 
 type Session struct {
-	SessionToken string   `gorm:"column:sessionToken;primaryKey;uniqueIndex:Session_sessionToken_key" json:"sessionToken"`
+	SessionToken string   `gorm:"column:sessionToken;primaryKey;uniqueIndex:Session_sessionToken_key;not null" json:"sessionToken"`
 	UserID       string   `gorm:"column:userId;not null" json:"userId"`
 	Expires      DateTime `gorm:"column:expires;not null" json:"expires"`
 	User         *User    `gorm:"belongsTo"`
@@ -63,8 +63,8 @@ func (Session) TableName() string {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;primaryKey" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key" json:"token"`
+	Identifier string   `gorm:"column:identifier;primaryKey;not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;not null" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -73,8 +73,8 @@ func (VerificationToken) TableName() string {
 }
 
 type Authenticator struct {
-	CredentialID         string  `gorm:"column:credentialID;primaryKey;uniqueIndex:Authenticator_credentialID_key" json:"credentialID"`
-	UserID               string  `gorm:"column:userId;primaryKey" json:"userId"`
+	UserID               string  `gorm:"column:userId;primaryKey;not null" json:"userId"`
+	CredentialID         string  `gorm:"column:credentialID;primaryKey;uniqueIndex:Authenticator_credentialID_key;not null" json:"credentialID"`
 	ProviderAccountID    string  `gorm:"column:providerAccountId;not null" json:"providerAccountId"`
 	CredentialPublicKey  string  `gorm:"column:credentialPublicKey;not null" json:"credentialPublicKey"`
 	Counter              int     `gorm:"column:counter;size:32;not null" json:"counter"`

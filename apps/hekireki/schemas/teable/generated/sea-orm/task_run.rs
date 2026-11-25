@@ -7,17 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "task_run")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub task_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub snapshot: String,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub depends_on_run_ids: Vec<String>,
     pub spent: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub log: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub error_msg: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub started_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 
@@ -27,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::task::Entity",
         from = "Column::TaskId",
         to = "super::task::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "task_run_task_id_fkey"
     )]
     Task,
 }

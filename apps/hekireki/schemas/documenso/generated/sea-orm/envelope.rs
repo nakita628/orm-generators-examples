@@ -13,49 +13,59 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Envelope")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "secondaryId")]
+    #[sea_orm(column_name = "secondaryId", column_type = "Text")]
     pub secondary_id: String,
     /// @zod.string.describe("A custom external ID you can use to identify the document.")
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: Option<String>,
     pub r#type: EnvelopeType,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
     #[sea_orm(default_value = "DRAFT")]
     pub status: DocumentStatus,
     pub source: DocumentSource,
     /// @zod.string.describe("The token for viewing the document using the QR code on the certificate.")
-    #[sea_orm(column_name = "qrToken")]
+    #[sea_orm(column_name = "qrToken", column_type = "Text")]
     pub qr_token: Option<String>,
     /// [SignatureLevel] @zod.custom.use(ZSignatureLevelSchema)
-    #[sea_orm(column_name = "signatureLevel")]
+    #[sea_orm(column_name = "signatureLevel", column_type = "Text")]
     pub signature_level: String,
     #[sea_orm(column_name = "internalVersion")]
     pub internal_version: i32,
     #[sea_orm(column_name = "useLegacyFieldInsertion", default_value = false)]
     pub use_legacy_field_insertion: bool,
     /// [DocumentAuthOptions] @zod.custom.use(ZDocumentAuthOptionsSchema)
-    #[sea_orm(column_name = "authOptions")]
+    #[sea_orm(column_name = "authOptions", column_type = "JsonBinary")]
     pub auth_options: Option<Json>,
     /// [DocumentFormValues] @zod.custom.use(ZDocumentFormValuesSchema)
-    #[sea_orm(column_name = "formValues")]
+    #[sea_orm(column_name = "formValues", column_type = "JsonBinary")]
     pub form_values: Option<Json>,
     #[sea_orm(default_value = "EVERYONE")]
     pub visibility: DocumentVisibility,
     #[sea_orm(column_name = "templateType", default_value = "PRIVATE")]
     pub template_type: TemplateType,
-    #[sea_orm(column_name = "publicTitle", default_value = "")]
+    #[sea_orm(column_name = "publicTitle", column_type = "Text", default_value = "")]
     pub public_title: String,
-    #[sea_orm(column_name = "publicDescription", default_value = "")]
+    #[sea_orm(
+        column_name = "publicDescription",
+        column_type = "Text",
+        default_value = ""
+    )]
     pub public_description: String,
     #[sea_orm(column_name = "templateId")]
     pub template_id: Option<i32>,
@@ -64,10 +74,10 @@ pub struct Model {
     pub user_id: i32,
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "Text")]
     pub folder_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "documentMetaId")]
+    #[sea_orm(column_name = "documentMetaId", column_type = "Text")]
     pub document_meta_id: String,
 }
 
@@ -77,27 +87,31 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Envelope_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Envelope_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::folder::Entity",
         from = "Column::FolderId",
         to = "super::folder::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Envelope_folderId_fkey"
     )]
     Folder,
     #[sea_orm(
         belongs_to = "super::document_meta::Entity",
         from = "Column::DocumentMetaId",
-        to = "super::document_meta::Column::Id"
+        to = "super::document_meta::Column::Id",
+        fk_name = "Envelope_documentMetaId_fkey"
     )]
     DocumentMeta,
     #[sea_orm(has_many = "super::envelope_item::Entity")]

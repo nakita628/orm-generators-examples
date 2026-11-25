@@ -7,39 +7,52 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_datasets")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "inputSchema")]
+    #[sea_orm(column_name = "inputSchema", column_type = "JsonBinary")]
     pub input_schema: Option<Json>,
-    #[sea_orm(column_name = "groundTruthSchema")]
+    #[sea_orm(column_name = "groundTruthSchema", column_type = "JsonBinary")]
     pub ground_truth_schema: Option<Json>,
-    #[sea_orm(column_name = "requestContextSchema")]
+    #[sea_orm(column_name = "requestContextSchema", column_type = "JsonBinary")]
     pub request_context_schema: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub tags: Option<Json>,
-    #[sea_orm(column_name = "targetType")]
+    #[sea_orm(column_name = "targetType", column_type = "Text")]
     pub target_type: Option<String>,
-    #[sea_orm(column_name = "targetIds")]
+    #[sea_orm(column_name = "targetIds", column_type = "JsonBinary")]
     pub target_ids: Option<Json>,
-    #[sea_orm(column_name = "scorerIds")]
+    #[sea_orm(column_name = "scorerIds", column_type = "JsonBinary")]
     pub scorer_ids: Option<Json>,
     pub version: i32,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "candidateKey")]
+    #[sea_orm(column_name = "candidateKey", column_type = "Text")]
     pub candidate_key: Option<String>,
-    #[sea_orm(column_name = "candidateId")]
+    #[sea_orm(column_name = "candidateId", column_type = "Text")]
     pub candidate_id: Option<String>,
 }
 

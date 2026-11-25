@@ -19,10 +19,21 @@ pub struct Model {
     pub resource_id: String,
     #[sea_orm(column_type = "String(StringLen::N(16))", default_value = "open")]
     pub status: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub window_start: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub window_end: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub evidence: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(column_type = "String(StringLen::N(1024))")]
     pub updated_by: Option<String>,

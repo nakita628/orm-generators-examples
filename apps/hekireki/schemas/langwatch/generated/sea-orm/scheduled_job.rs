@@ -7,30 +7,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ScheduledJob")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "targetType")]
+    #[sea_orm(column_name = "targetType", column_type = "Text")]
     pub target_type: String,
-    #[sea_orm(column_name = "targetId")]
+    #[sea_orm(column_name = "targetId", column_type = "Text")]
     pub target_id: String,
+    #[sea_orm(column_type = "Text")]
     pub cron: String,
+    #[sea_orm(column_type = "Text")]
     pub timezone: String,
-    #[sea_orm(column_name = "nextRunAt")]
+    #[sea_orm(column_name = "nextRunAt", column_type = "custom(\"timestamp(3)\")")]
     pub next_run_at: DateTime,
-    #[sea_orm(column_name = "lastSlot")]
+    #[sea_orm(column_name = "lastSlot", column_type = "custom(\"timestamp(3)\")")]
     pub last_slot: Option<DateTime>,
-    #[sea_orm(column_name = "currentSlot")]
+    #[sea_orm(column_name = "currentSlot", column_type = "custom(\"timestamp(3)\")")]
     pub current_slot: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
-    #[sea_orm(column_name = "lastError")]
+    #[sea_orm(column_name = "lastError", column_type = "Text")]
     pub last_error: Option<String>,
     #[sea_orm(default_value = true)]
     pub active: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

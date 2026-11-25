@@ -9,33 +9,57 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "custom(\"citext\")")]
     pub email: String,
     pub email_verified: Option<bool>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub time_zone: Option<String>,
     pub week_start: Option<i32>,
     pub time_format: Option<TimeFormat>,
+    #[sea_orm(column_type = "Text")]
     pub locale: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub customer_id: Option<String>,
     #[sea_orm(default_value = false)]
     pub banned: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub banned_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub ban_reason: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub ban_expires: Option<DateTime>,
     #[sea_orm(default_value = "user")]
     pub role: UserRole,
+    #[sea_orm(column_type = "Text")]
     pub last_login_method: Option<String>,
     #[sea_orm(column_name = "anonymous", default_value = false)]
     pub is_anonymous: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_seen_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub job_title: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub review_requested_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub default_destination_calendar_id: Option<String>,
 }
 
@@ -45,7 +69,8 @@ pub enum Relation {
         belongs_to = "super::provider_calendar::Entity",
         from = "Column::DefaultDestinationCalendarId",
         to = "super::provider_calendar::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "users_default_destination_calendar_id_fkey"
     )]
     DefaultDestinationCalendar,
     #[sea_orm(has_many = "super::comment::Entity")]

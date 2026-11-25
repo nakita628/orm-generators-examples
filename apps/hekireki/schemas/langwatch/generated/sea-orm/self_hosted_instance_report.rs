@@ -10,13 +10,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SelfHostedInstanceReport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `SelfHostedInstance.instanceId` this report came from. A plain column
     /// ref for the same reason the instance row's refs are.
-    #[sea_orm(column_name = "instanceId")]
+    #[sea_orm(column_name = "instanceId", column_type = "Text")]
     pub instance_id: String,
-    #[sea_orm(column_name = "receivedAt")]
+    #[sea_orm(
+        column_name = "receivedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub received_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub version: Option<String>,
     #[sea_orm(column_name = "reportSchemaVersion")]
     pub report_schema_version: Option<i32>,
@@ -24,6 +30,7 @@ pub struct Model {
     #[sea_orm(column_name = "unknownFields", default_value = 0)]
     pub unknown_fields: i32,
     /// The validated report, with every unknown field already dropped.
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
 }
 

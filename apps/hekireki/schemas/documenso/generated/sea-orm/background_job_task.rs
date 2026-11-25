@@ -8,22 +8,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BackgroundJobTask")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: BackgroundJobTaskStatus,
+    #[sea_orm(column_type = "JsonBinary")]
     pub result: Option<Json>,
     #[sea_orm(default_value = 0)]
     pub retried: i32,
     #[sea_orm(column_name = "maxRetries", default_value = 3)]
     pub max_retries: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "jobId")]
+    #[sea_orm(column_name = "jobId", column_type = "Text")]
     pub job_id: String,
 }
 
@@ -33,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::background_job::Entity",
         from = "Column::JobId",
         to = "super::background_job::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BackgroundJobTask_jobId_fkey"
     )]
     BackgroundJob,
 }

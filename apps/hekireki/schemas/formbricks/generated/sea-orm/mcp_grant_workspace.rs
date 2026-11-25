@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "McpGrantWorkspace")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "grantId")]
+    #[sea_orm(column_name = "grantId", column_type = "Text")]
     pub grant_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
 }
 
@@ -19,14 +19,16 @@ pub enum Relation {
         belongs_to = "super::mcp_grant::Entity",
         from = "Column::GrantId",
         to = "super::mcp_grant::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpGrantWorkspace_grantId_fkey"
     )]
     Grant,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpGrantWorkspace_workspaceId_fkey"
     )]
     Workspace,
 }

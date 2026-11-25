@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "gateway_api_key_associations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub api_key_id: String,
     #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Json,
@@ -18,7 +19,8 @@ pub enum Relation {
         belongs_to = "super::api_key::Entity",
         from = "Column::ApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gateway_api_key_associations_api_key_id_fkey"
     )]
     ApiKey,
 }

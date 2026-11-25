@@ -7,17 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_GuardrailsTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub guardrail_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub guardrail_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub guardrail_info: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(default_value = "active")]
+    #[sea_orm(column_type = "Text", default_value = "active")]
     pub status: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub submitted_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub reviewed_at: Option<DateTime>,
 }
 

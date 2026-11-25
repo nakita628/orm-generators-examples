@@ -6,13 +6,16 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     pub rollover_credit: Option<f64>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub team_id: String,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
     #[sea_orm(default_value = 0)]
     pub total_spend: f64,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: Option<String>,
 }
 
@@ -21,7 +24,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::BudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_TeamMembership_budget_id_fkey"
     )]
     LitellmBudgetTable,
 }

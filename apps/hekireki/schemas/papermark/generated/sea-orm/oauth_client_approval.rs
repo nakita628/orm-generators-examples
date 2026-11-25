@@ -7,16 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthClientApproval")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "approvedAt")]
+    #[sea_orm(
+        column_name = "approvedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub approved_at: DateTime,
-    #[sea_orm(column_name = "revokedAt")]
+    #[sea_orm(column_name = "revokedAt", column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "clientMetadataHash")]
+    #[sea_orm(column_name = "clientMetadataHash", column_type = "Text")]
     pub client_metadata_hash: Option<String>,
 }
 

@@ -6,16 +6,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "ApiKey")]
 pub struct Model {
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedKey")]
+    #[sea_orm(column_name = "hashedKey", column_type = "Text")]
     pub hashed_key: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -25,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ApiKey_userId_fkey"
     )]
     User,
 }

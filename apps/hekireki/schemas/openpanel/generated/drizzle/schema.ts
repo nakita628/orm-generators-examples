@@ -1373,7 +1373,10 @@ export const projectInsights = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('project_insights_projectId_impactScore_idx').on(table.projectId, table.impactScore),
+    index('project_insights_projectId_impactScore_idx').on(
+      table.projectId,
+      table.impactScore.desc().nullsFirst(),
+    ),
     index('project_insights_projectId_moduleKey_windowKind_state_idx').on(
       table.projectId,
       table.moduleKey,
@@ -1383,7 +1386,7 @@ export const projectInsights = pgTable(
     index('project_insights_projectId_state_relevanceScore_idx').on(
       table.projectId,
       table.state,
-      table.relevanceScore,
+      table.relevanceScore.desc().nullsFirst(),
     ),
     uniqueIndex('project_insights_projectId_moduleKey_dimensionKey_windowKin_key').on(
       table.projectId,

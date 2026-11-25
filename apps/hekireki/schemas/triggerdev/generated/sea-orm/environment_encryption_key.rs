@@ -8,18 +8,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EnvironmentEncryptionKey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
-    #[sea_orm(column_name = "wrappedKey")]
+    #[sea_orm(column_name = "wrappedKey", column_type = "JsonBinary")]
     pub wrapped_key: Json,
     #[sea_orm(column_name = "wrappingProvider")]
     pub wrapping_provider: EnvironmentKeyWrappingProvider,
-    #[sea_orm(column_name = "wrappingKeyReference")]
+    #[sea_orm(column_name = "wrappingKeyReference", column_type = "Text")]
     pub wrapping_key_reference: String,
     #[sea_orm(default_value = 0)]
     pub revision: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -29,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::runtime_environment::Entity",
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentEncryptionKey_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(has_many = "super::environment_encryption_policy::Entity")]

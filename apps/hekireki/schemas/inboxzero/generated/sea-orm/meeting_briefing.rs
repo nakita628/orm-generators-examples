@@ -8,19 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MeetingBriefing")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "calendarEventId")]
+    #[sea_orm(column_name = "calendarEventId", column_type = "Text")]
     pub calendar_event_id: String,
-    #[sea_orm(column_name = "eventTitle")]
+    #[sea_orm(column_name = "eventTitle", column_type = "Text")]
     pub event_title: String,
-    #[sea_orm(column_name = "eventStartTime")]
+    #[sea_orm(
+        column_name = "eventStartTime",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub event_start_time: DateTime,
     #[sea_orm(column_name = "guestCount")]
     pub guest_count: i32,
     pub status: MeetingBriefingStatus,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -30,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MeetingBriefing_emailAccountId_fkey"
     )]
     EmailAccount,
 }

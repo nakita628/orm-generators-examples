@@ -10,25 +10,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DiscoveredAgent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
     /// Genie space / Copilot bot / OpenAI project id, verbatim.
-    #[sea_orm(column_name = "rawAgentId")]
+    #[sea_orm(column_name = "rawAgentId", column_type = "Text")]
     pub raw_agent_id: String,
-    #[sea_orm(column_name = "displayText")]
+    #[sea_orm(column_name = "displayText", column_type = "Text")]
     pub display_text: String,
     /// Workspace, plan, and kin - provider-native descriptive fields only. Never
     /// credentials: this row is read by admin screens, not by any pull path.
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Json,
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(column_name = "firstSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub first_seen_at: DateTime,
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(column_name = "lastSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_seen_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

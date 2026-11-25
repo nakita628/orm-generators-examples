@@ -9,9 +9,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CustomField")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "helpText")]
+    #[sea_orm(column_name = "helpText", column_type = "Text")]
     pub help_text: Option<String>,
     #[sea_orm(default_value = false)]
     pub required: bool,
@@ -19,20 +21,25 @@ pub struct Model {
     pub active: bool,
     #[sea_orm(default_value = "TEXT")]
     pub r#type: CustomFieldType,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub options: Vec<String>,
     /// How a TEXT field's values are read. LINK requires a web link in every
     /// value; any other type stays PLAIN (enforced by a CHECK constraint).
     #[sea_orm(default_value = "PLAIN")]
     pub format: CustomFieldFormat,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -43,14 +50,16 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CustomField_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_update = "Cascade"
+        on_update = "Cascade",
+        fk_name = "CustomField_userId_fkey"
     )]
     CreatedBy,
     #[sea_orm(has_many = "super::asset_custom_field_value::Entity")]

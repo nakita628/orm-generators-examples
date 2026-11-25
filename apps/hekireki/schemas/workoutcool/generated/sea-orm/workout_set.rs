@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workout_sets")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workoutSessionExerciseId")]
+    #[sea_orm(column_name = "workoutSessionExerciseId", column_type = "Text")]
     pub workout_session_exercise_id: String,
     #[sea_orm(column_name = "setIndex")]
     pub set_index: i32,
@@ -29,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::workout_session_exercise::Entity",
         from = "Column::WorkoutSessionExerciseId",
         to = "super::workout_session_exercise::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workout_sets_workoutSessionExerciseId_fkey"
     )]
     WorkoutSessionExercise,
 }

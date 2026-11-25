@@ -20,9 +20,13 @@ pub struct Model {
     pub weight_adjustment: Option<i32>,
     #[sea_orm(column_name = "scheduleId")]
     pub schedule_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
     #[sea_orm(column_name = "memberId")]
     pub member_id: Option<i32>,
@@ -34,33 +38,38 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Host_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Host_eventTypeId_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::schedule::Entity",
         from = "Column::ScheduleId",
-        to = "super::schedule::Column::Id"
+        to = "super::schedule::Column::Id",
+        fk_name = "Host_scheduleId_fkey"
     )]
     Schedule,
     #[sea_orm(
         belongs_to = "super::host_group::Entity",
         from = "Column::GroupId",
-        to = "super::host_group::Column::Id"
+        to = "super::host_group::Column::Id",
+        fk_name = "Host_groupId_fkey"
     )]
     Group,
     #[sea_orm(
         belongs_to = "super::membership::Entity",
         from = "Column::MemberId",
         to = "super::membership::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Host_memberId_fkey"
     )]
     Member,
     #[sea_orm(has_one = "super::host_location::Entity")]

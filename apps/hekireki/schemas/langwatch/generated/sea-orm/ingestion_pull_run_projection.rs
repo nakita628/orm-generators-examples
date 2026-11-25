@@ -6,25 +6,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IngestionPullRunProjection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "sourceId")]
+    #[sea_orm(column_name = "sourceId", column_type = "Text")]
     pub source_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     #[sea_orm(default_value = false)]
     pub enabled: bool,
+    #[sea_orm(column_type = "Text")]
     pub cron: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub cursor: Option<String>,
     #[sea_orm(column_name = "lastRunAt")]
     pub last_run_at: Option<f64>,
-    #[sea_orm(column_name = "lastRunOutcome")]
+    #[sea_orm(column_name = "lastRunOutcome", column_type = "Text")]
     pub last_run_outcome: Option<String>,
     #[sea_orm(column_name = "lastRunEventCount", default_value = 0)]
     pub last_run_event_count: i32,
-    #[sea_orm(column_name = "lastRunError")]
+    #[sea_orm(column_name = "lastRunError", column_type = "Text")]
     pub last_run_error: Option<String>,
-    #[sea_orm(column_name = "lastRunErrorCode")]
+    #[sea_orm(column_name = "lastRunErrorCode", column_type = "Text")]
     pub last_run_error_code: Option<String>,
     #[sea_orm(column_name = "consecutiveErrors", default_value = 0)]
     pub consecutive_errors: i32,
@@ -49,7 +52,7 @@ pub struct Model {
     /// Spec: specs/governance/ingestion-source-health.feature
     #[sea_orm(column_name = "lastReadThroughAt")]
     pub last_read_through_at: Option<f64>,
-    #[sea_orm(column_name = "lastRunCompleteness")]
+    #[sea_orm(column_name = "lastRunCompleteness", column_type = "Text")]
     pub last_run_completeness: Option<String>,
     /// The last time somebody asked this source to enumerate its agents, and how
     /// that ask ended. A listing is a different scope on the same connection as
@@ -72,11 +75,11 @@ pub struct Model {
     /// migration; the fold's own field docs are the statement of record.
     #[sea_orm(column_name = "lastAgentsListingAt")]
     pub last_agents_listing_at: Option<f64>,
-    #[sea_orm(column_name = "lastAgentsListingOutcome")]
+    #[sea_orm(column_name = "lastAgentsListingOutcome", column_type = "Text")]
     pub last_agents_listing_outcome: Option<String>,
     #[sea_orm(column_name = "lastAgentsListingCount")]
     pub last_agents_listing_count: Option<i32>,
-    #[sea_orm(column_name = "lastAgentsListingReason")]
+    #[sea_orm(column_name = "lastAgentsListingReason", column_type = "Text")]
     pub last_agents_listing_reason: Option<String>,
     #[sea_orm(column_name = "lastAgentsListingStatus")]
     pub last_agents_listing_status: Option<i32>,
@@ -100,13 +103,13 @@ pub struct Model {
     /// never beside a per-person list.
     #[sea_orm(column_name = "lastPeopleListingAt")]
     pub last_people_listing_at: Option<f64>,
-    #[sea_orm(column_name = "lastPeopleListingOutcome")]
+    #[sea_orm(column_name = "lastPeopleListingOutcome", column_type = "Text")]
     pub last_people_listing_outcome: Option<String>,
     #[sea_orm(column_name = "lastPeopleDirectoryCount")]
     pub last_people_directory_count: Option<i32>,
     #[sea_orm(column_name = "lastPeopleWithheldCount")]
     pub last_people_withheld_count: Option<i32>,
-    #[sea_orm(column_name = "lastPeopleListingReason")]
+    #[sea_orm(column_name = "lastPeopleListingReason", column_type = "Text")]
     pub last_people_listing_reason: Option<String>,
     #[sea_orm(column_name = "lastPeopleListingStatus")]
     pub last_people_listing_status: Option<i32>,
@@ -118,9 +121,9 @@ pub struct Model {
     pub occurred_at: f64,
     #[sea_orm(column_name = "acceptedAt")]
     pub accepted_at: f64,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
 }
 

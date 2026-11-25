@@ -5,28 +5,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "scimProjectionGrant")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
-    #[sea_orm(column_name = "provisioningDomainId")]
+    #[sea_orm(column_name = "provisioningDomainId", column_type = "Text")]
     pub provisioning_domain_id: String,
-    #[sea_orm(column_name = "scimUserId")]
+    #[sea_orm(column_name = "scimUserId", column_type = "Text")]
     pub scim_user_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "sourceKind")]
+    #[sea_orm(column_name = "sourceKind", column_type = "Text")]
     pub source_kind: String,
-    #[sea_orm(column_name = "sourceId")]
+    #[sea_orm(column_name = "sourceId", column_type = "Text")]
     pub source_id: String,
-    #[sea_orm(column_name = "sourceValue")]
+    #[sea_orm(column_name = "sourceValue", column_type = "Text")]
     pub source_value: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "grantKey")]
+    #[sea_orm(column_name = "grantKey", column_type = "Text")]
     pub grant_key: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -36,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::scim_user::Entity",
         from = "Column::ScimUserId",
         to = "super::scim_user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scimProjectionGrant_scimUserId_fkey"
     )]
     ScimUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scimProjectionGrant_userId_fkey"
     )]
     User,
 }

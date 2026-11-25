@@ -8,30 +8,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BookingAsset")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "bookingId")]
+    #[sea_orm(column_name = "bookingId", column_type = "Text")]
     pub booking_id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: String,
     #[sea_orm(default_value = 1)]
     pub quantity: i32,
-    #[sea_orm(column_name = "bookingModelRequestId")]
+    #[sea_orm(column_name = "bookingModelRequestId", column_type = "Text")]
     pub booking_model_request_id: Option<String>,
-    #[sea_orm(column_name = "assetKitId")]
+    #[sea_orm(column_name = "assetKitId", column_type = "Text")]
     pub asset_kit_id: Option<String>,
-    #[sea_orm(column_name = "sourceKitId")]
+    #[sea_orm(column_name = "sourceKitId", column_type = "Text")]
     pub source_kit_id: Option<String>,
-    #[sea_orm(column_name = "checkedOutAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "checkedOutAt",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub checked_out_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "checkedOutById")]
+    #[sea_orm(column_name = "checkedOutById", column_type = "Text")]
     pub checked_out_by_id: Option<String>,
-    #[sea_orm(column_name = "checkedInAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "checkedInAt",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub checked_in_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "checkedInById")]
+    #[sea_orm(column_name = "checkedInById", column_type = "Text")]
     pub checked_in_by_id: Option<String>,
     #[sea_orm(column_name = "checkedOutQuantity", default_value = 0)]
     pub checked_out_quantity: i32,
-    #[sea_orm(column_name = "sourceLocationId")]
+    #[sea_orm(column_name = "sourceLocationId", column_type = "Text")]
     pub source_location_id: Option<String>,
 }
 
@@ -42,7 +49,8 @@ pub enum Relation {
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingAsset_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
@@ -50,7 +58,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingAsset_assetId_fkey"
     )]
     Asset,
 }

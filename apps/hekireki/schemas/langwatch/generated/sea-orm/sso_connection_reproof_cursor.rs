@@ -12,9 +12,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoConnectionReproofCursor")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
-    #[sea_orm(column_name = "lastReproofAt")]
+    #[sea_orm(
+        column_name = "lastReproofAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_reproof_at: DateTime,
 }
 
@@ -24,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::sso_connection::Entity",
         from = "Column::ConnectionId",
         to = "super::sso_connection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SsoConnectionReproofCursor_connectionId_fkey"
     )]
     Connection,
 }

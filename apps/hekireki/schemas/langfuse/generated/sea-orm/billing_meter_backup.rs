@@ -7,17 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "billing_meter_backups")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub stripe_customer_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub meter_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start_time: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end_time: DateTime,
     pub aggregated_value: i32,
+    #[sea_orm(column_type = "Text")]
     pub event_name: String,
+    #[sea_orm(column_type = "Text")]
     pub org_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

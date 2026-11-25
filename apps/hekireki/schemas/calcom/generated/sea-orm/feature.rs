@@ -8,19 +8,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Feature")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(default_value = false)]
     pub enabled: bool,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = "RELEASE")]
     pub r#type: Option<FeatureType>,
     #[sea_orm(default_value = false)]
     pub stale: Option<bool>,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: Option<DateTime>,
     #[sea_orm(column_name = "updatedBy")]
     pub updated_by: Option<i32>,

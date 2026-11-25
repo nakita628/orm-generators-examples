@@ -9,25 +9,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GatewayGuardrail")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "evaluatorId")]
+    #[sea_orm(column_name = "evaluatorId", column_type = "Text")]
     pub evaluator_id: String,
     pub direction: GatewayGuardrailDirection,
     #[sea_orm(column_name = "failureMode", default_value = "FAIL_CLOSED")]
     pub failure_mode: GatewayGuardrailFailureMode,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -37,28 +48,32 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GatewayGuardrail_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::evaluator::Entity",
         from = "Column::EvaluatorId",
         to = "super::evaluator::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "GatewayGuardrail_evaluatorId_fkey"
     )]
     Evaluator,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "GatewayGuardrail_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "GatewayGuardrail_updatedById_fkey"
     )]
     UpdatedBy,
 }

@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, MetaData, String, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, MetaData, String, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -278,7 +278,7 @@ class LiteLLMCustomerMemberTable(Base):
 
     __table_args__ = (
         Index("LiteLLM_CustomerMemberTable_parent_org_id_idx", "parent_org_id"),
-        Index("LiteLLM_CustomerMemberTable_parent_team_ids_idx", "parent_team_ids"),
+        Index("LiteLLM_CustomerMemberTable_parent_team_ids_idx", "parent_team_ids", postgresql_using="gin"),
         Index("LiteLLM_CustomerMemberTable_budget_id_idx", "budget_id"),
         Index("LiteLLM_CustomerMemberTable_budget_override_id_idx", "budget_override_id"),
         Index("LiteLLM_CustomerMemberTable_spend_idx", "spend"),
@@ -1570,9 +1570,9 @@ class LiteLLMManagedFileTable(Base):
     __table_args__ = (
         Index("LiteLLM_ManagedFileTable_unified_file_id_key", "unified_file_id", unique=True),
         Index("LiteLLM_ManagedFileTable_unified_file_id_idx", "unified_file_id"),
-        Index("LiteLLM_ManagedFileTable_flat_model_file_ids_idx", "flat_model_file_ids"),
-        Index("LiteLLM_ManagedFileTable_team_id_created_at_idx", "team_id", "created_at"),
-        Index("LiteLLM_ManagedFileTable_created_by_created_at_idx", "created_by", "created_at"),
+        Index("LiteLLM_ManagedFileTable_flat_model_file_ids_idx", "flat_model_file_ids", postgresql_using="gin"),
+        Index("LiteLLM_ManagedFileTable_team_id_created_at_idx", "team_id", literal_column("\"created_at\"").desc()),
+        Index("LiteLLM_ManagedFileTable_created_by_created_at_idx", "created_by", literal_column("\"created_at\"").desc()),
     )
 
 class LiteLLMManagedObjectTable(Base):
@@ -1601,7 +1601,7 @@ class LiteLLMManagedObjectTable(Base):
         Index("LiteLLM_ManagedObjectTable_model_object_id_key", "model_object_id", unique=True),
         Index("LiteLLM_ManagedObjectTable_unified_object_id_idx", "unified_object_id"),
         Index("LiteLLM_ManagedObjectTable_model_object_id_idx", "model_object_id"),
-        Index("LiteLLM_ManagedObjectTable_team_id_created_at_idx", "team_id", "created_at"),
+        Index("LiteLLM_ManagedObjectTable_team_id_created_at_idx", "team_id", literal_column("\"created_at\"").desc()),
     )
 
 class LiteLLMManagedFileContentTable(Base):
@@ -1630,7 +1630,7 @@ class LiteLLMManagedVectorStoreTable(Base):
     __table_args__ = (
         Index("LiteLLM_ManagedVectorStoreTable_unified_resource_id_key", "unified_resource_id", unique=True),
         Index("LiteLLM_ManagedVectorStoreTable_unified_resource_id_idx", "unified_resource_id"),
-        Index("LiteLLM_ManagedVectorStoreTable_team_id_created_at_idx", "team_id", "created_at"),
+        Index("LiteLLM_ManagedVectorStoreTable_team_id_created_at_idx", "team_id", literal_column("\"created_at\"").desc()),
     )
 
 class LiteLLMManagedVectorStoresTable(Base):
@@ -1875,7 +1875,7 @@ class LiteLLMHealthCheckTable(Base):
         Index("LiteLLM_HealthCheckTable_model_name_idx", "model_name"),
         Index("LiteLLM_HealthCheckTable_checked_at_idx", "checked_at"),
         Index("LiteLLM_HealthCheckTable_status_idx", "status"),
-        Index("LiteLLM_HealthCheckTable_model_id_model_name_checked_at_idx", "model_id", "model_name", "checked_at"),
+        Index("LiteLLM_HealthCheckTable_model_id_model_name_checked_at_idx", "model_id", "model_name", literal_column("\"checked_at\"").desc()),
     )
 
 class LiteLLMSearchToolsTable(Base):
@@ -2114,10 +2114,10 @@ class LiteLLMSkillSubmission(Base):
     scan_json: Mapped[Optional[str]]
 
     __table_args__ = (
-        Index("LiteLLM_SkillSubmission_submitted_by_created_at_id_idx", "submitted_by", "created_at", "id"),
-        Index("LiteLLM_SkillSubmission_submitted_by_status_created_at_id_idx", "submitted_by", "status", "created_at", "id"),
-        Index("LiteLLM_SkillSubmission_status_created_at_id_idx", "status", "created_at", "id"),
-        Index("LiteLLM_SkillSubmission_created_at_id_idx", "created_at", "id"),
+        Index("LiteLLM_SkillSubmission_submitted_by_created_at_id_idx", "submitted_by", literal_column("\"created_at\"").desc(), literal_column("\"id\"").desc()),
+        Index("LiteLLM_SkillSubmission_submitted_by_status_created_at_id_idx", "submitted_by", "status", literal_column("\"created_at\"").desc(), literal_column("\"id\"").desc()),
+        Index("LiteLLM_SkillSubmission_status_created_at_id_idx", "status", literal_column("\"created_at\"").desc(), literal_column("\"id\"").desc()),
+        Index("LiteLLM_SkillSubmission_created_at_id_idx", literal_column("\"created_at\"").desc(), literal_column("\"id\"").desc()),
     )
 
 class LiteLLMClaudeCodePluginDownload(Base):

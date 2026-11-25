@@ -12,22 +12,26 @@ pub struct Model {
     #[sea_orm(default_value = "INACTIVE")]
     pub status: SubscriptionStatus,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "planId")]
+    #[sea_orm(column_name = "planId", column_type = "Text")]
     pub plan_id: String,
-    #[sea_orm(column_name = "priceId")]
+    #[sea_orm(column_name = "priceId", column_type = "Text")]
     pub price_id: String,
-    #[sea_orm(column_name = "periodEnd")]
+    #[sea_orm(column_name = "periodEnd", column_type = "custom(\"timestamp(3)\")")]
     pub period_end: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "cancelAtPeriodEnd", default_value = false)]
     pub cancel_at_period_end: bool,
-    #[sea_orm(column_name = "customerId")]
+    #[sea_orm(column_name = "customerId", column_type = "Text")]
     pub customer_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: String,
 }
 
@@ -37,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::organisation::Entity",
         from = "Column::OrganisationId",
         to = "super::organisation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Subscription_organisationId_fkey"
     )]
     Organisation,
 }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -46,12 +47,12 @@ func (*CodeMigration) BeforeUpdate(tx *gorm.DB) error {
 
 type Conversation struct {
 	ID             string        `gorm:"column:id;primaryKey;default:gen_random_uuid()" json:"id"`
-	ProjectID      string        `gorm:"column:projectId;index:conversations_projectId_updatedAt_idx;not null" json:"projectId"`
+	ProjectID      string        `gorm:"column:projectId;index:conversations_projectId_updatedAt_idx,priority:1;not null" json:"projectId"`
 	OrganizationID string        `gorm:"column:organizationId;not null" json:"organizationId"`
-	UserID         string        `gorm:"column:userId;index:conversations_userId_updatedAt_idx;not null" json:"userId"`
+	UserID         string        `gorm:"column:userId;index:conversations_userId_updatedAt_idx,priority:1;not null" json:"userId"`
 	Title          *string       `gorm:"column:title" json:"title"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime      `gorm:"column:updatedAt;index:conversations_projectId_updatedAt_idx;index:conversations_userId_updatedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt      DateTime      `gorm:"column:updatedAt;index:conversations_projectId_updatedAt_idx,priority:2;index:conversations_userId_updatedAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Project        *Project      `gorm:"belongsTo"`
 	Organization   *Organization `gorm:"belongsTo"`
 	User           *User         `gorm:"belongsTo"`
@@ -83,13 +84,13 @@ func (*Conversation) BeforeUpdate(tx *gorm.DB) error {
 
 type ChatMessage struct {
 	ID             string `gorm:"column:id;primaryKey;default:gen_random_uuid()" json:"id"`
-	ConversationID string `gorm:"column:conversationId;index:chat_messages_conversationId_createdAt_idx;not null" json:"conversationId"`
+	ConversationID string `gorm:"column:conversationId;index:chat_messages_conversationId_createdAt_idx,priority:1;not null" json:"conversationId"`
 	Role           string `gorm:"column:role;not null" json:"role"`
 	// [IPrismaUIMessageParts]
-	Parts datatypes.JSON `gorm:"column:parts;not null" json:"parts"`
+	Parts PlainJSON `gorm:"column:parts;not null" json:"parts"`
 	// [IPrismaChatMessageMetadata]
 	Metadata     datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;index:chat_messages_conversationId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt    DateTime       `gorm:"column:createdAt;index:chat_messages_conversationId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Conversation *Conversation  `gorm:"belongsTo"`
 }
 
@@ -432,12 +433,12 @@ func (*Verification) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Member struct {
-	ID             string          `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID             string          `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Role           string          `gorm:"column:role;not null" json:"role"`
 	Email          string          `gorm:"column:email;not null" json:"email"`
-	UserID         *string         `gorm:"column:userId;uniqueIndex:members_organizationId_userId_key" json:"userId"`
+	UserID         *string         `gorm:"column:userId;uniqueIndex:members_organizationId_userId_key,priority:2" json:"userId"`
 	InvitedByID    *string         `gorm:"column:invitedById" json:"invitedById"`
-	OrganizationID string          `gorm:"column:organizationId;uniqueIndex:members_organizationId_userId_key;not null" json:"organizationId"`
+	OrganizationID string          `gorm:"column:organizationId;uniqueIndex:members_organizationId_userId_key,priority:1;not null" json:"organizationId"`
 	ProjectScope   string          `gorm:"column:projectScope;default:'all';not null" json:"projectScope"`
 	Meta           datatypes.JSON  `gorm:"column:meta" json:"meta"`
 	CreatedAt      DateTime        `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -472,7 +473,7 @@ func (*Member) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type MemberProject struct {
-	MemberID  string   `gorm:"column:memberId;primaryKey;type:char(36)" json:"memberId"`
+	MemberID  string   `gorm:"column:memberId;primaryKey;type:uuid" json:"memberId"`
 	ProjectID string   `gorm:"column:projectId;primaryKey;index:member_projects_projectId_idx" json:"projectId"`
 	Level     *string  `gorm:"column:level" json:"level"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -596,7 +597,7 @@ func (*Project) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Cohort struct {
-	ID          string  `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID          string  `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Name        string  `gorm:"column:name;not null" json:"name"`
 	Description *string `gorm:"column:description" json:"description"`
 	ProjectID   string  `gorm:"column:projectId;index:cohorts_projectId_idx;not null" json:"projectId"`
@@ -663,7 +664,7 @@ func (*Salt) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Client struct {
-	ID                  string        `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID                  string        `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Name                string        `gorm:"column:name;not null" json:"name"`
 	Secret              *string       `gorm:"column:secret" json:"secret"`
 	Type                string        `gorm:"column:type;default:'write';not null" json:"type"`
@@ -737,7 +738,7 @@ func (*Dashboard) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Report struct {
-	ID            string         `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID            string         `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
 	Interval      string         `gorm:"column:interval;not null" json:"interval"`
 	Range         *string        `gorm:"column:range;default:'30d';not null" json:"range"`
@@ -794,8 +795,8 @@ func (*Report) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ReportLayout struct {
-	ID          string   `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	ReportID    string   `gorm:"column:reportId;uniqueIndex:report_layouts_reportId_key;type:char(36);not null" json:"reportId"`
+	ID          string   `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	ReportID    string   `gorm:"column:reportId;uniqueIndex:report_layouts_reportId_key;type:uuid;not null" json:"reportId"`
 	GridColumns *int     `gorm:"column:gridColumns;size:32;default:12;not null" json:"gridColumns"`
 	X           int      `gorm:"column:x;size:32;default:0;not null" json:"x"`
 	Y           int      `gorm:"column:y;size:32;default:0;not null" json:"y"`
@@ -907,7 +908,7 @@ func (*ShareDashboard) BeforeUpdate(tx *gorm.DB) error {
 
 type ShareReport struct {
 	ID             string        `gorm:"column:id;primaryKey;uniqueIndex:share_reports_id_key" json:"id"`
-	ReportID       string        `gorm:"column:reportId;uniqueIndex:share_reports_reportId_key;type:char(36);not null" json:"reportId"`
+	ReportID       string        `gorm:"column:reportId;uniqueIndex:share_reports_reportId_key;type:uuid;not null" json:"reportId"`
 	OrganizationID string        `gorm:"column:organizationId;not null" json:"organizationId"`
 	ProjectID      string        `gorm:"column:projectId;not null" json:"projectId"`
 	Public         bool          `gorm:"column:public;default:false;not null" json:"public"`
@@ -979,12 +980,12 @@ func (*ShareWidget) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type EventMeta struct {
-	ID         string   `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	Name       string   `gorm:"column:name;uniqueIndex:event_meta_name_projectId_key;not null" json:"name"`
+	ID         string   `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	Name       string   `gorm:"column:name;uniqueIndex:event_meta_name_projectId_key,priority:1;not null" json:"name"`
 	Conversion *bool    `gorm:"column:conversion" json:"conversion"`
 	Color      *string  `gorm:"column:color" json:"color"`
 	Icon       *string  `gorm:"column:icon" json:"icon"`
-	ProjectID  string   `gorm:"column:projectId;uniqueIndex:event_meta_name_projectId_key;not null" json:"projectId"`
+	ProjectID  string   `gorm:"column:projectId;uniqueIndex:event_meta_name_projectId_key,priority:2;not null" json:"projectId"`
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Project    *Project `gorm:"belongsTo"`
@@ -1014,11 +1015,11 @@ func (*EventMeta) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type CustomEvent struct {
-	ID   string `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	Name string `gorm:"column:name;uniqueIndex:custom_events_projectId_name_key;not null" json:"name"`
+	ID   string `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	Name string `gorm:"column:name;uniqueIndex:custom_events_projectId_name_key,priority:2;not null" json:"name"`
 	// [IPrismaCustomEventItems]
 	Items     datatypes.JSON `gorm:"column:items;not null" json:"items"`
-	ProjectID string         `gorm:"column:projectId;uniqueIndex:custom_events_projectId_name_key;not null" json:"projectId"`
+	ProjectID string         `gorm:"column:projectId;uniqueIndex:custom_events_projectId_name_key,priority:1;not null" json:"projectId"`
 	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Project   *Project       `gorm:"belongsTo"`
@@ -1048,7 +1049,7 @@ func (*CustomEvent) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Reference struct {
-	ID          string   `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID          string   `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Title       string   `gorm:"column:title;not null" json:"title"`
 	Description *string  `gorm:"column:description" json:"description"`
 	Date        DateTime `gorm:"column:date;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"date"`
@@ -1085,7 +1086,7 @@ func (*Reference) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type NotificationRule struct {
-	ID          string `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID          string `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Name        string `gorm:"column:name;not null" json:"name"`
 	ProjectID   string `gorm:"column:projectId;not null" json:"projectId"`
 	SendToApp   bool   `gorm:"column:sendToApp;default:false;not null" json:"sendToApp"`
@@ -1124,7 +1125,7 @@ func (*NotificationRule) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Notification struct {
-	ID                 string    `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID                 string    `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	ProjectID          string    `gorm:"column:projectId;not null" json:"projectId"`
 	Title              string    `gorm:"column:title;not null" json:"title"`
 	Message            string    `gorm:"column:message;not null" json:"message"`
@@ -1133,8 +1134,8 @@ type Notification struct {
 	UpdatedAt          DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	SendToApp          bool      `gorm:"column:sendToApp;default:false;not null" json:"sendToApp"`
 	SendToEmail        bool      `gorm:"column:sendToEmail;default:false;not null" json:"sendToEmail"`
-	IntegrationID      *string   `gorm:"column:integrationId;type:char(36)" json:"integrationId"`
-	NotificationRuleID *string   `gorm:"column:notificationRuleId;type:char(36)" json:"notificationRuleId"`
+	IntegrationID      *string   `gorm:"column:integrationId;type:uuid" json:"integrationId"`
+	NotificationRuleID *string   `gorm:"column:notificationRuleId;type:uuid" json:"notificationRuleId"`
 	// [IPrismaNotificationPayload]
 	Payload          datatypes.JSON    `gorm:"column:payload" json:"payload"`
 	Project          *Project          `gorm:"belongsTo"`
@@ -1166,7 +1167,7 @@ func (*Notification) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Integration struct {
-	ID   string `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID   string `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	Name string `gorm:"column:name;not null" json:"name"`
 	// [IPrismaIntegrationConfig]
 	Config            datatypes.JSON     `gorm:"column:config;not null" json:"config"`
@@ -1205,9 +1206,9 @@ func (*Integration) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ExportWatermark struct {
-	ID             string       `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	ProjectID      string       `gorm:"column:projectId;uniqueIndex:export_watermarks_projectId_integrationId_key;not null" json:"projectId"`
-	IntegrationID  string       `gorm:"column:integrationId;uniqueIndex:export_watermarks_projectId_integrationId_key;index:export_watermarks_integrationId_idx;type:char(36);not null" json:"integrationId"`
+	ID             string       `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	ProjectID      string       `gorm:"column:projectId;uniqueIndex:export_watermarks_projectId_integrationId_key,priority:1;not null" json:"projectId"`
+	IntegrationID  string       `gorm:"column:integrationId;uniqueIndex:export_watermarks_projectId_integrationId_key,priority:2;index:export_watermarks_integrationId_idx;type:uuid;not null" json:"integrationId"`
 	LastInsertedAt DateTime     `gorm:"column:lastInsertedAt;type:timestamp(3);not null" json:"lastInsertedAt"`
 	LastEventID    string       `gorm:"column:lastEventId;default:'';not null" json:"lastEventId"`
 	CreatedAt      DateTime     `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1272,7 +1273,7 @@ func (*ResetPassword) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Import struct {
-	ID            string  `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID            string  `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	ProjectID     string  `gorm:"column:projectId;not null" json:"projectId"`
 	JobID         *string `gorm:"column:jobId" json:"jobId"`
 	Status        string  `gorm:"column:status;not null" json:"status"`
@@ -1314,21 +1315,21 @@ func (*Import) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ProjectInsight struct {
-	ID           string  `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	ProjectID    string  `gorm:"column:projectId;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key;index:project_insights_projectId_impactScore_idx;index:project_insights_projectId_moduleKey_windowKind_state_idx;index:project_insights_projectId_state_relevanceScore_idx;not null" json:"projectId"`
-	ModuleKey    string  `gorm:"column:moduleKey;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key;index:project_insights_projectId_moduleKey_windowKind_state_idx;not null" json:"moduleKey"`
-	DimensionKey string  `gorm:"column:dimensionKey;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key;not null" json:"dimensionKey"`
-	WindowKind   string  `gorm:"column:windowKind;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key;index:project_insights_projectId_moduleKey_windowKind_state_idx;not null" json:"windowKind"`
-	State        string  `gorm:"column:state;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key;index:project_insights_projectId_moduleKey_windowKind_state_idx;index:project_insights_projectId_state_relevanceScore_idx;default:'active';not null" json:"state"`
+	ID           string  `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	ProjectID    string  `gorm:"column:projectId;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key,priority:1;index:project_insights_projectId_impactScore_idx,priority:1;index:project_insights_projectId_moduleKey_windowKind_state_idx,priority:1;index:project_insights_projectId_state_relevanceScore_idx,priority:1;not null" json:"projectId"`
+	ModuleKey    string  `gorm:"column:moduleKey;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key,priority:2;index:project_insights_projectId_moduleKey_windowKind_state_idx,priority:2;not null" json:"moduleKey"`
+	DimensionKey string  `gorm:"column:dimensionKey;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key,priority:3;not null" json:"dimensionKey"`
+	WindowKind   string  `gorm:"column:windowKind;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key,priority:4;index:project_insights_projectId_moduleKey_windowKind_state_idx,priority:3;not null" json:"windowKind"`
+	State        string  `gorm:"column:state;uniqueIndex:project_insights_projectId_moduleKey_dimensionKey_windowKin_key,priority:5;index:project_insights_projectId_moduleKey_windowKind_state_idx,priority:4;index:project_insights_projectId_state_relevanceScore_idx,priority:2;default:'active';not null" json:"state"`
 	Title        string  `gorm:"column:title;not null" json:"title"`
 	Summary      *string `gorm:"column:summary" json:"summary"`
 	DisplayName  string  `gorm:"column:displayName;default:'';not null" json:"displayName"`
 	// [IPrismaProjectInsightPayload]
 	Payload         datatypes.JSON `gorm:"column:payload;default:'{}';not null" json:"payload"`
 	Direction       *string        `gorm:"column:direction" json:"direction"`
-	ImpactScore     float64        `gorm:"column:impactScore;index:project_insights_projectId_impactScore_idx;type:double precision;default:0;not null" json:"impactScore"`
+	ImpactScore     float64        `gorm:"column:impactScore;index:project_insights_projectId_impactScore_idx,priority:2,sort:desc;type:double precision;default:0;not null" json:"impactScore"`
 	SeverityBand    *string        `gorm:"column:severityBand" json:"severityBand"`
-	RelevanceScore  *float64       `gorm:"column:relevanceScore;index:project_insights_projectId_state_relevanceScore_idx;type:double precision" json:"relevanceScore"`
+	RelevanceScore  *float64       `gorm:"column:relevanceScore;index:project_insights_projectId_state_relevanceScore_idx,priority:3,sort:desc;type:double precision" json:"relevanceScore"`
 	AiSummary       *string        `gorm:"column:aiSummary" json:"aiSummary"`
 	AiCategory      *string        `gorm:"column:aiCategory" json:"aiCategory"`
 	EmailWorthy     bool           `gorm:"column:emailWorthy;default:false;not null" json:"emailWorthy"`
@@ -1336,7 +1337,7 @@ type ProjectInsight struct {
 	EnrichedAt      *DateTime      `gorm:"column:enrichedAt;type:timestamp(3)" json:"enrichedAt"`
 	EnrichVersion   *int           `gorm:"column:enrichVersion;size:32" json:"enrichVersion"`
 	Version         *int           `gorm:"column:version;size:32;default:1;not null" json:"version"`
-	ThreadID        string         `gorm:"column:threadId;type:char(36);default:gen_random_uuid();not null" json:"threadId"`
+	ThreadID        string         `gorm:"column:threadId;type:uuid;default:gen_random_uuid();not null" json:"threadId"`
 	WindowStart     *DateTime      `gorm:"column:windowStart;type:timestamp(3)" json:"windowStart"`
 	WindowEnd       *DateTime      `gorm:"column:windowEnd;type:timestamp(3)" json:"windowEnd"`
 	FirstDetectedAt DateTime       `gorm:"column:firstDetectedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstDetectedAt"`
@@ -1372,12 +1373,12 @@ func (*ProjectInsight) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type InsightEvent struct {
-	ID         string          `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	InsightID  string          `gorm:"column:insightId;index:insight_events_insightId_createdAt_idx;type:char(36);not null" json:"insightId"`
+	ID         string          `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	InsightID  string          `gorm:"column:insightId;index:insight_events_insightId_createdAt_idx,priority:1;type:uuid;not null" json:"insightId"`
 	EventKind  string          `gorm:"column:eventKind;not null" json:"eventKind"`
 	ChangeFrom datatypes.JSON  `gorm:"column:changeFrom" json:"changeFrom"`
 	ChangeTo   datatypes.JSON  `gorm:"column:changeTo" json:"changeTo"`
-	CreatedAt  DateTime        `gorm:"column:createdAt;index:insight_events_insightId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime        `gorm:"column:createdAt;index:insight_events_insightId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Insight    *ProjectInsight `gorm:"foreignKey:InsightID;belongsTo"`
 }
 
@@ -1394,7 +1395,7 @@ func (m *InsightEvent) BeforeCreate(tx *gorm.DB) error {
 }
 
 type GscConnection struct {
-	ID                   string    `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
+	ID                   string    `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
 	ProjectID            string    `gorm:"column:projectId;uniqueIndex:gsc_connections_projectId_key;not null" json:"projectId"`
 	SiteURL              string    `gorm:"column:siteUrl;default:'';not null" json:"siteUrl"`
 	AccessToken          string    `gorm:"column:accessToken;not null" json:"accessToken"`
@@ -1433,9 +1434,9 @@ func (*GscConnection) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type EmailUnsubscribe struct {
-	ID        string   `gorm:"column:id;primaryKey;type:char(36);default:gen_random_uuid()" json:"id"`
-	Email     string   `gorm:"column:email;uniqueIndex:email_unsubscribes_email_category_key;not null" json:"email"`
-	Category  string   `gorm:"column:category;uniqueIndex:email_unsubscribes_email_category_key;not null" json:"category"`
+	ID        string   `gorm:"column:id;primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
+	Email     string   `gorm:"column:email;uniqueIndex:email_unsubscribes_email_category_key,priority:1;not null" json:"email"`
+	Category  string   `gorm:"column:category;uniqueIndex:email_unsubscribes_email_category_key,priority:2;not null" json:"category"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
@@ -1623,4 +1624,52 @@ func arrayItems(text string) ([]string, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+// PlainJSON holds a PostgreSQL json column (@db.Json), which keeps the text as it was written:
+// datatypes.JSON names jsonb to AutoMigrate whatever the tag says.
+type PlainJSON json.RawMessage
+
+func (j PlainJSON) Value() (driver.Value, error) {
+	if len(j) == 0 {
+		return nil, nil
+	}
+	return string(j), nil
+}
+
+func (j *PlainJSON) Scan(src any) error {
+	switch value := src.(type) {
+	case nil:
+		*j = nil
+	case []byte:
+		*j = append(PlainJSON(nil), value...)
+	case string:
+		*j = PlainJSON(value)
+	default:
+		return fmt.Errorf("a json column held %T", src)
+	}
+	return nil
+}
+
+func (j PlainJSON) MarshalJSON() ([]byte, error) {
+	if len(j) == 0 {
+		return []byte("null"), nil
+	}
+	return j, nil
+}
+
+func (j *PlainJSON) UnmarshalJSON(data []byte) error {
+	*j = append((*j)[0:0], data...)
+	return nil
+}
+
+func (PlainJSON) GormDataType() string {
+	return "json"
+}
+
+func (PlainJSON) GormDBDataType(db *gorm.DB, _ *schema.Field) string {
+	if db.Dialector.Name() == "postgres" {
+		return "json"
+	}
+	return ""
 }

@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NotificationPreference")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(column_name = "pushEnabled", default_value = true)]
     pub push_enabled: bool,
@@ -20,7 +20,7 @@ pub struct Model {
     pub audits: bool,
     #[sea_orm(column_name = "stockAndReminders", default_value = true)]
     pub stock_and_reminders: bool,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -31,7 +31,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "NotificationPreference_userId_fkey"
     )]
     User,
 }

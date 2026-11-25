@@ -8,20 +8,30 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "dashboardId")]
+    #[sea_orm(column_name = "dashboardId", column_type = "Text")]
     pub dashboard_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     #[sea_orm(default_value = false)]
     pub public: bool,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -31,21 +41,24 @@ pub enum Relation {
         belongs_to = "super::dashboard::Entity",
         from = "Column::DashboardId",
         to = "super::dashboard::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "share_dashboards_dashboardId_fkey"
     )]
     Dashboard,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "share_dashboards_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "share_dashboards_projectId_fkey"
     )]
     Project,
 }

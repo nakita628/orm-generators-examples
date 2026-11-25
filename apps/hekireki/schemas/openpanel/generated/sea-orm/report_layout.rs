@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "report_layouts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "reportId")]
@@ -29,9 +30,17 @@ pub struct Model {
     pub max_w: Option<i32>,
     #[sea_orm(column_name = "maxH")]
     pub max_h: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -41,7 +50,8 @@ pub enum Relation {
         belongs_to = "super::report::Entity",
         from = "Column::ReportId",
         to = "super::report::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "report_layouts_reportId_fkey"
     )]
     Report,
 }

@@ -7,12 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SearchToolsTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub search_tool_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub search_tool_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub search_tool_info: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

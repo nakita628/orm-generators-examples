@@ -7,26 +7,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ManagedObjectTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub unified_object_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub model_object_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub file_object: Json,
+    #[sea_orm(column_type = "Text")]
     pub file_purpose: String,
+    #[sea_orm(column_type = "Text")]
     pub status: Option<String>,
     #[sea_orm(default_value = false)]
     pub batch_processed: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub org_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub api_key: Option<String>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub request_tags: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub end_user_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub creator_billing_context: Option<Json>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

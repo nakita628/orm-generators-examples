@@ -7,17 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "InfraConfig")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub value: Option<String>,
     #[sea_orm(column_name = "isEncrypted", default_value = false)]
     pub is_encrypted: bool,
-    #[sea_orm(column_name = "lastSyncedEnvFileValue")]
+    #[sea_orm(column_name = "lastSyncedEnvFileValue", column_type = "Text")]
     pub last_synced_env_file_value: Option<String>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedOn", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_on: DateTimeWithTimeZone,
 }
 

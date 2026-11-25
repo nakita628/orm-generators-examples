@@ -15,22 +15,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AttachmentExport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "requestedById")]
+    #[sea_orm(column_name = "requestedById", column_type = "Text")]
     pub requested_by_id: Option<String>,
     #[sea_orm(default_value = "queued")]
     pub status: AttachmentExportStatus,
     /// The response filter at request time, a `TResponseFilterCriteria`; null exports every response.
-    #[sea_orm(column_name = "filterCriteria")]
+    #[sea_orm(column_name = "filterCriteria", column_type = "JsonBinary")]
     pub filter_criteria: Option<Json>,
     /// IANA zone the archive's folder names are stamped in: the org's display zone at request time.
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: String,
     /// Bumped on every enqueue and part of the job id, so a re-dispatch never dedupes against a job an
     /// older pod dropped as unknown during a rolling upgrade.
@@ -48,16 +54,16 @@ pub struct Model {
     pub total_bytes: Option<i64>,
     #[sea_orm(default_value = false)]
     pub truncated: bool,
-    #[sea_orm(column_name = "storageKey")]
+    #[sea_orm(column_name = "storageKey", column_type = "Text")]
     pub storage_key: Option<String>,
     /// A short code (`stale`, `storage_upload_failed`, …), never a message or file name.
-    #[sea_orm(column_name = "errorCode")]
+    #[sea_orm(column_name = "errorCode", column_type = "Text")]
     pub error_code: Option<String>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
-    #[sea_orm(column_name = "finishedAt")]
+    #[sea_orm(column_name = "finishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
 }
 
@@ -67,21 +73,24 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "(Column::SurveyId, Column::WorkspaceId)",
         to = "(super::survey::Column::Id, super::survey::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttachmentExport_surveyId_workspaceId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttachmentExport_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::RequestedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AttachmentExport_requestedById_fkey"
     )]
     RequestedBy,
 }

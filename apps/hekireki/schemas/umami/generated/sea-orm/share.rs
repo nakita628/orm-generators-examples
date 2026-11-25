@@ -16,8 +16,12 @@ pub struct Model {
     #[sea_orm(unique)]
     #[sea_orm(column_type = "String(StringLen::N(100))")]
     pub slug: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub parameters: Json,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub updated_at: Option<DateTimeWithTimeZone>,

@@ -7,24 +7,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub version: String,
-    #[sea_orm(column_name = "commitMessage")]
+    #[sea_orm(column_name = "commitMessage", column_type = "Text")]
     pub commit_message: String,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "Text")]
     pub author_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "parentId")]
+    #[sea_orm(column_name = "parentId", column_type = "Text")]
     pub parent_id: Option<String>,
     #[sea_orm(column_name = "autoSaved", default_value = false)]
     pub auto_saved: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub dsl: Json,
 }
 
@@ -33,19 +44,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::AuthorId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "WorkflowVersion_authorId_fkey"
     )]
     Author,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "WorkflowVersion_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::workflow::Entity",
         from = "Column::WorkflowId",
-        to = "super::workflow::Column::Id"
+        to = "super::workflow::Column::Id",
+        fk_name = "WorkflowVersion_workflowId_fkey"
     )]
     Workflow,
     #[sea_orm(
@@ -53,7 +67,8 @@ pub enum Relation {
         from = "Column::ParentId",
         to = "super::workflow_version::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "WorkflowVersion_parentId_fkey"
     )]
     Parent,
     #[sea_orm(

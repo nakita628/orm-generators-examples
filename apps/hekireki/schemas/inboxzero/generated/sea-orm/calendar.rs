@@ -7,21 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Calendar")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "calendarId")]
+    #[sea_orm(column_name = "calendarId", column_type = "Text")]
     pub calendar_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = false)]
     pub primary: bool,
     #[sea_orm(column_name = "isEnabled", default_value = true)]
     pub is_enabled: bool,
+    #[sea_orm(column_type = "Text")]
     pub timezone: Option<String>,
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
 }
 
@@ -31,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::calendar_connection::Entity",
         from = "Column::ConnectionId",
         to = "super::calendar_connection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Calendar_connectionId_fkey"
     )]
     Connection,
     #[sea_orm(has_many = "super::booking_link::Entity")]

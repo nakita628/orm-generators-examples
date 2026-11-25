@@ -8,10 +8,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Dashboard")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The project that owns the board; only there can it be edited.
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// Legacy board sort position. The Dashboards v2 app orders boards by a
     /// member's favourites and never writes this; kept because the legacy
@@ -21,10 +23,11 @@ pub struct Model {
     pub order: i32,
     /// Free text under the board's name; null until a member writes one.
     /// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// The member who created it; null for boards that predate the column.
     /// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
     /// Who sees it. Only the author changes it; a board with no author stays PROJECT.
     /// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
@@ -33,11 +36,19 @@ pub struct Model {
     /// The owning project's organization, stamped when the board is first set to
     /// ORGANIZATION; null before. No relation, per the database rule.
     /// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -46,7 +57,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Dashboard_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::custom_graph::Entity")]

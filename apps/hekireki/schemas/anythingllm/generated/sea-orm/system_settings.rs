@@ -10,11 +10,16 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub label: String,
+    #[sea_orm(column_type = "Text")]
     pub value: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 

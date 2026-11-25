@@ -10,18 +10,24 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub identifier: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
+    #[sea_orm(column_type = "Text")]
     pub language: String,
-    #[sea_orm(column_name = "parentUuid")]
+    #[sea_orm(column_name = "parentUuid", column_type = "Text")]
     pub parent_uuid: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,

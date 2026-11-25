@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IntegrationsWebhooks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "webhookId")]
+    #[sea_orm(column_name = "webhookId", column_type = "Text")]
     pub webhook_id: String,
 }
 
@@ -17,13 +17,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
-        to = "super::integration::Column::Id"
+        to = "super::integration::Column::Id",
+        fk_name = "IntegrationsWebhooks_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::webhooks::Entity",
         from = "Column::WebhookId",
-        to = "super::webhooks::Column::Id"
+        to = "super::webhooks::Column::Id",
+        fk_name = "IntegrationsWebhooks_webhookId_fkey"
     )]
     Webhook,
 }

@@ -8,22 +8,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "base_data_db_move_job")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub source_space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub target_space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub source_connection_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub target_connection_id: Option<String>,
     #[sea_orm(default_value = "pending")]
     pub state: BaseDataDbMoveJobState,
+    #[sea_orm(column_type = "JsonBinary")]
     pub inventory: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub copy_stats: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub validation_stats: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 
@@ -33,21 +51,24 @@ pub enum Relation {
         belongs_to = "super::base::Entity",
         from = "Column::BaseId",
         to = "super::base::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "base_data_db_move_job_base_id_fkey"
     )]
     Base,
     #[sea_orm(
         belongs_to = "super::space::Entity",
         from = "Column::SourceSpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "base_data_db_move_job_source_space_id_fkey"
     )]
     SourceSpace,
     #[sea_orm(
         belongs_to = "super::space::Entity",
         from = "Column::TargetSpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "base_data_db_move_job_target_space_id_fkey"
     )]
     TargetSpace,
 }

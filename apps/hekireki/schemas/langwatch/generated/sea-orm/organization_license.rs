@@ -10,15 +10,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationLicense")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "licenseKey", column_type = "Text")]
     pub license_key: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "validatedAt")]
+    #[sea_orm(column_name = "validatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub validated_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

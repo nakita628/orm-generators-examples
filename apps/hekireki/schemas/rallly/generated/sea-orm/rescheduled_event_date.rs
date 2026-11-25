@@ -7,12 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "rescheduled_event_dates")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub scheduled_event_id: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end: DateTime,
     #[sea_orm(default_value = false)]
     pub all_day: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -22,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::scheduled_event::Entity",
         from = "Column::ScheduledEventId",
         to = "super::scheduled_event::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "rescheduled_event_dates_scheduled_event_id_fkey"
     )]
     ScheduledEvent,
 }

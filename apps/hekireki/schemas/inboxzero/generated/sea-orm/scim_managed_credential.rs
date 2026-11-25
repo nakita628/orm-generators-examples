@@ -5,35 +5,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "scimManagedCredential")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "connectionRecordId")]
+    #[sea_orm(column_name = "connectionRecordId", column_type = "Text")]
     pub connection_record_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "credentialId")]
+    #[sea_orm(column_name = "credentialId", column_type = "Text")]
     pub credential_id: String,
-    #[sea_orm(column_name = "tokenDigest")]
+    #[sea_orm(column_name = "tokenDigest", column_type = "Text")]
     pub token_digest: String,
-    #[sea_orm(column_name = "hashVersion")]
+    #[sea_orm(column_name = "hashVersion", column_type = "Text")]
     pub hash_version: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "activeSlotKey")]
+    #[sea_orm(column_name = "activeSlotKey", column_type = "Text")]
     pub active_slot_key: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "serializedScopes")]
+    #[sea_orm(column_name = "serializedScopes", column_type = "Text")]
     pub serialized_scopes: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: String,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
-    #[sea_orm(column_name = "revokedAt")]
+    #[sea_orm(column_name = "revokedAt", column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "revokedBy")]
+    #[sea_orm(column_name = "revokedBy", column_type = "Text")]
     pub revoked_by: Option<String>,
-    #[sea_orm(column_name = "decommissionedAt")]
+    #[sea_orm(
+        column_name = "decommissionedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub decommissioned_at: Option<DateTime>,
 }
 
@@ -43,7 +48,8 @@ pub enum Relation {
         belongs_to = "super::scim_managed_connection::Entity",
         from = "Column::ConnectionRecordId",
         to = "super::scim_managed_connection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scimManagedCredential_connectionRecordId_fkey"
     )]
     Scimmanagedconnection,
 }

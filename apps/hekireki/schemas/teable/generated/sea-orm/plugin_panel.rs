@@ -7,13 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "plugin_panel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub layout: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
 }
 
@@ -23,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::table_meta::Entity",
         from = "Column::TableId",
         to = "super::table_meta::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "plugin_panel_table_id_fkey"
     )]
     Table,
 }

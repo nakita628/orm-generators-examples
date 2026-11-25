@@ -6,11 +6,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_DeletedVerificationToken")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub key_id: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "Text")]
     pub key_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub key_alias: Option<String>,
     #[sea_orm(default_value = false)]
     pub soft_budget_cooldown: bool,
@@ -18,60 +23,92 @@ pub struct Model {
     pub spend: f64,
     #[sea_orm(default_value = 0)]
     pub total_spend: f64,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub models: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub aliases: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub config: Json,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub agent_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub permissions: Json,
     pub max_parallel_requests: Option<i32>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Json,
     pub blocked: Option<bool>,
     pub tpm_limit: Option<i64>,
     pub rpm_limit: Option<i64>,
     pub tpd_limit: Option<i64>,
     pub max_budget: Option<f64>,
+    #[sea_orm(column_type = "Text")]
     pub budget_duration: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub budget_reset_at: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub allowed_cache_controls: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub allowed_routes: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub key_type: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub policies: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub access_group_ids: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub model_spend: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub model_max_budget: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub budget_fallbacks: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub router_settings: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub organization_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub object_permission_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub created_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub settings_updated_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_active: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub rotation_count: Option<i32>,
     #[sea_orm(default_value = false)]
     pub auto_rotate: Option<bool>,
+    #[sea_orm(column_type = "Text")]
     pub rotation_interval: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_rotation_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub key_rotation_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub deleted_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub deleted_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub deleted_by_api_key: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub litellm_changed_by: Option<String>,
 }
 

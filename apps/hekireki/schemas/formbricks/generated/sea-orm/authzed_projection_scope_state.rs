@@ -9,12 +9,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuthzedProjectionScopeState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
-    #[sea_orm(column_name = "readyAt")]
+    #[sea_orm(column_name = "readyAt", column_type = "custom(\"timestamp(3)\")")]
     pub ready_at: Option<DateTime>,
-    #[sea_orm(column_name = "readyBy")]
+    #[sea_orm(column_name = "readyBy", column_type = "Text")]
     pub ready_by: Option<String>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

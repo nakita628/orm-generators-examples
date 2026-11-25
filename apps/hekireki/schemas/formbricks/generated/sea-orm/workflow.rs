@@ -8,24 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Workflow")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = "draft")]
     pub status: WorkflowStatus,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
     /// [WorkflowDefinition]
+    #[sea_orm(column_type = "JsonBinary")]
     pub definition: Json,
     /// Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
     /// the editor can show the URL again. Never part of the definition, its versions or its copies.
-    #[sea_orm(column_name = "webhookTokenHash")]
+    #[sea_orm(column_name = "webhookTokenHash", column_type = "Text")]
     pub webhook_token_hash: Option<String>,
-    #[sea_orm(column_name = "webhookTokenEncrypted")]
+    #[sea_orm(column_name = "webhookTokenEncrypted", column_type = "Text")]
     pub webhook_token_encrypted: Option<String>,
 }
 
@@ -35,14 +44,16 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Workflow_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Workflow_createdBy_fkey"
     )]
     Creator,
     #[sea_orm(has_many = "super::workflow_version::Entity")]

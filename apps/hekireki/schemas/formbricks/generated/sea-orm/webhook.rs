@@ -19,18 +19,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Webhook")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub url: String,
     #[sea_orm(default_value = "user")]
     pub source: WebhookSource,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     pub triggers: Vec<PipelineTriggers>,
-    #[sea_orm(column_name = "surveyIds")]
+    #[sea_orm(
+        column_name = "surveyIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub survey_ids: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub secret: Option<String>,
 }
 
@@ -40,7 +55,8 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Webhook_workspaceId_fkey"
     )]
     Workspace,
 }

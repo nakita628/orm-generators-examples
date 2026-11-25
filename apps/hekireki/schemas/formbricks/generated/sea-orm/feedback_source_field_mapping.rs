@@ -15,13 +15,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeedbackSourceFieldMapping")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub feedback_source_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
+    #[sea_orm(column_type = "Text")]
     pub source_field_id: String,
+    #[sea_orm(column_type = "Text")]
     pub target_field_id: String,
+    #[sea_orm(column_type = "Text")]
     pub static_value: Option<String>,
 }
 
@@ -31,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::feedback_source::Entity",
         from = "(Column::FeedbackSourceId, Column::WorkspaceId)",
         to = "(super::feedback_source::Column::Id, super::feedback_source::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey"
     )]
     FeedbackSource,
 }

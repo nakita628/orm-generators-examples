@@ -17,7 +17,7 @@ pub struct Model {
     pub tag: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(64))")]
     pub namespace: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: DateTimeUtc,
     #[sea_orm(column_name = "modifiedAt")]
     pub modified_at: Option<DateTimeUtc>,

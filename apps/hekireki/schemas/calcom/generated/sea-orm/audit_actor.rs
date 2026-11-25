@@ -20,11 +20,18 @@ pub struct Model {
     #[sea_orm(column_name = "credentialId")]
     pub credential_id: Option<i32>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub phone: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

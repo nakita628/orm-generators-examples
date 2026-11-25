@@ -8,14 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "VirtualKeyScope")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "virtualKeyId")]
+    #[sea_orm(column_name = "virtualKeyId", column_type = "Text")]
     pub virtual_key_id: String,
     #[sea_orm(column_name = "scopeType")]
     pub scope_type: VirtualKeyScopeType,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::virtual_key::Entity",
         from = "Column::VirtualKeyId",
         to = "super::virtual_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "VirtualKeyScope_virtualKeyId_fkey"
     )]
     VirtualKey,
 }

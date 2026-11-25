@@ -9,20 +9,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthClient")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "redirectUri")]
+    #[sea_orm(column_name = "redirectUri", column_type = "Text")]
     pub redirect_uri: String,
-    #[sea_orm(column_name = "clientSecret")]
+    #[sea_orm(column_name = "clientSecret", column_type = "Text")]
     pub client_secret: Option<String>,
     #[sea_orm(column_name = "clientType", default_value = "confidential")]
     pub client_type: OAuthClientType,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub purpose: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub logo: Option<String>,
-    #[sea_orm(column_name = "websiteUrl")]
+    #[sea_orm(column_name = "websiteUrl", column_type = "Text")]
     pub website_url: Option<String>,
-    #[sea_orm(column_name = "rejectionReason")]
+    #[sea_orm(column_name = "rejectionReason", column_type = "Text")]
     pub rejection_reason: Option<String>,
     #[sea_orm(column_name = "isTrusted", default_value = false)]
     pub is_trusted: bool,
@@ -30,7 +33,11 @@ pub struct Model {
     pub status: OAuthClientStatus,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -40,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "OAuthClient_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::access_code::Entity")]

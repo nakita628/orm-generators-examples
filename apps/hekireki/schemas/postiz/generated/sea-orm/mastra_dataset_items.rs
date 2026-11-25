@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_dataset_items")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "datasetId")]
+    #[sea_orm(column_name = "datasetId", column_type = "Text")]
     pub dataset_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "datasetVersion")]
@@ -17,34 +18,45 @@ pub struct Model {
     pub valid_to: Option<i32>,
     #[sea_orm(column_name = "isDeleted")]
     pub is_deleted: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub input: Json,
-    #[sea_orm(column_name = "groundTruth")]
+    #[sea_orm(column_name = "groundTruth", column_type = "JsonBinary")]
     pub ground_truth: Option<Json>,
-    #[sea_orm(column_name = "requestContext")]
+    #[sea_orm(column_name = "requestContext", column_type = "JsonBinary")]
     pub request_context: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub source: Option<Json>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "expectedTrajectory")]
+    #[sea_orm(column_name = "expectedTrajectory", column_type = "JsonBinary")]
     pub expected_trajectory: Option<Json>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "toolMocks")]
+    #[sea_orm(column_name = "toolMocks", column_type = "JsonBinary")]
     pub tool_mocks: Option<Json>,
-    #[sea_orm(column_name = "unmockedToolPolicy")]
+    #[sea_orm(column_name = "unmockedToolPolicy", column_type = "Text")]
     pub unmocked_tool_policy: Option<String>,
-    #[sea_orm(column_name = "scorerIds")]
+    #[sea_orm(column_name = "scorerIds", column_type = "JsonBinary")]
     pub scorer_ids: Option<Json>,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: Option<String>,
 }
 

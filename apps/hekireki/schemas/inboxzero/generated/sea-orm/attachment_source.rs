@@ -8,20 +8,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AttachmentSource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub r#type: AttachmentSourceType,
-    #[sea_orm(column_name = "sourceId")]
+    #[sea_orm(column_name = "sourceId", column_type = "Text")]
     pub source_id: String,
-    #[sea_orm(column_name = "sourcePath")]
+    #[sea_orm(column_name = "sourcePath", column_type = "Text")]
     pub source_path: Option<String>,
-    #[sea_orm(column_name = "ruleId")]
+    #[sea_orm(column_name = "ruleId", column_type = "Text")]
     pub rule_id: String,
-    #[sea_orm(column_name = "driveConnectionId")]
+    #[sea_orm(column_name = "driveConnectionId", column_type = "Text")]
     pub drive_connection_id: String,
 }
 
@@ -31,14 +37,16 @@ pub enum Relation {
         belongs_to = "super::rule::Entity",
         from = "Column::RuleId",
         to = "super::rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttachmentSource_ruleId_fkey"
     )]
     Rule,
     #[sea_orm(
         belongs_to = "super::drive_connection::Entity",
         from = "Column::DriveConnectionId",
         to = "super::drive_connection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttachmentSource_driveConnectionId_fkey"
     )]
     DriveConnection,
     #[sea_orm(has_many = "super::attachment_document::Entity")]

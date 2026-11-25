@@ -7,30 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "api_requests")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub method: String,
+    #[sea_orm(column_type = "Text")]
     pub path: String,
     #[sea_orm(column_name = "statusCode")]
     pub status_code: i32,
     pub duration: i32,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "authType")]
+    #[sea_orm(column_name = "authType", column_type = "Text")]
     pub auth_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub ip: Option<String>,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
-    #[sea_orm(column_name = "errorCode")]
+    #[sea_orm(column_name = "errorCode", column_type = "Text")]
     pub error_code: Option<String>,
-    #[sea_orm(column_name = "errorMessage")]
+    #[sea_orm(column_name = "errorMessage", column_type = "Text")]
     pub error_message: Option<String>,
     #[sea_orm(column_name = "requestSize")]
     pub request_size: Option<i32>,
     #[sea_orm(column_name = "responseSize")]
     pub response_size: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -40,7 +48,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "api_requests_projectId_fkey"
     )]
     Project,
 }

@@ -9,13 +9,18 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: TierId,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "tierLimitId")]
     pub tier_limit_id: Option<TierId>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -24,7 +29,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::tier_limit::Entity",
         from = "Column::TierLimitId",
-        to = "super::tier_limit::Column::Id"
+        to = "super::tier_limit::Column::Id",
+        fk_name = "Tier_tierLimitId_fkey"
     )]
     TierLimit,
     #[sea_orm(has_many = "super::user::Entity")]

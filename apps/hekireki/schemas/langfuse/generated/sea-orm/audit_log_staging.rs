@@ -8,9 +8,16 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub failed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
 }
 

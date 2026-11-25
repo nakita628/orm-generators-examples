@@ -11,26 +11,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedInvoice")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `ConnectedBillingAccount` row, as a plain column ref.
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeInvoiceId")]
+    #[sea_orm(column_name = "stripeInvoiceId", column_type = "Text")]
     pub stripe_invoice_id: String,
     pub kind: ConnectedInvoiceKind,
     pub currency: Currency,
     #[sea_orm(column_name = "amountCents")]
     pub amount_cents: i32,
     /// The provider's own status: `draft`, `open`, `paid`, `void` or `uncollectible`.
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "paidOutOfBandAt")]
+    #[sea_orm(
+        column_name = "paidOutOfBandAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub paid_out_of_band_at: Option<DateTime>,
-    #[sea_orm(column_name = "termStartsAt")]
+    #[sea_orm(column_name = "termStartsAt", column_type = "custom(\"timestamp(3)\")")]
     pub term_starts_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

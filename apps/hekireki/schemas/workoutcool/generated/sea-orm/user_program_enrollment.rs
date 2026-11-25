@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "user_program_enrollments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "programId")]
+    #[sea_orm(column_name = "programId", column_type = "Text")]
     pub program_id: String,
-    #[sea_orm(column_name = "enrolledAt")]
+    #[sea_orm(
+        column_name = "enrolledAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub enrolled_at: DateTime,
     #[sea_orm(column_name = "currentWeek", default_value = 1)]
     pub current_week: i32,
@@ -22,7 +27,7 @@ pub struct Model {
     pub completed_sessions: i32,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
 }
 
@@ -32,13 +37,15 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "user_program_enrollments_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::program::Entity",
         from = "Column::ProgramId",
-        to = "super::program::Column::Id"
+        to = "super::program::Column::Id",
+        fk_name = "user_program_enrollments_programId_fkey"
     )]
     Program,
     #[sea_orm(has_many = "super::user_session_progress::Entity")]

@@ -8,12 +8,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TwoFactor")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
-    #[sea_orm(column_name = "backupCodes")]
+    #[sea_orm(column_name = "backupCodes", column_type = "Text")]
     pub backup_codes: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(default_value = true)]
     pub verified: bool,
@@ -21,7 +23,7 @@ pub struct Model {
     #[sea_orm(column_name = "failedVerificationCount", default_value = 0)]
     pub failed_verification_count: i32,
     /// Better Auth 1.6.23+ two-factor brute-force lockout: set once failedVerificationCount trips the limit.
-    #[sea_orm(column_name = "lockedUntil")]
+    #[sea_orm(column_name = "lockedUntil", column_type = "custom(\"timestamp(3)\")")]
     pub locked_until: Option<DateTime>,
 }
 
@@ -31,7 +33,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TwoFactor_userId_fkey"
     )]
     User,
 }

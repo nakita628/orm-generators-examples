@@ -11,10 +11,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CscCredential")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "providerId")]
+    #[sea_orm(column_name = "providerId", column_type = "Text")]
     pub provider_id: String,
-    #[sea_orm(column_name = "credentialId")]
+    #[sea_orm(column_name = "credentialId", column_type = "Text")]
     pub credential_id: String,
     /// TSP-validated certificate chain (length-prefixed). Nullable until the
     /// service-scope OAuth callback successfully retrieves and validates it.
@@ -22,28 +23,35 @@ pub struct Model {
     pub cert_cache: Option<Vec<u8>>,
     /// Algorithm metadata derived from the CSC `credentials/info` response.
     /// Held as flat scalars so each is independently queryable.
-    #[sea_orm(column_name = "signatureAlgorithm")]
+    #[sea_orm(column_name = "signatureAlgorithm", column_type = "Text")]
     pub signature_algorithm: String,
-    #[sea_orm(column_name = "keyType")]
+    #[sea_orm(column_name = "keyType", column_type = "Text")]
     pub key_type: String,
-    #[sea_orm(column_name = "digestAlgorithm")]
+    #[sea_orm(column_name = "digestAlgorithm", column_type = "Text")]
     pub digest_algorithm: String,
     #[sea_orm(column_name = "keyLenBits")]
     pub key_len_bits: Option<i32>,
-    #[sea_orm(column_name = "signAlgoParams")]
+    #[sea_orm(column_name = "signAlgoParams", column_type = "Text")]
     pub sign_algo_params: Option<String>,
     /// Service-scope access token, symmetric-encrypted at the application layer
     /// before persistence. Nullable until the service-scope OAuth callback runs.
     #[sea_orm(column_name = "serviceTokenCiphertext")]
     pub service_token_ciphertext: Option<Vec<u8>>,
-    #[sea_orm(column_name = "serviceTokenExpiresAt")]
+    #[sea_orm(
+        column_name = "serviceTokenExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub service_token_expires_at: Option<DateTime>,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "recipientId")]
     pub recipient_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -53,7 +61,8 @@ pub enum Relation {
         belongs_to = "super::recipient::Entity",
         from = "Column::RecipientId",
         to = "super::recipient::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CscCredential_recipientId_fkey"
     )]
     Recipient,
 }

@@ -6,13 +6,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AttributeOption")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "attributeId")]
+    #[sea_orm(column_name = "attributeId", column_type = "Text")]
     pub attribute_id: String,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(column_name = "isGroup", default_value = false)]
     pub is_group: bool,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub contains: Vec<String>,
 }
 
@@ -22,7 +26,8 @@ pub enum Relation {
         belongs_to = "super::attribute::Entity",
         from = "Column::AttributeId",
         to = "super::attribute::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttributeOption_attributeId_fkey"
     )]
     Attribute,
     #[sea_orm(has_many = "super::attribute_to_user::Entity")]

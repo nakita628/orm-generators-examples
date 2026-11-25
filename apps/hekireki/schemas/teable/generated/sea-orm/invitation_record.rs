@@ -7,13 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "invitation_record")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub invitation_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub space_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub inviter: String,
+    #[sea_orm(column_type = "Text")]
     pub accepter: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
 }
 

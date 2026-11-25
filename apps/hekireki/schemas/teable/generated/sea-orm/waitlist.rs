@@ -8,9 +8,15 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     pub invite: Option<bool>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub invite_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
 }
 

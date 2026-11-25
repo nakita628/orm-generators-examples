@@ -10,9 +10,9 @@ pub struct Model {
     pub organization_id: i32,
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
-    #[sea_orm(column_name = "directoryId")]
+    #[sea_orm(column_name = "directoryId", column_type = "Text")]
     pub directory_id: String,
-    #[sea_orm(column_name = "groupName")]
+    #[sea_orm(column_name = "groupName", column_type = "Text")]
     pub group_name: String,
 }
 
@@ -22,14 +22,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DSyncTeamGroupMapping_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::dsync_data::Entity",
         from = "Column::DirectoryId",
         to = "super::dsync_data::Column::DirectoryId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DSyncTeamGroupMapping_directoryId_fkey"
     )]
     Directory,
 }

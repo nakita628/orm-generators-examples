@@ -705,8 +705,8 @@ class SsoConnection(Base):
         Index("SsoConnection_organizationId_idx", "organizationId"),
         Index("SsoConnection_organizationId_migrationPhase_idx", "organizationId", "migrationPhase"),
         Index("SsoConnection_state_idx", "state"),
-        Index("SsoConnection_verifiedDomains_idx", "verifiedDomains"),
-        Index("SsoConnection_lapsedDomains_idx", "lapsedDomains"),
+        Index("SsoConnection_verifiedDomains_idx", "verifiedDomains", postgresql_using="gin"),
+        Index("SsoConnection_lapsedDomains_idx", "lapsedDomains", postgresql_using="gin"),
     )
 
     reproof_cursor: Mapped[Optional["SsoConnectionReproofCursor"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="connection")

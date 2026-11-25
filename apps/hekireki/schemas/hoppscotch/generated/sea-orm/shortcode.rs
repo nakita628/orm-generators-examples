@@ -7,15 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Shortcode")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub request: Json,
-    #[sea_orm(column_name = "creatorUid")]
+    #[sea_orm(column_name = "creatorUid", column_type = "Text")]
     pub creator_uid: Option<String>,
-    #[sea_orm(column_name = "embedProperties")]
+    #[sea_orm(column_name = "embedProperties", column_type = "JsonBinary")]
     pub embed_properties: Option<Json>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_on: DateTimeWithTimeZone,
 }
 
@@ -24,7 +34,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatorUid",
-        to = "super::user::Column::Uid"
+        to = "super::user::Column::Uid",
+        fk_name = "Shortcode_creatorUid_fkey"
     )]
     User,
 }

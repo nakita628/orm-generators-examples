@@ -7,15 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_knowledge_cursors")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "sourceThreadId")]
+    #[sea_orm(column_name = "sourceThreadId", column_type = "Text")]
     pub source_thread_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub agent: String,
-    #[sea_orm(column_name = "lastKnowledgeId")]
+    #[sea_orm(column_name = "lastKnowledgeId", column_type = "Text")]
     pub last_knowledge_id: String,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

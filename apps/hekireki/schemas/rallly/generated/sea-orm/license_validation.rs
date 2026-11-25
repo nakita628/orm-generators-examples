@@ -7,11 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "license_validations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub license_id: String,
+    #[sea_orm(column_type = "Text")]
     pub ip_address: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub fingerprint: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub validated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub user_agent: Option<String>,
 }
 
@@ -21,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::license::Entity",
         from = "Column::LicenseId",
         to = "super::license::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "license_validations_license_id_fkey"
     )]
     License,
 }

@@ -7,10 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "prompt_protected_labels")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
 }
 
@@ -20,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompt_protected_labels_project_id_fkey"
     )]
     Project,
 }

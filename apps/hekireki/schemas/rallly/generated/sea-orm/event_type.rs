@@ -7,19 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "event_types")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub host_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(column_name = "duration_minutes")]
     pub duration: i32,
     pub capacity: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub location: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = false)]
     pub deleted: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -29,14 +41,16 @@ pub enum Relation {
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "event_types_space_id_fkey"
     )]
     Space,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::HostId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "event_types_host_id_fkey"
     )]
     Host,
     #[sea_orm(has_many = "super::sheet_slot::Entity")]

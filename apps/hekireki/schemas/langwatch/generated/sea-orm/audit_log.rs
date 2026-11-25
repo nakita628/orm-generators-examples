@@ -7,22 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub action: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub args: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
     /// WHO REALLY DID IT, when that is not `userId`.
     ///
@@ -34,17 +43,19 @@ pub struct Model {
     ///
     /// Null on an ordinary request, where the two would be the same person and
     /// saying so twice adds nothing. ADR-118 / D06: every decision names both.
-    #[sea_orm(column_name = "actorUserId")]
+    #[sea_orm(column_name = "actorUserId", column_type = "Text")]
     pub actor_user_id: Option<String>,
-    #[sea_orm(column_name = "targetKind")]
+    #[sea_orm(column_name = "targetKind", column_type = "Text")]
     pub target_kind: Option<String>,
-    #[sea_orm(column_name = "targetId")]
+    #[sea_orm(column_name = "targetId", column_type = "Text")]
     pub target_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub before: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub after: Option<Json>,
     /// A producer's outbox key: a redelivered audit intent finds its row here (Alex, audit R2).
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "idempotencyKey")]
+    #[sea_orm(column_name = "idempotencyKey", column_type = "Text")]
     pub idempotency_key: Option<String>,
 }
 

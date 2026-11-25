@@ -5,16 +5,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthApp")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(
+        column_name = "integrationId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub integration_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "String(StringLen::N(191))")]
     pub client_id: String,
-    #[sea_orm(column_name = "hashedClientSecret")]
+    #[sea_orm(
+        column_name = "hashedClientSecret",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub hashed_client_secret: String,
-    #[sea_orm(column_name = "partialClientSecret")]
+    #[sea_orm(
+        column_name = "partialClientSecret",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub partial_client_secret: String,
     #[sea_orm(column_name = "redirectUris")]
     pub redirect_uris: Json,
@@ -28,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
         to = "super::integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OAuthApp_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(has_many = "super::oauth_code::Entity")]

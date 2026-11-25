@@ -9,15 +9,16 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: String,
-    #[sea_orm(column_name = "usedBy")]
+    #[sea_orm(column_name = "usedBy", column_type = "Text")]
     pub used_by: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub code: String,
     #[sea_orm(default_value = false)]
     pub used: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,

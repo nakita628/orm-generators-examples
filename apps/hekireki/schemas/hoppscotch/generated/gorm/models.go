@@ -36,8 +36,8 @@ func (m *Team) BeforeCreate(_ *gorm.DB) error {
 type TeamMember struct {
 	ID      string `gorm:"column:id;primaryKey" json:"id"`
 	Role    string `gorm:"column:role;not null" json:"role"`
-	UserUID string `gorm:"column:userUid;uniqueIndex:TeamMember_teamID_userUid_key;not null" json:"userUid"`
-	TeamID  string `gorm:"column:teamID;uniqueIndex:TeamMember_teamID_userUid_key;not null" json:"teamID"`
+	UserUID string `gorm:"column:userUid;uniqueIndex:TeamMember_teamID_userUid_key,priority:2;not null" json:"userUid"`
+	TeamID  string `gorm:"column:teamID;uniqueIndex:TeamMember_teamID_userUid_key,priority:1;not null" json:"teamID"`
 	Team    *Team  `gorm:"belongsTo"`
 }
 
@@ -54,9 +54,9 @@ func (m *TeamMember) BeforeCreate(_ *gorm.DB) error {
 
 type TeamInvitation struct {
 	ID           string `gorm:"column:id;primaryKey" json:"id"`
-	TeamID       string `gorm:"column:teamID;uniqueIndex:TeamInvitation_teamID_inviteeEmail_key;index:TeamInvitation_teamID_idx;not null" json:"teamID"`
+	TeamID       string `gorm:"column:teamID;uniqueIndex:TeamInvitation_teamID_inviteeEmail_key,priority:1;index:TeamInvitation_teamID_idx;not null" json:"teamID"`
 	CreatorUID   string `gorm:"column:creatorUid;not null" json:"creatorUid"`
-	InviteeEmail string `gorm:"column:inviteeEmail;uniqueIndex:TeamInvitation_teamID_inviteeEmail_key;not null" json:"inviteeEmail"`
+	InviteeEmail string `gorm:"column:inviteeEmail;uniqueIndex:TeamInvitation_teamID_inviteeEmail_key,priority:2;not null" json:"inviteeEmail"`
 	InviteeRole  string `gorm:"column:inviteeRole;not null" json:"inviteeRole"`
 	Team         *Team  `gorm:"belongsTo"`
 }
@@ -74,10 +74,10 @@ func (m *TeamInvitation) BeforeCreate(_ *gorm.DB) error {
 
 type TeamCollection struct {
 	ID         string           `gorm:"column:id;primaryKey" json:"id"`
-	ParentID   *string          `gorm:"column:parentID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key" json:"parentID"`
-	TeamID     string           `gorm:"column:teamID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;not null" json:"teamID"`
+	ParentID   *string          `gorm:"column:parentID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key,priority:2" json:"parentID"`
+	TeamID     string           `gorm:"column:teamID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key,priority:1;not null" json:"teamID"`
 	Title      string           `gorm:"column:title;not null" json:"title"`
-	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key,priority:3;size:32;not null" json:"orderIndex"`
 	Data       datatypes.JSON   `gorm:"column:data" json:"data"`
 	CreatedOn  DateTime         `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn  DateTime         `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
@@ -115,12 +115,12 @@ func (*TeamCollection) BeforeUpdate(tx *gorm.DB) error {
 
 type TeamRequest struct {
 	ID           string          `gorm:"column:id;primaryKey" json:"id"`
-	CollectionID string          `gorm:"column:collectionID;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key;not null" json:"collectionID"`
-	TeamID       string          `gorm:"column:teamID;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key;not null" json:"teamID"`
+	CollectionID string          `gorm:"column:collectionID;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key,priority:2;not null" json:"collectionID"`
+	TeamID       string          `gorm:"column:teamID;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key,priority:1;not null" json:"teamID"`
 	Title        string          `gorm:"column:title;not null" json:"title"`
 	Request      datatypes.JSON  `gorm:"column:request;not null" json:"request"`
 	MockExamples datatypes.JSON  `gorm:"column:mockExamples" json:"mockExamples"`
-	OrderIndex   int             `gorm:"column:orderIndex;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	OrderIndex   int             `gorm:"column:orderIndex;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key,priority:3;size:32;not null" json:"orderIndex"`
 	CreatedOn    DateTime        `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn    DateTime        `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
 	Collection   *TeamCollection `gorm:"foreignKey:CollectionID;belongsTo"`
@@ -215,8 +215,8 @@ func (m *User) BeforeCreate(tx *gorm.DB) error {
 type Account struct {
 	ID                   string   `gorm:"column:id;primaryKey" json:"id"`
 	UserID               string   `gorm:"column:userId;not null" json:"userId"`
-	Provider             string   `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID    string   `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider             string   `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID    string   `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	ProviderRefreshToken *string  `gorm:"column:providerRefreshToken" json:"providerRefreshToken"`
 	ProviderAccessToken  *string  `gorm:"column:providerAccessToken" json:"providerAccessToken"`
 	ProviderScope        *string  `gorm:"column:providerScope" json:"providerScope"`
@@ -240,8 +240,8 @@ func (m *Account) BeforeCreate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	DeviceIdentifier string   `gorm:"column:deviceIdentifier;uniqueIndex:VerificationToken_deviceIdentifier_token_key;not null" json:"deviceIdentifier"`
-	Token            string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_deviceIdentifier_token_key" json:"token"`
+	DeviceIdentifier string   `gorm:"column:deviceIdentifier;uniqueIndex:VerificationToken_deviceIdentifier_token_key,priority:1;not null" json:"deviceIdentifier"`
+	Token            string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_deviceIdentifier_token_key,priority:2" json:"token"`
 	UserUID          string   `gorm:"column:userUid;not null" json:"userUid"`
 	ExpiresOn        DateTime `gorm:"column:expiresOn;type:timestamptz(3);not null" json:"expiresOn"`
 	User             *User    `gorm:"references:UID;belongsTo"`
@@ -357,13 +357,13 @@ func (m *InvitedUsers) BeforeCreate(tx *gorm.DB) error {
 
 type UserRequest struct {
 	ID             string          `gorm:"column:id;primaryKey" json:"id"`
-	CollectionID   string          `gorm:"column:collectionID;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key;not null" json:"collectionID"`
-	UserUID        string          `gorm:"column:userUid;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key;not null" json:"userUid"`
+	CollectionID   string          `gorm:"column:collectionID;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key,priority:2;not null" json:"collectionID"`
+	UserUID        string          `gorm:"column:userUid;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key,priority:1;not null" json:"userUid"`
 	Title          string          `gorm:"column:title;not null" json:"title"`
 	Request        datatypes.JSON  `gorm:"column:request;not null" json:"request"`
 	Type           string          `gorm:"column:type;not null" json:"type"`
 	MockExamples   datatypes.JSON  `gorm:"column:mockExamples" json:"mockExamples"`
-	OrderIndex     int             `gorm:"column:orderIndex;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	OrderIndex     int             `gorm:"column:orderIndex;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key,priority:3;size:32;not null" json:"orderIndex"`
 	CreatedOn      DateTime        `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn      DateTime        `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
 	UserCollection *UserCollection `gorm:"foreignKey:CollectionID;belongsTo"`
@@ -398,11 +398,11 @@ func (*UserRequest) BeforeUpdate(tx *gorm.DB) error {
 
 type UserCollection struct {
 	ID         string           `gorm:"column:id;primaryKey" json:"id"`
-	ParentID   *string          `gorm:"column:parentID;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key" json:"parentID"`
-	UserUID    string           `gorm:"column:userUid;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key;not null" json:"userUid"`
+	ParentID   *string          `gorm:"column:parentID;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key,priority:2" json:"parentID"`
+	UserUID    string           `gorm:"column:userUid;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key,priority:1;not null" json:"userUid"`
 	Title      string           `gorm:"column:title;not null" json:"title"`
 	Type       string           `gorm:"column:type;not null" json:"type"`
-	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key,priority:3;size:32;not null" json:"orderIndex"`
 	Data       datatypes.JSON   `gorm:"column:data" json:"data"`
 	CreatedOn  DateTime         `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn  DateTime         `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
@@ -487,7 +487,7 @@ func (*MockServer) BeforeUpdate(tx *gorm.DB) error {
 
 type MockServerLog struct {
 	ID              string         `gorm:"column:id;primaryKey" json:"id"`
-	MockServerID    string         `gorm:"column:mockServerID;index:MockServerLog_mockServerID_idx;index:MockServerLog_mockServerID_executedAt_idx;not null" json:"mockServerID"`
+	MockServerID    string         `gorm:"column:mockServerID;index:MockServerLog_mockServerID_idx;index:MockServerLog_mockServerID_executedAt_idx,priority:1;not null" json:"mockServerID"`
 	RequestMethod   string         `gorm:"column:requestMethod;not null" json:"requestMethod"`
 	RequestPath     string         `gorm:"column:requestPath;not null" json:"requestPath"`
 	RequestHeaders  datatypes.JSON `gorm:"column:requestHeaders;not null" json:"requestHeaders"`
@@ -499,7 +499,7 @@ type MockServerLog struct {
 	ResponseTime    int            `gorm:"column:responseTime;size:32;not null" json:"responseTime"`
 	IPAddress       *string        `gorm:"column:ipAddress" json:"ipAddress"`
 	UserAgent       *string        `gorm:"column:userAgent" json:"userAgent"`
-	ExecutedAt      DateTime       `gorm:"column:executedAt;index:MockServerLog_mockServerID_executedAt_idx;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"executedAt"`
+	ExecutedAt      DateTime       `gorm:"column:executedAt;index:MockServerLog_mockServerID_executedAt_idx,priority:2;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"executedAt"`
 	MockServer      *MockServer    `gorm:"belongsTo"`
 }
 
@@ -543,9 +543,9 @@ func (m *MockServerActivity) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Shortcode struct {
-	ID              string         `gorm:"column:id;primaryKey;uniqueIndex:Shortcode_id_creatorUid_key" json:"id"`
+	ID              string         `gorm:"column:id;primaryKey;uniqueIndex:Shortcode_id_key;uniqueIndex:Shortcode_id_creatorUid_key,priority:1" json:"id"`
 	Request         datatypes.JSON `gorm:"column:request;not null" json:"request"`
-	CreatorUID      *string        `gorm:"column:creatorUid;uniqueIndex:Shortcode_id_creatorUid_key" json:"creatorUid"`
+	CreatorUID      *string        `gorm:"column:creatorUid;uniqueIndex:Shortcode_id_creatorUid_key,priority:2" json:"creatorUid"`
 	EmbedProperties datatypes.JSON `gorm:"column:embedProperties" json:"embedProperties"`
 	CreatedOn       DateTime       `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn       DateTime       `gorm:"column:updatedOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"updatedOn"`
@@ -684,11 +684,11 @@ func (m *InfraToken) BeforeCreate(tx *gorm.DB) error {
 
 type PublishedDocs struct {
 	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
-	Slug                 string         `gorm:"column:slug;uniqueIndex:PublishedDocs_slug_version_key;not null" json:"slug"`
+	Slug                 string         `gorm:"column:slug;uniqueIndex:PublishedDocs_slug_version_key,priority:1;not null" json:"slug"`
 	Title                string         `gorm:"column:title;not null" json:"title"`
 	CollectionID         string         `gorm:"column:collectionID;index:PublishedDocs_collectionID_idx;not null" json:"collectionID"`
 	CreatorUID           string         `gorm:"column:creatorUid;not null" json:"creatorUid"`
-	Version              string         `gorm:"column:version;uniqueIndex:PublishedDocs_slug_version_key;not null" json:"version"`
+	Version              string         `gorm:"column:version;uniqueIndex:PublishedDocs_slug_version_key,priority:2;not null" json:"version"`
 	AutoSync             bool           `gorm:"column:autoSync;not null" json:"autoSync"`
 	DocumentTree         datatypes.JSON `gorm:"column:documentTree" json:"documentTree"`
 	WorkspaceType        string         `gorm:"column:workspaceType;not null" json:"workspaceType"`

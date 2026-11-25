@@ -6,14 +6,22 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "source_check")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub package: String,
+    #[sea_orm(column_type = "Text")]
     pub version: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub timestamp: DateTimeWithTimeZone,
 }
 

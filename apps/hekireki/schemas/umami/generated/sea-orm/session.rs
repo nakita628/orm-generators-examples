@@ -20,7 +20,7 @@ pub struct Model {
     pub screen: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(35))")]
     pub language: Option<String>,
-    #[sea_orm(column_type = "String(StringLen::N(2))")]
+    #[sea_orm(column_type = "Char(Some(2))")]
     pub country: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(20))")]
     pub region: Option<String>,
@@ -28,7 +28,10 @@ pub struct Model {
     pub city: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub distinct_id: Option<String>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
 }
 

@@ -11,10 +11,11 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "queueId")]
     pub queue_id: i32,
-    #[sea_orm(default_value = "unknown")]
+    #[sea_orm(column_type = "Text", default_value = "unknown")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub result: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -24,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::document_sync_queues::Entity",
         from = "Column::QueueId",
         to = "super::document_sync_queues::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "document_sync_executions_queueId_fkey"
     )]
     Queue,
 }

@@ -5,10 +5,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "computed_update_dead_letter_seed")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub task_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub record_id: String,
 }
 
@@ -19,7 +22,8 @@ pub enum Relation {
         from = "Column::TaskId",
         to = "super::computed_update_dead_letter::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "computed_update_dead_letter_seed_task_id_fkey"
     )]
     Task,
 }

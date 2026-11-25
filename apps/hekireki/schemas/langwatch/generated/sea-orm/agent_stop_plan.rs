@@ -9,14 +9,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgentStopPlan")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The AgentRegistryEntry the plan belongs to.
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "agentId")]
+    #[sea_orm(column_name = "agentId", column_type = "Text")]
     pub agent_id: String,
     pub version: i32,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

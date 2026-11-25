@@ -9,23 +9,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Dataroom")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "pId")]
+    #[sea_orm(column_name = "pId", column_type = "Text")]
     pub p_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "internalName")]
+    #[sea_orm(column_name = "internalName", column_type = "Text")]
     pub internal_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "brandId")]
+    #[sea_orm(column_name = "brandId", column_type = "Text")]
     pub brand_id: Option<String>,
     #[sea_orm(column_name = "conversationsEnabled", default_value = false)]
     pub conversations_enabled: bool,
     #[sea_orm(column_name = "agentsEnabled", default_value = false)]
     pub agents_enabled: bool,
-    #[sea_orm(column_name = "vectorStoreId")]
+    #[sea_orm(column_name = "vectorStoreId", column_type = "Text")]
     pub vector_store_id: Option<String>,
     #[sea_orm(column_name = "requestListEnabled", default_value = false)]
     pub request_list_enabled: bool,
@@ -61,21 +64,25 @@ pub struct Model {
     pub show_last_updated: bool,
     #[sea_orm(column_name = "introductionEnabled", default_value = false)]
     pub introduction_enabled: bool,
-    #[sea_orm(column_name = "introductionContent")]
+    #[sea_orm(column_name = "introductionContent", column_type = "JsonBinary")]
     pub introduction_content: Option<Json>,
     #[sea_orm(column_name = "isFrozen", default_value = false)]
     pub is_frozen: bool,
-    #[sea_orm(column_name = "frozenAt")]
+    #[sea_orm(column_name = "frozenAt", column_type = "custom(\"timestamp(3)\")")]
     pub frozen_at: Option<DateTime>,
-    #[sea_orm(column_name = "frozenBy")]
+    #[sea_orm(column_name = "frozenBy", column_type = "Text")]
     pub frozen_by: Option<String>,
-    #[sea_orm(column_name = "freezeArchiveUrl")]
+    #[sea_orm(column_name = "freezeArchiveUrl", column_type = "Text")]
     pub freeze_archive_url: Option<String>,
-    #[sea_orm(column_name = "freezeArchiveHash")]
+    #[sea_orm(column_name = "freezeArchiveHash", column_type = "Text")]
     pub freeze_archive_hash: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -85,21 +92,24 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Dataroom_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::brand::Entity",
         from = "Column::BrandId",
         to = "super::brand::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Dataroom_brandId_fkey"
     )]
     BaseBrand,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::FrozenBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Dataroom_frozenBy_fkey"
     )]
     FrozenByUser,
     #[sea_orm(has_many = "super::dataroom_document::Entity")]

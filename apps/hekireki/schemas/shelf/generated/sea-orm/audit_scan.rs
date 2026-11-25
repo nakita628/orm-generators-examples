@@ -7,15 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditScan")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "auditSessionId")]
+    #[sea_orm(column_name = "auditSessionId", column_type = "Text")]
     pub audit_session_id: String,
-    #[sea_orm(column_name = "auditAssetId")]
+    #[sea_orm(column_name = "auditAssetId", column_type = "Text")]
     pub audit_asset_id: Option<String>,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "scannedById")]
+    #[sea_orm(column_name = "scannedById", column_type = "Text")]
     pub scanned_by_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub code: Option<String>,
     /// What was scanned, recorded BY VALUE at scan time.
     ///
@@ -32,14 +34,23 @@ pub struct Model {
     /// been deleted before these columns were backfilled. Nothing can recover
     /// those, and they degrade to the scanned `code`, which also survives. Every
     /// other row carries a snapshot, so null is never merely "old".
-    #[sea_orm(column_name = "assetTitle")]
+    #[sea_orm(column_name = "assetTitle", column_type = "Text")]
     pub asset_title: Option<String>,
     #[sea_orm(column_name = "wasExpected")]
     pub was_expected: Option<bool>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "scannedAt")]
+    #[sea_orm(
+        column_name = "scannedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub scanned_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -50,7 +61,8 @@ pub enum Relation {
         from = "Column::AuditSessionId",
         to = "super::audit_session::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditScan_auditSessionId_fkey"
     )]
     AuditSession,
     #[sea_orm(
@@ -58,7 +70,8 @@ pub enum Relation {
         from = "Column::AuditAssetId",
         to = "super::audit_asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditScan_auditAssetId_fkey"
     )]
     AuditAsset,
     #[sea_orm(
@@ -66,7 +79,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditScan_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
@@ -74,7 +88,8 @@ pub enum Relation {
         from = "Column::ScannedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditScan_scannedById_fkey"
     )]
     ScannedBy,
 }

@@ -268,7 +268,7 @@ class KvStoreEntry(models.Model):
         db_table = "kv"
         indexes = [
             models.Index(fields=["expires_at"]),
-            models.Index(fields=["key"], name="kv_key_pattern_idx"),
+            models.Index(fields=["key"], name="kv_key_pattern_idx", opclasses=["text_pattern_ops"]),
         ]
 
 

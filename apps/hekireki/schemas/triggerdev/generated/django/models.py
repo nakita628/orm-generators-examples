@@ -990,7 +990,7 @@ class SecretStore(models.Model):
     class Meta:
         db_table = "SecretStore"
         indexes = [
-            BTreeIndex(fields=["key"]),
+            BTreeIndex(fields=["key"], name="SecretStore_key_idx", opclasses=["text_pattern_ops"]),
         ]
 
 
@@ -1654,7 +1654,7 @@ class TaskRun(models.Model):
             models.Index(fields=["parent_task_run"]),
             models.Index(fields=["span_id"]),
             models.Index(fields=["parent_span_id"]),
-            GinIndex(fields=["run_tags"]),
+            GinIndex(fields=["run_tags"], name="TaskRun_runTags_idx", opclasses=["array_ops"]),
             models.Index(fields=["runtime_environment", "batch"]),
             models.Index(fields=["runtime_environment", "-created_at"]),
             BrinIndex(fields=["created_at"]),

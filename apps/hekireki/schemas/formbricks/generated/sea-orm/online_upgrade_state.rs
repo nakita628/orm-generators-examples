@@ -7,29 +7,53 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OnlineUpgradeState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub release: String,
-    #[sea_orm(column_name = "targetImage")]
+    #[sea_orm(column_name = "targetImage", column_type = "Text")]
     pub target_image: String,
+    #[sea_orm(column_type = "Text")]
     pub phase: String,
-    #[sea_orm(column_name = "completedPhases")]
+    #[sea_orm(
+        column_name = "completedPhases",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub completed_phases: Vec<String>,
-    #[sea_orm(column_name = "surveyCursor")]
+    #[sea_orm(column_name = "surveyCursor", column_type = "Text")]
     pub survey_cursor: Option<String>,
     #[sea_orm(column_name = "surveyCount", default_value = "0")]
     pub survey_count: i64,
-    #[sea_orm(column_name = "baselineCompletedAt")]
+    #[sea_orm(
+        column_name = "baselineCompletedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub baseline_completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "forwardOnlyAt")]
+    #[sea_orm(
+        column_name = "forwardOnlyAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub forward_only_at: Option<DateTime>,
-    #[sea_orm(column_name = "queuePausedAt")]
+    #[sea_orm(
+        column_name = "queuePausedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub queue_paused_at: Option<DateTime>,
-    #[sea_orm(column_name = "queuePauseDeadlineAt")]
+    #[sea_orm(
+        column_name = "queuePauseDeadlineAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub queue_pause_deadline_at: Option<DateTime>,
-    #[sea_orm(column_name = "queueResumedAt")]
+    #[sea_orm(
+        column_name = "queueResumedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub queue_resumed_at: Option<DateTime>,
-    #[sea_orm(column_name = "activatedAt")]
+    #[sea_orm(column_name = "activatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub activated_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

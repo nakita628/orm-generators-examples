@@ -1,4 +1,4 @@
-from sqlalchemy import CHAR, Dialect, ForeignKey, Index, MetaData, Numeric, String, Text, TypeDecorator, Uuid, text
+from sqlalchemy import CHAR, Dialect, ForeignKey, Index, MetaData, Numeric, PrimaryKeyConstraint, String, Text, TypeDecorator, Uuid, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -124,6 +124,7 @@ class SessionLink(Base):
     created_at: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
+        PrimaryKeyConstraint("website_id", "distinct_id", "session_id"),
         Index("session_link_website_id_session_id_idx", "website_id", "session_id"),
     )
 

@@ -7,14 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "dataset_runs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub dataset_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -24,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::dataset::Entity",
         from = "(Column::DatasetId, Column::ProjectId)",
         to = "(super::dataset::Column::Id, super::dataset::Column::ProjectId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "dataset_runs_dataset_id_project_id_fkey"
     )]
     Dataset,
 }

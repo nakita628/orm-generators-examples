@@ -8,16 +8,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EnvelopeAttachment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// [EnvelopeAttachmentType] @zod.custom.use(ZEnvelopeAttachmentTypeSchema)
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: String,
 }
 
@@ -27,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::envelope::Entity",
         from = "Column::EnvelopeId",
         to = "super::envelope::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvelopeAttachment_envelopeId_fkey"
     )]
     Envelope,
 }

@@ -9,10 +9,18 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub date: DateTime,
     #[sea_orm(column_name = "totalViews", default_value = 0)]
     pub total_views: i32,
-    #[sea_orm(column_name = "prevDayViewsChangePercent", default_value = "0")]
+    #[sea_orm(
+        column_name = "prevDayViewsChangePercent",
+        column_type = "Text",
+        default_value = "0"
+    )]
     pub prev_day_views_change_percent: String,
     #[sea_orm(column_name = "userCount", default_value = 0)]
     pub user_count: i32,

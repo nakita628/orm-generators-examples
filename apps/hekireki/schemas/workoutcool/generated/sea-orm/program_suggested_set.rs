@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "program_suggested_sets")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "programSessionExerciseId")]
+    #[sea_orm(column_name = "programSessionExerciseId", column_type = "Text")]
     pub program_session_exercise_id: String,
     #[sea_orm(column_name = "setIndex")]
     pub set_index: i32,
@@ -26,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::program_session_exercise::Entity",
         from = "Column::ProgramSessionExerciseId",
         to = "super::program_session_exercise::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "program_suggested_sets_programSessionExerciseId_fkey"
     )]
     ProgramSessionExercise,
 }

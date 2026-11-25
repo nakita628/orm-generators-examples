@@ -8,21 +8,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "dataset_items")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     #[sea_orm(default_value = "ACTIVE")]
     pub status: Option<DatasetStatus>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub input: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub expected_output: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub source_trace_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub source_observation_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub dataset_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub valid_from: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub valid_to: Option<DateTime>,
     #[sea_orm(default_value = false)]
     pub is_deleted: bool,
@@ -34,7 +55,8 @@ pub enum Relation {
         belongs_to = "super::dataset::Entity",
         from = "(Column::DatasetId, Column::ProjectId)",
         to = "(super::dataset::Column::Id, super::dataset::Column::ProjectId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "dataset_items_dataset_id_project_id_fkey"
     )]
     Dataset,
 }

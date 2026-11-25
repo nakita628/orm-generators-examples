@@ -8,23 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "templates")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub subject: String,
+    #[sea_orm(column_type = "Text")]
     pub body: String,
+    #[sea_orm(column_type = "Text")]
     pub from: String,
-    #[sea_orm(column_name = "fromName")]
+    #[sea_orm(column_name = "fromName", column_type = "Text")]
     pub from_name: Option<String>,
-    #[sea_orm(column_name = "replyTo")]
+    #[sea_orm(column_name = "replyTo", column_type = "Text")]
     pub reply_to: Option<String>,
     #[sea_orm(default_value = "MARKETING")]
     pub r#type: TemplateType,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -34,7 +44,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "templates_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::email::Entity")]

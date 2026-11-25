@@ -5,14 +5,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RateLimitCounter")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "bucketKey")]
+    #[sea_orm(column_name = "bucketKey", column_type = "Text")]
     pub bucket_key: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "windowStart", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "windowStart",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub window_start: DateTimeWithTimeZone,
     #[sea_orm(default_value = 0)]
     pub count: i32,
-    #[sea_orm(column_name = "expiresAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamptz(3)\")")]
     pub expires_at: DateTimeWithTimeZone,
 }
 

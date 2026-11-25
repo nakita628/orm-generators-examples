@@ -14,11 +14,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Membership")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
-    pub organization_id: String,
-    #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
+    pub organization_id: String,
     #[sea_orm(default_value = false)]
     pub accepted: bool,
     #[sea_orm(default_value = "member")]
@@ -31,14 +31,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Membership_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Membership_userId_fkey"
     )]
     User,
 }

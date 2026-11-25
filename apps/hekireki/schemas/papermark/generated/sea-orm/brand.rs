@@ -7,56 +7,79 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Brand")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub logo: Option<String>,
     #[sea_orm(column_name = "hideLogo", default_value = false)]
     pub hide_logo: bool,
+    #[sea_orm(column_type = "Text")]
     pub banner: Option<String>,
-    #[sea_orm(column_name = "brandColor")]
+    #[sea_orm(column_name = "brandColor", column_type = "Text")]
     pub brand_color: Option<String>,
-    #[sea_orm(column_name = "accentColor")]
+    #[sea_orm(column_name = "accentColor", column_type = "Text")]
     pub accent_color: Option<String>,
-    #[sea_orm(column_name = "accentButtonColor")]
+    #[sea_orm(column_name = "accentButtonColor", column_type = "Text")]
     pub accent_button_color: Option<String>,
     #[sea_orm(column_name = "applyAccentColorToDataroomView", default_value = false)]
     pub apply_accent_color_to_dataroom_view: bool,
-    #[sea_orm(column_name = "welcomeMessage")]
+    #[sea_orm(column_name = "welcomeMessage", column_type = "Text")]
     pub welcome_message: Option<String>,
-    #[sea_orm(column_name = "ctaLabel")]
+    #[sea_orm(column_name = "ctaLabel", column_type = "Text")]
     pub cta_label: Option<String>,
-    #[sea_orm(column_name = "ctaUrl")]
+    #[sea_orm(column_name = "ctaUrl", column_type = "Text")]
     pub cta_url: Option<String>,
-    #[sea_orm(column_name = "privacyPolicyUrl")]
+    #[sea_orm(column_name = "privacyPolicyUrl", column_type = "Text")]
     pub privacy_policy_url: Option<String>,
-    #[sea_orm(column_name = "cardLayout", default_value = "LIST")]
+    #[sea_orm(
+        column_name = "cardLayout",
+        column_type = "Text",
+        default_value = "LIST"
+    )]
     pub card_layout: String,
     #[sea_orm(column_name = "showFolderTree", default_value = true)]
     pub show_folder_tree: bool,
-    #[sea_orm(column_name = "viewerLayoutPreset", default_value = "STANDARD")]
+    #[sea_orm(
+        column_name = "viewerLayoutPreset",
+        column_type = "Text",
+        default_value = "STANDARD"
+    )]
     pub viewer_layout_preset: String,
-    #[sea_orm(column_name = "viewerHeaderStyle", default_value = "DEFAULT")]
+    #[sea_orm(
+        column_name = "viewerHeaderStyle",
+        column_type = "Text",
+        default_value = "DEFAULT"
+    )]
     pub viewer_header_style: String,
     #[sea_orm(column_name = "hideFolderIconsInMain", default_value = false)]
     pub hide_folder_icons_in_main: bool,
     #[sea_orm(column_name = "customLinkPreviewEnabled", default_value = false)]
     pub custom_link_preview_enabled: bool,
-    #[sea_orm(column_name = "linkPreviewTitle")]
+    #[sea_orm(column_name = "linkPreviewTitle", column_type = "Text")]
     pub link_preview_title: Option<String>,
-    #[sea_orm(column_name = "linkPreviewDescription")]
+    #[sea_orm(column_name = "linkPreviewDescription", column_type = "Text")]
     pub link_preview_description: Option<String>,
-    #[sea_orm(column_name = "linkPreviewImage")]
+    #[sea_orm(column_name = "linkPreviewImage", column_type = "Text")]
     pub link_preview_image: Option<String>,
-    #[sea_orm(column_name = "linkPreviewFavicon")]
+    #[sea_orm(column_name = "linkPreviewFavicon", column_type = "Text")]
     pub link_preview_favicon: Option<String>,
-    #[sea_orm(column_name = "defaultLanguage", default_value = "en")]
+    #[sea_orm(
+        column_name = "defaultLanguage",
+        column_type = "Text",
+        default_value = "en"
+    )]
     pub default_language: String,
-    #[sea_orm(default_value = "Default")]
+    #[sea_orm(column_type = "Text", default_value = "Default")]
     pub name: String,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -66,7 +89,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Brand_teamId_fkey"
     )]
     Team,
     #[sea_orm(

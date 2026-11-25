@@ -6,13 +6,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Plugs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "plugFunction")]
+    #[sea_orm(column_name = "plugFunction", column_type = "Text")]
     pub plug_function: String,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: String,
     #[sea_orm(default_value = true)]
     pub activated: bool,
@@ -23,13 +25,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
-        to = "super::integration::Column::Id"
+        to = "super::integration::Column::Id",
+        fk_name = "Plugs_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Plugs_organizationId_fkey"
     )]
     Organization,
 }

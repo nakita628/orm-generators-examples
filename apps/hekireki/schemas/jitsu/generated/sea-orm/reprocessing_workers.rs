@@ -15,13 +15,18 @@ pub struct Model {
     pub status: String,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub started_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTimeWithTimeZone,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub completed_at: Option<DateTimeWithTimeZone>,
+    #[sea_orm(column_type = "Text")]
     pub current_file: Option<String>,
     #[sea_orm(default_value = "0")]
     pub current_line: Option<i64>,
+    #[sea_orm(column_type = "Text")]
     pub current_ts: Option<String>,
     #[sea_orm(default_value = 0)]
     pub assigned_files: Option<i32>,
@@ -39,6 +44,7 @@ pub struct Model {
     pub total_bytes: Option<i64>,
     #[sea_orm(default_value = "0")]
     pub processed_bytes: Option<i64>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
 }
 
@@ -49,7 +55,8 @@ pub enum Relation {
         from = "Column::JobId",
         to = "super::reprocessing_jobs::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "reprocessing_workers_job_id_fkey"
     )]
     Job,
 }

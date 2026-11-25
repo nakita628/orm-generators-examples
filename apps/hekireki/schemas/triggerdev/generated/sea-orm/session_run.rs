@@ -13,17 +13,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SessionRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "sessionId")]
+    #[sea_orm(column_name = "sessionId", column_type = "Text")]
     pub session_id: String,
     /// TaskRun.id (no FK — runs may be archived independently of session history)
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: String,
     /// One of: "initial" | "continuation" | "upgrade" | "manual".
     /// Plain string for forward-compat with future trigger reasons.
+    #[sea_orm(column_type = "Text")]
     pub reason: String,
-    #[sea_orm(column_name = "triggeredAt")]
+    #[sea_orm(
+        column_name = "triggeredAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub triggered_at: DateTime,
 }
 
@@ -33,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::session::Entity",
         from = "Column::SessionId",
         to = "super::session::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SessionRun_sessionId_fkey"
     )]
     Session,
 }

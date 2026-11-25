@@ -8,14 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConversationActivity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "participantId")]
+    #[sea_orm(column_name = "participantId", column_type = "Text")]
     pub participant_id: String,
-    #[sea_orm(column_name = "commentId")]
+    #[sea_orm(column_name = "commentId", column_type = "Text")]
     pub comment_id: Option<String>,
     pub kind: ConversationActivityKind,
     pub revision: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,14 +30,16 @@ pub enum Relation {
         belongs_to = "super::conversation_participant::Entity",
         from = "Column::ParticipantId",
         to = "super::conversation_participant::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConversationActivity_participantId_fkey"
     )]
     Participant,
     #[sea_orm(
         belongs_to = "super::conversation_comment::Entity",
         from = "Column::CommentId",
         to = "super::conversation_comment::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "ConversationActivity_commentId_fkey"
     )]
     Comment,
 }

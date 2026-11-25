@@ -6,26 +6,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowRunLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: String,
     pub sequence: i32,
-    #[sea_orm(column_name = "stepId")]
+    #[sea_orm(column_name = "stepId", column_type = "Text")]
     pub step_id: String,
-    #[sea_orm(column_name = "stepType")]
+    #[sea_orm(column_name = "stepType", column_type = "Text")]
     pub step_type: String,
     #[sea_orm(default_value = "pending")]
     pub status: WorkflowRunLogStatus,
     /// [WorkflowRunLogInput]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub input: Json,
     /// [WorkflowRunLogOutput]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub output: Json,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
-    #[sea_orm(column_name = "finishedAt")]
+    #[sea_orm(column_name = "finishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
 }
 
@@ -35,7 +37,8 @@ pub enum Relation {
         belongs_to = "super::workflow_run::Entity",
         from = "Column::RunId",
         to = "super::workflow_run::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowRunLog_runId_fkey"
     )]
     Run,
 }

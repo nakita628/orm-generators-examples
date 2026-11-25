@@ -8,9 +8,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
     #[sea_orm(column_name = "maximumExecutionTimePerRunInMs", default_value = 900000)]
     pub maximum_execution_time_per_run_in_ms: i32,
@@ -23,16 +26,21 @@ pub struct Model {
     pub maximum_dev_queue_size: Option<i32>,
     #[sea_orm(column_name = "maximumDeployedQueueSize")]
     pub maximum_deployed_queue_size: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
-    #[sea_orm(column_name = "companySize")]
+    #[sea_orm(column_name = "companySize", column_type = "Text")]
     pub company_size: Option<String>,
-    #[sea_orm(column_name = "onboardingData")]
+    #[sea_orm(column_name = "onboardingData", column_type = "JsonBinary")]
     pub onboarding_data: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub avatar: Option<Json>,
     #[sea_orm(column_name = "runsEnabled", default_value = true)]
     pub runs_enabled: bool,
@@ -47,18 +55,21 @@ pub struct Model {
     /// @deprecated
     #[sea_orm(column_name = "hasRequestedV3", default_value = false)]
     pub has_requested_v3: bool,
-    #[sea_orm(column_name = "apiRateLimiterConfig")]
+    #[sea_orm(column_name = "apiRateLimiterConfig", column_type = "JsonBinary")]
     pub api_rate_limiter_config: Option<Json>,
-    #[sea_orm(column_name = "realtimeRateLimiterConfig")]
+    #[sea_orm(column_name = "realtimeRateLimiterConfig", column_type = "JsonBinary")]
     pub realtime_rate_limiter_config: Option<Json>,
-    #[sea_orm(column_name = "batchRateLimitConfig")]
+    #[sea_orm(column_name = "batchRateLimitConfig", column_type = "JsonBinary")]
     pub batch_rate_limit_config: Option<Json>,
-    #[sea_orm(column_name = "batchQueueConcurrencyConfig")]
+    #[sea_orm(
+        column_name = "batchQueueConcurrencyConfig",
+        column_type = "JsonBinary"
+    )]
     pub batch_queue_concurrency_config: Option<Json>,
     /// Webhook limits from the org's plan or the back office: { maxWaitersPerEnvironment, maxWaitersPerEndpoint, concurrency }. Null uses the env defaults.
-    #[sea_orm(column_name = "webhookLimitsConfig")]
+    #[sea_orm(column_name = "webhookLimitsConfig", column_type = "JsonBinary")]
     pub webhook_limits_config: Option<Json>,
-    #[sea_orm(column_name = "featureFlags")]
+    #[sea_orm(column_name = "featureFlags", column_type = "JsonBinary")]
     pub feature_flags: Option<Json>,
     #[sea_orm(column_name = "maximumProjectCount", default_value = 25)]
     pub maximum_project_count: i32,
@@ -72,19 +83,25 @@ pub struct Model {
     /// it null forever; reads fall back to the global basin env var).
     /// Set once at provisioning time; retention is reconfigured in-place
     /// when the org's plan changes.
-    #[sea_orm(column_name = "streamBasinName")]
+    #[sea_orm(column_name = "streamBasinName", column_type = "Text")]
     pub stream_basin_name: Option<String>,
     #[sea_orm(column_name = "supportAccessMode", default_value = "ALLOW")]
     pub support_access_mode: SupportAccessMode,
-    #[sea_orm(column_name = "supportAccessModeUpdatedAt")]
+    #[sea_orm(
+        column_name = "supportAccessModeUpdatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub support_access_mode_updated_at: Option<DateTime>,
-    #[sea_orm(column_name = "supportAccessModeUpdatedById")]
+    #[sea_orm(column_name = "supportAccessModeUpdatedById", column_type = "Text")]
     pub support_access_mode_updated_by_id: Option<String>,
     /// When true, members without MFA are locked out of the dashboard and CLI until they set it up.
     #[sea_orm(column_name = "mfaRequired", default_value = false)]
     pub mfa_required: bool,
     /// Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
-    #[sea_orm(column_name = "mfaStepUpActions")]
+    #[sea_orm(
+        column_name = "mfaStepUpActions",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub mfa_step_up_actions: Vec<String>,
     #[sea_orm(column_name = "mfaStepUpWindowMinutes", default_value = 5)]
     pub mfa_step_up_window_minutes: i32,

@@ -19,28 +19,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Response")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(default_value = false)]
     pub finished: bool,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: Option<String>,
-    #[sea_orm(column_name = "endingId")]
+    #[sea_orm(column_name = "endingId", column_type = "Text")]
     pub ending_id: Option<String>,
     /// [ResponseData]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub data: Json,
     /// [ResponseVariables]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub variables: Json,
     /// [ResponseTtc]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub ttc: Json,
     /// [ResponseMeta]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub meta: Json,
     /// Why a value in `data` will not read back as its declared Embedded Data type — a failed coercion
     /// or a truncated oversize value (ENG-1845). Server-computed on every ingest and never accepted
@@ -48,6 +57,7 @@ pub struct Model {
     /// an empty list: without this column a wrong-typed value is indistinguishable from an absent one,
     /// and surfacing that in the UI (v2) would have nothing to read.
     /// [ResponseIngestFlags]
+    #[sea_orm(column_type = "JsonBinary")]
     pub ingest_flags: Option<Json>,
     /// What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
     /// keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
@@ -55,7 +65,10 @@ pub struct Model {
     /// `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
     /// never accepted as a field of its own.
     /// [ResponseCalBookings]
-    #[sea_orm(column_name = "cal_bookings_by_question_id")]
+    #[sea_orm(
+        column_name = "cal_bookings_by_question_id",
+        column_type = "JsonBinary"
+    )]
     pub cal_bookings: Option<Json>,
     /// A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
     /// export by default and from Feedback Records, and nothing else: it is never deleted and every
@@ -67,15 +80,17 @@ pub struct Model {
     /// Omitted from reads without a `select` (PRISMA_GLOBAL_OMIT), so it never reaches a v1/v2 payload,
     /// webhook or integration.
     /// [ResponseNotShown]
+    #[sea_orm(column_type = "JsonBinary")]
     pub not_shown: Option<Json>,
     /// [ResponseContactAttributes]
-    #[sea_orm(column_name = "contactAttributes")]
+    #[sea_orm(column_name = "contactAttributes", column_type = "JsonBinary")]
     pub contact_attributes: Option<Json>,
-    #[sea_orm(column_name = "singleUseId")]
+    #[sea_orm(column_name = "singleUseId", column_type = "Text")]
     pub single_use_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub language: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "displayId")]
+    #[sea_orm(column_name = "displayId", column_type = "Text")]
     pub display_id: Option<String>,
 }
 
@@ -85,20 +100,23 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Response_surveyId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::contact::Entity",
         from = "Column::ContactId",
         to = "super::contact::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Response_contactId_fkey"
     )]
     Contact,
     #[sea_orm(
         belongs_to = "super::display::Entity",
         from = "Column::DisplayId",
-        to = "super::display::Column::Id"
+        to = "super::display::Column::Id",
+        fk_name = "Response_displayId_fkey"
     )]
     Display,
     #[sea_orm(has_many = "super::tags_on_responses::Entity")]

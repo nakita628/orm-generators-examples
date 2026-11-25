@@ -9,13 +9,17 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: i32,
     #[sea_orm(column_name = "reasonEnum")]
     pub reason_enum: AssignmentReasonEnum,
-    #[sea_orm(column_name = "reasonString")]
+    #[sea_orm(column_name = "reasonString", column_type = "Text")]
     pub reason_string: String,
 }
 
@@ -25,7 +29,8 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssignmentReason_bookingId_fkey"
     )]
     Booking,
 }

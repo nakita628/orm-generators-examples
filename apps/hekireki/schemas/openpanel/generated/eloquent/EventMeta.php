@@ -16,8 +16,6 @@ class EventMeta extends Model
 
     protected $keyType = 'string';
 
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
         'name',

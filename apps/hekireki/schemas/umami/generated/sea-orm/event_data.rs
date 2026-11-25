@@ -20,7 +20,10 @@ pub struct Model {
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub date_value: Option<DateTimeWithTimeZone>,
     pub data_type: i32,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
 }
 
@@ -29,13 +32,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::website::Entity",
         from = "Column::WebsiteId",
-        to = "super::website::Column::Id"
+        to = "super::website::Column::Id",
+        fk_name = "event_data_website_id_fkey"
     )]
     Website,
     #[sea_orm(
         belongs_to = "super::website_event::Entity",
         from = "Column::WebsiteEventId",
-        to = "super::website_event::Column::Id"
+        to = "super::website_event::Column::Id",
+        fk_name = "event_data_website_event_id_fkey"
     )]
     WebsiteEvent,
 }

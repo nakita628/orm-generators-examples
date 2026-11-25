@@ -8,18 +8,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "role_assignments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub owner_id: String,
+    #[sea_orm(column_type = "Text")]
     pub project_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub org_id: String,
+    #[sea_orm(column_type = "Text")]
     pub principal_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub api_key_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub role_id: String,
     pub system_role: SystemRole,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -29,28 +47,32 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "role_assignments_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrgId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "role_assignments_org_id_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "role_assignments_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::api_key::Entity",
         from = "Column::ApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "role_assignments_api_key_id_fkey"
     )]
     ApiKey,
 }

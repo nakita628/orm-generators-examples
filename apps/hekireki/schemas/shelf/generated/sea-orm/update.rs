@@ -9,13 +9,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Update")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
-    #[sea_orm(column_name = "imageUrl")]
+    #[sea_orm(column_name = "imageUrl", column_type = "Text")]
     pub image_url: Option<String>,
-    #[sea_orm(column_name = "publishDate")]
+    #[sea_orm(column_name = "publishDate", column_type = "custom(\"timestamp(3)\")")]
     pub publish_date: DateTime,
     #[sea_orm(default_value = "DRAFT")]
     pub status: UpdateStatus,
@@ -25,11 +29,15 @@ pub struct Model {
     pub click_count: i32,
     #[sea_orm(column_name = "viewCount", default_value = 0)]
     pub view_count: i32,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -40,7 +48,8 @@ pub enum Relation {
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Update_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(has_many = "super::user_update_read::Entity")]

@@ -7,26 +7,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Task")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "scheduledAt")]
+    #[sea_orm(
+        column_name = "scheduledAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub scheduled_at: DateTime,
-    #[sea_orm(column_name = "succeededAt")]
+    #[sea_orm(column_name = "succeededAt", column_type = "custom(\"timestamp(3)\")")]
     pub succeeded_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub payload: String,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     #[sea_orm(column_name = "maxAttempts", default_value = 3)]
     pub max_attempts: i32,
-    #[sea_orm(column_name = "lastError")]
+    #[sea_orm(column_name = "lastError", column_type = "Text")]
     pub last_error: Option<String>,
-    #[sea_orm(column_name = "lastFailedAttemptAt")]
+    #[sea_orm(
+        column_name = "lastFailedAttemptAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_failed_attempt_at: Option<DateTime>,
-    #[sea_orm(column_name = "referenceUid")]
+    #[sea_orm(column_name = "referenceUid", column_type = "Text")]
     pub reference_uid: Option<String>,
 }
 

@@ -10,10 +10,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TagsOnResponses")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "responseId")]
+    #[sea_orm(column_name = "responseId", column_type = "Text")]
     pub response_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "tagId")]
+    #[sea_orm(column_name = "tagId", column_type = "Text")]
     pub tag_id: String,
 }
 
@@ -23,14 +23,16 @@ pub enum Relation {
         belongs_to = "super::response::Entity",
         from = "Column::ResponseId",
         to = "super::response::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagsOnResponses_responseId_fkey"
     )]
     Response,
     #[sea_orm(
         belongs_to = "super::tag::Entity",
         from = "Column::TagId",
         to = "super::tag::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TagsOnResponses_tagId_fkey"
     )]
     Tag,
 }

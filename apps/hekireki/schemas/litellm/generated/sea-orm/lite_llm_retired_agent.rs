@@ -7,7 +7,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_RetiredAgent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub original_agent_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub retired_at: DateTime,
 }
 

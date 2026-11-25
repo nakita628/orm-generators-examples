@@ -11,35 +11,62 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "monitors")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     pub view: MonitorView,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filters: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metric: Json,
     pub window_ms: i64,
     pub cadence_ms: i64,
     pub threshold_operator: MonitorThresholdOperator,
+    #[sea_orm(column_type = "Decimal(Some((65, 30)))")]
     pub alert_threshold: Decimal,
+    #[sea_orm(column_type = "Decimal(Some((65, 30)))")]
     pub warning_threshold: Option<Decimal>,
     #[sea_orm(default_value = "UNKNOWN")]
     pub severity: MonitorSeverity,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub severity_changed_at: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub no_data: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub renotify: Json,
     #[sea_orm(default_value = "ACTIVE")]
     pub status: MonitorStatus,
     pub scheduler_batch_id: i64,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub next_run_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_published_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_claimed_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_completed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub trigger_ids: Vec<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub alerted_at: Option<DateTime>,
 }
 
@@ -49,21 +76,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "monitors_created_by_fkey"
     )]
     CreatedByUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "monitors_updated_by_fkey"
     )]
     UpdatedByUser,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "monitors_project_id_fkey"
     )]
     Project,
 }

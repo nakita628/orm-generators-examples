@@ -18,22 +18,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AnomalyAlert")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "ruleId")]
+    #[sea_orm(column_name = "ruleId", column_type = "Text")]
     pub rule_id: String,
     /// Denormalised from rule for fast WHERE filtering on the
     /// dashboard query (no join needed for the common path).
+    #[sea_orm(column_type = "Text")]
     pub severity: String,
-    #[sea_orm(column_name = "ruleName")]
+    #[sea_orm(column_name = "ruleName", column_type = "Text")]
     pub rule_name: String,
-    #[sea_orm(column_name = "ruleType")]
+    #[sea_orm(column_name = "ruleType", column_type = "Text")]
     pub rule_type: String,
     /// Window the trigger refers to (UTC).
-    #[sea_orm(column_name = "triggerWindowStart")]
+    #[sea_orm(
+        column_name = "triggerWindowStart",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub trigger_window_start: DateTime,
-    #[sea_orm(column_name = "triggerWindowEnd")]
+    #[sea_orm(
+        column_name = "triggerWindowEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub trigger_window_end: DateTime,
     /// Numeric trigger context. Per-rule-type detail in `detail` JSONB.
     #[sea_orm(
@@ -45,21 +53,32 @@ pub struct Model {
     pub trigger_event_count: Option<i32>,
     /// Per-rule-type extra context: {topActors: [...], baseline: ...,
     /// observed: ..., timezone: ..., etc}.
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub detail: Json,
     /// 'open' | 'acknowledged' | 'resolved'.
-    #[sea_orm(default_value = "open")]
+    #[sea_orm(column_type = "Text", default_value = "open")]
     pub state: String,
     /// Per-destination dispatch outcome:
     /// { webhook: { lastAttemptIso, lastError?, attemptCount, statusCode? },
     /// slack: ..., pagerduty: ..., siem: ..., email: ... }
-    #[sea_orm(column_name = "destinationStatus", default_value = "{}")]
+    #[sea_orm(
+        column_name = "destinationStatus",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub destination_status: Json,
-    #[sea_orm(column_name = "detectedAt")]
+    #[sea_orm(
+        column_name = "detectedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub detected_at: DateTime,
-    #[sea_orm(column_name = "acknowledgedAt")]
+    #[sea_orm(
+        column_name = "acknowledgedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub acknowledged_at: Option<DateTime>,
-    #[sea_orm(column_name = "resolvedAt")]
+    #[sea_orm(column_name = "resolvedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resolved_at: Option<DateTime>,
 }
 
@@ -69,14 +88,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AnomalyAlert_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::anomaly_rule::Entity",
         from = "Column::RuleId",
         to = "super::anomaly_rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AnomalyAlert_ruleId_fkey"
     )]
     Rule,
 }

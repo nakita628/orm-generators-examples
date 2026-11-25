@@ -8,11 +8,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SubscriptionClaim")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = false)]
     pub locked: bool,
@@ -29,23 +35,24 @@ pub struct Model {
     #[sea_orm(column_name = "envelopeContentImageCount")]
     pub envelope_content_image_count: i32,
     /// [ClaimFlags] @zod.custom.use(ZClaimFlagsSchema)
+    #[sea_orm(column_type = "JsonBinary")]
     pub flags: Json,
     /// [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    #[sea_orm(column_name = "documentRateLimits")]
+    #[sea_orm(column_name = "documentRateLimits", column_type = "JsonBinary")]
     pub document_rate_limits: Json,
     #[sea_orm(column_name = "documentQuota")]
     pub document_quota: Option<i32>,
     /// [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    #[sea_orm(column_name = "emailRateLimits")]
+    #[sea_orm(column_name = "emailRateLimits", column_type = "JsonBinary")]
     pub email_rate_limits: Json,
     #[sea_orm(column_name = "emailQuota")]
     pub email_quota: Option<i32>,
     /// [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    #[sea_orm(column_name = "apiRateLimits")]
+    #[sea_orm(column_name = "apiRateLimits", column_type = "JsonBinary")]
     pub api_rate_limits: Json,
     #[sea_orm(column_name = "apiQuota")]
     pub api_quota: Option<i32>,
-    #[sea_orm(column_name = "emailTransportId")]
+    #[sea_orm(column_name = "emailTransportId", column_type = "Text")]
     pub email_transport_id: Option<String>,
 }
 
@@ -55,7 +62,8 @@ pub enum Relation {
         belongs_to = "super::email_transport::Entity",
         from = "Column::EmailTransportId",
         to = "super::email_transport::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "SubscriptionClaim_emailTransportId_fkey"
     )]
     EmailTransport,
 }

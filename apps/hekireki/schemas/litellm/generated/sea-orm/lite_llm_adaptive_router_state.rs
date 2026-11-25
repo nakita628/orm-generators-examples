@@ -7,15 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AdaptiveRouterState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub router_name: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub request_type: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub model_name: String,
     pub alpha: f64,
     pub beta: f64,
     #[sea_orm(default_value = 0)]
     pub total_samples: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: DateTime,
 }
 

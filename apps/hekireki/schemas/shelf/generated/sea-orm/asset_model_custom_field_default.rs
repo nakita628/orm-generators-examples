@@ -11,15 +11,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AssetModelCustomFieldDefault")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub value: Json,
-    #[sea_orm(column_name = "assetModelId")]
+    #[sea_orm(column_name = "assetModelId", column_type = "Text")]
     pub asset_model_id: String,
-    #[sea_orm(column_name = "customFieldId")]
+    #[sea_orm(column_name = "customFieldId", column_type = "Text")]
     pub custom_field_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -30,7 +36,8 @@ pub enum Relation {
         from = "Column::AssetModelId",
         to = "super::asset_model::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetModelCustomFieldDefault_assetModelId_fkey"
     )]
     AssetModel,
 }

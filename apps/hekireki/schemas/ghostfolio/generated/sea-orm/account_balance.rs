@@ -6,17 +6,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "AccountBalance")]
 pub struct Model {
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub date: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     pub value: f64,
 }
@@ -27,7 +37,8 @@ pub enum Relation {
         belongs_to = "super::account::Entity",
         from = "(Column::AccountId, Column::UserId)",
         to = "(super::account::Column::Id, super::account::Column::UserId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AccountBalance_accountId_userId_fkey"
     )]
     Account,
 }

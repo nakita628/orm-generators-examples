@@ -7,15 +7,23 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "CollaboratorsOnTypebots")]
 pub struct Model {
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "typebotId")]
+    #[sea_orm(column_name = "typebotId", column_type = "Text")]
     pub typebot_id: String,
     pub r#type: CollaborationType,
 }
@@ -26,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::typebot::Entity",
         from = "Column::TypebotId",
         to = "super::typebot::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CollaboratorsOnTypebots_typebotId_fkey"
     )]
     Typebot,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CollaboratorsOnTypebots_userId_fkey"
     )]
     User,
 }

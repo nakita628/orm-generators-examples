@@ -289,7 +289,7 @@ class Contact(models.Model):
             models.Index(fields=["project"]),
             models.Index(fields=["project", "subscribed"]),
             models.Index(fields=["snoozed_until"]),
-            GinIndex(fields=["data"]),
+            GinIndex(fields=["data"], name="contacts_data_idx", opclasses=["jsonb_ops"]),
         ]
 
 
@@ -333,7 +333,7 @@ class Segment(models.Model):
         db_table = "segments"
         indexes = [
             models.Index(fields=["project"]),
-            GinIndex(fields=["condition"]),
+            GinIndex(fields=["condition"], name="segments_condition_idx", opclasses=["jsonb_ops"]),
         ]
 
 
@@ -393,7 +393,7 @@ class Campaign(models.Model):
             models.Index(fields=["project", "archived", "created_at"]),
             models.Index(fields=["scheduled_for"]),
             models.Index(fields=["segment"]),
-            GinIndex(fields=["audience_condition"]),
+            GinIndex(fields=["audience_condition"], name="campaigns_audienceCon_54711e6d", opclasses=["jsonb_ops"]),
         ]
 
 
@@ -600,7 +600,7 @@ class Event(models.Model):
             models.Index(fields=["contact", "name", "created_at"]),
             models.Index(fields=["project", "name", "created_at"]),
             models.Index(fields=["contact", "created_at"]),
-            GinIndex(fields=["data"]),
+            GinIndex(fields=["data"], name="events_data_idx", opclasses=["jsonb_ops"]),
         ]
 
 

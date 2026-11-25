@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, Column, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, PrimaryKeyConstraint, Table, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, Column, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, PrimaryKeyConstraint, Table, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -235,7 +235,7 @@ class EmailAccount(Base):
         Index("EmailAccount_lastSummaryEmailAt_idx", "lastSummaryEmailAt"),
         Index("EmailAccount_lastInboxHealthEmailAt_idx", "lastInboxHealthEmailAt"),
         Index("EmailAccount_watchEmailsSubscriptionId_idx", "watchEmailsSubscriptionId"),
-        Index("EmailAccount_watchEmailsSubscriptionHistory_idx", "watchEmailsSubscriptionHistory"),
+        Index("EmailAccount_watchEmailsSubscriptionHistory_idx", "watchEmailsSubscriptionHistory", postgresql_using="gin", postgresql_ops={"watchEmailsSubscriptionHistory": "jsonb_path_ops"}),
     )
 
     user: Mapped["User"] = relationship(back_populates="email_accounts")
@@ -932,10 +932,10 @@ class ExecutedAction(Base):
     __table_args__ = (
         Index("ExecutedAction_executedRuleId_idx", "executedRuleId"),
         Index("ExecutedAction_executionStatus_createdAt_idx", "executionStatus", "createdAt"),
-        Index("ExecutedAction_sentMessageIds_idx", "sentMessageIds"),
+        Index("ExecutedAction_sentMessageIds_idx", "sentMessageIds", postgresql_using="gin"),
         Index("ExecutedAction_messagingChannelId_createdAt_idx", "messagingChannelId", "createdAt"),
-        Index("ExecutedAction_draftStatus_createdAt_draft_idx", "draftStatus", "createdAt"),
-        Index("ExecutedAction_executedRuleId_draft_idx", "executedRuleId"),
+        Index("ExecutedAction_draftStatus_createdAt_draft_idx", "draftStatus", "createdAt", postgresql_where=literal_column("(\"draftId\" IS NOT NULL)")),
+        Index("ExecutedAction_executedRuleId_draft_idx", "executedRuleId", postgresql_where=literal_column("(\"draftId\" IS NOT NULL)")),
     )
 
     executed_rule: Mapped["ExecutedRule"] = relationship(back_populates="action_items")
@@ -1277,7 +1277,7 @@ class ThreadTracker(Base):
         Index("ThreadTracker_emailAccountId_resolved_sentAt_type_idx", "emailAccountId", "resolved", "sentAt", "type"),
         Index("ThreadTracker_emailAccountId_type_resolved_sentAt_idx", "emailAccountId", "type", "resolved", "sentAt"),
         Index("ThreadTracker_emailAccountId_type_resolved_followUpAppliedA_idx", "emailAccountId", "type", "resolved", "followUpAppliedAt", "sentAt"),
-        Index("ThreadTracker_followUpDraft_cleanup_idx", "emailAccountId", "followUpDraftCreatedAt"),
+        Index("ThreadTracker_followUpDraft_cleanup_idx", "emailAccountId", "followUpDraftCreatedAt", postgresql_where=literal_column("(\"followUpDraftContent\" IS NOT NULL)")),
         Index("ThreadTracker_emailAccountId_threadId_messageId_key", "emailAccountId", "threadId", "messageId", unique=True),
     )
 
@@ -1823,7 +1823,7 @@ class ContactResearch(Base):
     sources: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
 
     __table_args__ = (
-        Index("ContactResearch_latest_idx", "email", "researchStartedAt", "createdAt", "id"),
+        Index("ContactResearch_latest_idx", "email", literal_column("\"researchStartedAt\"").desc(), literal_column("\"createdAt\"").desc(), literal_column("\"id\"").desc()),
     )
 
 class MeetingRecording(Base):
@@ -2720,6 +2720,6 @@ class LoopsEmailSource(Base):
         Index("LoopsEmailSource_emailMessageId_key", "emailMessageId", unique=True),
         Index("LoopsEmailSource_loopId_idx", "loopId"),
         Index("LoopsEmailSource_campaignId_idx", "campaignId"),
-        Index("LoopsEmailSource_loopId_unversioned_key", "loopId", unique=True),
-        Index("LoopsEmailSource_campaignId_unversioned_key", "campaignId", unique=True),
+        Index("LoopsEmailSource_loopId_unversioned_key", "loopId", unique=True, postgresql_where=literal_column("(\"emailMessageId\" IS NULL AND \"loopId\" IS NOT NULL)")),
+        Index("LoopsEmailSource_campaignId_unversioned_key", "campaignId", unique=True, postgresql_where=literal_column("(\"emailMessageId\" IS NULL AND \"campaignId\" IS NOT NULL)")),
     )

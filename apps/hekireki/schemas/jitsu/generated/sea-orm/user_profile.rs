@@ -7,22 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserProfile")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(default_value = false)]
     pub admin: Option<bool>,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "loginProvider")]
+    #[sea_orm(column_name = "loginProvider", column_type = "Text")]
     pub login_provider: String,
-    #[sea_orm(column_name = "externalUsername")]
+    #[sea_orm(column_name = "externalUsername", column_type = "Text")]
     pub external_username: Option<String>,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: String,
 }
 

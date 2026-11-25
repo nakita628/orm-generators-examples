@@ -7,19 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "HolidayCache")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "countryCode")]
+    #[sea_orm(column_name = "countryCode", column_type = "Text")]
     pub country_code: String,
-    #[sea_orm(column_name = "calendarId")]
+    #[sea_orm(column_name = "calendarId", column_type = "Text")]
     pub calendar_id: String,
-    #[sea_orm(column_name = "eventId")]
+    #[sea_orm(column_name = "eventId", column_type = "Text")]
     pub event_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub date: DateTime,
     pub year: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

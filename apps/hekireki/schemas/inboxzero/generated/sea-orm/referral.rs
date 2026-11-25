@@ -8,23 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Referral")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "referrerUserId")]
+    #[sea_orm(column_name = "referrerUserId", column_type = "Text")]
     pub referrer_user_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "referredUserId")]
+    #[sea_orm(column_name = "referredUserId", column_type = "Text")]
     pub referred_user_id: String,
-    #[sea_orm(column_name = "referralCodeUsed")]
+    #[sea_orm(column_name = "referralCodeUsed", column_type = "Text")]
     pub referral_code_used: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: ReferralStatus,
-    #[sea_orm(column_name = "rewardGrantedAt")]
+    #[sea_orm(
+        column_name = "rewardGrantedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub reward_granted_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeBalanceTransactionId")]
+    #[sea_orm(column_name = "stripeBalanceTransactionId", column_type = "Text")]
     pub stripe_balance_transaction_id: Option<String>,
     #[sea_orm(column_name = "rewardAmount")]
     pub reward_amount: Option<i32>,
@@ -36,14 +44,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::ReferrerUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Referral_referrerUserId_fkey"
     )]
     ReferrerUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ReferredUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Referral_referredUserId_fkey"
     )]
     ReferredUser,
 }

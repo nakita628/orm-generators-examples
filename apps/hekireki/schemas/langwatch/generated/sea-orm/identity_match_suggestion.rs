@@ -23,20 +23,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IdentityMatchSuggestion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "discoveredPersonId")]
+    #[sea_orm(column_name = "discoveredPersonId", column_type = "Text")]
     pub discovered_person_id: String,
     /// The platform user this might be. Not nullable: a suggestion with no
     /// candidate is not a suggestion.
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// Similarity of the two name texts, after the prefilter, in [0, 1]. A
     /// display hint and an ordering key - never a threshold anything auto-links
     /// on, which is the whole distinction this table exists to hold.
     pub score: f64,
-    #[sea_orm(column_name = "computedAt")]
+    #[sea_orm(column_name = "computedAt", column_type = "custom(\"timestamp(3)\")")]
     pub computed_at: DateTime,
 }
 

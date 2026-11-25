@@ -9,15 +9,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "gateway_spend_limit_alerts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub spend_limit_id: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub subject_id: String,
     pub r#type: GatewaySpendLimitAlertType,
     #[sea_orm(default_value = 100)]
     pub threshold_percent: i32,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub counting_started_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub window_start: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -27,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::gateway_spend_limit::Entity",
         from = "Column::SpendLimitId",
         to = "super::gateway_spend_limit::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gateway_spend_limit_alerts_spend_limit_id_fkey"
     )]
     SpendLimit,
 }

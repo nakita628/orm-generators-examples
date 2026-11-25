@@ -7,14 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ChatMessage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "chatId")]
+    #[sea_orm(column_name = "chatId", column_type = "Text")]
     pub chat_id: String,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
     #[sea_orm(column_type = "Text")]
     pub content: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -24,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::chat::Entity",
         from = "Column::ChatId",
         to = "super::chat::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ChatMessage_chatId_fkey"
     )]
     Chat,
 }

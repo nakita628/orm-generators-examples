@@ -7,19 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_PolicyAttachmentTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub attachment_id: String,
+    #[sea_orm(column_type = "Text")]
     pub policy_name: String,
+    #[sea_orm(column_type = "Text")]
     pub scope: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub teams: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub keys: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub models: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
     pub priority: Option<i32>,
     #[sea_orm(default_value = false)]
     pub is_default: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

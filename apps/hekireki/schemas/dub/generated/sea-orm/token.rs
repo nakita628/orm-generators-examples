@@ -7,21 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Token")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedKey")]
+    #[sea_orm(column_name = "hashedKey", column_type = "String(StringLen::N(191))")]
     pub hashed_key: String,
-    #[sea_orm(column_name = "partialKey")]
+    #[sea_orm(column_name = "partialKey", column_type = "String(StringLen::N(191))")]
     pub partial_key: String,
+    #[sea_orm(column_type = "custom(\"datetime(3)\")")]
     pub expires: Option<DateTime>,
-    #[sea_orm(column_name = "lastUsed")]
+    #[sea_orm(column_name = "lastUsed", column_type = "custom(\"datetime(3)\")")]
     pub last_used: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
 }
 
@@ -31,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Token_userId_fkey"
     )]
     User,
 }

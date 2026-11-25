@@ -8,13 +8,20 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     pub amount: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeCheckoutSessionId")]
+    #[sea_orm(
+        column_name = "stripeCheckoutSessionId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub stripe_checkout_session_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: Option<DateTime>,
 }
 
@@ -23,7 +30,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Donation_userId_fkey"
     )]
     User,
 }

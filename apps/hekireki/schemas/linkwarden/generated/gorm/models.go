@@ -20,8 +20,8 @@ type Account struct {
 	ID                string  `gorm:"column:id;primaryKey" json:"id"`
 	UserID            int     `gorm:"column:userId;size:32;not null" json:"userId"`
 	Type              string  `gorm:"column:type;not null" json:"type"`
-	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	RefreshToken      *string `gorm:"column:refresh_token" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token" json:"access_token"`
 	ExpiresAt         *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -45,7 +45,7 @@ func (m *Account) BeforeCreate(_ *gorm.DB) error {
 
 type User struct {
 	ID                      int                   `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UUID                    string                `gorm:"column:uuid;uniqueIndex:User_uuid_key;type:char(36);not null" json:"uuid"`
+	UUID                    string                `gorm:"column:uuid;uniqueIndex:User_uuid_key;type:uuid;not null" json:"uuid"`
 	Name                    *string               `gorm:"column:name" json:"name"`
 	Username                *string               `gorm:"column:username;uniqueIndex:User_username_key" json:"username"`
 	Email                   *string               `gorm:"column:email;uniqueIndex:User_email_key" json:"email"`
@@ -123,8 +123,8 @@ func (*User) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2" json:"token"`
 	Expires    DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
@@ -298,13 +298,13 @@ func (*UsersAndCollections) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Link struct {
-	ID              int         `gorm:"column:id;primaryKey;autoIncrement;index:Link_collectionId_collectionOrder_id_idx;size:32" json:"id"`
+	ID              int         `gorm:"column:id;primaryKey;autoIncrement;index:Link_collectionId_collectionOrder_id_idx,priority:3;size:32" json:"id"`
 	Name            string      `gorm:"column:name;default:'';not null" json:"name"`
 	Type            *string     `gorm:"column:type;default:'url';not null" json:"type"`
 	Description     string      `gorm:"column:description;default:'';not null" json:"description"`
 	CreatedByID     *int        `gorm:"column:createdById;size:32" json:"createdById"`
-	CollectionID    int         `gorm:"column:collectionId;index:Link_collectionId_idx;index:Link_collectionId_collectionOrder_id_idx;size:32;not null" json:"collectionId"`
-	CollectionOrder float64     `gorm:"column:collectionOrder;index:Link_collectionId_collectionOrder_id_idx;type:double precision;not null" json:"collectionOrder"`
+	CollectionID    int         `gorm:"column:collectionId;index:Link_collectionId_idx;index:Link_collectionId_collectionOrder_id_idx,priority:1;size:32;not null" json:"collectionId"`
+	CollectionOrder float64     `gorm:"column:collectionOrder;index:Link_collectionId_collectionOrder_id_idx,priority:2;type:double precision;not null" json:"collectionOrder"`
 	Icon            *string     `gorm:"column:icon" json:"icon"`
 	IconWeight      *string     `gorm:"column:iconWeight" json:"iconWeight"`
 	Color           *string     `gorm:"column:color" json:"color"`
@@ -355,8 +355,8 @@ func (*Link) BeforeUpdate(tx *gorm.DB) error {
 
 type Tag struct {
 	ID                      int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Name                    string   `gorm:"column:name;uniqueIndex:Tag_name_ownerId_key;not null" json:"name"`
-	OwnerID                 int      `gorm:"column:ownerId;uniqueIndex:Tag_name_ownerId_key;index:Tag_ownerId_idx;size:32;not null" json:"ownerId"`
+	Name                    string   `gorm:"column:name;uniqueIndex:Tag_name_ownerId_key,priority:1;not null" json:"name"`
+	OwnerID                 int      `gorm:"column:ownerId;uniqueIndex:Tag_name_ownerId_key,priority:2;index:Tag_ownerId_idx;size:32;not null" json:"ownerId"`
 	ArchiveAsScreenshot     *bool    `gorm:"column:archiveAsScreenshot" json:"archiveAsScreenshot"`
 	ArchiveAsMonolith       *bool    `gorm:"column:archiveAsMonolith" json:"archiveAsMonolith"`
 	ArchiveAsPDF            *bool    `gorm:"column:archiveAsPDF" json:"archiveAsPDF"`
@@ -547,8 +547,8 @@ func (*Highlight) BeforeUpdate(tx *gorm.DB) error {
 
 type DashboardSection struct {
 	ID           int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID       int         `gorm:"column:userId;uniqueIndex:DashboardSection_userId_collectionId_key;size:32;not null" json:"userId"`
-	CollectionID *int        `gorm:"column:collectionId;uniqueIndex:DashboardSection_userId_collectionId_key;size:32" json:"collectionId"`
+	UserID       int         `gorm:"column:userId;uniqueIndex:DashboardSection_userId_collectionId_key,priority:1;size:32;not null" json:"userId"`
+	CollectionID *int        `gorm:"column:collectionId;uniqueIndex:DashboardSection_userId_collectionId_key,priority:2;size:32" json:"collectionId"`
 	Type         string      `gorm:"column:type;not null" json:"type"`
 	Order        int         `gorm:"column:order;size:32;not null" json:"order"`
 	CreatedAt    DateTime    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`

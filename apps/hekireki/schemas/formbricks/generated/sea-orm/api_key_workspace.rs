@@ -15,14 +15,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ApiKeyWorkspace")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "apiKeyId")]
+    #[sea_orm(column_name = "apiKeyId", column_type = "Text")]
     pub api_key_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     pub permission: ApiKeyPermission,
 }
@@ -33,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::api_key::Entity",
         from = "Column::ApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ApiKeyWorkspace_apiKeyId_fkey"
     )]
     ApiKey,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ApiKeyWorkspace_workspaceId_fkey"
     )]
     Workspace,
 }

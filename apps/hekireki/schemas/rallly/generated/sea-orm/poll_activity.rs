@@ -7,17 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "poll_activities")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub poll_id: String,
     /// Validated by a zod union in the feature, not a DB enum: the activity vocabulary grows without migrations
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     /// Subject ids are soft references (no FKs): activity must outlive its subjects — including account deletion — so refs persist as identity and the payload carries the display snapshot; whether a ref still resolves is the renderer's question
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub participant_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub invite_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub option_id: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub payload: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -27,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::poll::Entity",
         from = "Column::PollId",
         to = "super::poll::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "poll_activities_poll_id_fkey"
     )]
     Poll,
 }

@@ -7,25 +7,32 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "Access")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub alias: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "granteeUserId")]
+    #[sea_orm(column_name = "granteeUserId", column_type = "Text")]
     pub grantee_user_id: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub scopes: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub settings: Json,
     #[sea_orm(default_value = "PRIVATE")]
     pub r#type: AccessType,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -35,14 +42,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::GranteeUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Access_granteeUserId_fkey"
     )]
     GranteeUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Access_userId_fkey"
     )]
     User,
 }

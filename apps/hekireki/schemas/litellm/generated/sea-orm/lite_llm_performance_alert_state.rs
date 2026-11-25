@@ -13,7 +13,7 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_type = "String(StringLen::N(32))")]
     pub owner: String,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub next_run_at: DateTimeWithTimeZone,
     #[sea_orm(column_type = "String(StringLen::N(10))")]
     pub day: Option<String>,
@@ -31,7 +31,12 @@ pub struct Model {
     pub start_scope: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(1024))", default_value = "")]
     pub start_after: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

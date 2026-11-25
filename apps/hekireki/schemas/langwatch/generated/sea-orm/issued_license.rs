@@ -15,25 +15,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IssuedLicense")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `licenseId` inside the signed license (`lic-<uuid>`).
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "licenseId")]
+    #[sea_orm(column_name = "licenseId", column_type = "Text")]
     pub license_id: String,
     /// SHA-256 of the `lwl_` token. Looked up on every credential resolution.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "tokenHash")]
+    #[sea_orm(column_name = "tokenHash", column_type = "Text")]
     pub token_hash: String,
     /// The customer organization on LangWatch Cloud. Null for a license that is
     /// recorded but not linked to a customer yet, such as a self-serve purchase:
     /// it resolves to nothing until an operator links it.
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
     /// As signed into the license.
-    #[sea_orm(column_name = "organizationName")]
+    #[sea_orm(column_name = "organizationName", column_type = "Text")]
     pub organization_name: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "planType")]
+    #[sea_orm(column_name = "planType", column_type = "Text")]
     pub plan_type: String,
     #[sea_orm(column_name = "maxMembers")]
     pub max_members: i32,
@@ -46,35 +48,36 @@ pub struct Model {
     /// The Developer seats sold: null when not stated, which sells none.
     #[sea_orm(column_name = "maxMembersDeveloper")]
     pub max_members_developer: Option<i32>,
-    #[sea_orm(column_name = "issuedAt")]
+    #[sea_orm(column_name = "issuedAt", column_type = "custom(\"timestamp(3)\")")]
     pub issued_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
     pub source: IssuedLicenseSource,
     /// The operator who issued or registered it. Null for the purchase flow and the script.
-    #[sea_orm(column_name = "issuedById")]
+    #[sea_orm(column_name = "issuedById", column_type = "Text")]
     pub issued_by_id: Option<String>,
-    #[sea_orm(column_name = "revokedAt")]
+    #[sea_orm(column_name = "revokedAt", column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "revokedById")]
+    #[sea_orm(column_name = "revokedById", column_type = "Text")]
     pub revoked_by_id: Option<String>,
-    #[sea_orm(column_name = "revokedReason")]
+    #[sea_orm(column_name = "revokedReason", column_type = "Text")]
     pub revoked_reason: Option<String>,
     /// Set when the install first presents the license that replaced this one.
-    #[sea_orm(column_name = "supersededAt")]
+    #[sea_orm(column_name = "supersededAt", column_type = "custom(\"timestamp(3)\")")]
     pub superseded_at: Option<DateTime>,
     /// The id of the IssuedLicense this one replaces, when it was reissued. A
     /// plain column ref (relationMode="prisma" cannot declare a self-relation on
     /// Postgres); the registry service validates it. Unique, so a license is
     /// replaced by one license at most.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "replacesId")]
+    #[sea_orm(column_name = "replacesId", column_type = "Text")]
     pub replaces_id: Option<String>,
     /// A reissued license waiting to be delivered over sync, encrypted. Erased
     /// when the install first presents it. The only license text the registry holds.
     #[sea_orm(column_name = "pendingDeliveryLicense", column_type = "Text")]
     pub pending_delivery_license: Option<String>,
     /// Hosted services this license may call, such as `instant_evals`.
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub services: Vec<String>,
     /// The annual rate of one seat, in cents of `seatCurrency`. Needed to prorate added seats.
     #[sea_orm(column_name = "seatRateCents")]
@@ -90,16 +93,19 @@ pub struct Model {
     #[sea_orm(column_name = "overageMaxUsdCents")]
     pub overage_max_usd_cents: Option<i32>,
     /// The install this license is bound to. Set on first use, cleared by an operator.
-    #[sea_orm(column_name = "instanceId")]
+    #[sea_orm(column_name = "instanceId", column_type = "Text")]
     pub instance_id: Option<String>,
-    #[sea_orm(column_name = "instanceBoundAt")]
+    #[sea_orm(
+        column_name = "instanceBoundAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub instance_bound_at: Option<DateTime>,
     /// The last license sync this install reported: when it arrived, the
     /// LangWatch version that sent it, and the seats in use at that moment.
     /// Null until the install syncs for the first time.
-    #[sea_orm(column_name = "lastSyncAt")]
+    #[sea_orm(column_name = "lastSyncAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_sync_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastSyncVersion")]
+    #[sea_orm(column_name = "lastSyncVersion", column_type = "Text")]
     pub last_sync_version: Option<String>,
     #[sea_orm(column_name = "reportedMembers")]
     pub reported_members: Option<i32>,
@@ -109,16 +115,20 @@ pub struct Model {
     /// this license runs under. One per license, so spend rows name the install.
     /// Created when the license first resolves. A plain column, not a relation.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "virtualKeyId")]
+    #[sea_orm(column_name = "virtualKeyId", column_type = "Text")]
     pub virtual_key_id: Option<String>,
     /// The seats of the license this one replaced, set only when a seat change
     /// raised a linked license. Billing reads it through licensing to invoice
     /// the added seats, so the fact commits with the license or not at all.
     #[sea_orm(column_name = "seatsRaisedFrom")]
     pub seats_raised_from: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -128,7 +138,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "IssuedLicense_organizationId_fkey"
     )]
     Organization,
 }

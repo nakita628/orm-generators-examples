@@ -8,16 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CustomLLMModelCost")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "scopeType", default_value = "PROJECT")]
     pub scope_type: CustomLLMModelCostScopeType,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub model: String,
+    #[sea_orm(column_type = "Text")]
     pub regex: String,
     #[sea_orm(column_name = "inputCostPerToken")]
     pub input_cost_per_token: Option<f64>,
@@ -29,9 +32,17 @@ pub struct Model {
     pub cache_creation_cost_per_token: Option<f64>,
     #[sea_orm(column_name = "cacheCreation1hCostPerToken")]
     pub cache_creation1h_cost_per_token: Option<f64>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

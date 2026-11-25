@@ -6,12 +6,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(column_name = "emailVerified")]
     pub email_verified: Option<PrismaDateTime>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
 }
 

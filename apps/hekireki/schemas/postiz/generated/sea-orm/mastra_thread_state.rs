@@ -7,18 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_thread_state")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub value: Json,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

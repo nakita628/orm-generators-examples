@@ -7,16 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "VideoCallGuest")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "bookingUid")]
+    #[sea_orm(column_name = "bookingUid", column_type = "Text")]
     pub booking_uid: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "joinedAt")]
+    #[sea_orm(column_name = "joinedAt", column_type = "custom(\"timestamp(3)\")")]
     pub joined_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -7,16 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Option<Json>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: Option<String>,
-    #[sea_orm(column_name = "emailId")]
+    #[sea_orm(column_name = "emailId", column_type = "Text")]
     pub email_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -26,21 +33,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "events_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::contact::Entity",
         from = "Column::ContactId",
         to = "super::contact::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "events_contactId_fkey"
     )]
     Contact,
     #[sea_orm(
         belongs_to = "super::email::Entity",
         from = "Column::EmailId",
         to = "super::email::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "events_emailId_fkey"
     )]
     Email,
 }

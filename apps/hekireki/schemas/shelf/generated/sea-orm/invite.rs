@@ -9,20 +9,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Invite")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "inviterId")]
+    #[sea_orm(column_name = "inviterId", column_type = "Text")]
     pub inviter_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "inviteeUserId")]
+    #[sea_orm(column_name = "inviteeUserId", column_type = "Text")]
     pub invitee_user_id: Option<String>,
-    #[sea_orm(column_name = "teamMemberId")]
+    #[sea_orm(column_name = "teamMemberId", column_type = "Text")]
     pub team_member_id: String,
-    #[sea_orm(column_name = "inviteeEmail")]
+    #[sea_orm(column_name = "inviteeEmail", column_type = "Text")]
     pub invitee_email: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: InviteStatuses,
-    #[sea_orm(column_name = "inviteCode")]
+    #[sea_orm(column_name = "inviteCode", column_type = "Text")]
     pub invite_code: String,
     pub roles: Vec<OrganizationRoles>,
     #[sea_orm(
@@ -30,11 +31,15 @@ pub struct Model {
         column_type = "String(StringLen::N(1000))"
     )]
     pub invite_message: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -45,7 +50,8 @@ pub enum Relation {
         from = "Column::InviterId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Invite_inviterId_fkey"
     )]
     Inviter,
     #[sea_orm(
@@ -53,7 +59,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Invite_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -61,13 +68,15 @@ pub enum Relation {
         from = "Column::InviteeUserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Invite_inviteeUserId_fkey"
     )]
     InviteeUser,
     #[sea_orm(
         belongs_to = "super::team_member::Entity",
         from = "Column::TeamMemberId",
-        to = "super::team_member::Column::Id"
+        to = "super::team_member::Column::Id",
+        fk_name = "Invite_teamMemberId_fkey"
     )]
     InviteeTeamMember,
 }

@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, Column, Dialect, Enum, ForeignKey, Index, JSON, MetaData, PrimaryKeyConstraint, Table, Text, TypeDecorator, Uuid, text
+from sqlalchemy import ARRAY, Column, Dialect, Enum, ForeignKey, Index, JSON, MetaData, PrimaryKeyConstraint, Table, Text, TypeDecorator, Uuid, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -786,9 +786,9 @@ class ProjectInsight(Base):
     last_seen_at: Mapped[datetime] = mapped_column("lastSeenAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("project_insights_projectId_impactScore_idx", "projectId", "impactScore"),
+        Index("project_insights_projectId_impactScore_idx", "projectId", literal_column("\"impactScore\"").desc()),
         Index("project_insights_projectId_moduleKey_windowKind_state_idx", "projectId", "moduleKey", "windowKind", "state"),
-        Index("project_insights_projectId_state_relevanceScore_idx", "projectId", "state", "relevanceScore"),
+        Index("project_insights_projectId_state_relevanceScore_idx", "projectId", "state", literal_column("\"relevanceScore\"").desc()),
         Index("project_insights_projectId_moduleKey_dimensionKey_windowKin_key", "projectId", "moduleKey", "dimensionKey", "windowKind", "state", unique=True),
     )
 

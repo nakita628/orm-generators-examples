@@ -9,23 +9,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Subscription")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub plan: PlanTypes,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeSubscriptionId")]
+    #[sea_orm(column_name = "stripeSubscriptionId", column_type = "Text")]
     pub stripe_subscription_id: Option<String>,
     pub status: SubscriptionStatus,
-    #[sea_orm(column_name = "startDate")]
+    #[sea_orm(column_name = "startDate", column_type = "custom(\"timestamp(3)\")")]
     pub start_date: Option<DateTime>,
-    #[sea_orm(column_name = "endDate")]
+    #[sea_orm(column_name = "endDate", column_type = "custom(\"timestamp(3)\")")]
     pub end_date: Option<DateTime>,
-    #[sea_orm(column_name = "lastPaymentFailedDate")]
+    #[sea_orm(
+        column_name = "lastPaymentFailedDate",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_payment_failed_date: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "maxMembers")]
     pub max_members: Option<i32>,
@@ -67,12 +79,18 @@ pub struct Model {
     /// Seats paid for this period that stay usable after a seat decrease, until seatsKeptUntil.
     #[sea_orm(column_name = "seatsKept")]
     pub seats_kept: Option<i32>,
-    #[sea_orm(column_name = "seatsKeptUntil")]
+    #[sea_orm(
+        column_name = "seatsKeptUntil",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seats_kept_until: Option<DateTime>,
     /// The seat quantity the last finished seat change set the seat line to; provider events never write it.
     #[sea_orm(column_name = "seatLineQuantity")]
     pub seat_line_quantity: Option<i32>,
-    #[sea_orm(column_name = "seatLineQuantityAt")]
+    #[sea_orm(
+        column_name = "seatLineQuantityAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_line_quantity_at: Option<DateTime>,
     /// A Stripe seat line write recorded before it is sent and cleared once it is known to have
     /// finished under the lease; one left behind is settled by the seat line repair.
@@ -80,14 +98,23 @@ pub struct Model {
     #[sea_orm(column_name = "seatLineWriteQuantities")]
     pub seat_line_write_quantities: Vec<i32>,
     /// The first write still pending; a later holder's write keeps it.
-    #[sea_orm(column_name = "seatLineWriteSince")]
+    #[sea_orm(
+        column_name = "seatLineWriteSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_line_write_since: Option<DateTime>,
     /// The latest write sent; the repair waits a grace window after it.
-    #[sea_orm(column_name = "seatLineWriteAt")]
+    #[sea_orm(
+        column_name = "seatLineWriteAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_line_write_at: Option<DateTime>,
     #[sea_orm(column_name = "seatLineWriteAttempts")]
     pub seat_line_write_attempts: Option<i32>,
-    #[sea_orm(column_name = "seatLineWriteFlaggedAt")]
+    #[sea_orm(
+        column_name = "seatLineWriteFlaggedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_line_write_flagged_at: Option<DateTime>,
     /// The seat quantity Stripe should bill if a seat change stops after lifting the seat line; null once settled.
     #[sea_orm(column_name = "seatRepairQuantity")]
@@ -95,31 +122,49 @@ pub struct Model {
     /// The quantity the change lifted the line to; the repair moves the line back only while Stripe still bills it.
     #[sea_orm(column_name = "seatRepairLiftedQuantity")]
     pub seat_repair_lifted_quantity: Option<i32>,
-    #[sea_orm(column_name = "seatRepairSince")]
+    #[sea_orm(
+        column_name = "seatRepairSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_repair_since: Option<DateTime>,
     #[sea_orm(column_name = "seatRepairAttempts")]
     pub seat_repair_attempts: Option<i32>,
     /// Set once the seat line repair has failed often enough that Ops should look at it.
-    #[sea_orm(column_name = "seatRepairFlaggedAt")]
+    #[sea_orm(
+        column_name = "seatRepairFlaggedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_repair_flagged_at: Option<DateTime>,
     /// The lease a seat change or seat line repair holds while it reads and moves the seat line.
-    #[sea_orm(column_name = "seatLineLeaseToken")]
+    #[sea_orm(column_name = "seatLineLeaseToken", column_type = "Text")]
     pub seat_line_lease_token: Option<String>,
-    #[sea_orm(column_name = "seatLineLeaseUntil")]
+    #[sea_orm(
+        column_name = "seatLineLeaseUntil",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_line_lease_until: Option<DateTime>,
     /// An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
     /// charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
-    #[sea_orm(column_name = "paymentRecoveryInvoiceId")]
+    #[sea_orm(column_name = "paymentRecoveryInvoiceId", column_type = "Text")]
     pub payment_recovery_invoice_id: Option<String>,
-    #[sea_orm(column_name = "paymentRecoveryStartedAt")]
+    #[sea_orm(
+        column_name = "paymentRecoveryStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub payment_recovery_started_at: Option<DateTime>,
     #[sea_orm(column_name = "paymentRecoveryNoticeDay")]
     pub payment_recovery_notice_day: Option<i32>,
     /// The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
     /// organization is on Free with more members than Free allows; ended once that no longer holds.
-    #[sea_orm(column_name = "overPlanSince")]
+    #[sea_orm(
+        column_name = "overPlanSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub over_plan_since: Option<DateTime>,
-    #[sea_orm(column_name = "overPlanEndedAt")]
+    #[sea_orm(
+        column_name = "overPlanEndedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub over_plan_ended_at: Option<DateTime>,
 }
 
@@ -128,7 +173,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Subscription_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::invoice::Entity")]

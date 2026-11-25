@@ -6,7 +6,12 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
     pub challenge_id: i32,
-    #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "B",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub tag_id: String,
 }
 
@@ -15,13 +20,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "_ChallengeToTag_A_fkey"
     )]
     Challenge,
     #[sea_orm(
         belongs_to = "super::tag::Entity",
         from = "Column::TagId",
-        to = "super::tag::Column::Id"
+        to = "super::tag::Column::Id",
+        fk_name = "_ChallengeToTag_B_fkey"
     )]
     Tag,
 }

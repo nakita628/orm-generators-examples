@@ -13,13 +13,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Topic")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "parentId")]
+    #[sea_orm(column_name = "parentId", column_type = "Text")]
     pub parent_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub embeddings_model: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub centroid: Json,
     #[sea_orm(column_name = "p95Distance")]
     pub p95_distance: f64,
@@ -29,11 +33,19 @@ pub struct Model {
     /// event log). Null means the row predates event ownership and has not
     /// been seeded onto the stream yet; the projection sets it on every row
     /// it writes.
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -42,7 +54,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Topic_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -50,7 +63,8 @@ pub enum Relation {
         from = "Column::ParentId",
         to = "super::topic::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Topic_parentId_fkey"
     )]
     Parent,
     #[sea_orm(

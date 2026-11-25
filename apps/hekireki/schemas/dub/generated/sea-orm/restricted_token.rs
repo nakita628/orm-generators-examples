@@ -7,27 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RestrictedToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedKey")]
+    #[sea_orm(column_name = "hashedKey", column_type = "String(StringLen::N(191))")]
     pub hashed_key: String,
-    #[sea_orm(column_name = "partialKey")]
+    #[sea_orm(column_name = "partialKey", column_type = "String(StringLen::N(191))")]
     pub partial_key: String,
     #[sea_orm(column_type = "Text")]
     pub scopes: Option<String>,
+    #[sea_orm(column_type = "custom(\"datetime(3)\")")]
     pub expires: Option<DateTime>,
-    #[sea_orm(column_name = "lastUsed")]
+    #[sea_orm(column_name = "lastUsed", column_type = "custom(\"datetime(3)\")")]
     pub last_used: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: String,
-    #[sea_orm(column_name = "installationId")]
+    #[sea_orm(
+        column_name = "installationId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub installation_id: Option<String>,
 }
 
@@ -37,21 +47,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RestrictedToken_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RestrictedToken_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::installed_integration::Entity",
         from = "Column::InstallationId",
         to = "super::installed_integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RestrictedToken_installationId_fkey"
     )]
     InstalledIntegration,
     #[sea_orm(has_many = "super::oauth_refresh_token::Entity")]

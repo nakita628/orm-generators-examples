@@ -25,14 +25,14 @@ import (
 // @property autoSelectLanguage - The browser's language picks the texts' language when the site sets none; null (never chosen, as on Survey) is off.
 type Creative struct {
 	ID                 string                  `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt          DateTime                `gorm:"column:created_at;index:Creative_workspaceId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt          DateTime                `gorm:"column:updated_at;index:Creative_workspaceId_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name               string                  `gorm:"column:name;index:Creative_workspaceId_name_idx;not null" json:"name"`
+	CreatedAt          DateTime                `gorm:"column:created_at;index:Creative_workspaceId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt          DateTime                `gorm:"column:updated_at;index:Creative_workspaceId_updated_at_idx,priority:2;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	Name               string                  `gorm:"column:name;index:Creative_workspaceId_name_idx,priority:2;not null" json:"name"`
 	Type               string                  `gorm:"column:type;not null" json:"type"`
 	Status             string                  `gorm:"column:status;default:'draft';not null" json:"status"`
 	PublishedAt        *DateTime               `gorm:"column:publishedAt;type:timestamp(3)" json:"publishedAt"`
 	ArchivedAt         *DateTime               `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
-	WorkspaceID        string                  `gorm:"column:workspaceId;index:Creative_workspaceId_updated_at_idx;index:Creative_workspaceId_created_at_idx;index:Creative_workspaceId_name_idx;not null" json:"workspaceId"`
+	WorkspaceID        string                  `gorm:"column:workspaceId;index:Creative_workspaceId_updated_at_idx,priority:1;index:Creative_workspaceId_created_at_idx,priority:1;index:Creative_workspaceId_name_idx,priority:1;not null" json:"workspaceId"`
 	CreatedBy          *string                 `gorm:"column:createdBy" json:"createdBy"`
 	Content            datatypes.JSON          `gorm:"column:content;not null" json:"content"`
 	Styling            datatypes.JSON          `gorm:"column:styling;not null" json:"styling"`
@@ -119,8 +119,8 @@ type CreativeTrigger struct {
 	ID            string       `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt     DateTime     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt     DateTime     `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	CreativeID    string       `gorm:"column:creativeId;uniqueIndex:CreativeTrigger_creativeId_actionClassId_key;not null" json:"creativeId"`
-	ActionClassID string       `gorm:"column:actionClassId;uniqueIndex:CreativeTrigger_creativeId_actionClassId_key;index:CreativeTrigger_actionClassId_idx;not null" json:"actionClassId"`
+	CreativeID    string       `gorm:"column:creativeId;uniqueIndex:CreativeTrigger_creativeId_actionClassId_key,priority:1;not null" json:"creativeId"`
+	ActionClassID string       `gorm:"column:actionClassId;uniqueIndex:CreativeTrigger_creativeId_actionClassId_key,priority:2;index:CreativeTrigger_actionClassId_idx;not null" json:"actionClassId"`
 	Creative      *Creative    `gorm:"belongsTo"`
 	ActionClass   *ActionClass `gorm:"belongsTo"`
 }
@@ -168,36 +168,36 @@ func (CreativeLanguage) TableName() string {
 // Metadata for an outbound email attempt. Content and recipient addresses are never stored here.
 // Identifiers are deliberately not foreign keys so erasure can scrub a row without retaining source data.
 type OutboundEmailAudit struct {
-	ID                    string    `gorm:"column:id;primaryKey;index:OutboundEmailAudit_environment_createdAt_id_idx;index:OutboundEmailAudit_organizationId_createdAt_id_idx;index:OutboundEmailAudit_surveyId_createdAt_id_idx;index:OutboundEmailAudit_responseId_createdAt_id_idx;index:OutboundEmailAudit_actorUserId_createdAt_id_idx;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx;index:OutboundEmailAudit_recipientMac_createdAt_id_idx;index:OutboundEmailAudit_status_createdAt_id_idx;index:OutboundEmailAudit_contentExpiresAt_id_idx;index:OutboundEmailAudit_expiresAt_id_idx;index:OutboundEmailAudit_erasureRequestedAt_id_idx;index:OutboundEmailAudit_contentDeleteRetryAt_id_idx" json:"id"`
-	CreatedAt             DateTime  `gorm:"column:createdAt;index:OutboundEmailAudit_environment_createdAt_id_idx;index:OutboundEmailAudit_organizationId_createdAt_id_idx;index:OutboundEmailAudit_surveyId_createdAt_id_idx;index:OutboundEmailAudit_responseId_createdAt_id_idx;index:OutboundEmailAudit_actorUserId_createdAt_id_idx;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx;index:OutboundEmailAudit_recipientMac_createdAt_id_idx;index:OutboundEmailAudit_status_createdAt_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	ID                    string    `gorm:"column:id;primaryKey;index:OutboundEmailAudit_environment_createdAt_id_idx,priority:3;index:OutboundEmailAudit_organizationId_createdAt_id_idx,priority:3;index:OutboundEmailAudit_surveyId_createdAt_id_idx,priority:3;index:OutboundEmailAudit_responseId_createdAt_id_idx,priority:3;index:OutboundEmailAudit_actorUserId_createdAt_id_idx,priority:3;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx,priority:3;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx,priority:3;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx,priority:3;index:OutboundEmailAudit_recipientMac_createdAt_id_idx,priority:3;index:OutboundEmailAudit_status_createdAt_id_idx,priority:3;index:OutboundEmailAudit_contentExpiresAt_id_idx,priority:2;index:OutboundEmailAudit_expiresAt_id_idx,priority:2;index:OutboundEmailAudit_erasureRequestedAt_id_idx,priority:2;index:OutboundEmailAudit_contentDeleteRetryAt_id_idx,priority:2" json:"id"`
+	CreatedAt             DateTime  `gorm:"column:createdAt;index:OutboundEmailAudit_environment_createdAt_id_idx,priority:2;index:OutboundEmailAudit_organizationId_createdAt_id_idx,priority:2;index:OutboundEmailAudit_surveyId_createdAt_id_idx,priority:2;index:OutboundEmailAudit_responseId_createdAt_id_idx,priority:2;index:OutboundEmailAudit_actorUserId_createdAt_id_idx,priority:2;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx,priority:2;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx,priority:2;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx,priority:2;index:OutboundEmailAudit_recipientMac_createdAt_id_idx,priority:2;index:OutboundEmailAudit_status_createdAt_id_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt             DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	ExpiresAt             DateTime  `gorm:"column:expiresAt;index:OutboundEmailAudit_expiresAt_id_idx;type:timestamp(3);not null" json:"expiresAt"`
-	ContentExpiresAt      DateTime  `gorm:"column:contentExpiresAt;index:OutboundEmailAudit_contentExpiresAt_id_idx;type:timestamp(3);not null" json:"contentExpiresAt"`
-	Environment           string    `gorm:"column:environment;index:OutboundEmailAudit_environment_createdAt_id_idx;not null" json:"environment"`
+	ExpiresAt             DateTime  `gorm:"column:expiresAt;index:OutboundEmailAudit_expiresAt_id_idx,priority:1;type:timestamp(3);not null" json:"expiresAt"`
+	ContentExpiresAt      DateTime  `gorm:"column:contentExpiresAt;index:OutboundEmailAudit_contentExpiresAt_id_idx,priority:1;type:timestamp(3);not null" json:"contentExpiresAt"`
+	Environment           string    `gorm:"column:environment;index:OutboundEmailAudit_environment_createdAt_id_idx,priority:1;not null" json:"environment"`
 	EmailType             string    `gorm:"column:emailType;not null" json:"emailType"`
 	Trigger               string    `gorm:"column:trigger;not null" json:"trigger"`
 	ActorKind             string    `gorm:"column:actorKind;not null" json:"actorKind"`
-	ActorUserID           *string   `gorm:"column:actorUserId;index:OutboundEmailAudit_actorUserId_createdAt_id_idx" json:"actorUserId"`
-	ConfiguredByUserID    *string   `gorm:"column:configuredByUserId;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx" json:"configuredByUserId"`
-	ActorUserHash         *string   `gorm:"column:actorUserHash;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx" json:"actorUserHash"`
-	ConfiguredByUserHash  *string   `gorm:"column:configuredByUserHash;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx" json:"configuredByUserHash"`
-	OrganizationID        *string   `gorm:"column:organizationId;index:OutboundEmailAudit_organizationId_createdAt_id_idx" json:"organizationId"`
-	SurveyID              *string   `gorm:"column:surveyId;index:OutboundEmailAudit_surveyId_createdAt_id_idx" json:"surveyId"`
-	ResponseID            *string   `gorm:"column:responseId;index:OutboundEmailAudit_responseId_createdAt_id_idx" json:"responseId"`
+	ActorUserID           *string   `gorm:"column:actorUserId;index:OutboundEmailAudit_actorUserId_createdAt_id_idx,priority:1" json:"actorUserId"`
+	ConfiguredByUserID    *string   `gorm:"column:configuredByUserId;index:OutboundEmailAudit_configuredByUserId_createdAt_id_idx,priority:1" json:"configuredByUserId"`
+	ActorUserHash         *string   `gorm:"column:actorUserHash;index:OutboundEmailAudit_actorUserHash_createdAt_id_idx,priority:1" json:"actorUserHash"`
+	ConfiguredByUserHash  *string   `gorm:"column:configuredByUserHash;index:OutboundEmailAudit_configuredByUserHash_createdAt_id_idx,priority:1" json:"configuredByUserHash"`
+	OrganizationID        *string   `gorm:"column:organizationId;index:OutboundEmailAudit_organizationId_createdAt_id_idx,priority:1" json:"organizationId"`
+	SurveyID              *string   `gorm:"column:surveyId;index:OutboundEmailAudit_surveyId_createdAt_id_idx,priority:1" json:"surveyId"`
+	ResponseID            *string   `gorm:"column:responseId;index:OutboundEmailAudit_responseId_createdAt_id_idx,priority:1" json:"responseId"`
 	FollowUpID            *string   `gorm:"column:followUpId" json:"followUpId"`
 	WorkflowID            *string   `gorm:"column:workflowId" json:"workflowId"`
 	WorkflowRunID         *string   `gorm:"column:workflowRunId" json:"workflowRunId"`
 	InviteID              *string   `gorm:"column:inviteId" json:"inviteId"`
-	RecipientMac          *string   `gorm:"column:recipientMac;index:OutboundEmailAudit_recipientMac_createdAt_id_idx" json:"recipientMac"`
+	RecipientMac          *string   `gorm:"column:recipientMac;index:OutboundEmailAudit_recipientMac_createdAt_id_idx,priority:1" json:"recipientMac"`
 	SesMessageHash        *string   `gorm:"column:sesMessageHash;index:OutboundEmailAudit_sesMessageHash_idx" json:"sesMessageHash"`
 	SnapshotKey           *string   `gorm:"column:snapshotKey" json:"snapshotKey"`
 	SnapshotSha256        *string   `gorm:"column:snapshotSha256" json:"snapshotSha256"`
-	Status                *string   `gorm:"column:status;index:OutboundEmailAudit_status_createdAt_id_idx;default:'prepared';not null" json:"status"`
+	Status                *string   `gorm:"column:status;index:OutboundEmailAudit_status_createdAt_id_idx,priority:1;default:'prepared';not null" json:"status"`
 	StatusRecordedAt      *DateTime `gorm:"column:statusRecordedAt;type:timestamp(3)" json:"statusRecordedAt"`
 	AuditGap              bool      `gorm:"column:auditGap;default:false;not null" json:"auditGap"`
-	ErasureRequestedAt    *DateTime `gorm:"column:erasureRequestedAt;index:OutboundEmailAudit_erasureRequestedAt_id_idx;type:timestamp(3)" json:"erasureRequestedAt"`
+	ErasureRequestedAt    *DateTime `gorm:"column:erasureRequestedAt;index:OutboundEmailAudit_erasureRequestedAt_id_idx,priority:1;type:timestamp(3)" json:"erasureRequestedAt"`
 	ErasedAt              *DateTime `gorm:"column:erasedAt;type:timestamp(3)" json:"erasedAt"`
-	ContentDeleteRetryAt  *DateTime `gorm:"column:contentDeleteRetryAt;index:OutboundEmailAudit_contentDeleteRetryAt_id_idx;type:timestamp(3)" json:"contentDeleteRetryAt"`
+	ContentDeleteRetryAt  *DateTime `gorm:"column:contentDeleteRetryAt;index:OutboundEmailAudit_contentDeleteRetryAt_id_idx,priority:1;type:timestamp(3)" json:"contentDeleteRetryAt"`
 	ContentDeleteFailures int       `gorm:"column:contentDeleteFailures;size:32;default:0;not null" json:"contentDeleteFailures"`
 }
 
@@ -230,13 +230,13 @@ func (*OutboundEmailAudit) BeforeUpdate(tx *gorm.DB) error {
 // Holds an account erasure request across an in-flight email send. The address is never stored.
 // The user id is removed once deletion is confirmed; one-way recovery keys expire after 90 days.
 type OutboundEmailAuditErasureIntent struct {
-	ID           string    `gorm:"column:id;primaryKey;index:OutboundEmailAuditErasureIntent_checkedAt_id_idx" json:"id"`
+	ID           string    `gorm:"column:id;primaryKey;index:OutboundEmailAuditErasureIntent_checkedAt_id_idx,priority:2" json:"id"`
 	UserID       *string   `gorm:"column:userId;index:OutboundEmailAuditErasureIntent_userId_idx" json:"userId"`
-	UserHash     string    `gorm:"column:userHash;index:OutboundEmailAuditErasureIntent_userHash_activatedAt_idx;not null" json:"userHash"`
-	RecipientMac string    `gorm:"column:recipientMac;index:OutboundEmailAuditErasureIntent_recipientMac_activatedAt_idx;not null" json:"recipientMac"`
+	UserHash     string    `gorm:"column:userHash;index:OutboundEmailAuditErasureIntent_userHash_activatedAt_idx,priority:1;not null" json:"userHash"`
+	RecipientMac string    `gorm:"column:recipientMac;index:OutboundEmailAuditErasureIntent_recipientMac_activatedAt_idx,priority:1;not null" json:"recipientMac"`
 	CreatedAt    DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	ActivatedAt  *DateTime `gorm:"column:activatedAt;index:OutboundEmailAuditErasureIntent_recipientMac_activatedAt_idx;index:OutboundEmailAuditErasureIntent_userHash_activatedAt_idx;type:timestamp(3)" json:"activatedAt"`
-	CheckedAt    *DateTime `gorm:"column:checkedAt;index:OutboundEmailAuditErasureIntent_checkedAt_id_idx;type:timestamp(3)" json:"checkedAt"`
+	ActivatedAt  *DateTime `gorm:"column:activatedAt;index:OutboundEmailAuditErasureIntent_recipientMac_activatedAt_idx,priority:2;index:OutboundEmailAuditErasureIntent_userHash_activatedAt_idx,priority:2;type:timestamp(3)" json:"activatedAt"`
+	CheckedAt    *DateTime `gorm:"column:checkedAt;index:OutboundEmailAuditErasureIntent_checkedAt_id_idx,priority:1;type:timestamp(3)" json:"checkedAt"`
 	ExpiresAt    DateTime  `gorm:"column:expiresAt;index:OutboundEmailAuditErasureIntent_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
 }
 
@@ -318,11 +318,11 @@ type ContactAttribute struct {
 	ID             string               `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt      DateTime             `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime             `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	AttributeKeyID string               `gorm:"column:attributeKeyId;uniqueIndex:ContactAttribute_contactId_attributeKeyId_key;index:ContactAttribute_attributeKeyId_value_idx;index:ContactAttribute_attributeKeyId_valueNumber_idx;index:ContactAttribute_attributeKeyId_valueDate_idx;not null" json:"attributeKeyId"`
-	ContactID      string               `gorm:"column:contactId;uniqueIndex:ContactAttribute_contactId_attributeKeyId_key;not null" json:"contactId"`
-	Value          string               `gorm:"column:value;index:ContactAttribute_attributeKeyId_value_idx;not null" json:"value"`
-	ValueNumber    *float64             `gorm:"column:valueNumber;index:ContactAttribute_attributeKeyId_valueNumber_idx;type:double precision" json:"valueNumber"`
-	ValueDate      *DateTime            `gorm:"column:valueDate;index:ContactAttribute_attributeKeyId_valueDate_idx;type:timestamp(3)" json:"valueDate"`
+	AttributeKeyID string               `gorm:"column:attributeKeyId;uniqueIndex:ContactAttribute_contactId_attributeKeyId_key,priority:2;index:ContactAttribute_attributeKeyId_value_idx,priority:1;index:ContactAttribute_attributeKeyId_valueNumber_idx,priority:1;index:ContactAttribute_attributeKeyId_valueDate_idx,priority:1;not null" json:"attributeKeyId"`
+	ContactID      string               `gorm:"column:contactId;uniqueIndex:ContactAttribute_contactId_attributeKeyId_key,priority:1;not null" json:"contactId"`
+	Value          string               `gorm:"column:value;index:ContactAttribute_attributeKeyId_value_idx,priority:2;not null" json:"value"`
+	ValueNumber    *float64             `gorm:"column:valueNumber;index:ContactAttribute_attributeKeyId_valueNumber_idx,priority:2;type:double precision" json:"valueNumber"`
+	ValueDate      *DateTime            `gorm:"column:valueDate;index:ContactAttribute_attributeKeyId_valueDate_idx,priority:2;type:timestamp(3)" json:"valueDate"`
 	AttributeKey   *ContactAttributeKey `gorm:"foreignKey:AttributeKeyID;belongsTo"`
 	Contact        *Contact             `gorm:"belongsTo"`
 }
@@ -365,15 +365,15 @@ func (*ContactAttribute) BeforeUpdate(tx *gorm.DB) error {
 // @property workspace - The workspace this attribute belongs to
 type ContactAttributeKey struct {
 	ID               string                  `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt        DateTime                `gorm:"column:created_at;index:ContactAttributeKey_workspaceId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt        DateTime                `gorm:"column:created_at;index:ContactAttributeKey_workspaceId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt        DateTime                `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	IsUnique         bool                    `gorm:"column:isUnique;default:false;not null" json:"isUnique"`
-	Key              string                  `gorm:"column:key;uniqueIndex:ContactAttributeKey_key_workspaceId_key;not null" json:"key"`
+	Key              string                  `gorm:"column:key;uniqueIndex:ContactAttributeKey_key_workspaceId_key,priority:1;not null" json:"key"`
 	Name             *string                 `gorm:"column:name" json:"name"`
 	Description      *string                 `gorm:"column:description" json:"description"`
 	Type             string                  `gorm:"column:type;default:'custom';not null" json:"type"`
 	DataType         string                  `gorm:"column:dataType;default:'string';not null" json:"dataType"`
-	WorkspaceID      string                  `gorm:"column:workspaceId;uniqueIndex:ContactAttributeKey_key_workspaceId_key;index:ContactAttributeKey_workspaceId_created_at_idx;not null" json:"workspaceId"`
+	WorkspaceID      string                  `gorm:"column:workspaceId;uniqueIndex:ContactAttributeKey_key_workspaceId_key,priority:2;index:ContactAttributeKey_workspaceId_created_at_idx,priority:1;not null" json:"workspaceId"`
 	Workspace        *Workspace              `gorm:"belongsTo"`
 	Attributes       []ContactAttribute      `gorm:"foreignKey:AttributeKeyID;constraint:ContactAttribute_attributeKeyId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	AttributeFilters []SurveyAttributeFilter `gorm:"foreignKey:AttributeKeyID;constraint:SurveyAttributeFilter_attributeKeyId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -462,12 +462,12 @@ func (*Contact) BeforeUpdate(tx *gorm.DB) error {
 // @property ttc - Time to completion metrics
 // @property meta - Additional metadata about the response
 type Response struct {
-	ID        string   `gorm:"column:id;primaryKey;index:Response_created_at_id_idx;index:Response_surveyId_created_at_id_idx;index:Response_contactId_created_at_id_idx" json:"id"`
-	CreatedAt DateTime `gorm:"column:created_at;index:Response_created_at_idx;index:Response_created_at_id_idx;index:Response_surveyId_created_at_idx;index:Response_surveyId_created_at_id_idx;index:Response_contactId_created_at_idx;index:Response_contactId_created_at_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	ID        string   `gorm:"column:id;primaryKey;index:Response_created_at_id_idx,priority:2;index:Response_surveyId_created_at_id_idx,priority:3;index:Response_contactId_created_at_id_idx,priority:3" json:"id"`
+	CreatedAt DateTime `gorm:"column:created_at;index:Response_created_at_idx;index:Response_created_at_id_idx,priority:1;index:Response_surveyId_created_at_idx,priority:2;index:Response_surveyId_created_at_id_idx,priority:2;index:Response_contactId_created_at_idx,priority:2;index:Response_contactId_created_at_id_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
-	Finished  bool     `gorm:"column:finished;index:Response_surveyId_finished_idx;default:false;not null" json:"finished"`
-	SurveyID  string   `gorm:"column:surveyId;uniqueIndex:Response_surveyId_singleUseId_key;index:Response_surveyId_created_at_idx;index:Response_surveyId_created_at_id_idx;index:Response_surveyId_finished_idx;not null" json:"surveyId"`
-	ContactID *string  `gorm:"column:contactId;index:Response_contactId_created_at_idx;index:Response_contactId_created_at_id_idx" json:"contactId"`
+	Finished  bool     `gorm:"column:finished;index:Response_surveyId_finished_idx,priority:2;default:false;not null" json:"finished"`
+	SurveyID  string   `gorm:"column:surveyId;uniqueIndex:Response_surveyId_singleUseId_key,priority:1;index:Response_surveyId_created_at_idx,priority:1;index:Response_surveyId_created_at_id_idx,priority:1;index:Response_surveyId_finished_idx,priority:1;not null" json:"surveyId"`
+	ContactID *string  `gorm:"column:contactId;index:Response_contactId_created_at_idx,priority:1;index:Response_contactId_created_at_id_idx,priority:1" json:"contactId"`
 	EndingID  *string  `gorm:"column:endingId" json:"endingId"`
 	// [ResponseData]
 	Data datatypes.JSON `gorm:"column:data;default:'{}';not null" json:"data"`
@@ -504,7 +504,7 @@ type Response struct {
 	NotShown datatypes.JSON `gorm:"column:not_shown" json:"not_shown"`
 	// [ResponseContactAttributes]
 	ContactAttributes datatypes.JSON      `gorm:"column:contactAttributes" json:"contactAttributes"`
-	SingleUseID       *string             `gorm:"column:singleUseId;uniqueIndex:Response_surveyId_singleUseId_key" json:"singleUseId"`
+	SingleUseID       *string             `gorm:"column:singleUseId;uniqueIndex:Response_surveyId_singleUseId_key,priority:2" json:"singleUseId"`
 	Language          *string             `gorm:"column:language" json:"language"`
 	DisplayID         *string             `gorm:"column:displayId;uniqueIndex:Response_displayId_key" json:"displayId"`
 	Survey            *Survey             `gorm:"belongsTo"`
@@ -552,8 +552,8 @@ type Tag struct {
 	ID          string            `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime          `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime          `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name        string            `gorm:"column:name;uniqueIndex:Tag_workspaceId_name_key;not null" json:"name"`
-	WorkspaceID string            `gorm:"column:workspaceId;uniqueIndex:Tag_workspaceId_name_key;index:Tag_workspaceId_idx;not null" json:"workspaceId"`
+	Name        string            `gorm:"column:name;uniqueIndex:Tag_workspaceId_name_key,priority:2;not null" json:"name"`
+	WorkspaceID string            `gorm:"column:workspaceId;uniqueIndex:Tag_workspaceId_name_key,priority:1;index:Tag_workspaceId_idx;not null" json:"workspaceId"`
 	Workspace   *Workspace        `gorm:"belongsTo"`
 	Responses   []TagsOnResponses `gorm:"foreignKey:TagID;constraint:TagsOnResponses_tagId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -610,10 +610,10 @@ func (TagsOnResponses) TableName() string {
 // @property creativeId - The creative that opened the survey. No foreign key, so the record survives the creative's deletion.
 type Display struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt  DateTime  `gorm:"column:created_at;index:Display_contactId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt  DateTime  `gorm:"column:created_at;index:Display_contactId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt  DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	SurveyID   string    `gorm:"column:surveyId;index:Display_surveyId_idx;not null" json:"surveyId"`
-	ContactID  *string   `gorm:"column:contactId;index:Display_contactId_created_at_idx" json:"contactId"`
+	ContactID  *string   `gorm:"column:contactId;index:Display_contactId_created_at_idx,priority:1" json:"contactId"`
 	CreativeID *string   `gorm:"column:creativeId" json:"creativeId"`
 	Survey     *Survey   `gorm:"belongsTo"`
 	Contact    *Contact  `gorm:"belongsTo"`
@@ -660,8 +660,8 @@ type SurveyTrigger struct {
 	ID            string       `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt     DateTime     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt     DateTime     `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	SurveyID      string       `gorm:"column:surveyId;uniqueIndex:SurveyTrigger_surveyId_actionClassId_key;not null" json:"surveyId"`
-	ActionClassID string       `gorm:"column:actionClassId;uniqueIndex:SurveyTrigger_surveyId_actionClassId_key;not null" json:"actionClassId"`
+	SurveyID      string       `gorm:"column:surveyId;uniqueIndex:SurveyTrigger_surveyId_actionClassId_key,priority:1;not null" json:"surveyId"`
+	ActionClassID string       `gorm:"column:actionClassId;uniqueIndex:SurveyTrigger_surveyId_actionClassId_key,priority:2;not null" json:"actionClassId"`
 	Survey        *Survey      `gorm:"belongsTo"`
 	ActionClass   *ActionClass `gorm:"belongsTo"`
 }
@@ -704,8 +704,8 @@ type SurveyAttributeFilter struct {
 	ID             string               `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt      DateTime             `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime             `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	AttributeKeyID string               `gorm:"column:attributeKeyId;uniqueIndex:SurveyAttributeFilter_surveyId_attributeKeyId_key;index:SurveyAttributeFilter_attributeKeyId_idx;not null" json:"attributeKeyId"`
-	SurveyID       string               `gorm:"column:surveyId;uniqueIndex:SurveyAttributeFilter_surveyId_attributeKeyId_key;not null" json:"surveyId"`
+	AttributeKeyID string               `gorm:"column:attributeKeyId;uniqueIndex:SurveyAttributeFilter_surveyId_attributeKeyId_key,priority:2;index:SurveyAttributeFilter_attributeKeyId_idx;not null" json:"attributeKeyId"`
+	SurveyID       string               `gorm:"column:surveyId;uniqueIndex:SurveyAttributeFilter_surveyId_attributeKeyId_key,priority:1;not null" json:"surveyId"`
 	Condition      string               `gorm:"column:condition;not null" json:"condition"`
 	Value          string               `gorm:"column:value;not null" json:"value"`
 	AttributeKey   *ContactAttributeKey `gorm:"foreignKey:AttributeKeyID;belongsTo"`
@@ -758,18 +758,18 @@ type Survey struct {
 	// [SurveyVariables]
 	Variables            datatypes.JSON `gorm:"column:variables;default:'[]';not null" json:"variables"`
 	OwnershipInitialized bool           `gorm:"column:ownershipInitialized;default:false;not null" json:"ownershipInitialized"`
-	ID                   string         `gorm:"column:id;primaryKey;uniqueIndex:Survey_id_workspaceId_key" json:"id"`
+	ID                   string         `gorm:"column:id;primaryKey;uniqueIndex:Survey_id_workspaceId_key,priority:1" json:"id"`
 	CreatedAt            DateTime       `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt            DateTime       `gorm:"column:updated_at;index:Survey_workspaceId_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	UpdatedAt            DateTime       `gorm:"column:updated_at;index:Survey_workspaceId_updated_at_idx,priority:2;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Name                 string         `gorm:"column:name;not null" json:"name"`
 	RedirectURL          *string        `gorm:"column:redirectUrl" json:"redirectUrl"`
 	Type                 string         `gorm:"column:type;default:'app';not null" json:"type"`
-	WorkspaceID          string         `gorm:"column:workspaceId;uniqueIndex:Survey_id_workspaceId_key;index:Survey_workspaceId_updated_at_idx;index:Survey_workspaceId_ownerId_idx;not null" json:"workspaceId"`
+	WorkspaceID          string         `gorm:"column:workspaceId;uniqueIndex:Survey_id_workspaceId_key,priority:2;index:Survey_workspaceId_updated_at_idx,priority:1;index:Survey_workspaceId_ownerId_idx,priority:1;not null" json:"workspaceId"`
 	CreatedBy            *string        `gorm:"column:createdBy" json:"createdBy"`
 	// ENG-3282: authorization facts, projected into SpiceDB by the survey outbox trigger. `ownerId` is
 	// the durable ownership source; `createdBy` stays pure attribution and is never rewritten.
 	Visibility string  `gorm:"column:visibility;default:'workspace';not null" json:"visibility"`
-	OwnerID    *string `gorm:"column:ownerId;index:Survey_workspaceId_ownerId_idx" json:"ownerId"`
+	OwnerID    *string `gorm:"column:ownerId;index:Survey_workspaceId_ownerId_idx,priority:2" json:"ownerId"`
 	// Incremented by every accepted visibility change; fences projection work. An INSERT starts at 0
 	// with `visibilityProjectedVersion` -1 (the `survey_visibility_pending` trigger): the initial
 	// projection, decided from PostgreSQL facts until the projector acknowledges it.
@@ -782,7 +782,7 @@ type Survey struct {
 	VisibilityPending     bool      `gorm:"column:visibilityPending;default:false;not null" json:"visibilityPending"`
 	VisibilityChangedAt   *DateTime `gorm:"column:visibilityChangedAt;type:timestamp(3)" json:"visibilityChangedAt"`
 	VisibilityChangedByID *string   `gorm:"column:visibilityChangedById" json:"visibilityChangedById"`
-	Status                string    `gorm:"column:status;index:Survey_status_publishOn_idx;index:Survey_status_closeOn_idx;default:'draft';not null" json:"status"`
+	Status                string    `gorm:"column:status;index:Survey_status_publishOn_idx,priority:1;index:Survey_status_closeOn_idx,priority:1;default:'draft';not null" json:"status"`
 	// [SurveyWelcomeCard]
 	WelcomeCard datatypes.JSON `gorm:"column:welcomeCard;default:'{\"enabled\": false}';not null" json:"welcomeCard"`
 	// [SurveyQuestions]
@@ -800,8 +800,8 @@ type Survey struct {
 	KeepEndingCardOpen bool           `gorm:"column:keepEndingCardOpen;default:false;not null" json:"keepEndingCardOpen"`
 	AutoComplete       *int           `gorm:"column:autoComplete;size:32" json:"autoComplete"`
 	Delay              int            `gorm:"column:delay;size:32;default:0;not null" json:"delay"`
-	PublishOn          *DateTime      `gorm:"column:publishOn;index:Survey_status_publishOn_idx;type:timestamp(3)" json:"publishOn"`
-	CloseOn            *DateTime      `gorm:"column:closeOn;index:Survey_status_closeOn_idx;type:timestamp(3)" json:"closeOn"`
+	PublishOn          *DateTime      `gorm:"column:publishOn;index:Survey_status_publishOn_idx,priority:2;type:timestamp(3)" json:"publishOn"`
+	CloseOn            *DateTime      `gorm:"column:closeOn;index:Survey_status_closeOn_idx,priority:2;type:timestamp(3)" json:"closeOn"`
 	ArchivedAt         *DateTime      `gorm:"column:archivedAt;index:Survey_archivedAt_idx;type:timestamp(3)" json:"archivedAt"`
 	// [SurveyClosedMessage]
 	SurveyClosedMessage datatypes.JSON `gorm:"column:surveyClosedMessage" json:"surveyClosedMessage"`
@@ -902,8 +902,8 @@ type SurveyQuota struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	SurveyID  string   `gorm:"column:surveyId;uniqueIndex:SurveyQuota_surveyId_name_key;not null" json:"surveyId"`
-	Name      string   `gorm:"column:name;uniqueIndex:SurveyQuota_surveyId_name_key;not null" json:"name"`
+	SurveyID  string   `gorm:"column:surveyId;uniqueIndex:SurveyQuota_surveyId_name_key,priority:1;not null" json:"surveyId"`
+	Name      string   `gorm:"column:name;uniqueIndex:SurveyQuota_surveyId_name_key,priority:2;not null" json:"name"`
 	Limit     int      `gorm:"column:limit;size:32;not null" json:"limit"`
 	// [SurveyQuotaLogic]
 	Logic                   datatypes.JSON      `gorm:"column:logic;default:'{}';not null" json:"logic"`
@@ -948,8 +948,8 @@ func (*SurveyQuota) BeforeUpdate(tx *gorm.DB) error {
 // @property status - Whether the response was screened in or out
 type ResponseQuotaLink struct {
 	ResponseID string       `gorm:"column:responseId;primaryKey" json:"responseId"`
-	QuotaID    string       `gorm:"column:quotaId;primaryKey;index:ResponseQuotaLink_quotaId_status_idx" json:"quotaId"`
-	Status     string       `gorm:"column:status;index:ResponseQuotaLink_quotaId_status_idx;not null" json:"status"`
+	QuotaID    string       `gorm:"column:quotaId;primaryKey;index:ResponseQuotaLink_quotaId_status_idx,priority:1" json:"quotaId"`
+	Status     string       `gorm:"column:status;index:ResponseQuotaLink_quotaId_status_idx,priority:2;not null" json:"status"`
 	Response   *Response    `gorm:"belongsTo"`
 	Quota      *SurveyQuota `gorm:"foreignKey:QuotaID;belongsTo"`
 }
@@ -1016,15 +1016,15 @@ func (*SurveyFollowUp) BeforeUpdate(tx *gorm.DB) error {
 // @property workspace - The workspace this action belongs to
 type ActionClass struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt   DateTime `gorm:"column:created_at;index:ActionClass_workspaceId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt   DateTime `gorm:"column:created_at;index:ActionClass_workspaceId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name        string   `gorm:"column:name;uniqueIndex:ActionClass_name_workspaceId_key;not null" json:"name"`
+	Name        string   `gorm:"column:name;uniqueIndex:ActionClass_name_workspaceId_key,priority:1;not null" json:"name"`
 	Description *string  `gorm:"column:description" json:"description"`
 	Type        string   `gorm:"column:type;not null" json:"type"`
-	Key         *string  `gorm:"column:key;uniqueIndex:ActionClass_key_workspaceId_key" json:"key"`
+	Key         *string  `gorm:"column:key;uniqueIndex:ActionClass_key_workspaceId_key,priority:1" json:"key"`
 	// [ActionClassNoCodeConfig]
 	NoCodeConfig     datatypes.JSON    `gorm:"column:noCodeConfig" json:"noCodeConfig"`
-	WorkspaceID      string            `gorm:"column:workspaceId;uniqueIndex:ActionClass_key_workspaceId_key;uniqueIndex:ActionClass_name_workspaceId_key;index:ActionClass_workspaceId_created_at_idx;not null" json:"workspaceId"`
+	WorkspaceID      string            `gorm:"column:workspaceId;uniqueIndex:ActionClass_key_workspaceId_key,priority:2;uniqueIndex:ActionClass_name_workspaceId_key,priority:2;index:ActionClass_workspaceId_created_at_idx,priority:1;not null" json:"workspaceId"`
 	Workspace        *Workspace        `gorm:"belongsTo"`
 	SurveyTriggers   []SurveyTrigger   `gorm:"foreignKey:ActionClassID;constraint:SurveyTrigger_actionClassId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CreativeTriggers []CreativeTrigger `gorm:"foreignKey:ActionClassID;constraint:CreativeTrigger_actionClassId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1065,10 +1065,10 @@ func (*ActionClass) BeforeUpdate(tx *gorm.DB) error {
 // @property config - Service-specific configuration details
 type Integration struct {
 	ID   string `gorm:"column:id;primaryKey" json:"id"`
-	Type string `gorm:"column:type;uniqueIndex:Integration_type_workspaceId_key;not null" json:"type"`
+	Type string `gorm:"column:type;uniqueIndex:Integration_type_workspaceId_key,priority:1;not null" json:"type"`
 	// [IntegrationConfig]
 	Config      datatypes.JSON `gorm:"column:config;not null" json:"config"`
-	WorkspaceID string         `gorm:"column:workspaceId;uniqueIndex:Integration_type_workspaceId_key;index:Integration_workspaceId_idx;not null" json:"workspaceId"`
+	WorkspaceID string         `gorm:"column:workspaceId;uniqueIndex:Integration_type_workspaceId_key,priority:2;index:Integration_workspaceId_idx;not null" json:"workspaceId"`
 	Workspace   *Workspace     `gorm:"belongsTo"`
 }
 
@@ -1129,9 +1129,9 @@ type Workspace struct {
 	ID                  string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt           DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt           DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name                string   `gorm:"column:name;uniqueIndex:Workspace_organizationId_name_key;not null" json:"name"`
+	Name                string   `gorm:"column:name;uniqueIndex:Workspace_organizationId_name_key,priority:2;not null" json:"name"`
 	LegacyEnvironmentID *string  `gorm:"column:legacyEnvironmentId;uniqueIndex:Workspace_legacyEnvironmentId_key" json:"legacyEnvironmentId"`
-	OrganizationID      string   `gorm:"column:organizationId;uniqueIndex:Workspace_organizationId_name_key;not null" json:"organizationId"`
+	OrganizationID      string   `gorm:"column:organizationId;uniqueIndex:Workspace_organizationId_name_key,priority:1;not null" json:"organizationId"`
 	// [Styling]
 	Styling datatypes.JSON `gorm:"column:styling;default:'{\"allowStyleOverwrite\":true}';not null" json:"styling"`
 	// [WorkspaceConfig]
@@ -1318,8 +1318,8 @@ func (*OrganizationBilling) BeforeUpdate(tx *gorm.DB) error {
 // @property accepted - Whether the user has accepted the membership
 // @property role - User's role within the organization (owner, manager, member, billing)
 type Membership struct {
-	OrganizationID string        `gorm:"column:organizationId;primaryKey;index:Membership_organizationId_idx" json:"organizationId"`
 	UserID         string        `gorm:"column:userId;primaryKey" json:"userId"`
+	OrganizationID string        `gorm:"column:organizationId;primaryKey;index:Membership_organizationId_idx" json:"organizationId"`
 	Accepted       bool          `gorm:"column:accepted;default:false;not null" json:"accepted"`
 	Role           string        `gorm:"column:role;default:'member';not null" json:"role"`
 	Organization   *Organization `gorm:"belongsTo"`
@@ -1345,9 +1345,9 @@ func (Membership) TableName() string {
 // @property teamIds - Teams the user will be added to upon acceptance
 type Invite struct {
 	ID             string             `gorm:"column:id;primaryKey" json:"id"`
-	Email          string             `gorm:"column:email;index:Invite_email_organizationId_idx;not null" json:"email"`
+	Email          string             `gorm:"column:email;index:Invite_email_organizationId_idx,priority:1;not null" json:"email"`
 	Name           *string            `gorm:"column:name" json:"name"`
-	OrganizationID string             `gorm:"column:organizationId;index:Invite_email_organizationId_idx;index:Invite_organizationId_idx;not null" json:"organizationId"`
+	OrganizationID string             `gorm:"column:organizationId;index:Invite_email_organizationId_idx,priority:2;index:Invite_organizationId_idx;not null" json:"organizationId"`
 	CreatorID      string             `gorm:"column:creatorId;not null" json:"creatorId"`
 	AcceptorID     *string            `gorm:"column:acceptorId" json:"acceptorId"`
 	CreatedAt      DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1425,8 +1425,8 @@ type APIKeyWorkspace struct {
 	ID          string     `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime   `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	APIKeyID    string     `gorm:"column:apiKeyId;uniqueIndex:ApiKeyWorkspace_apiKeyId_workspaceId_key;not null" json:"apiKeyId"`
-	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:ApiKeyWorkspace_apiKeyId_workspaceId_key;index:ApiKeyWorkspace_workspaceId_idx;not null" json:"workspaceId"`
+	APIKeyID    string     `gorm:"column:apiKeyId;uniqueIndex:ApiKeyWorkspace_apiKeyId_workspaceId_key,priority:1;not null" json:"apiKeyId"`
+	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:ApiKeyWorkspace_apiKeyId_workspaceId_key,priority:2;index:ApiKeyWorkspace_workspaceId_idx;not null" json:"workspaceId"`
 	Permission  string     `gorm:"column:permission;not null" json:"permission"`
 	APIKey      *APIKey    `gorm:"belongsTo"`
 	Workspace   *Workspace `gorm:"belongsTo"`
@@ -1473,8 +1473,8 @@ type Account struct {
 	UpdatedAt             DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	UserID                string    `gorm:"column:userId;index:Account_userId_idx;not null" json:"userId"`
 	Type                  *string   `gorm:"column:type" json:"type"`
-	Provider              string    `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID     string    `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;uniqueIndex:Account_issuer_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider              string    `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID     string    `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;uniqueIndex:Account_issuer_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	AccessToken           *string   `gorm:"column:access_token;type:text" json:"access_token"`
 	RefreshToken          *string   `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	ExpiresAt             *int      `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -1496,7 +1496,7 @@ type Account struct {
 	// NULLABLE on purpose. A NOT NULL column would fail every INSERT from a 1.6 pod still serving
 	// during a rolling deploy. The migration backfills every existing row; see the migration SQL for
 	// the value derivation.
-	Issuer *string `gorm:"column:issuer;uniqueIndex:Account_issuer_providerAccountId_key" json:"issuer"`
+	Issuer *string `gorm:"column:issuer;uniqueIndex:Account_issuer_providerAccountId_key,priority:1" json:"issuer"`
 	User   *User   `gorm:"belongsTo"`
 }
 
@@ -1573,8 +1573,8 @@ func (*Session) BeforeUpdate(tx *gorm.DB) error {
 
 // Stores one-time verification tokens used by Auth.js adapter flows.
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;primaryKey;uniqueIndex:VerificationToken_identifier_token_key" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_identifier_token_key" json:"token"`
+	Identifier string   `gorm:"column:identifier;primaryKey;uniqueIndex:VerificationToken_identifier_token_key,priority:1" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_identifier_token_key,priority:2" json:"token"`
 	Expires    DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
 }
 
@@ -1823,8 +1823,8 @@ type McpGrant struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	UserID    string   `gorm:"column:userId;uniqueIndex:McpGrant_userId_clientId_key;not null" json:"userId"`
-	ClientID  string   `gorm:"column:clientId;uniqueIndex:McpGrant_userId_clientId_key;index:McpGrant_clientId_idx;not null" json:"clientId"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:McpGrant_userId_clientId_key,priority:1;not null" json:"userId"`
+	ClientID  string   `gorm:"column:clientId;uniqueIndex:McpGrant_userId_clientId_key,priority:2;index:McpGrant_clientId_idx;not null" json:"clientId"`
 	// Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
 	// in `organizations` (and every workspace in them, later ones included), or only the workspaces in
 	// `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
@@ -1925,8 +1925,8 @@ func (m *OauthResource) BeforeCreate(_ *gorm.DB) error {
 // Both sides reference natural keys, matching the other oauth child tables.
 type OauthClientResource struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	ClientID   string         `gorm:"column:clientId;uniqueIndex:oauthClientResource_clientId_resourceId_key;not null" json:"clientId"`
-	ResourceID string         `gorm:"column:resourceId;uniqueIndex:oauthClientResource_clientId_resourceId_key;index:oauthClientResource_resourceId_idx;not null" json:"resourceId"`
+	ClientID   string         `gorm:"column:clientId;uniqueIndex:oauthClientResource_clientId_resourceId_key,priority:1;not null" json:"clientId"`
+	ResourceID string         `gorm:"column:resourceId;uniqueIndex:oauthClientResource_clientId_resourceId_key,priority:2;index:oauthClientResource_resourceId_idx;not null" json:"resourceId"`
 	Metadata   datatypes.JSON `gorm:"column:metadata" json:"metadata"`
 	CreatedAt  *DateTime      `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false" json:"createdAt"`
 	Client     *OauthClient   `gorm:"foreignKey:ClientID;references:ClientID;belongsTo"`
@@ -2106,12 +2106,12 @@ type Segment struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Title       string   `gorm:"column:title;uniqueIndex:Segment_workspaceId_title_key;not null" json:"title"`
+	Title       string   `gorm:"column:title;uniqueIndex:Segment_workspaceId_title_key,priority:2;not null" json:"title"`
 	Description *string  `gorm:"column:description" json:"description"`
 	IsPrivate   *bool    `gorm:"column:isPrivate;default:true;not null" json:"isPrivate"`
 	// [SegmentFilter]
 	Filters     datatypes.JSON `gorm:"column:filters;default:'[]';not null" json:"filters"`
-	WorkspaceID string         `gorm:"column:workspaceId;uniqueIndex:Segment_workspaceId_title_key;index:Segment_workspaceId_idx;not null" json:"workspaceId"`
+	WorkspaceID string         `gorm:"column:workspaceId;uniqueIndex:Segment_workspaceId_title_key,priority:1;index:Segment_workspaceId_idx;not null" json:"workspaceId"`
 	Workspace   *Workspace     `gorm:"belongsTo"`
 	Surveys     []Survey       `gorm:"foreignKey:SegmentID;constraint:Survey_segmentId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
@@ -2153,9 +2153,9 @@ type Language struct {
 	ID                string             `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt         DateTime           `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt         DateTime           `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Code              string             `gorm:"column:code;uniqueIndex:Language_workspaceId_code_key;not null" json:"code"`
+	Code              string             `gorm:"column:code;uniqueIndex:Language_workspaceId_code_key,priority:2;not null" json:"code"`
 	Alias             *string            `gorm:"column:alias" json:"alias"`
-	WorkspaceID       string             `gorm:"column:workspaceId;uniqueIndex:Language_workspaceId_code_key;not null" json:"workspaceId"`
+	WorkspaceID       string             `gorm:"column:workspaceId;uniqueIndex:Language_workspaceId_code_key,priority:1;not null" json:"workspaceId"`
 	Workspace         *Workspace         `gorm:"belongsTo"`
 	SurveyLanguages   []SurveyLanguage   `gorm:"foreignKey:LanguageID;constraint:SurveyLanguage_languageId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CreativeLanguages []CreativeLanguage `gorm:"foreignKey:LanguageID;constraint:CreativeLanguage_languageId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2226,10 +2226,10 @@ func (SurveyLanguage) TableName() string {
 // @property locked - Ingested only: ignore external writes and use the default instead
 // @property survey - The owning survey for a local field; cascades so nothing is orphaned
 type EmbeddedData struct {
-	ID          string   `gorm:"column:id;primaryKey;uniqueIndex:EmbeddedData_id_workspaceId_key" json:"id"`
+	ID          string   `gorm:"column:id;primaryKey;uniqueIndex:EmbeddedData_id_workspaceId_key,priority:1" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Key         *string  `gorm:"column:key;uniqueIndex:EmbeddedData_workspaceId_key_key" json:"key"`
+	Key         *string  `gorm:"column:key;uniqueIndex:EmbeddedData_workspaceId_key_key,priority:2" json:"key"`
 	Name        string   `gorm:"column:name;not null" json:"name"`
 	Description *string  `gorm:"column:description" json:"description"`
 	Source      string   `gorm:"column:source;not null" json:"source"`
@@ -2238,7 +2238,7 @@ type EmbeddedData struct {
 	DefaultValue datatypes.JSON       `gorm:"column:defaultValue" json:"defaultValue"`
 	Locked       bool                 `gorm:"column:locked;default:false;not null" json:"locked"`
 	SurveyID     *string              `gorm:"column:surveyId;index:EmbeddedData_surveyId_idx" json:"surveyId"`
-	WorkspaceID  string               `gorm:"column:workspaceId;uniqueIndex:EmbeddedData_workspaceId_key_key;uniqueIndex:EmbeddedData_id_workspaceId_key;not null" json:"workspaceId"`
+	WorkspaceID  string               `gorm:"column:workspaceId;uniqueIndex:EmbeddedData_workspaceId_key_key,priority:1;uniqueIndex:EmbeddedData_id_workspaceId_key,priority:2;not null" json:"workspaceId"`
 	Survey       *Survey              `gorm:"foreignKey:SurveyID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
 	Workspace    *Workspace           `gorm:"belongsTo"`
 	SurveyLinks  []SurveyEmbeddedData `gorm:"foreignKey:EmbeddedDataID,WorkspaceID;references:ID,WorkspaceID;constraint:SurveyEmbeddedData_embeddedDataId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2289,10 +2289,10 @@ func (*EmbeddedData) BeforeUpdate(tx *gorm.DB) error {
 type SurveyEmbeddedData struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
 	WorkspaceID    string        `gorm:"column:workspaceId;not null" json:"workspaceId"`
-	SurveyID       string        `gorm:"column:surveyId;uniqueIndex:SurveyEmbeddedData_surveyId_embeddedDataId_key;uniqueIndex:SurveyEmbeddedData_surveyId_storageKey_key;index:SurveyEmbeddedData_surveyId_order_idx;not null" json:"surveyId"`
-	EmbeddedDataID string        `gorm:"column:embeddedDataId;uniqueIndex:SurveyEmbeddedData_surveyId_embeddedDataId_key;index:SurveyEmbeddedData_embeddedDataId_idx;not null" json:"embeddedDataId"`
-	StorageKey     string        `gorm:"column:storageKey;uniqueIndex:SurveyEmbeddedData_surveyId_storageKey_key;not null" json:"storageKey"`
-	Order          int           `gorm:"column:order;index:SurveyEmbeddedData_surveyId_order_idx;size:32;not null" json:"order"`
+	SurveyID       string        `gorm:"column:surveyId;uniqueIndex:SurveyEmbeddedData_surveyId_embeddedDataId_key,priority:1;uniqueIndex:SurveyEmbeddedData_surveyId_storageKey_key,priority:1;index:SurveyEmbeddedData_surveyId_order_idx,priority:1;not null" json:"surveyId"`
+	EmbeddedDataID string        `gorm:"column:embeddedDataId;uniqueIndex:SurveyEmbeddedData_surveyId_embeddedDataId_key,priority:2;index:SurveyEmbeddedData_embeddedDataId_idx;not null" json:"embeddedDataId"`
+	StorageKey     string        `gorm:"column:storageKey;uniqueIndex:SurveyEmbeddedData_surveyId_storageKey_key,priority:2;not null" json:"storageKey"`
+	Order          int           `gorm:"column:order;index:SurveyEmbeddedData_surveyId_order_idx,priority:2;size:32;not null" json:"order"`
 	Survey         *Survey       `gorm:"foreignKey:SurveyID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
 	EmbeddedData   *EmbeddedData `gorm:"foreignKey:EmbeddedDataID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
 }
@@ -2320,8 +2320,8 @@ type Team struct {
 	ID             string          `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt      DateTime        `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime        `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name           string          `gorm:"column:name;uniqueIndex:Team_organizationId_name_key;not null" json:"name"`
-	OrganizationID string          `gorm:"column:organizationId;uniqueIndex:Team_organizationId_name_key;not null" json:"organizationId"`
+	Name           string          `gorm:"column:name;uniqueIndex:Team_organizationId_name_key,priority:2;not null" json:"name"`
+	OrganizationID string          `gorm:"column:organizationId;uniqueIndex:Team_organizationId_name_key,priority:1;not null" json:"organizationId"`
 	Organization   *Organization   `gorm:"belongsTo"`
 	TeamUsers      []TeamUser      `gorm:"foreignKey:TeamID;constraint:TeamUser_teamId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	WorkspaceTeams []WorkspaceTeam `gorm:"foreignKey:TeamID;constraint:WorkspaceTeam_teamId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2444,11 +2444,11 @@ func (*WorkspaceTeam) BeforeUpdate(tx *gorm.DB) error {
 // @property dashboards - Dashboards that use this chart
 type Chart struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt   DateTime `gorm:"column:created_at;index:Chart_workspaceId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt   DateTime `gorm:"column:created_at;index:Chart_workspaceId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name        string   `gorm:"column:name;uniqueIndex:Chart_workspaceId_name_key;not null" json:"name"`
+	Name        string   `gorm:"column:name;uniqueIndex:Chart_workspaceId_name_key,priority:2;not null" json:"name"`
 	Type        string   `gorm:"column:type;not null" json:"type"`
-	WorkspaceID string   `gorm:"column:workspaceId;uniqueIndex:Chart_workspaceId_name_key;index:Chart_workspaceId_created_at_idx;not null" json:"workspaceId"`
+	WorkspaceID string   `gorm:"column:workspaceId;uniqueIndex:Chart_workspaceId_name_key,priority:1;index:Chart_workspaceId_created_at_idx,priority:1;not null" json:"workspaceId"`
 	// [ChartQuery] - Cube.js query configuration
 	Query datatypes.JSON `gorm:"column:query;default:'{}';not null" json:"query"`
 	// [ChartConfig] - Visualization configuration (colors, labels, formatting)
@@ -2498,8 +2498,8 @@ type EmbeddedFieldLabel struct {
 	ID          string     `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime   `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime   `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key;not null" json:"workspaceId"`
-	Key         string     `gorm:"column:key;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key;not null" json:"key"`
+	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key,priority:1;not null" json:"workspaceId"`
+	Key         string     `gorm:"column:key;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key,priority:2;not null" json:"key"`
 	Label       string     `gorm:"column:label;not null" json:"label"`
 	Workspace   *Workspace `gorm:"belongsTo"`
 }
@@ -2542,10 +2542,10 @@ func (*EmbeddedFieldLabel) BeforeUpdate(tx *gorm.DB) error {
 // @property createdBy - User who created the dashboard
 type Dashboard struct {
 	ID          string            `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt   DateTime          `gorm:"column:created_at;index:Dashboard_workspaceId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt   DateTime          `gorm:"column:created_at;index:Dashboard_workspaceId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime          `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name        string            `gorm:"column:name;uniqueIndex:Dashboard_workspaceId_name_key;not null" json:"name"`
-	WorkspaceID string            `gorm:"column:workspaceId;uniqueIndex:Dashboard_workspaceId_name_key;index:Dashboard_workspaceId_created_at_idx;not null" json:"workspaceId"`
+	Name        string            `gorm:"column:name;uniqueIndex:Dashboard_workspaceId_name_key,priority:2;not null" json:"name"`
+	WorkspaceID string            `gorm:"column:workspaceId;uniqueIndex:Dashboard_workspaceId_name_key,priority:1;index:Dashboard_workspaceId_created_at_idx,priority:1;not null" json:"workspaceId"`
 	CreatedBy   *string           `gorm:"column:createdBy" json:"createdBy"`
 	Filters     datatypes.JSON    `gorm:"column:filters;default:'[]';not null" json:"filters"`
 	Workspace   *Workspace        `gorm:"belongsTo"`
@@ -2591,11 +2591,11 @@ type DashboardWidget struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	DashboardID string   `gorm:"column:dashboardId;uniqueIndex:DashboardWidget_dashboardId_chartId_key;index:DashboardWidget_dashboardId_order_idx;not null" json:"dashboardId"`
-	ChartID     string   `gorm:"column:chartId;uniqueIndex:DashboardWidget_dashboardId_chartId_key;not null" json:"chartId"`
+	DashboardID string   `gorm:"column:dashboardId;uniqueIndex:DashboardWidget_dashboardId_chartId_key,priority:1;index:DashboardWidget_dashboardId_order_idx,priority:1;not null" json:"dashboardId"`
+	ChartID     string   `gorm:"column:chartId;uniqueIndex:DashboardWidget_dashboardId_chartId_key,priority:2;not null" json:"chartId"`
 	// [WidgetLayout] - Grid layout: { x, y, w, h }
 	Layout    datatypes.JSON `gorm:"column:layout;default:'{\"x\":0,\"y\":0,\"w\":4,\"h\":3}';not null" json:"layout"`
-	Order     int            `gorm:"column:order;index:DashboardWidget_dashboardId_order_idx;size:32;default:0;not null" json:"order"`
+	Order     int            `gorm:"column:order;index:DashboardWidget_dashboardId_order_idx,priority:2;size:32;default:0;not null" json:"order"`
 	Dashboard *Dashboard     `gorm:"belongsTo"`
 	Chart     *Chart         `gorm:"belongsTo"`
 }
@@ -2632,11 +2632,11 @@ func (*DashboardWidget) BeforeUpdate(tx *gorm.DB) error {
 // queues nothing. A worker drains it with retries, never giving up, and deletes each row once done.
 type DeletionCleanup struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt DateTime `gorm:"column:created_at;index:DeletionCleanup_organizationId_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt DateTime `gorm:"column:created_at;index:DeletionCleanup_organizationId_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Kind      string   `gorm:"column:kind;not null" json:"kind"`
 	// Scoping and logs. Not foreign keys: the rows they name are usually gone already.
-	OrganizationID string `gorm:"column:organizationId;index:DeletionCleanup_organizationId_created_at_idx;not null" json:"organizationId"`
+	OrganizationID string `gorm:"column:organizationId;index:DeletionCleanup_organizationId_created_at_idx,priority:1;not null" json:"organizationId"`
 	WorkspaceID    string `gorm:"column:workspaceId;not null" json:"workspaceId"`
 	SurveyID       string `gorm:"column:surveyId;not null" json:"surveyId"`
 	// Hub kinds: the organisation's feedback directories, read inside the delete's transaction.
@@ -2690,12 +2690,12 @@ func (*DeletionCleanup) BeforeUpdate(tx *gorm.DB) error {
 // survey, so a double click returns the export already in flight.
 type AttachmentExport struct {
 	ID            string   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt     DateTime `gorm:"column:created_at;index:AttachmentExport_surveyId_requestedById_created_at_idx;index:AttachmentExport_status_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt     DateTime `gorm:"column:created_at;index:AttachmentExport_surveyId_requestedById_created_at_idx,priority:3;index:AttachmentExport_status_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt     DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	SurveyID      string   `gorm:"column:surveyId;index:AttachmentExport_surveyId_requestedById_created_at_idx;not null" json:"surveyId"`
+	SurveyID      string   `gorm:"column:surveyId;index:AttachmentExport_surveyId_requestedById_created_at_idx,priority:1;not null" json:"surveyId"`
 	WorkspaceID   string   `gorm:"column:workspaceId;index:AttachmentExport_workspaceId_idx;not null" json:"workspaceId"`
-	RequestedByID *string  `gorm:"column:requestedById;index:AttachmentExport_surveyId_requestedById_created_at_idx" json:"requestedById"`
-	Status        string   `gorm:"column:status;index:AttachmentExport_status_created_at_idx;default:'queued';not null" json:"status"`
+	RequestedByID *string  `gorm:"column:requestedById;index:AttachmentExport_surveyId_requestedById_created_at_idx,priority:2" json:"requestedById"`
+	Status        string   `gorm:"column:status;index:AttachmentExport_status_created_at_idx,priority:1;default:'queued';not null" json:"status"`
 	// The response filter at request time, a `TResponseFilterCriteria`; null exports every response.
 	FilterCriteria datatypes.JSON `gorm:"column:filterCriteria" json:"filterCriteria"`
 	// IANA zone the archive's folder names are stamped in: the org's display zone at request time.
@@ -2760,18 +2760,18 @@ func (*AttachmentExport) BeforeUpdate(tx *gorm.DB) error {
 // @property formbricksMappings - Element mappings for Formbricks feedback sources
 // @property fieldMappings - Field mappings for other feedback source types
 type FeedbackSource struct {
-	ID        string   `gorm:"column:id;primaryKey;uniqueIndex:FeedbackSource_id_workspaceId_key" json:"id"`
+	ID        string   `gorm:"column:id;primaryKey;uniqueIndex:FeedbackSource_id_workspaceId_key,priority:1" json:"id"`
 	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name      string   `gorm:"column:name;uniqueIndex:FeedbackSource_workspaceId_name_key;not null" json:"name"`
+	Name      string   `gorm:"column:name;uniqueIndex:FeedbackSource_workspaceId_name_key,priority:2;not null" json:"name"`
 	Type      string   `gorm:"column:type;index:FeedbackSource_type_idx;not null" json:"type"`
 	Status    string   `gorm:"column:status;default:'active';not null" json:"status"`
 	// Defaults to completedOnly so a new source agrees with the live ingestion path, which only
 	// fires on responseFinished. Existing rows take the default; nothing is re-imported.
 	ImportMode                 string                            `gorm:"column:import_mode;default:'completedOnly';not null" json:"import_mode"`
 	ElementScope               string                            `gorm:"column:elementScope;default:'specific';not null" json:"elementScope"`
-	WorkspaceID                string                            `gorm:"column:workspaceId;uniqueIndex:FeedbackSource_id_workspaceId_key;uniqueIndex:FeedbackSource_workspaceId_name_key;index:FeedbackSource_feedbackDirectoryId_workspaceId_idx;not null" json:"workspaceId"`
-	FeedbackDirectoryID        string                            `gorm:"column:feedbackDirectoryId;index:FeedbackSource_feedbackDirectoryId_workspaceId_idx;not null" json:"feedbackDirectoryId"`
+	WorkspaceID                string                            `gorm:"column:workspaceId;uniqueIndex:FeedbackSource_id_workspaceId_key,priority:2;uniqueIndex:FeedbackSource_workspaceId_name_key,priority:1;index:FeedbackSource_feedbackDirectoryId_workspaceId_idx,priority:2;not null" json:"workspaceId"`
+	FeedbackDirectoryID        string                            `gorm:"column:feedbackDirectoryId;index:FeedbackSource_feedbackDirectoryId_workspaceId_idx,priority:1;not null" json:"feedbackDirectoryId"`
 	LastSyncAt                 *DateTime                         `gorm:"column:last_sync_at;type:timestamp(3)" json:"last_sync_at"`
 	CreatedBy                  *string                           `gorm:"column:created_by" json:"created_by"`
 	Workspace                  *Workspace                        `gorm:"belongsTo"`
@@ -2820,10 +2820,10 @@ func (*FeedbackSource) BeforeUpdate(tx *gorm.DB) error {
 type FeedbackSourceFormbricksMapping struct {
 	ID               string          `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt        DateTime        `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	FeedbackSourceID string          `gorm:"column:feedback_source_id;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su;not null" json:"feedback_source_id"`
-	WorkspaceID      string          `gorm:"column:workspaceId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su;index:FeedbackSourceFormbricksMapping_workspaceId_surveyId_idx;not null" json:"workspaceId"`
-	SurveyID         string          `gorm:"column:surveyId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su;index:FeedbackSourceFormbricksMapping_workspaceId_surveyId_idx;index:FeedbackSourceFormbricksMapping_surveyId_idx;not null" json:"surveyId"`
-	ElementID        string          `gorm:"column:elementId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su;not null" json:"elementId"`
+	FeedbackSourceID string          `gorm:"column:feedback_source_id;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su,priority:2;not null" json:"feedback_source_id"`
+	WorkspaceID      string          `gorm:"column:workspaceId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su,priority:1;index:FeedbackSourceFormbricksMapping_workspaceId_surveyId_idx,priority:1;not null" json:"workspaceId"`
+	SurveyID         string          `gorm:"column:surveyId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su,priority:3;index:FeedbackSourceFormbricksMapping_workspaceId_surveyId_idx,priority:2;index:FeedbackSourceFormbricksMapping_surveyId_idx;not null" json:"surveyId"`
+	ElementID        string          `gorm:"column:elementId;uniqueIndex:FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su,priority:4;not null" json:"elementId"`
 	HubFieldType     string          `gorm:"column:hubFieldType;not null" json:"hubFieldType"`
 	CustomFieldLabel *string         `gorm:"column:custom_field_label" json:"custom_field_label"`
 	FeedbackSource   *FeedbackSource `gorm:"foreignKey:FeedbackSourceID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
@@ -2856,10 +2856,10 @@ func (m *FeedbackSourceFormbricksMapping) BeforeCreate(tx *gorm.DB) error {
 type FeedbackSourceFieldMapping struct {
 	ID               string          `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt        DateTime        `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	FeedbackSourceID string          `gorm:"column:feedback_source_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF;not null" json:"feedback_source_id"`
-	WorkspaceID      string          `gorm:"column:workspaceId;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF;not null" json:"workspaceId"`
-	SourceFieldID    string          `gorm:"column:source_field_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF;not null" json:"source_field_id"`
-	TargetFieldID    string          `gorm:"column:target_field_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF;not null" json:"target_field_id"`
+	FeedbackSourceID string          `gorm:"column:feedback_source_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF,priority:2;not null" json:"feedback_source_id"`
+	WorkspaceID      string          `gorm:"column:workspaceId;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF,priority:1;not null" json:"workspaceId"`
+	SourceFieldID    string          `gorm:"column:source_field_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF,priority:3;not null" json:"source_field_id"`
+	TargetFieldID    string          `gorm:"column:target_field_id;uniqueIndex:FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF,priority:4;not null" json:"target_field_id"`
 	StaticValue      *string         `gorm:"column:static_value" json:"static_value"`
 	FeedbackSource   *FeedbackSource `gorm:"foreignKey:FeedbackSourceID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
 }
@@ -2891,9 +2891,9 @@ type FeedbackDirectory struct {
 	ID              string                       `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt       DateTime                     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt       DateTime                     `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Name            string                       `gorm:"column:name;uniqueIndex:FeedbackDirectory_organizationId_name_key;not null" json:"name"`
+	Name            string                       `gorm:"column:name;uniqueIndex:FeedbackDirectory_organizationId_name_key,priority:2;not null" json:"name"`
 	IsArchived      bool                         `gorm:"column:isArchived;default:false;not null" json:"isArchived"`
-	OrganizationID  string                       `gorm:"column:organizationId;uniqueIndex:FeedbackDirectory_organizationId_name_key;not null" json:"organizationId"`
+	OrganizationID  string                       `gorm:"column:organizationId;uniqueIndex:FeedbackDirectory_organizationId_name_key,priority:1;not null" json:"organizationId"`
 	Organization    *Organization                `gorm:"belongsTo"`
 	Workspaces      []FeedbackDirectoryWorkspace `gorm:"foreignKey:FeedbackDirectoryID;constraint:FeedbackDirectoryWorkspace_feedbackDirectoryId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	FeedbackSources []FeedbackSource             `gorm:"foreignKey:FeedbackDirectoryID;constraint:FeedbackSource_feedbackDirectoryId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -3109,8 +3109,8 @@ type RetentionPolicy struct {
 	ID             string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt      DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:RetentionPolicy_organizationId_entity_key;not null" json:"organizationId"`
-	Entity         string   `gorm:"column:entity;uniqueIndex:RetentionPolicy_organizationId_entity_key;not null" json:"entity"`
+	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:RetentionPolicy_organizationId_entity_key,priority:1;not null" json:"organizationId"`
+	Entity         string   `gorm:"column:entity;uniqueIndex:RetentionPolicy_organizationId_entity_key,priority:2;not null" json:"entity"`
 	Enabled        bool     `gorm:"column:enabled;default:false;not null" json:"enabled"`
 	// When the current configuration took effect: the policy was switched on or unpaused, or changed
 	// in a way that could bring an action earlier (a shorter period or warning, different
@@ -3176,9 +3176,9 @@ func (*RetentionPolicy) BeforeUpdate(tx *gorm.DB) error {
 // column in that CHECK. The survey's organisation can't be tied to `organizationId` in the database
 // (a survey carries its workspace, not its organisation): writers derive it from the survey.
 type RetentionExemption struct {
-	ID             string   `gorm:"column:id;primaryKey;index:RetentionExemption_organizationId_created_at_id_idx" json:"id"`
-	CreatedAt      DateTime `gorm:"column:created_at;index:RetentionExemption_organizationId_created_at_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	OrganizationID string   `gorm:"column:organizationId;index:RetentionExemption_organizationId_created_at_id_idx;not null" json:"organizationId"`
+	ID             string   `gorm:"column:id;primaryKey;index:RetentionExemption_organizationId_created_at_id_idx,priority:3" json:"id"`
+	CreatedAt      DateTime `gorm:"column:created_at;index:RetentionExemption_organizationId_created_at_id_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	OrganizationID string   `gorm:"column:organizationId;index:RetentionExemption_organizationId_created_at_id_idx,priority:1;not null" json:"organizationId"`
 	Entity         string   `gorm:"column:entity;not null" json:"entity"`
 	SurveyID       *string  `gorm:"column:surveyId;index:RetentionExemption_surveyId_idx" json:"surveyId"`
 	Until          DateTime `gorm:"column:until;type:timestamp(3);not null" json:"until"`
@@ -3212,11 +3212,11 @@ func (m *RetentionExemption) BeforeCreate(tx *gorm.DB) error {
 // One sweep of one policy for one organisation: the History tab's rows. `finishedAt` stays null
 // while the run is in progress, or if it never finished.
 type RetentionRun struct {
-	ID             string    `gorm:"column:id;primaryKey;index:RetentionRun_organizationId_startedAt_id_idx" json:"id"`
-	OrganizationID string    `gorm:"column:organizationId;index:RetentionRun_organizationId_startedAt_id_idx;not null" json:"organizationId"`
+	ID             string    `gorm:"column:id;primaryKey;index:RetentionRun_organizationId_startedAt_id_idx,priority:3" json:"id"`
+	OrganizationID string    `gorm:"column:organizationId;index:RetentionRun_organizationId_startedAt_id_idx,priority:1;not null" json:"organizationId"`
 	Entity         string    `gorm:"column:entity;not null" json:"entity"`
 	Kind           string    `gorm:"column:kind;default:'sweep';not null" json:"kind"`
-	StartedAt      DateTime  `gorm:"column:startedAt;index:RetentionRun_organizationId_startedAt_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
+	StartedAt      DateTime  `gorm:"column:startedAt;index:RetentionRun_organizationId_startedAt_id_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
 	FinishedAt     *DateTime `gorm:"column:finishedAt;type:timestamp(3)" json:"finishedAt"`
 	NotifiedCount  int       `gorm:"column:notifiedCount;size:32;default:0;not null" json:"notifiedCount"`
 	// Archived surveys, or deactivated members.
@@ -3252,8 +3252,8 @@ func (m *RetentionRun) BeforeCreate(tx *gorm.DB) error {
 // never response content. `targetId` is not a foreign key on purpose: the target is often gone, and
 // `targetName` is a snapshot taken when the row is written so the CSV still says what it was.
 type RetentionRunItem struct {
-	ID         string  `gorm:"column:id;primaryKey;index:RetentionRunItem_runId_id_idx" json:"id"`
-	RunID      string  `gorm:"column:runId;index:RetentionRunItem_runId_id_idx;not null" json:"runId"`
+	ID         string  `gorm:"column:id;primaryKey;index:RetentionRunItem_runId_id_idx,priority:2" json:"id"`
+	RunID      string  `gorm:"column:runId;index:RetentionRunItem_runId_id_idx,priority:1;not null" json:"runId"`
 	TargetType string  `gorm:"column:targetType;not null" json:"targetType"`
 	TargetID   string  `gorm:"column:targetId;index:RetentionRunItem_targetId_idx;not null" json:"targetId"`
 	TargetName *string `gorm:"column:targetName" json:"targetName"`
@@ -3291,10 +3291,10 @@ func (m *RetentionRunItem) BeforeCreate(_ *gorm.DB) error {
 // "Indexes Prisma cannot express" in the README).
 type RetentionNotice struct {
 	ID             string  `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string  `gorm:"column:organizationId;uniqueIndex:RetentionNotice_userId_organizationId_entity_key;index:RetentionNotice_organizationId_idx;not null" json:"organizationId"`
-	Entity         string  `gorm:"column:entity;uniqueIndex:RetentionNotice_surveyId_entity_key;uniqueIndex:RetentionNotice_userId_organizationId_entity_key;not null" json:"entity"`
-	SurveyID       *string `gorm:"column:surveyId;uniqueIndex:RetentionNotice_surveyId_entity_key" json:"surveyId"`
-	UserID         *string `gorm:"column:userId;uniqueIndex:RetentionNotice_userId_organizationId_entity_key" json:"userId"`
+	OrganizationID string  `gorm:"column:organizationId;uniqueIndex:RetentionNotice_userId_organizationId_entity_key,priority:2;index:RetentionNotice_organizationId_idx;not null" json:"organizationId"`
+	Entity         string  `gorm:"column:entity;uniqueIndex:RetentionNotice_surveyId_entity_key,priority:2;uniqueIndex:RetentionNotice_userId_organizationId_entity_key,priority:3;not null" json:"entity"`
+	SurveyID       *string `gorm:"column:surveyId;uniqueIndex:RetentionNotice_surveyId_entity_key,priority:1" json:"surveyId"`
+	UserID         *string `gorm:"column:userId;uniqueIndex:RetentionNotice_userId_organizationId_entity_key,priority:1" json:"userId"`
 	// When the notice was claimed for sending. A claim that never got delivered can be taken over.
 	SentAt DateTime `gorm:"column:sentAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"sentAt"`
 	// When the notice was handed to the mail transport, or recorded without one (no SMTP). The
@@ -3346,13 +3346,13 @@ func (RetentionSurveyRestore) TableName() string {
 }
 
 type Workflow struct {
-	ID          string   `gorm:"column:id;primaryKey;uniqueIndex:Workflow_id_workspaceId_key" json:"id"`
+	ID          string   `gorm:"column:id;primaryKey;uniqueIndex:Workflow_id_workspaceId_key,priority:1" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt   DateTime `gorm:"column:updated_at;index:Workflow_workspaceId_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	UpdatedAt   DateTime `gorm:"column:updated_at;index:Workflow_workspaceId_updated_at_idx,priority:2;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Name        string   `gorm:"column:name;not null" json:"name"`
 	Description *string  `gorm:"column:description" json:"description"`
-	Status      string   `gorm:"column:status;index:Workflow_workspaceId_status_idx;default:'draft';not null" json:"status"`
-	WorkspaceID string   `gorm:"column:workspaceId;uniqueIndex:Workflow_id_workspaceId_key;index:Workflow_workspaceId_status_idx;index:Workflow_workspaceId_updated_at_idx;not null" json:"workspaceId"`
+	Status      string   `gorm:"column:status;index:Workflow_workspaceId_status_idx,priority:2;default:'draft';not null" json:"status"`
+	WorkspaceID string   `gorm:"column:workspaceId;uniqueIndex:Workflow_id_workspaceId_key,priority:2;index:Workflow_workspaceId_status_idx,priority:1;index:Workflow_workspaceId_updated_at_idx,priority:1;not null" json:"workspaceId"`
 	CreatedBy   *string  `gorm:"column:createdBy" json:"createdBy"`
 	// [WorkflowDefinition]
 	Definition datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
@@ -3396,9 +3396,9 @@ func (*Workflow) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowVersion struct {
 	ID          string `gorm:"column:id;primaryKey" json:"id"`
-	WorkflowID  string `gorm:"column:workflowId;uniqueIndex:WorkflowVersion_workflowId_version_key;index:WorkflowVersion_workflowId_workspaceId_idx;not null" json:"workflowId"`
-	WorkspaceID string `gorm:"column:workspaceId;index:WorkflowVersion_workflowId_workspaceId_idx;not null" json:"workspaceId"`
-	Version     int    `gorm:"column:version;uniqueIndex:WorkflowVersion_workflowId_version_key;size:32;not null" json:"version"`
+	WorkflowID  string `gorm:"column:workflowId;uniqueIndex:WorkflowVersion_workflowId_version_key,priority:1;index:WorkflowVersion_workflowId_workspaceId_idx,priority:1;not null" json:"workflowId"`
+	WorkspaceID string `gorm:"column:workspaceId;index:WorkflowVersion_workflowId_workspaceId_idx,priority:2;not null" json:"workspaceId"`
+	Version     int    `gorm:"column:version;uniqueIndex:WorkflowVersion_workflowId_version_key,priority:2;size:32;not null" json:"version"`
 	// [WorkflowExecutableDefinition]
 	Definition  datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
 	PublishedAt DateTime       `gorm:"column:publishedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"publishedAt"`
@@ -3425,17 +3425,17 @@ func (m *WorkflowVersion) BeforeCreate(tx *gorm.DB) error {
 
 type WorkflowRun struct {
 	ID                string    `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt         DateTime  `gorm:"column:created_at;index:WorkflowRun_workspaceId_created_at_idx;index:WorkflowRun_workflowId_workspaceId_created_at_idx;index:WorkflowRun_status_created_at_idx;index:WorkflowRun_isDryRun_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt         DateTime  `gorm:"column:created_at;index:WorkflowRun_workspaceId_created_at_idx,priority:2;index:WorkflowRun_workflowId_workspaceId_created_at_idx,priority:3;index:WorkflowRun_status_created_at_idx,priority:2;index:WorkflowRun_isDryRun_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt         DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	WorkflowID        string    `gorm:"column:workflowId;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key;index:WorkflowRun_workflowId_workspaceId_created_at_idx;not null" json:"workflowId"`
-	WorkspaceID       string    `gorm:"column:workspaceId;index:WorkflowRun_workspaceId_created_at_idx;index:WorkflowRun_workflowId_workspaceId_created_at_idx;not null" json:"workspaceId"`
+	WorkflowID        string    `gorm:"column:workflowId;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key,priority:1;index:WorkflowRun_workflowId_workspaceId_created_at_idx,priority:1;not null" json:"workflowId"`
+	WorkspaceID       string    `gorm:"column:workspaceId;index:WorkflowRun_workspaceId_created_at_idx,priority:1;index:WorkflowRun_workflowId_workspaceId_created_at_idx,priority:2;not null" json:"workspaceId"`
 	WorkflowVersionID *string   `gorm:"column:workflowVersionId" json:"workflowVersionId"`
 	ResponseID        *string   `gorm:"column:responseId;index:WorkflowRun_responseId_idx" json:"responseId"`
-	Status            string    `gorm:"column:status;index:WorkflowRun_status_created_at_idx;default:'queued';not null" json:"status"`
+	Status            string    `gorm:"column:status;index:WorkflowRun_status_created_at_idx,priority:1;default:'queued';not null" json:"status"`
 	TriggerType       string    `gorm:"column:triggerType;not null" json:"triggerType"`
 	SurveyID          *string   `gorm:"column:surveyId" json:"surveyId"`
-	IsDryRun          bool      `gorm:"column:isDryRun;index:WorkflowRun_isDryRun_idx;index:WorkflowRun_isDryRun_created_at_idx;default:false;not null" json:"isDryRun"`
-	IdempotencyKey    *string   `gorm:"column:idempotencyKey;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key" json:"idempotencyKey"`
+	IsDryRun          bool      `gorm:"column:isDryRun;index:WorkflowRun_isDryRun_idx;index:WorkflowRun_isDryRun_created_at_idx,priority:1;default:false;not null" json:"isDryRun"`
+	IdempotencyKey    *string   `gorm:"column:idempotencyKey;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key,priority:2" json:"idempotencyKey"`
 	Attempt           int       `gorm:"column:attempt;size:32;default:0;not null" json:"attempt"`
 	NextAttemptAt     *DateTime `gorm:"column:nextAttemptAt;index:WorkflowRun_nextAttemptAt_idx;type:timestamp(3)" json:"nextAttemptAt"`
 	LastErrorAt       *DateTime `gorm:"column:lastErrorAt;type:timestamp(3)" json:"lastErrorAt"`
@@ -3446,12 +3446,12 @@ type WorkflowRun struct {
 	Error        *string        `gorm:"column:error" json:"error"`
 	DispatchedAt *DateTime      `gorm:"column:dispatchedAt;type:timestamp(3)" json:"dispatchedAt"`
 	StartedAt    *DateTime      `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
-	FinishedAt   *DateTime      `gorm:"column:finishedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx;type:timestamp(3)" json:"finishedAt"`
+	FinishedAt   *DateTime      `gorm:"column:finishedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx,priority:2;type:timestamp(3)" json:"finishedAt"`
 	// The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.
 	CallerIP *string `gorm:"column:callerIp" json:"callerIp"`
 	// When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
 	// input, output and errors, the run error and the caller IP. Null while the content is kept.
-	ContentDeletedAt *DateTime `gorm:"column:contentDeletedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx;type:timestamp(3)" json:"contentDeletedAt"`
+	ContentDeletedAt *DateTime `gorm:"column:contentDeletedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx,priority:1;type:timestamp(3)" json:"contentDeletedAt"`
 	// The retention period in days that applied when the content was cleared ("Details deleted after N days").
 	ContentRetentionDays *int `gorm:"column:contentRetentionDays;size:32" json:"contentRetentionDays"`
 	// The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
@@ -3499,9 +3499,9 @@ type WorkflowSample struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;index:WorkflowSample_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	WorkflowID  string   `gorm:"column:workflowId;uniqueIndex:WorkflowSample_workflowId_source_key;index:WorkflowSample_workflowId_workspaceId_idx;not null" json:"workflowId"`
-	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSample_workflowId_workspaceId_idx;not null" json:"workspaceId"`
-	Source      string   `gorm:"column:source;uniqueIndex:WorkflowSample_workflowId_source_key;not null" json:"source"`
+	WorkflowID  string   `gorm:"column:workflowId;uniqueIndex:WorkflowSample_workflowId_source_key,priority:1;index:WorkflowSample_workflowId_workspaceId_idx,priority:1;not null" json:"workflowId"`
+	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSample_workflowId_workspaceId_idx,priority:2;not null" json:"workspaceId"`
+	Source      string   `gorm:"column:source;uniqueIndex:WorkflowSample_workflowId_source_key,priority:2;not null" json:"source"`
 	// [WorkflowSampleData]
 	Sample       datatypes.JSON `gorm:"column:sample;not null" json:"sample"`
 	LastCalledAt *DateTime      `gorm:"column:lastCalledAt;type:timestamp(3)" json:"lastCalledAt"`
@@ -3537,17 +3537,17 @@ func (*WorkflowSample) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowRunLog struct {
 	ID       string `gorm:"column:id;primaryKey" json:"id"`
-	RunID    string `gorm:"column:runId;uniqueIndex:WorkflowRunLog_runId_stepId_key;index:WorkflowRunLog_runId_sequence_idx;not null" json:"runId"`
-	Sequence int    `gorm:"column:sequence;index:WorkflowRunLog_runId_sequence_idx;size:32;not null" json:"sequence"`
-	StepID   string `gorm:"column:stepId;uniqueIndex:WorkflowRunLog_runId_stepId_key;not null" json:"stepId"`
+	RunID    string `gorm:"column:runId;uniqueIndex:WorkflowRunLog_runId_stepId_key,priority:1;index:WorkflowRunLog_runId_sequence_idx,priority:1;not null" json:"runId"`
+	Sequence int    `gorm:"column:sequence;index:WorkflowRunLog_runId_sequence_idx,priority:2;size:32;not null" json:"sequence"`
+	StepID   string `gorm:"column:stepId;uniqueIndex:WorkflowRunLog_runId_stepId_key,priority:2;not null" json:"stepId"`
 	StepType string `gorm:"column:stepType;not null" json:"stepType"`
-	Status   string `gorm:"column:status;index:WorkflowRunLog_status_startedAt_idx;default:'pending';not null" json:"status"`
+	Status   string `gorm:"column:status;index:WorkflowRunLog_status_startedAt_idx,priority:1;default:'pending';not null" json:"status"`
 	// [WorkflowRunLogInput]
 	Input datatypes.JSON `gorm:"column:input;default:'{}';not null" json:"input"`
 	// [WorkflowRunLogOutput]
 	Output     datatypes.JSON `gorm:"column:output;default:'{}';not null" json:"output"`
 	Error      *string        `gorm:"column:error" json:"error"`
-	StartedAt  *DateTime      `gorm:"column:startedAt;index:WorkflowRunLog_status_startedAt_idx;type:timestamp(3)" json:"startedAt"`
+	StartedAt  *DateTime      `gorm:"column:startedAt;index:WorkflowRunLog_status_startedAt_idx,priority:2;type:timestamp(3)" json:"startedAt"`
 	FinishedAt *DateTime      `gorm:"column:finishedAt;type:timestamp(3)" json:"finishedAt"`
 	Run        *WorkflowRun   `gorm:"foreignKey:RunID;belongsTo"`
 }
@@ -3571,8 +3571,8 @@ type WorkflowSecret struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	WorkflowID  string   `gorm:"column:workflowId;index:WorkflowSecret_workflowId_workspaceId_idx;not null" json:"workflowId"`
-	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSecret_workflowId_workspaceId_idx;not null" json:"workspaceId"`
+	WorkflowID  string   `gorm:"column:workflowId;index:WorkflowSecret_workflowId_workspaceId_idx,priority:1;not null" json:"workflowId"`
+	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSecret_workflowId_workspaceId_idx,priority:2;not null" json:"workspaceId"`
 	// `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned.
 	Value string `gorm:"column:value;not null" json:"value"`
 	// Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only

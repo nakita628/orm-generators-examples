@@ -7,13 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkspaceUserProperties")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "lastUsed")]
+    #[sea_orm(
+        column_name = "lastUsed",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_used: DateTime,
 }
 
@@ -22,13 +26,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
-        to = "super::workspace::Column::Id"
+        to = "super::workspace::Column::Id",
+        fk_name = "WorkspaceUserProperties_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::user_profile::Entity",
         from = "Column::UserId",
-        to = "super::user_profile::Column::Id"
+        to = "super::user_profile::Column::Id",
+        fk_name = "WorkspaceUserProperties_userId_fkey"
     )]
     User,
 }

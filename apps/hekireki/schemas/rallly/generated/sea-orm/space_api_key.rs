@@ -7,17 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "space_api_keys")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub prefix: String,
     #[sea_orm(column_type = "Text")]
     pub hashed_key: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "space_api_keys_space_id_fkey"
     )]
     Space,
 }

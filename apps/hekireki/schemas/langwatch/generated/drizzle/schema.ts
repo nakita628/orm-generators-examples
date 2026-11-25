@@ -1176,8 +1176,8 @@ export const ssoConnection = pgTable(
       table.migrationPhase,
     ),
     index('SsoConnection_state_idx').on(table.state),
-    index('SsoConnection_verifiedDomains_idx').on(table.verifiedDomains),
-    index('SsoConnection_lapsedDomains_idx').on(table.lapsedDomains),
+    index('SsoConnection_verifiedDomains_idx').using('gin', table.verifiedDomains),
+    index('SsoConnection_lapsedDomains_idx').using('gin', table.lapsedDomains),
   ],
 )
 

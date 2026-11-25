@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, BindParameter, ColumnElement, DateTime, Dialect, Enum, ForeignKey, Index, JSON, String, Text, TypeDecorator, func, text
+from sqlalchemy import BigInteger, BindParameter, ColumnElement, DateTime, Dialect, Enum, ForeignKey, Index, JSON, String, Text, TypeDecorator, func, literal_column, text
 from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -446,8 +446,8 @@ class Link(Base):
     __table_args__ = (
         Index("Link_shortLink_key", "shortLink", unique=True),
         Index("Link_projectId_tenantId_idx", "projectId", "tenantId"),
-        Index("Link_projectId_url_idx", "projectId", "url"),
-        Index("Link_projectId_folderId_archived_createdAt_idx", "projectId", "folderId", "archived", "createdAt"),
+        Index("Link_projectId_url_idx", "projectId", literal_column("`url`(500)")),
+        Index("Link_projectId_folderId_archived_createdAt_idx", "projectId", "folderId", "archived", literal_column("`createdAt`").desc()),
         Index("Link_domain_createdAt_idx", "domain", "createdAt"),
         Index("Link_folderId_idx", "folderId"),
         Index("Link_userId_idx", "userId"),

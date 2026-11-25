@@ -8,15 +8,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditAssignment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "auditSessionId")]
+    #[sea_orm(column_name = "auditSessionId", column_type = "Text")]
     pub audit_session_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     pub role: Option<AuditAssignmentRole>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,7 +32,8 @@ pub enum Relation {
         from = "Column::AuditSessionId",
         to = "super::audit_session::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditAssignment_auditSessionId_fkey"
     )]
     AuditSession,
     #[sea_orm(
@@ -35,7 +41,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditAssignment_userId_fkey"
     )]
     User,
 }

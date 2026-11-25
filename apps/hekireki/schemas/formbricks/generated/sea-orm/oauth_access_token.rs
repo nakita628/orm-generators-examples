@@ -7,32 +7,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "oauthAccessToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "sessionId")]
+    #[sea_orm(column_name = "sessionId", column_type = "Text")]
     pub session_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "referenceId")]
+    #[sea_orm(column_name = "referenceId", column_type = "Text")]
     pub reference_id: Option<String>,
-    #[sea_orm(column_name = "refreshId")]
+    #[sea_orm(column_name = "refreshId", column_type = "Text")]
     pub refresh_id: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub scopes: Vec<String>,
     /// Better Auth 1.7 (ENG-2343). `resources` is the RFC 8707 resource set the grant approved — the
     /// binding this whole upgrade exists to get (GHSA-p2fr-6hmx-4528).
-    #[sea_orm(column_name = "authorizationCodeId")]
+    #[sea_orm(column_name = "authorizationCodeId", column_type = "Text")]
     pub authorization_code_id: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub resources: Vec<String>,
-    #[sea_orm(column_name = "requestedUserInfoClaims")]
+    #[sea_orm(
+        column_name = "requestedUserInfoClaims",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub requested_user_info_claims: Vec<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub revoked: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub confirmation: Option<Json>,
 }
 
@@ -42,28 +51,32 @@ pub enum Relation {
         belongs_to = "super::oauth_client::Entity",
         from = "Column::ClientId",
         to = "super::oauth_client::Column::ClientId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauthAccessToken_clientId_fkey"
     )]
     Client,
     #[sea_orm(
         belongs_to = "super::session::Entity",
         from = "Column::SessionId",
         to = "super::session::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "oauthAccessToken_sessionId_fkey"
     )]
     Session,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauthAccessToken_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::oauth_refresh_token::Entity",
         from = "Column::RefreshId",
         to = "super::oauth_refresh_token::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauthAccessToken_refreshId_fkey"
     )]
     Refresh,
 }

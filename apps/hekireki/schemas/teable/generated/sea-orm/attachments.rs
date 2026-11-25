@@ -7,19 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "attachments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "Text")]
     pub hash: String,
     pub size: i64,
+    #[sea_orm(column_type = "Text")]
     pub mimetype: String,
+    #[sea_orm(column_type = "Text")]
     pub path: String,
     pub width: Option<i32>,
     pub height: Option<i32>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub thumbnail_path: Option<String>,
 }
 

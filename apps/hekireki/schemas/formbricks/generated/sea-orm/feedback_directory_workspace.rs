@@ -11,13 +11,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "FeedbackDirectoryWorkspace")]
 pub struct Model {
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "feedbackDirectoryId")]
+    #[sea_orm(column_name = "feedbackDirectoryId", column_type = "Text")]
     pub feedback_directory_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
 }
 
@@ -27,14 +32,16 @@ pub enum Relation {
         belongs_to = "super::feedback_directory::Entity",
         from = "Column::FeedbackDirectoryId",
         to = "super::feedback_directory::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackDirectoryWorkspace_feedbackDirectoryId_fkey"
     )]
     FeedbackDirectory,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackDirectoryWorkspace_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(has_many = "super::feedback_source::Entity")]

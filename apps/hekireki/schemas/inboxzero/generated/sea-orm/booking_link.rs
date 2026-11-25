@@ -8,14 +8,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BookingLink")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
@@ -25,18 +33,18 @@ pub struct Model {
     pub slot_interval_minutes: i32,
     #[sea_orm(column_name = "locationType", default_value = "CUSTOM")]
     pub location_type: BookingLinkLocationType,
-    #[sea_orm(column_name = "locationValue")]
+    #[sea_orm(column_name = "locationValue", column_type = "Text")]
     pub location_value: Option<String>,
     #[sea_orm(column_name = "minimumNoticeMinutes", default_value = 120)]
     pub minimum_notice_minutes: i32,
     #[sea_orm(column_name = "maxDaysAhead", default_value = 90)]
     pub max_days_ahead: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
-    #[sea_orm(column_name = "destinationCalendarId")]
+    #[sea_orm(column_name = "destinationCalendarId", column_type = "Text")]
     pub destination_calendar_id: Option<String>,
-    #[sea_orm(column_name = "availabilityScheduleId")]
+    #[sea_orm(column_name = "availabilityScheduleId", column_type = "Text")]
     pub availability_schedule_id: String,
 }
 
@@ -46,21 +54,24 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingLink_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(
         belongs_to = "super::calendar::Entity",
         from = "Column::DestinationCalendarId",
         to = "super::calendar::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "BookingLink_destinationCalendarId_fkey"
     )]
     DestinationCalendar,
     #[sea_orm(
         belongs_to = "super::availability_schedule::Entity",
         from = "(Column::AvailabilityScheduleId, Column::EmailAccountId)",
         to = "(super::availability_schedule::Column::Id, super::availability_schedule::Column::EmailAccountId)",
-        on_delete = "NoAction"
+        on_delete = "NoAction",
+        fk_name = "BookingLink_availabilityScheduleId_emailAccountId_fkey"
     )]
     AvailabilitySchedule,
     #[sea_orm(has_many = "super::booking::Entity")]

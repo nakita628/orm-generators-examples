@@ -8,16 +8,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NurturingOrganizationMember")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "joinedAt")]
+    #[sea_orm(column_name = "joinedAt", column_type = "custom(\"timestamp(3)\")")]
     pub joined_at: Option<DateTime>,
-    #[sea_orm(column_name = "leftAt")]
+    #[sea_orm(column_name = "leftAt", column_type = "custom(\"timestamp(3)\")")]
     pub left_at: Option<DateTime>,
-    #[sea_orm(column_name = "returnedAt")]
+    #[sea_orm(column_name = "returnedAt", column_type = "custom(\"timestamp(3)\")")]
     pub returned_at: Option<DateTime>,
 }
 

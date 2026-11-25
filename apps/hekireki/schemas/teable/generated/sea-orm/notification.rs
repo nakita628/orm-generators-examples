@@ -7,18 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "notification")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub from_user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub to_user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub message: String,
+    #[sea_orm(column_type = "Text")]
     pub message_i18n: Option<String>,
-    #[sea_orm(default_value = "info")]
+    #[sea_orm(column_type = "Text", default_value = "info")]
     pub severity: String,
+    #[sea_orm(column_type = "Text")]
     pub url_path: Option<String>,
     #[sea_orm(default_value = false)]
     pub is_read: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
 }
 

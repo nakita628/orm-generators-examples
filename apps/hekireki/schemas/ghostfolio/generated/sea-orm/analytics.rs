@@ -9,17 +9,22 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(column_name = "activityCount", default_value = 0)]
     pub activity_count: i32,
+    #[sea_orm(column_type = "Text")]
     pub country: Option<String>,
     #[sea_orm(column_name = "dataProviderGhostfolioDailyRequests", default_value = 0)]
     pub data_provider_ghostfolio_daily_requests: i32,
-    #[sea_orm(column_name = "lastRequestAt")]
+    #[sea_orm(
+        column_name = "lastRequestAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_request_at: DateTime,
     #[sea_orm(column_name = "lastRequestClient")]
     pub last_request_client: Option<RequestClient>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -29,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Analytics_userId_fkey"
     )]
     User,
 }

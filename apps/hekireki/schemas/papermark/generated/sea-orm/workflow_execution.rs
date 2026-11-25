@@ -8,19 +8,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowExecution")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "visitorEmail")]
+    #[sea_orm(column_name = "visitorEmail", column_type = "Text")]
     pub visitor_email: Option<String>,
-    #[sea_orm(column_name = "visitorIp")]
+    #[sea_orm(column_name = "visitorIp", column_type = "Text")]
     pub visitor_ip: Option<String>,
     pub status: ExecutionStatus,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(
+        column_name = "startedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub result: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
 }
 
@@ -30,7 +37,8 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "Column::WorkflowId",
         to = "super::workflow::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowExecution_workflowId_fkey"
     )]
     Workflow,
     #[sea_orm(has_many = "super::workflow_step_log::Entity")]

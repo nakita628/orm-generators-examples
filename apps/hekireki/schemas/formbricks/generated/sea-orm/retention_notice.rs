@@ -20,35 +20,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionNotice")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub entity: RetentionEntity,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
     /// When the notice was claimed for sending. A claim that never got delivered can be taken over.
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(
+        column_name = "sentAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub sent_at: DateTime,
     /// When the notice was handed to the mail transport, or recorded without one (no SMTP). The
     /// warning only counts from a delivered notice, so a crash between claim and send can't let the
     /// action run without it.
-    #[sea_orm(column_name = "deliveredAt")]
+    #[sea_orm(column_name = "deliveredAt", column_type = "custom(\"timestamp(3)\")")]
     pub delivered_at: Option<DateTime>,
     /// Whether an email actually went out. False when SMTP isn't configured.
     #[sea_orm(column_name = "emailSent", default_value = false)]
     pub email_sent: bool,
     /// Set by each claim; delivery is recorded only for the claim that sent the email, so a slow sender
     /// can't mark a newer claim delivered.
-    #[sea_orm(column_name = "claimToken")]
+    #[sea_orm(column_name = "claimToken", column_type = "Text")]
     pub claim_token: Option<String>,
     /// The target's clock the notice was computed for (surveys and members). A notice counts only while
     /// the target's clock is still this one, so activity between the sweep's read and its claim voids
     /// it. Null for the responses reminder, which is sent once per survey and follows no one clock, and
     /// for a survey notice voided for good: a person deleted or moved one of its responses, or the
     /// responses policy's deletion left it computed for another clock (see `NOTICE_FOLLOWS_CLOCK`).
-    #[sea_orm(column_name = "clockAt")]
+    #[sea_orm(column_name = "clockAt", column_type = "custom(\"timestamp(3)\")")]
     pub clock_at: Option<DateTime>,
 }
 
@@ -58,21 +63,24 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionNotice_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionNotice_surveyId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionNotice_userId_fkey"
     )]
     User,
 }

@@ -17,12 +17,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "McpGrant")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
     /// Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
     /// in `organizations` (and every workspace in them, later ones included), or only the workspaces in
@@ -31,7 +37,7 @@ pub struct Model {
     pub access: McpGrantAccess,
     /// The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
     /// A permission that is absent has No access.
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub permissions: Json,
 }
 
@@ -41,14 +47,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpGrant_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::oauth_client::Entity",
         from = "Column::ClientId",
         to = "super::oauth_client::Column::ClientId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpGrant_clientId_fkey"
     )]
     Client,
     #[sea_orm(has_many = "super::mcp_grant_organization::Entity")]

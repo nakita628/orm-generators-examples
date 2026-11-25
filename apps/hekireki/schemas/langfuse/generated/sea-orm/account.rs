@@ -5,20 +5,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Account")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: String,
+    #[sea_orm(column_type = "Text")]
     pub refresh_token: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub access_token: Option<String>,
     pub expires_at: Option<i32>,
     pub expires_in: Option<i32>,
     pub ext_expires_in: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub token_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub scope: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub id_token: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub session_state: Option<String>,
     pub refresh_token_expires_in: Option<i32>,
     pub created_at: Option<i32>,
@@ -30,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Account_user_id_fkey"
     )]
     User,
 }

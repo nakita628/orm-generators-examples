@@ -6,14 +6,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "jwks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "publicKey")]
+    #[sea_orm(column_name = "publicKey", column_type = "Text")]
     pub public_key: String,
-    #[sea_orm(column_name = "privateKey")]
+    #[sea_orm(column_name = "privateKey", column_type = "Text")]
     pub private_key: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
     /// Better Auth 1.7 (ENG-2343): the JWS algorithm this key signs with, so a keyring can hold more
     /// than one alg and `getLatestKeyByAlg` can pick the right key per resource.
@@ -24,10 +25,12 @@ pub struct Model {
     /// OAuth flow, on any deployment that has yet to mint a key. Nullable because rows written before
     /// 1.7 have no value; upstream reads treat `alg: null` as the configured default alg, so existing
     /// keys keep working untouched.
+    #[sea_orm(column_type = "Text")]
     pub alg: Option<String>,
     /// Better Auth 1.7 (ENG-2343): the curve for EC/OKP keys. Written whenever it can be derived from
     /// the generated key, which it can for the default EdDSA/Ed25519 config we run, so it is on the
     /// same always-written path as `alg` above.
+    #[sea_orm(column_type = "Text")]
     pub crv: Option<String>,
 }
 

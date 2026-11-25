@@ -7,15 +7,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GatewayConnectUpstream")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "baseUrl")]
+    #[sea_orm(column_name = "baseUrl", column_type = "Text")]
     pub base_url: String,
-    #[sea_orm(column_name = "encryptedToken")]
+    #[sea_orm(column_name = "encryptedToken", column_type = "Text")]
     pub encrypted_token: String,
-    #[sea_orm(column_name = "instanceId")]
+    #[sea_orm(column_name = "instanceId", column_type = "Text")]
     pub instance_id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

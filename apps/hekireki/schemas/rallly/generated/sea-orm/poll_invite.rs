@@ -7,20 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "poll_invites")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub poll_id: String,
+    #[sea_orm(column_type = "custom(\"citext\")")]
     pub email: String,
     /// Per invitee link. App minted, CSPRNG alphanumeric ≥32 chars (nanoid customAlphabet) — no schema default, so forgetting to mint fails loudly. Rotated on reactivation so a revoked (possibly leaked) token never regains access
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub opened_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub reminded_at: Option<DateTime>,
     /// Revocation is always explicit: set when the host removes a pending invite, never as a side effect of close, schedule or reopen. Deleting a response instead hard deletes the participant, so the SetNull FK clears participantId and reverts the invite to pending with its token intact — the token the deleted response held is freed with it, so the next response through the same link can take it again. Cleared only by re-inviting (reactivation), which also rotates the token
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
     /// Conversion join, merges invite history into the response timeline. Set only when the invitee responds via their token: a typed email is unverified, so a generic link response never claims an invite
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub participant_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -30,14 +43,16 @@ pub enum Relation {
         belongs_to = "super::poll::Entity",
         from = "Column::PollId",
         to = "super::poll::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "poll_invites_poll_id_fkey"
     )]
     Poll,
     #[sea_orm(
         belongs_to = "super::participant::Entity",
         from = "Column::ParticipantId",
         to = "super::participant::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "poll_invites_participant_id_fkey"
     )]
     Participant,
 }

@@ -8,15 +8,30 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(default_value = 0)]
     pub spend: f64,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub budget_template_ids: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub customer_org_id: String,
+    #[sea_orm(column_type = "Text")]
     pub alias: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub default_budget_template_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 
@@ -25,13 +40,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::BudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_CustomerOrganizationTable_budget_id_fkey"
     )]
     Budget,
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::DefaultBudgetTemplateId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_CustomerOrganizationTable_default_budget_template__fkey"
     )]
     DefaultBudgetTemplate,
     #[sea_orm(has_many = "super::lite_llm_app_group_customer_org_table::Entity")]

@@ -7,8 +7,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_DailyPolicyMetrics")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub policy_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub date: String,
     #[sea_orm(default_value = "0")]
     pub requests_evaluated: i64,
@@ -20,7 +22,12 @@ pub struct Model {
     pub flagged_count: i64,
     pub avg_score: Option<f64>,
     pub avg_latency_ms: Option<f64>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

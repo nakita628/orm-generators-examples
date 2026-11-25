@@ -8,17 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "posthog_integrations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub encrypted_posthog_api_key: String,
+    #[sea_orm(column_type = "Text")]
     pub posthog_host_name: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_sync_at: Option<DateTime>,
     pub enabled: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(default_value = "TRACES_OBSERVATIONS")]
     pub export_source: AnalyticsIntegrationExportSource,
     #[sea_orm(default_value = true)]
     pub backfill: bool,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_error_at: Option<DateTime>,
 }
 
@@ -28,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "posthog_integrations_project_id_fkey"
     )]
     Project,
 }

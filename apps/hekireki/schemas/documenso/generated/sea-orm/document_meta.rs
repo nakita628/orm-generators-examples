@@ -8,8 +8,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DocumentMeta")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub subject: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub message: Option<String>,
     #[sea_orm(column_type = "Text", default_value = "Etc/UTC")]
     pub timezone: Option<String>,
@@ -19,7 +22,7 @@ pub struct Model {
         default_value = "yyyy-MM-dd hh:mm a"
     )]
     pub date_format: Option<String>,
-    #[sea_orm(column_name = "redirectUrl")]
+    #[sea_orm(column_name = "redirectUrl", column_type = "Text")]
     pub redirect_url: Option<String>,
     #[sea_orm(column_name = "signingOrder", default_value = "PARALLEL")]
     pub signing_order: DocumentSigningOrder,
@@ -31,22 +34,22 @@ pub struct Model {
     pub upload_signature_enabled: bool,
     #[sea_orm(column_name = "drawSignatureEnabled", default_value = true)]
     pub draw_signature_enabled: bool,
-    #[sea_orm(default_value = "en")]
+    #[sea_orm(column_type = "Text", default_value = "en")]
     pub language: String,
     #[sea_orm(column_name = "distributionMethod", default_value = "EMAIL")]
     pub distribution_method: DocumentDistributionMethod,
     /// [DocumentEmailSettings] @zod.custom.use(ZDocumentEmailSettingsSchema)
-    #[sea_orm(column_name = "emailSettings")]
+    #[sea_orm(column_name = "emailSettings", column_type = "JsonBinary")]
     pub email_settings: Option<Json>,
-    #[sea_orm(column_name = "emailReplyTo")]
+    #[sea_orm(column_name = "emailReplyTo", column_type = "Text")]
     pub email_reply_to: Option<String>,
-    #[sea_orm(column_name = "emailId")]
+    #[sea_orm(column_name = "emailId", column_type = "Text")]
     pub email_id: Option<String>,
     /// [EnvelopeExpirationPeriod] @zod.custom.use(ZEnvelopeExpirationPeriodSchema)
-    #[sea_orm(column_name = "envelopeExpirationPeriod")]
+    #[sea_orm(column_name = "envelopeExpirationPeriod", column_type = "JsonBinary")]
     pub envelope_expiration_period: Option<Json>,
     /// [EnvelopeReminderSettings] @zod.custom.use(ZEnvelopeReminderSettingsSchema)
-    #[sea_orm(column_name = "reminderSettings")]
+    #[sea_orm(column_name = "reminderSettings", column_type = "JsonBinary")]
     pub reminder_settings: Option<Json>,
 }
 

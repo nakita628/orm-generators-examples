@@ -514,10 +514,10 @@ func (m *EventLogs) BeforeCreate(tx *gorm.DB) error {
 
 type SlashCommandPresets struct {
 	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Command       string   `gorm:"column:command;uniqueIndex:slash_command_presets_uid_command_key;not null" json:"command"`
+	Command       string   `gorm:"column:command;uniqueIndex:slash_command_presets_uid_command_key,priority:2;not null" json:"command"`
 	Prompt        string   `gorm:"column:prompt;not null" json:"prompt"`
 	Description   string   `gorm:"column:description;not null" json:"description"`
-	UID           int      `gorm:"column:uid;uniqueIndex:slash_command_presets_uid_command_key;size:32;default:0;not null" json:"uid"`
+	UID           int      `gorm:"column:uid;uniqueIndex:slash_command_presets_uid_command_key,priority:1;size:32;default:0;not null" json:"uid"`
 	UserID        *int     `gorm:"column:userId;size:32" json:"userId"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
@@ -824,9 +824,9 @@ func (m *ScheduledJobRuns) BeforeCreate(tx *gorm.DB) error {
 
 type Memories struct {
 	ID          int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID      *int        `gorm:"column:user_id;index:memories_user_id_workspace_id_idx;index:memories_user_id_scope_idx;size:32" json:"user_id"`
-	WorkspaceID *int        `gorm:"column:workspace_id;index:memories_user_id_workspace_id_idx;size:32" json:"workspace_id"`
-	Scope       *string     `gorm:"column:scope;index:memories_user_id_scope_idx;default:'workspace';not null" json:"scope"`
+	UserID      *int        `gorm:"column:user_id;index:memories_user_id_workspace_id_idx,priority:1;index:memories_user_id_scope_idx,priority:1;size:32" json:"user_id"`
+	WorkspaceID *int        `gorm:"column:workspace_id;index:memories_user_id_workspace_id_idx,priority:2;size:32" json:"workspace_id"`
+	Scope       *string     `gorm:"column:scope;index:memories_user_id_scope_idx,priority:2;default:'workspace';not null" json:"scope"`
 	Content     string      `gorm:"column:content;not null" json:"content"`
 	LastUsedAt  *DateTime   `gorm:"column:last_used_at" json:"last_used_at"`
 	CreatedAt   DateTime    `gorm:"column:created_at;autoCreateTime:false;not null" json:"created_at"`
@@ -880,11 +880,11 @@ func (m *ModelRouters) BeforeCreate(tx *gorm.DB) error {
 
 type ModelRouterRules struct {
 	ID             int           `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	RouterID       int           `gorm:"column:router_id;uniqueIndex:model_router_rules_router_id_title_key;index:model_router_rules_router_id_idx;index:model_router_rules_router_id_enabled_priority_idx;size:32;not null" json:"router_id"`
-	Enabled        *bool         `gorm:"column:enabled;index:model_router_rules_router_id_enabled_priority_idx;default:true;not null" json:"enabled"`
-	Priority       int           `gorm:"column:priority;index:model_router_rules_router_id_enabled_priority_idx;size:32;not null" json:"priority"`
+	RouterID       int           `gorm:"column:router_id;uniqueIndex:model_router_rules_router_id_title_key,priority:1;index:model_router_rules_router_id_idx;index:model_router_rules_router_id_enabled_priority_idx,priority:1;size:32;not null" json:"router_id"`
+	Enabled        *bool         `gorm:"column:enabled;index:model_router_rules_router_id_enabled_priority_idx,priority:2;default:true;not null" json:"enabled"`
+	Priority       int           `gorm:"column:priority;index:model_router_rules_router_id_enabled_priority_idx,priority:3;size:32;not null" json:"priority"`
 	Type           *string       `gorm:"column:type;default:'calculated';not null" json:"type"`
-	Title          string        `gorm:"column:title;uniqueIndex:model_router_rules_router_id_title_key;not null" json:"title"`
+	Title          string        `gorm:"column:title;uniqueIndex:model_router_rules_router_id_title_key,priority:2;not null" json:"title"`
 	Description    *string       `gorm:"column:description" json:"description"`
 	ConditionLogic *string       `gorm:"column:condition_logic" json:"condition_logic"`
 	Conditions     *string       `gorm:"column:conditions" json:"conditions"`

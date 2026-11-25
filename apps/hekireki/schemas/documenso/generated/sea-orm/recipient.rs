@@ -11,37 +11,51 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: String,
     #[sea_orm(column_type = "String(StringLen::N(255))")]
     pub email: String,
     #[sea_orm(column_type = "String(StringLen::N(255))", default_value = "")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub token: String,
-    #[sea_orm(column_name = "documentDeletedAt")]
+    #[sea_orm(
+        column_name = "documentDeletedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub document_deleted_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expired: Option<DateTime>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "expirationNotifiedAt")]
+    #[sea_orm(
+        column_name = "expirationNotifiedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub expiration_notified_at: Option<DateTime>,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "signedAt")]
+    #[sea_orm(column_name = "signedAt", column_type = "custom(\"timestamp(3)\")")]
     pub signed_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastReminderSentAt")]
+    #[sea_orm(
+        column_name = "lastReminderSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_reminder_sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "nextReminderAt")]
+    #[sea_orm(
+        column_name = "nextReminderAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub next_reminder_at: Option<DateTime>,
     #[sea_orm(column_name = "reminderCount", default_value = 0)]
     pub reminder_count: i32,
     /// [RecipientAuthOptions] @zod.custom.use(ZRecipientAuthOptionsSchema)
-    #[sea_orm(column_name = "authOptions")]
+    #[sea_orm(column_name = "authOptions", column_type = "JsonBinary")]
     pub auth_options: Option<Json>,
     /// @zod.number.describe("The order in which the recipient should sign the document. Only works if the document is set to sequential signing.")
     #[sea_orm(column_name = "signingOrder")]
     pub signing_order: Option<i32>,
-    #[sea_orm(column_name = "rejectionReason")]
+    #[sea_orm(column_name = "rejectionReason", column_type = "Text")]
     pub rejection_reason: Option<String>,
     #[sea_orm(default_value = "SIGNER")]
     pub role: RecipientRole,
@@ -59,7 +73,8 @@ pub enum Relation {
         belongs_to = "super::envelope::Entity",
         from = "Column::EnvelopeId",
         to = "super::envelope::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Recipient_envelopeId_fkey"
     )]
     Envelope,
     #[sea_orm(has_many = "super::field::Entity")]

@@ -87,9 +87,9 @@ type UserProfile struct {
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
 	UpdatedAt               DateTime                  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	LoginProvider           string                    `gorm:"column:loginProvider;uniqueIndex:UserProfile_loginProvider_externalId_key;not null" json:"loginProvider"`
+	LoginProvider           string                    `gorm:"column:loginProvider;uniqueIndex:UserProfile_loginProvider_externalId_key,priority:1;not null" json:"loginProvider"`
 	ExternalUsername        *string                   `gorm:"column:externalUsername" json:"externalUsername"`
-	ExternalID              string                    `gorm:"column:externalId;uniqueIndex:UserProfile_loginProvider_externalId_key;index:UserProfile_externalId_idx;not null" json:"externalId"`
+	ExternalID              string                    `gorm:"column:externalId;uniqueIndex:UserProfile_loginProvider_externalId_key,priority:2;index:UserProfile_externalId_idx;not null" json:"externalId"`
 	Tokens                  []UserAPIToken            `gorm:"foreignKey:UserID;constraint:UserApiToken_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	WorkspaceAccess         []WorkspaceAccess         `gorm:"foreignKey:UserID;constraint:WorkspaceAccess_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	UserPreferences         []UserPreferences         `gorm:"foreignKey:UserID;constraint:UserPreferences_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
@@ -166,7 +166,7 @@ type Workspace struct {
 	// @zod.custom(z.coerce.date())
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
-	UpdatedAt               DateTime                  `gorm:"column:updatedAt;index:Workspace_updatedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt               DateTime                  `gorm:"column:updatedAt;index:Workspace_updatedAt_idx,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Name                    string                    `gorm:"column:name;not null" json:"name"`
 	Deleted                 bool                      `gorm:"column:deleted;default:false;not null" json:"deleted"`
 	Slug                    *string                   `gorm:"column:slug;uniqueIndex:Workspace_slug_key;index:Workspace_slug_idx" json:"slug"`
@@ -213,8 +213,8 @@ type WorkspaceOptions struct {
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	WorkspaceID string         `gorm:"column:workspaceId;index:WorkspaceOptions_workspaceId_namespace_idx;not null" json:"workspaceId"`
-	Namespace   string         `gorm:"column:namespace;index:WorkspaceOptions_workspaceId_namespace_idx;not null" json:"namespace"`
+	WorkspaceID string         `gorm:"column:workspaceId;index:WorkspaceOptions_workspaceId_namespace_idx,priority:1;not null" json:"workspaceId"`
+	Namespace   string         `gorm:"column:namespace;index:WorkspaceOptions_workspaceId_namespace_idx,priority:2;not null" json:"namespace"`
 	Value       datatypes.JSON `gorm:"column:value;not null" json:"value"`
 	Workspace   *Workspace     `gorm:"belongsTo"`
 }
@@ -246,12 +246,12 @@ func (*WorkspaceOptions) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkspaceAccess struct {
+	UserID      string `gorm:"column:userId;primaryKey" json:"userId"`
 	WorkspaceID string `gorm:"column:workspaceId;primaryKey" json:"workspaceId"`
 	// @zod.custom(z.coerce.date())
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
 	UpdatedAt DateTime     `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID    string       `gorm:"column:userId;primaryKey" json:"userId"`
 	Role      string       `gorm:"column:role;default:'owner';not null" json:"role"`
 	Workspace *Workspace   `gorm:"belongsTo"`
 	User      *UserProfile `gorm:"foreignKey:UserID;belongsTo"`
@@ -389,7 +389,7 @@ func (*OAuthClient) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type KvStoreEntry struct {
-	Key   string         `gorm:"column:key;primaryKey;index:kv_key_pattern_idx" json:"key"`
+	Key   string         `gorm:"column:key;primaryKey;index:kv_key_pattern_idx,expression:\"key\" text_pattern_ops" json:"key"`
 	Value datatypes.JSON `gorm:"column:value;not null" json:"value"`
 	// @zod.custom(z.coerce.date())
 	ExpiresAt *DateTime `gorm:"column:expires_at;index:kv_expires_at_idx;type:timestamp(3)" json:"expires_at"`
@@ -472,7 +472,7 @@ type ConfigurationObject struct {
 	// @zod.custom(z.coerce.date())
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
-	UpdatedAt              DateTime                  `gorm:"column:updatedAt;index:ConfigurationObject_updatedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt              DateTime                  `gorm:"column:updatedAt;index:ConfigurationObject_updatedAt_idx,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Type                   string                    `gorm:"column:type;not null" json:"type"`
 	WorkspaceID            string                    `gorm:"column:workspaceId;not null" json:"workspaceId"`
 	Config                 datatypes.JSON            `gorm:"column:config" json:"config"`
@@ -515,7 +515,7 @@ type ConfigurationObjectLink struct {
 	// @zod.custom(z.coerce.date())
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
-	UpdatedAt   DateTime             `gorm:"column:updatedAt;index:ConfigurationObjectLink_updatedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt   DateTime             `gorm:"column:updatedAt;index:ConfigurationObjectLink_updatedAt_idx,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Type        *string              `gorm:"column:type;default:'push'" json:"type"`
 	Data        datatypes.JSON       `gorm:"column:data" json:"data"`
 	WorkspaceID string               `gorm:"column:workspaceId;index:ConfigurationObjectLink_workspaceId_idx;not null" json:"workspaceId"`
@@ -593,11 +593,11 @@ func (*ConnectorPackage) BeforeUpdate(tx *gorm.DB) error {
 type AuditLog struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// @zod.custom(z.coerce.date())
-	Timestamp      DateTime       `gorm:"column:timestamp;index:AuditLog_timestamp_idx;index:AuditLog_workspaceId_timestamp_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"timestamp"`
+	Timestamp      DateTime       `gorm:"column:timestamp;index:AuditLog_timestamp_idx;index:AuditLog_workspaceId_timestamp_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"timestamp"`
 	Type           string         `gorm:"column:type;index:AuditLog_type_idx;not null" json:"type"`
 	Severity       *string        `gorm:"column:severity;default:'info'" json:"severity"`
 	UserID         *string        `gorm:"column:userId" json:"userId"`
-	WorkspaceID    *string        `gorm:"column:workspaceId;index:AuditLog_workspaceId_timestamp_idx" json:"workspaceId"`
+	WorkspaceID    *string        `gorm:"column:workspaceId;index:AuditLog_workspaceId_timestamp_idx,priority:1" json:"workspaceId"`
 	ObjectID       *string        `gorm:"column:objectId" json:"objectId"`
 	Changes        datatypes.JSON `gorm:"column:changes" json:"changes"`
 	AuthType       *string        `gorm:"column:authType" json:"authType"`
@@ -724,10 +724,10 @@ func (m *SourceCatalog) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ReverseSyncControl struct {
-	WorkspaceID         string  `gorm:"column:workspace_id;primaryKey;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key" json:"workspace_id"`
-	SyncID              string  `gorm:"column:sync_id;primaryKey;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key;index:reverse_sync_control_sync_id_idx" json:"sync_id"`
+	WorkspaceID         string  `gorm:"column:workspace_id;primaryKey;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key,priority:1" json:"workspace_id"`
+	SyncID              string  `gorm:"column:sync_id;primaryKey;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key,priority:2;index:reverse_sync_control_sync_id_idx" json:"sync_id"`
 	RunID               string  `gorm:"column:run_id;primaryKey" json:"run_id"`
-	RunOrder            int64   `gorm:"column:run_order;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key;default:0;not null" json:"run_order"`
+	RunOrder            int64   `gorm:"column:run_order;uniqueIndex:reverse_sync_control_workspace_id_sync_id_run_order_key,priority:3;default:0;not null" json:"run_order"`
 	Detached            bool    `gorm:"column:detached;default:false;not null" json:"detached"`
 	Revision            string  `gorm:"column:revision;not null" json:"revision"`
 	TargetHash          string  `gorm:"column:target_hash;not null" json:"target_hash"`
@@ -751,8 +751,8 @@ func (ReverseSyncControl) TableName() string {
 
 type ReverseSyncTargetOwner struct {
 	TargetHash  string `gorm:"column:target_hash;primaryKey" json:"target_hash"`
-	WorkspaceID string `gorm:"column:workspace_id;uniqueIndex:reverse_sync_target_owner_workspace_id_sync_id_key;not null" json:"workspace_id"`
-	SyncID      string `gorm:"column:sync_id;uniqueIndex:reverse_sync_target_owner_workspace_id_sync_id_key;not null" json:"sync_id"`
+	WorkspaceID string `gorm:"column:workspace_id;uniqueIndex:reverse_sync_target_owner_workspace_id_sync_id_key,priority:1;not null" json:"workspace_id"`
+	SyncID      string `gorm:"column:sync_id;uniqueIndex:reverse_sync_target_owner_workspace_id_sync_id_key,priority:2;not null" json:"sync_id"`
 }
 
 func (ReverseSyncTargetOwner) TableName() string {
@@ -780,12 +780,12 @@ func (m *SourceState) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SourceTask struct {
-	SyncID  string `gorm:"column:sync_id;index:source_task_sync_id_idx;index:source_task_sync_id_started_at_idx;not null" json:"sync_id"`
+	SyncID  string `gorm:"column:sync_id;index:source_task_sync_id_idx;index:source_task_sync_id_started_at_idx,priority:1;not null" json:"sync_id"`
 	TaskID  string `gorm:"column:task_id;primaryKey" json:"task_id"`
 	Package string `gorm:"column:package;not null" json:"package"`
 	Version string `gorm:"column:version;not null" json:"version"`
 	// @zod.custom(z.coerce.date())
-	StartedAt DateTime `gorm:"column:started_at;index:source_task_started_at_idx;index:source_task_sync_id_started_at_idx;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"started_at"`
+	StartedAt DateTime `gorm:"column:started_at;index:source_task_started_at_idx;index:source_task_sync_id_started_at_idx,priority:2,sort:desc;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"started_at"`
 	// @zod.custom(z.coerce.date())
 	UpdatedAt   DateTime       `gorm:"column:updated_at;type:timestamptz(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
 	StartedBy   datatypes.JSON `gorm:"column:started_by" json:"started_by"`
@@ -811,7 +811,7 @@ func (m *SourceTask) BeforeCreate(tx *gorm.DB) error {
 }
 
 type TaskLog struct {
-	ID      string `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID      string `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	Level   string `gorm:"column:level;not null" json:"level"`
 	Logger  string `gorm:"column:logger;not null" json:"logger"`
 	Message string `gorm:"column:message;not null" json:"message"`
@@ -921,8 +921,8 @@ func (*ProfileBuilderFunction) BeforeUpdate(tx *gorm.DB) error {
 type ProfileBuilderState struct {
 	ProfileBuilderID      string    `gorm:"column:profileBuilderId;primaryKey" json:"profileBuilderId"`
 	ProfileBuilderVersion int       `gorm:"column:profileBuilderVersion;primaryKey;size:32" json:"profileBuilderVersion"`
-	InstanceIndex         int       `gorm:"column:instanceIndex;primaryKey;size:32" json:"instanceIndex"`
 	TotalInstances        int       `gorm:"column:totalInstances;primaryKey;size:32" json:"totalInstances"`
+	InstanceIndex         int       `gorm:"column:instanceIndex;primaryKey;size:32" json:"instanceIndex"`
 	StartedAt             DateTime  `gorm:"column:startedAt;type:timestamp(3);not null" json:"startedAt"`
 	UpdatedAt             DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	LastTimestamp         *DateTime `gorm:"column:lastTimestamp;type:timestamp(3)" json:"lastTimestamp"`
@@ -951,9 +951,9 @@ func (ProfileBuilderState2) TableName() string {
 type StatusChange struct {
 	ID          int64  `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
 	WorkspaceID string `gorm:"column:workspaceId;not null" json:"workspaceId"`
-	ActorID     string `gorm:"column:actorId;index:StatusChange_actorId_type_tableName_idx;not null" json:"actorId"`
-	Type        string `gorm:"column:type;index:StatusChange_actorId_type_tableName_idx;not null" json:"type"`
-	TableName_  string `gorm:"column:tableName;index:StatusChange_actorId_type_tableName_idx;not null" json:"tableName"`
+	ActorID     string `gorm:"column:actorId;index:StatusChange_actorId_type_tableName_idx,priority:1;not null" json:"actorId"`
+	Type        string `gorm:"column:type;index:StatusChange_actorId_type_tableName_idx,priority:2;not null" json:"type"`
+	TableName_  string `gorm:"column:tableName;index:StatusChange_actorId_type_tableName_idx,priority:3;not null" json:"tableName"`
 	// @zod.custom(z.coerce.date())
 	Timestamp   DateTime `gorm:"column:timestamp;index:StatusChange_timestamp_idx;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"timestamp"`
 	Status      string   `gorm:"column:status;not null" json:"status"`
@@ -977,10 +977,10 @@ func (m *StatusChange) BeforeCreate(tx *gorm.DB) error {
 
 type NotificationState struct {
 	WorkspaceID string `gorm:"column:workspaceId;not null" json:"workspaceId"`
+	ChannelID   string `gorm:"column:channelId;primaryKey" json:"channelId"`
 	ActorID     string `gorm:"column:actorId;primaryKey" json:"actorId"`
 	Type        string `gorm:"column:type;primaryKey" json:"type"`
 	TableName_  string `gorm:"column:tableName;primaryKey" json:"tableName"`
-	ChannelID   string `gorm:"column:channelId;primaryKey" json:"channelId"`
 	// @zod.custom(z.coerce.date())
 	FlappingSince *DateTime `gorm:"column:flappingSince;type:timestamptz(3)" json:"flappingSince"`
 	// @zod.custom(z.coerce.date())
@@ -994,11 +994,11 @@ func (NotificationState) TableName() string {
 }
 
 type Notification struct {
-	ID             string `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID             string `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	WorkspaceID    string `gorm:"column:workspaceId;not null" json:"workspaceId"`
-	ActorID        string `gorm:"column:actorId;index:Notification_actorId_type_tableName_idx;not null" json:"actorId"`
-	Type           string `gorm:"column:type;index:Notification_actorId_type_tableName_idx;not null" json:"type"`
-	TableName_     string `gorm:"column:tableName;index:Notification_actorId_type_tableName_idx;not null" json:"tableName"`
+	ActorID        string `gorm:"column:actorId;index:Notification_actorId_type_tableName_idx,priority:1;not null" json:"actorId"`
+	Type           string `gorm:"column:type;index:Notification_actorId_type_tableName_idx,priority:2;not null" json:"type"`
+	TableName_     string `gorm:"column:tableName;index:Notification_actorId_type_tableName_idx,priority:3;not null" json:"tableName"`
 	ChannelID      string `gorm:"column:channelId;not null" json:"channelId"`
 	StatusChangeID int64  `gorm:"column:statusChangeId;not null" json:"statusChangeId"`
 	// @zod.custom(z.coerce.date())
@@ -1029,8 +1029,8 @@ type OidcProvider struct {
 	// @zod.custom(z.coerce.date())
 	UpdatedAt             DateTime           `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Name                  string             `gorm:"column:name;not null" json:"name"`
-	Issuer                string             `gorm:"column:issuer;uniqueIndex:OidcProvider_issuer_clientId_key;not null" json:"issuer"`
-	ClientID              string             `gorm:"column:clientId;uniqueIndex:OidcProvider_issuer_clientId_key;not null" json:"clientId"`
+	Issuer                string             `gorm:"column:issuer;uniqueIndex:OidcProvider_issuer_clientId_key,priority:1;not null" json:"issuer"`
+	ClientID              string             `gorm:"column:clientId;uniqueIndex:OidcProvider_issuer_clientId_key,priority:2;not null" json:"clientId"`
 	ClientSecret          string             `gorm:"column:clientSecret;not null" json:"clientSecret"`
 	AuthorizationEndpoint *string            `gorm:"column:authorizationEndpoint" json:"authorizationEndpoint"`
 	TokenEndpoint         *string            `gorm:"column:tokenEndpoint" json:"tokenEndpoint"`
@@ -1081,8 +1081,8 @@ type OidcLoginGroup struct {
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// @zod.custom(z.coerce.date())
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	WorkspaceID    string        `gorm:"column:workspaceId;uniqueIndex:OidcLoginGroup_workspaceId_oidcProviderId_key;index:OidcLoginGroup_workspaceId_idx;not null" json:"workspaceId"`
-	OidcProviderID string        `gorm:"column:oidcProviderId;uniqueIndex:OidcLoginGroup_workspaceId_oidcProviderId_key;index:OidcLoginGroup_oidcProviderId_idx;not null" json:"oidcProviderId"`
+	WorkspaceID    string        `gorm:"column:workspaceId;uniqueIndex:OidcLoginGroup_workspaceId_oidcProviderId_key,priority:1;index:OidcLoginGroup_workspaceId_idx;not null" json:"workspaceId"`
+	OidcProviderID string        `gorm:"column:oidcProviderId;uniqueIndex:OidcLoginGroup_workspaceId_oidcProviderId_key,priority:2;index:OidcLoginGroup_oidcProviderId_idx;not null" json:"oidcProviderId"`
 	GroupValue     *string       `gorm:"column:groupValue" json:"groupValue"`
 	AllowAllUsers  bool          `gorm:"column:allowAllUsers;default:false;not null" json:"allowAllUsers"`
 	Workspace      *Workspace    `gorm:"belongsTo"`
@@ -1119,7 +1119,7 @@ type ReprocessingJobs struct {
 	ID                  string                `gorm:"column:id;primaryKey;type:varchar(64)" json:"id"`
 	Config              datatypes.JSON        `gorm:"column:config;not null" json:"config"`
 	Status              string                `gorm:"column:status;type:varchar(32);not null" json:"status"`
-	CreatedAt           DateTime              `gorm:"column:created_at;index:reprocessing_jobs_created_at_idx;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt           DateTime              `gorm:"column:created_at;index:reprocessing_jobs_created_at_idx,sort:desc;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
 	StartedAt           *DateTime             `gorm:"column:started_at;type:timestamptz(6)" json:"started_at"`
 	CompletedAt         *DateTime             `gorm:"column:completed_at;type:timestamptz(6)" json:"completed_at"`
 	K8sJobName          *string               `gorm:"column:k8s_job_name;type:varchar(255)" json:"k8s_job_name"`
@@ -1141,9 +1141,9 @@ func (m *ReprocessingJobs) BeforeCreate(_ *gorm.DB) error {
 }
 
 type ReprocessingWorkers struct {
-	JobID          string            `gorm:"column:job_id;primaryKey;index:reprocessing_workers_job_id_idx;index:reprocessing_workers_status_idx;type:varchar(64)" json:"job_id"`
+	JobID          string            `gorm:"column:job_id;primaryKey;index:reprocessing_workers_job_id_idx;index:reprocessing_workers_status_idx,priority:1;type:varchar(64)" json:"job_id"`
 	WorkerIndex    int               `gorm:"column:worker_index;primaryKey;size:32" json:"worker_index"`
-	Status         string            `gorm:"column:status;index:reprocessing_workers_status_idx;type:varchar(32);not null" json:"status"`
+	Status         string            `gorm:"column:status;index:reprocessing_workers_status_idx,priority:2;type:varchar(32);not null" json:"status"`
 	StartedAt      *DateTime         `gorm:"column:started_at;type:timestamptz(6)" json:"started_at"`
 	UpdatedAt      DateTime          `gorm:"column:updated_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
 	CompletedAt    *DateTime         `gorm:"column:completed_at;type:timestamptz(6)" json:"completed_at"`

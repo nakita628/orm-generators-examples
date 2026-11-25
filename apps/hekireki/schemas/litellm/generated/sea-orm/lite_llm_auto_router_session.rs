@@ -5,16 +5,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AutoRouterSession")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub api_key: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub session_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub router_name: String,
+    #[sea_orm(column_type = "Text")]
     pub router_type: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub first_turn_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_turn_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub last_model: String,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub models: Json,
     #[sea_orm(default_value = 0)]
     pub turns: i32,
@@ -56,15 +63,15 @@ pub struct Model {
     pub savings_estimated_actual_spend: f64,
     #[sea_orm(default_value = 0)]
     pub savings_estimated_saved_spend: f64,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub savings_estimated_baseline_models: Json,
     #[sea_orm(default_value = 0)]
     pub classifier_cost: f64,
     #[sea_orm(default_value = 0)]
     pub classifier_cost_recorded_turns: i32,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub tier_turns: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub baseline_models: Json,
 }
 

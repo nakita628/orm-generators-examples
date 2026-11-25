@@ -14,39 +14,54 @@ pub struct Model {
     pub asset_class: Option<AssetClass>,
     #[sea_orm(column_name = "assetSubClass")]
     pub asset_sub_class: Option<AssetSubClass>,
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub countries: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub currency: String,
+    #[sea_orm(column_type = "Text")]
     pub cusip: Option<String>,
     #[sea_orm(column_name = "dataGatheringFrequency", default_value = "DAILY")]
     pub data_gathering_frequency: DataGatheringFrequency,
     #[sea_orm(column_name = "dataSource")]
     pub data_source: DataSource,
+    #[sea_orm(column_type = "Text")]
     pub figi: Option<String>,
-    #[sea_orm(column_name = "figiComposite")]
+    #[sea_orm(column_name = "figiComposite", column_type = "Text")]
     pub figi_composite: Option<String>,
-    #[sea_orm(column_name = "figiShareClass")]
+    #[sea_orm(column_name = "figiShareClass", column_type = "Text")]
     pub figi_share_class: Option<String>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub holdings: Option<Json>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
+    #[sea_orm(column_type = "Text")]
     pub isin: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "scraperConfiguration")]
+    #[sea_orm(column_name = "scraperConfiguration", column_type = "JsonBinary")]
     pub scraper_configuration: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub sectors: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub symbol: String,
-    #[sea_orm(column_name = "symbolMapping")]
+    #[sea_orm(column_name = "symbolMapping", column_type = "JsonBinary")]
     pub symbol_mapping: Option<Json>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
 }
 
@@ -56,7 +71,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SymbolProfile_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::order::Entity")]

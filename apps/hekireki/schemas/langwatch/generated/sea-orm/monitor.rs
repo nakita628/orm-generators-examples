@@ -8,44 +8,58 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Monitor")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "experimentId")]
+    #[sea_orm(column_name = "experimentId", column_type = "Text")]
     pub experiment_id: Option<String>,
-    #[sea_orm(column_name = "evaluatorId")]
+    #[sea_orm(column_name = "evaluatorId", column_type = "Text")]
     pub evaluator_id: Option<String>,
-    #[sea_orm(column_name = "checkType")]
+    #[sea_orm(column_name = "checkType", column_type = "Text")]
     pub check_type: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(column_name = "executionMode", default_value = "ON_MESSAGE")]
     pub execution_mode: EvaluationExecutionMode,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub preconditions: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub parameters: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub mappings: Option<Json>,
     #[sea_orm(default_value = 1)]
     pub sample: f64,
-    #[sea_orm(default_value = "trace")]
+    #[sea_orm(column_type = "Text", default_value = "trace")]
     pub level: String,
     #[sea_orm(column_name = "threadIdleTimeout")]
     pub thread_idle_timeout: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "autoPausedAt")]
+    #[sea_orm(column_name = "autoPausedAt", column_type = "custom(\"timestamp(3)\")")]
     pub auto_paused_at: Option<DateTime>,
-    #[sea_orm(column_name = "autoPausedReason")]
+    #[sea_orm(column_name = "autoPausedReason", column_type = "Text")]
     pub auto_paused_reason: Option<String>,
-    #[sea_orm(column_name = "evaluatorLabel")]
+    #[sea_orm(column_name = "evaluatorLabel", column_type = "Text")]
     pub evaluator_label: Option<String>,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -54,7 +68,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Monitor_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -62,13 +77,15 @@ pub enum Relation {
         from = "Column::ExperimentId",
         to = "super::experiment::Column::Id",
         on_update = "Restrict",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Monitor_experimentId_fkey"
     )]
     Experiment,
     #[sea_orm(
         belongs_to = "super::evaluator::Entity",
         from = "Column::EvaluatorId",
-        to = "super::evaluator::Column::Id"
+        to = "super::evaluator::Column::Id",
+        fk_name = "Monitor_evaluatorId_fkey"
     )]
     Evaluator,
 }

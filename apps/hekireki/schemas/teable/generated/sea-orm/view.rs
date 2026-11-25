@@ -7,27 +7,47 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "view")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub sort: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub filter: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub group: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub options: Option<String>,
     pub order: f64,
     pub version: i32,
+    #[sea_orm(column_type = "Text")]
     pub column_meta: String,
     pub is_locked: Option<bool>,
     pub enable_share: Option<bool>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub share_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub share_meta: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
 }
 
@@ -36,7 +56,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::table_meta::Entity",
         from = "Column::TableId",
-        to = "super::table_meta::Column::Id"
+        to = "super::table_meta::Column::Id",
+        fk_name = "view_table_id_fkey"
     )]
     Table,
 }

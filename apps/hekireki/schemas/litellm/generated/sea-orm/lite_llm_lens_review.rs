@@ -5,11 +5,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_LensReview")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub lens_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub criteria_key: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub execution_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
 }
 
@@ -19,7 +23,8 @@ pub enum Relation {
         belongs_to = "super::lite_llm_lens::Entity",
         from = "Column::LensId",
         to = "super::lite_llm_lens::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_LensReview_lens_id_fkey"
     )]
     Lens,
 }

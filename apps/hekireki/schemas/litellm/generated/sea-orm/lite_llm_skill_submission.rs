@@ -7,20 +7,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SkillSubmission")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub plugin_name: String,
+    #[sea_orm(column_type = "Text")]
     pub operation: String,
-    #[sea_orm(default_value = "pending_review")]
+    #[sea_orm(column_type = "Text", default_value = "pending_review")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub proposal_json: String,
     pub archive_content: Option<Vec<u8>>,
+    #[sea_orm(column_type = "Text")]
     pub submitted_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub base_plugin_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub base_updated_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub reviewed_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub reviewed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub rejection_reason: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub scan_json: Option<String>,
 }
 

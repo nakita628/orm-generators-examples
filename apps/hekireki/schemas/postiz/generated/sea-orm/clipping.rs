@@ -7,28 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Clipping")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub url: String,
-    #[sea_orm(default_value = "analysing")]
+    #[sea_orm(column_type = "Text", default_value = "analysing")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub title: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub thumbnail: Option<String>,
     pub duration: Option<i32>,
     #[sea_orm(column_name = "maxClips", default_value = 5)]
     pub max_clips: i32,
-    #[sea_orm(default_value = "blur")]
+    #[sea_orm(column_type = "Text", default_value = "blur")]
     pub fit: String,
+    #[sea_orm(column_type = "Text")]
     pub integrations: String,
-    #[sea_orm(column_name = "creditsId")]
+    #[sea_orm(column_name = "creditsId", column_type = "Text")]
     pub credits_id: Option<String>,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -37,7 +47,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Clipping_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::clipping_clip::Entity")]

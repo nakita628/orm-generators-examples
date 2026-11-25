@@ -19,36 +19,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Creative")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub r#type: CreativeType,
     #[sea_orm(default_value = "draft")]
     pub status: CreativeStatus,
-    #[sea_orm(column_name = "publishedAt")]
+    #[sea_orm(column_name = "publishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub published_at: Option<DateTime>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub content: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub styling: Json,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: Option<String>,
-    #[sea_orm(column_name = "linkUrl")]
+    #[sea_orm(column_name = "linkUrl", column_type = "Text")]
     pub link_url: Option<String>,
     #[sea_orm(column_name = "showOn", default_value = "pageView")]
     pub show_on: CreativeShowOn,
-    #[sea_orm(column_name = "showConditions")]
+    #[sea_orm(column_name = "showConditions", column_type = "JsonBinary")]
     pub show_conditions: Option<Json>,
     #[sea_orm(column_name = "displayPercentage")]
     pub display_percentage: Option<f64>,
-    #[sea_orm(column_name = "startAt")]
+    #[sea_orm(column_name = "startAt", column_type = "custom(\"timestamp(3)\")")]
     pub start_at: Option<DateTime>,
-    #[sea_orm(column_name = "endAt")]
+    #[sea_orm(column_name = "endAt", column_type = "custom(\"timestamp(3)\")")]
     pub end_at: Option<DateTime>,
     #[sea_orm(column_name = "autoSelectLanguage")]
     pub auto_select_language: Option<bool>,
@@ -60,14 +69,16 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Creative_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Creative_createdBy_fkey"
     )]
     Creator,
     #[sea_orm(
@@ -75,7 +86,8 @@ pub enum Relation {
         from = "(Column::SurveyId, Column::WorkspaceId)",
         to = "(super::survey::Column::Id, super::survey::Column::WorkspaceId)",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "NoAction",
+        fk_name = "Creative_surveyId_workspaceId_fkey"
     )]
     Survey,
     #[sea_orm(has_many = "super::creative_trigger::Entity")]

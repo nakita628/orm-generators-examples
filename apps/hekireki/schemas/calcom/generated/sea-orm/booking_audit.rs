@@ -11,21 +11,28 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    #[sea_orm(column_name = "bookingUid")]
+    #[sea_orm(column_name = "bookingUid", column_type = "Text")]
     pub booking_uid: String,
     #[sea_orm(column_name = "actorId")]
     pub actor_id: Uuid,
     pub r#type: BookingAuditType,
     pub action: BookingAuditAction,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub timestamp: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     pub source: BookingAuditSource,
-    #[sea_orm(column_name = "operationId")]
+    #[sea_orm(column_name = "operationId", column_type = "Text")]
     pub operation_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub context: Option<Json>,
 }
 
@@ -35,7 +42,8 @@ pub enum Relation {
         belongs_to = "super::audit_actor::Entity",
         from = "Column::ActorId",
         to = "super::audit_actor::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "BookingAudit_actorId_fkey"
     )]
     Actor,
 }

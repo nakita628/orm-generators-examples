@@ -7,13 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProcessedWebhookEvent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "paymentProcessorEventId")]
+    #[sea_orm(column_name = "paymentProcessorEventId", column_type = "Text")]
     pub payment_processor_event_id: String,
-    #[sea_orm(column_name = "eventType")]
+    #[sea_orm(column_name = "eventType", column_type = "Text")]
     pub event_type: String,
 }
 

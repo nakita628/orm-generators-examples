@@ -18,7 +18,10 @@ pub struct Model {
     pub user_id: Option<Uuid>,
     pub team_id: Option<Uuid>,
     pub created_by: Option<Uuid>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub updated_at: Option<DateTimeWithTimeZone>,
@@ -26,6 +29,7 @@ pub struct Model {
     pub deleted_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(default_value = false)]
     pub recorder_enabled: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub replay_config: Option<Json>,
 }
 
@@ -34,19 +38,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "website_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "website_created_by_fkey"
     )]
     CreateUser,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
-        to = "super::team::Column::Id"
+        to = "super::team::Column::Id",
+        fk_name = "website_team_id_fkey"
     )]
     Team,
     #[sea_orm(has_many = "super::annotation::Entity")]

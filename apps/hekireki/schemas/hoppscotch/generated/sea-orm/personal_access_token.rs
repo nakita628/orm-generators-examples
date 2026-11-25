@@ -7,17 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PersonalAccessToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userUid")]
+    #[sea_orm(column_name = "userUid", column_type = "Text")]
     pub user_uid: String,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
-    #[sea_orm(column_name = "expiresOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "expiresOn", column_type = "custom(\"timestamptz(3)\")")]
     pub expires_on: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedOn", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_on: DateTimeWithTimeZone,
 }
 
@@ -27,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserUid",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PersonalAccessToken_userUid_fkey"
     )]
     User,
 }

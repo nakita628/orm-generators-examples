@@ -13,37 +13,52 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GithubBranchPullRequestCheck")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "repositoryHost")]
+    #[sea_orm(column_name = "repositoryHost", column_type = "Text")]
     pub repository_host: String,
     /// "owner/repo", stored LOWERCASED, matching GithubPullRequest.
-    #[sea_orm(column_name = "repositoryFullName")]
+    #[sea_orm(column_name = "repositoryFullName", column_type = "Text")]
     pub repository_full_name: String,
-    #[sea_orm(column_name = "headBranch")]
+    #[sea_orm(column_name = "headBranch", column_type = "Text")]
     pub head_branch: String,
-    #[sea_orm(column_name = "lastCheckedAt")]
+    #[sea_orm(
+        column_name = "lastCheckedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_checked_at: DateTime,
     #[sea_orm(column_name = "prCount", default_value = 0)]
     pub pr_count: i32,
     /// Set while the branch resolves to no pull request; cleared once one is
     /// found.
-    #[sea_orm(column_name = "notFoundAt")]
+    #[sea_orm(column_name = "notFoundAt", column_type = "custom(\"timestamp(3)\")")]
     pub not_found_at: Option<DateTime>,
     /// The earliest instant GitHub may be asked about this branch again.
-    #[sea_orm(column_name = "recheckAfter")]
+    #[sea_orm(column_name = "recheckAfter", column_type = "custom(\"timestamp(3)\")")]
     pub recheck_after: Option<DateTime>,
     /// Consecutive lookups that found nothing, backing off the recheck.
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     /// When a reader last asked about this branch, whether or not GitHub was
     /// called.
-    #[sea_orm(column_name = "lastRequestedAt")]
+    #[sea_orm(
+        column_name = "lastRequestedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_requested_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -53,7 +68,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GithubBranchPullRequestCheck_organizationId_fkey"
     )]
     Organization,
 }

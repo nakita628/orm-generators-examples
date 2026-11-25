@@ -6,19 +6,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProcessManagerInbox")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "processName")]
+    #[sea_orm(column_name = "processName", column_type = "Text")]
     pub process_name: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "processKey")]
+    #[sea_orm(column_name = "processKey", column_type = "Text")]
     pub process_key: String,
-    #[sea_orm(column_name = "tenantId")]
+    #[sea_orm(column_name = "tenantId", column_type = "Text")]
     pub tenant_id: String,
     /// The raw source event id, kept UNINDEXED for diagnostics. A caller composes
     /// this and its length is that domain's business, so it must never carry a
     /// btree constraint — see `sourceEventKey`.
-    #[sea_orm(column_name = "sourceEventId")]
+    #[sea_orm(column_name = "sourceEventId", column_type = "Text")]
     pub source_event_id: String,
     /// The fixed-width digest of `sourceEventId` the uniqueness is enforced on,
     /// derived by the store (`stores/inboxKey.ts`). Postgres cannot index a btree
@@ -35,9 +36,9 @@ pub struct Model {
     /// different process keys at once — the store's own read-check plus its
     /// per-processKey advisory lock cover everything else. A follow-up migration
     /// adds NOT NULL once the fleet has cycled and closes it.
-    #[sea_orm(column_name = "sourceEventKey")]
+    #[sea_orm(column_name = "sourceEventKey", column_type = "Text")]
     pub source_event_key: Option<String>,
-    #[sea_orm(column_name = "consumedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "consumedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub consumed_at: DateTimeWithTimeZone,
 }
 

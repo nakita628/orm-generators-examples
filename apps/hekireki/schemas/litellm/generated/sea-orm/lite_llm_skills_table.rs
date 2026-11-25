@@ -7,21 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SkillsTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub skill_id: String,
+    #[sea_orm(column_type = "Text")]
     pub display_title: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub instructions: Option<String>,
-    #[sea_orm(default_value = "custom")]
+    #[sea_orm(column_type = "Text", default_value = "custom")]
     pub source: String,
+    #[sea_orm(column_type = "Text")]
     pub latest_version: Option<String>,
     pub file_content: Option<Vec<u8>>,
+    #[sea_orm(column_type = "Text")]
     pub file_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub file_type: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

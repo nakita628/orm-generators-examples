@@ -7,16 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "projects")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub org_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub retention_days: Option<i32>,
     #[sea_orm(default_value = false)]
     pub has_traces: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub home_dashboard_id: Option<String>,
 }
 
@@ -26,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::dashboard::Entity",
         from = "Column::HomeDashboardId",
         to = "super::dashboard::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "projects_home_dashboard_id_fkey"
     )]
     HomeDashboard,
     #[sea_orm(
@@ -34,7 +49,8 @@ pub enum Relation {
         from = "Column::OrgId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "projects_org_id_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::project_membership::Entity")]

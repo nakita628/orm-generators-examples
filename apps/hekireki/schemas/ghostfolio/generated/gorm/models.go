@@ -100,13 +100,13 @@ func (*Account) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AccountBalance struct {
-	AccountID string   `gorm:"column:accountId;uniqueIndex:AccountBalance_accountId_userId_date_key;index:AccountBalance_accountId_idx;not null" json:"accountId"`
+	AccountID string   `gorm:"column:accountId;uniqueIndex:AccountBalance_accountId_userId_date_key,priority:1;index:AccountBalance_accountId_idx;not null" json:"accountId"`
 	Comment   *string  `gorm:"column:comment" json:"comment"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	Date      DateTime `gorm:"column:date;uniqueIndex:AccountBalance_accountId_userId_date_key;index:AccountBalance_date_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"date"`
+	Date      DateTime `gorm:"column:date;uniqueIndex:AccountBalance_accountId_userId_date_key,priority:3;index:AccountBalance_date_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"date"`
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID    string   `gorm:"column:userId;uniqueIndex:AccountBalance_accountId_userId_date_key;not null" json:"userId"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:AccountBalance_accountId_userId_date_key,priority:2;not null" json:"userId"`
 	Value     float64  `gorm:"column:value;type:double precision;not null" json:"value"`
 	Account   *Account `gorm:"foreignKey:AccountID,UserID;references:ID,UserID;belongsTo"`
 }
@@ -245,11 +245,11 @@ func (*AssetProfileOverrides) BeforeUpdate(tx *gorm.DB) error {
 type AssetProfileResolution struct {
 	CreatedAt        DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Currency         string   `gorm:"column:currency;not null" json:"currency"`
-	DataSourceOrigin string   `gorm:"column:dataSourceOrigin;uniqueIndex:AssetProfileResolution_dataSourceOrigin_symbolOrigin_key;not null" json:"dataSourceOrigin"`
+	DataSourceOrigin string   `gorm:"column:dataSourceOrigin;uniqueIndex:AssetProfileResolution_dataSourceOrigin_symbolOrigin_key,priority:1;not null" json:"dataSourceOrigin"`
 	DataSourceTarget string   `gorm:"column:dataSourceTarget;not null" json:"dataSourceTarget"`
 	ID               string   `gorm:"column:id;primaryKey" json:"id"`
 	RequestCount     *int     `gorm:"column:requestCount;size:32;default:1;not null" json:"requestCount"`
-	SymbolOrigin     string   `gorm:"column:symbolOrigin;uniqueIndex:AssetProfileResolution_dataSourceOrigin_symbolOrigin_key;not null" json:"symbolOrigin"`
+	SymbolOrigin     string   `gorm:"column:symbolOrigin;uniqueIndex:AssetProfileResolution_dataSourceOrigin_symbolOrigin_key,priority:2;not null" json:"symbolOrigin"`
 	SymbolTarget     string   `gorm:"column:symbolTarget;not null" json:"symbolTarget"`
 	UpdatedAt        DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
@@ -295,11 +295,11 @@ func (*AssetProfileResolution) BeforeUpdate(tx *gorm.DB) error {
 // adjusted again.
 type AssetProfileSplit struct {
 	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	Date            DateTime       `gorm:"column:date;uniqueIndex:AssetProfileSplit_symbolProfileId_date_key;index:AssetProfileSplit_date_idx;type:timestamp(3);not null" json:"date"`
+	Date            DateTime       `gorm:"column:date;uniqueIndex:AssetProfileSplit_symbolProfileId_date_key,priority:2;index:AssetProfileSplit_date_idx;type:timestamp(3);not null" json:"date"`
 	Denominator     int            `gorm:"column:denominator;size:32;not null" json:"denominator"`
 	ID              string         `gorm:"column:id;primaryKey" json:"id"`
 	Numerator       int            `gorm:"column:numerator;size:32;not null" json:"numerator"`
-	SymbolProfileID string         `gorm:"column:symbolProfileId;uniqueIndex:AssetProfileSplit_symbolProfileId_date_key;not null" json:"symbolProfileId"`
+	SymbolProfileID string         `gorm:"column:symbolProfileId;uniqueIndex:AssetProfileSplit_symbolProfileId_date_key,priority:1;not null" json:"symbolProfileId"`
 	UpdatedAt       DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	SymbolProfile   *SymbolProfile `gorm:"belongsTo"`
 }
@@ -369,13 +369,13 @@ func (*AuthDevice) BeforeUpdate(tx *gorm.DB) error {
 
 type MarketData struct {
 	CreatedAt        DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	DataSource       string   `gorm:"column:dataSource;uniqueIndex:MarketData_dataSource_symbol_date_key;not null" json:"dataSource"`
-	Date             DateTime `gorm:"column:date;uniqueIndex:MarketData_dataSource_symbol_date_key;index:MarketData_date_idx;type:timestamp(3);not null" json:"date"`
+	DataSource       string   `gorm:"column:dataSource;uniqueIndex:MarketData_dataSource_symbol_date_key,priority:1;not null" json:"dataSource"`
+	Date             DateTime `gorm:"column:date;uniqueIndex:MarketData_dataSource_symbol_date_key,priority:3;index:MarketData_date_idx;type:timestamp(3);not null" json:"date"`
 	ID               string   `gorm:"column:id;primaryKey" json:"id"`
 	IsCarriedForward bool     `gorm:"column:isCarriedForward;default:false;not null" json:"isCarriedForward"`
 	MarketPrice      float64  `gorm:"column:marketPrice;type:double precision;not null" json:"marketPrice"`
 	State            string   `gorm:"column:state;index:MarketData_state_idx;default:'CLOSE';not null" json:"state"`
-	Symbol           string   `gorm:"column:symbol;uniqueIndex:MarketData_dataSource_symbol_date_key;index:MarketData_symbol_idx;not null" json:"symbol"`
+	Symbol           string   `gorm:"column:symbol;uniqueIndex:MarketData_dataSource_symbol_date_key,priority:2;index:MarketData_symbol_idx;not null" json:"symbol"`
 }
 
 func (MarketData) TableName() string {
@@ -399,15 +399,15 @@ type Order struct {
 	Comment         *string        `gorm:"column:comment" json:"comment"`
 	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Currency        *string        `gorm:"column:currency" json:"currency"`
-	Date            DateTime       `gorm:"column:date;index:Order_date_idx;index:Order_symbolProfileId_date_idx;index:Order_userId_date_idx;index:Order_userId_type_date_idx;type:timestamp(3);not null" json:"date"`
+	Date            DateTime       `gorm:"column:date;index:Order_date_idx;index:Order_symbolProfileId_date_idx,priority:2;index:Order_userId_date_idx,priority:2;index:Order_userId_type_date_idx,priority:3;type:timestamp(3);not null" json:"date"`
 	Fee             float64        `gorm:"column:fee;type:double precision;not null" json:"fee"`
 	ID              string         `gorm:"column:id;primaryKey" json:"id"`
 	Quantity        float64        `gorm:"column:quantity;type:double precision;not null" json:"quantity"`
-	SymbolProfileID string         `gorm:"column:symbolProfileId;index:Order_symbolProfileId_date_idx;not null" json:"symbolProfileId"`
-	Type            string         `gorm:"column:type;index:Order_userId_type_date_idx;not null" json:"type"`
+	SymbolProfileID string         `gorm:"column:symbolProfileId;index:Order_symbolProfileId_date_idx,priority:1;not null" json:"symbolProfileId"`
+	Type            string         `gorm:"column:type;index:Order_userId_type_date_idx,priority:2;not null" json:"type"`
 	UnitPrice       float64        `gorm:"column:unitPrice;type:double precision;not null" json:"unitPrice"`
 	UpdatedAt       DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID          string         `gorm:"column:userId;index:Order_userId_date_idx;index:Order_userId_type_date_idx;not null" json:"userId"`
+	UserID          string         `gorm:"column:userId;index:Order_userId_date_idx,priority:1;index:Order_userId_type_date_idx,priority:1;not null" json:"userId"`
 	Account         *Account       `gorm:"foreignKey:AccountID,AccountUserID;references:ID,UserID;belongsTo"`
 	User            *User          `gorm:"belongsTo"`
 	SymbolProfile   *SymbolProfile `gorm:"belongsTo"`
@@ -503,7 +503,7 @@ type SymbolProfile struct {
 	Currency               string                 `gorm:"column:currency;index:SymbolProfile_currency_idx;not null" json:"currency"`
 	Cusip                  *string                `gorm:"column:cusip;index:SymbolProfile_cusip_idx" json:"cusip"`
 	DataGatheringFrequency string                 `gorm:"column:dataGatheringFrequency;index:SymbolProfile_dataGatheringFrequency_idx;default:'DAILY';not null" json:"dataGatheringFrequency"`
-	DataSource             string                 `gorm:"column:dataSource;uniqueIndex:SymbolProfile_dataSource_symbol_key;index:SymbolProfile_dataSource_idx;not null" json:"dataSource"`
+	DataSource             string                 `gorm:"column:dataSource;uniqueIndex:SymbolProfile_dataSource_symbol_key,priority:1;index:SymbolProfile_dataSource_idx;not null" json:"dataSource"`
 	Figi                   *string                `gorm:"column:figi" json:"figi"`
 	FigiComposite          *string                `gorm:"column:figiComposite" json:"figiComposite"`
 	FigiShareClass         *string                `gorm:"column:figiShareClass" json:"figiShareClass"`
@@ -514,7 +514,7 @@ type SymbolProfile struct {
 	Name                   *string                `gorm:"column:name;index:SymbolProfile_name_idx" json:"name"`
 	ScraperConfiguration   datatypes.JSON         `gorm:"column:scraperConfiguration" json:"scraperConfiguration"`
 	Sectors                datatypes.JSON         `gorm:"column:sectors" json:"sectors"`
-	Symbol                 string                 `gorm:"column:symbol;uniqueIndex:SymbolProfile_dataSource_symbol_key;index:SymbolProfile_symbol_idx;not null" json:"symbol"`
+	Symbol                 string                 `gorm:"column:symbol;uniqueIndex:SymbolProfile_dataSource_symbol_key,priority:2;index:SymbolProfile_symbol_idx;not null" json:"symbol"`
 	SymbolMapping          datatypes.JSON         `gorm:"column:symbolMapping" json:"symbolMapping"`
 	UpdatedAt              DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	URL                    *string                `gorm:"column:url" json:"url"`
@@ -591,8 +591,8 @@ func (*Subscription) BeforeUpdate(tx *gorm.DB) error {
 
 type Tag struct {
 	ID         string           `gorm:"column:id;primaryKey" json:"id"`
-	Name       string           `gorm:"column:name;uniqueIndex:Tag_name_userId_key;index:Tag_name_idx;not null" json:"name"`
-	UserID     *string          `gorm:"column:userId;uniqueIndex:Tag_name_userId_key" json:"userId"`
+	Name       string           `gorm:"column:name;uniqueIndex:Tag_name_userId_key,priority:1;index:Tag_name_idx;not null" json:"name"`
+	UserID     *string          `gorm:"column:userId;uniqueIndex:Tag_name_userId_key,priority:2" json:"userId"`
 	User       *User            `gorm:"belongsTo"`
 	Accounts   []TagsOnAccounts `gorm:"foreignKey:TagID;constraint:TagsOnAccounts_tagId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Activities []Order          `gorm:"many2many:_OrderToTag;joinForeignKey:B;joinReferences:A"`

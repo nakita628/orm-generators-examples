@@ -7,28 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Location")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub address: Option<String>,
     pub latitude: Option<f64>,
     pub longitude: Option<f64>,
-    #[sea_orm(column_name = "imageUrl")]
+    #[sea_orm(column_name = "imageUrl", column_type = "Text")]
     pub image_url: Option<String>,
-    #[sea_orm(column_name = "thumbnailUrl")]
+    #[sea_orm(column_name = "thumbnailUrl", column_type = "Text")]
     pub thumbnail_url: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "imageId")]
+    #[sea_orm(column_name = "imageId", column_type = "Text")]
     pub image_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "parentId")]
+    #[sea_orm(column_name = "parentId", column_type = "Text")]
     pub parent_id: Option<String>,
 }
 
@@ -37,7 +45,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::image::Entity",
         from = "Column::ImageId",
-        to = "super::image::Column::Id"
+        to = "super::image::Column::Id",
+        fk_name = "Location_imageId_fkey"
     )]
     Image,
     #[sea_orm(
@@ -45,7 +54,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Location_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -53,14 +63,16 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Location_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::location::Entity",
         from = "Column::ParentId",
         to = "super::location::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Location_parentId_fkey"
     )]
     Parent,
     #[sea_orm(has_many = "super::asset_location::Entity")]

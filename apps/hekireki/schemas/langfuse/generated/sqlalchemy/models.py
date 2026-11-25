@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, CHAR, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, Integer, JSON, MetaData, Numeric, String, Text, TypeDecorator, Uuid, text
+from sqlalchemy import ARRAY, BigInteger, CHAR, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, Integer, JSON, MetaData, Numeric, String, Text, TypeDecorator, Uuid, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -339,7 +339,7 @@ class RoleAssignment(Base):
         Index("role_assignments_principal_id_idx", "principal_id"),
         Index("role_assignments_user_id_idx", "user_id"),
         Index("role_assignments_api_key_id_idx", "api_key_id"),
-        Index("role_assignments_tags_idx", "tags"),
+        Index("role_assignments_tags_idx", "tags", postgresql_using="gin", postgresql_ops={"tags": "array_ops"}),
         Index("role_assignments_owner_id_principal_id_role_id_key", "owner_id", "principal_id", "role_id", unique=True),
     )
 
@@ -669,7 +669,7 @@ class TraceSession(Base):
     environment: Mapped[str] = mapped_column(default="default", server_default=text("'default'"))
 
     __table_args__ = (
-        Index("trace_sessions_project_id_created_at_idx", "project_id", "created_at"),
+        Index("trace_sessions_project_id_created_at_idx", "project_id", literal_column("\"created_at\"").desc()),
     )
 
     project: Mapped["Project"] = relationship(back_populates="sessions")
@@ -719,6 +719,7 @@ class AnnotationQueue(Base):
         Index("annotation_queues_project_id_session_view_id_idx", "project_id", "session_view_id"),
         Index("annotation_queues_project_id_name_key", "project_id", "name", unique=True),
         ForeignKeyConstraint(["project_id", "session_view_id"], ["session_views.project_id", "session_views.id"], ondelete="NO ACTION", onupdate="CASCADE", name="annotation_queues_project_id_session_view_id_fkey"),
+        ForeignKeyConstraint(["project_id"], ["projects.id"], ondelete="CASCADE", onupdate="CASCADE", name="annotation_queues_project_id_fkey"),
     )
 
     session_view: Mapped[Optional["SessionView"]] = relationship(overlaps="annotation_queue,project", back_populates="annotation_queues")
@@ -832,9 +833,9 @@ class DatasetItem(Base):
     __table_args__ = (
         Index("dataset_items_project_id_valid_to_idx", "project_id", "valid_to"),
         Index("dataset_items_project_id_id_valid_from_idx", "project_id", "id", "valid_from"),
-        Index("dataset_items_source_trace_id_idx", "source_trace_id"),
-        Index("dataset_items_source_observation_id_idx", "source_observation_id"),
-        Index("dataset_items_dataset_id_idx", "dataset_id"),
+        Index("dataset_items_source_trace_id_idx", "source_trace_id", postgresql_using="hash"),
+        Index("dataset_items_source_observation_id_idx", "source_observation_id", postgresql_using="hash"),
+        Index("dataset_items_dataset_id_idx", "dataset_id", postgresql_using="hash"),
         Index("dataset_items_created_at_idx", "created_at"),
         Index("dataset_items_updated_at_idx", "updated_at"),
         ForeignKeyConstraint(["dataset_id", "project_id"], ["datasets.id", "datasets.project_id"], ondelete="CASCADE", onupdate="CASCADE", name="dataset_items_dataset_id_project_id_fkey"),
@@ -855,7 +856,7 @@ class DatasetRuns(Base):
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
     __table_args__ = (
-        Index("dataset_runs_dataset_id_idx", "dataset_id"),
+        Index("dataset_runs_dataset_id_idx", "dataset_id", postgresql_using="hash"),
         Index("dataset_runs_created_at_idx", "created_at"),
         Index("dataset_runs_updated_at_idx", "updated_at"),
         Index("dataset_runs_dataset_id_project_id_name_key", "dataset_id", "project_id", "name", unique=True),
@@ -946,7 +947,7 @@ class Prompt(Base):
         Index("prompts_project_id_id_idx", "project_id", "id"),
         Index("prompts_created_at_idx", "created_at"),
         Index("prompts_updated_at_idx", "updated_at"),
-        Index("prompts_tags_idx", "tags"),
+        Index("prompts_tags_idx", "tags", postgresql_using="gin", postgresql_ops={"tags": "array_ops"}),
         Index("prompts_project_id_name_version_key", "project_id", "name", "version", unique=True),
     )
 
@@ -1007,8 +1008,8 @@ class Skill(Base):
     __table_args__ = (
         Index("skills_created_at_idx", "created_at"),
         Index("skills_updated_at_idx", "updated_at"),
-        Index("skills_tags_idx", "tags"),
-        Index("skills_labels_idx", "labels"),
+        Index("skills_tags_idx", "tags", postgresql_using="gin", postgresql_ops={"tags": "array_ops"}),
+        Index("skills_labels_idx", "labels", postgresql_using="gin", postgresql_ops={"labels": "array_ops"}),
         Index("skills_project_id_name_version_key", "project_id", "name", "version", unique=True),
     )
 
@@ -1205,7 +1206,7 @@ class Evaluator(Base):
     block_message: Mapped[Optional[str]]
 
     __table_args__ = (
-        Index("evaluators_project_id_created_at_idx", "project_id", "created_at"),
+        Index("evaluators_project_id_created_at_idx", "project_id", literal_column("\"created_at\"").desc()),
     )
 
     project: Mapped["Project"] = relationship(back_populates="evaluator")
@@ -1235,7 +1236,7 @@ class EvaluatorVersion(Base):
     questions: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
 
     __table_args__ = (
-        Index("evaluator_versions_evaluator_id_version_key", "evaluator_id", "version", unique=True),
+        Index("evaluator_versions_evaluator_id_version_key", "evaluator_id", literal_column("\"version\"").desc(), unique=True),
     )
 
     evaluator: Mapped["Evaluator"] = relationship(back_populates="versions")
@@ -1288,7 +1289,7 @@ class EvaluationRule(Base):
     time_scope: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: ["NEW"], server_default=text("ARRAY['NEW']"))
 
     __table_args__ = (
-        Index("evaluation_rules_project_id_updated_at_idx", "project_id", "updated_at"),
+        Index("evaluation_rules_project_id_updated_at_idx", "project_id", literal_column("\"updated_at\"").desc()),
     )
 
     project: Mapped["Project"] = relationship(back_populates="evaluation_rule")
@@ -2086,7 +2087,7 @@ class TopicClusteringRun(Base):
     batch_action_id: Mapped[Optional[str]]
 
     __table_args__ = (
-        Index("topic_clustering_runs_serving_map_idx", "project_id", "facet_id", "status", "facet_version", "created_at", "id"),
+        Index("topic_clustering_runs_serving_map_idx", "project_id", "facet_id", "status", literal_column("\"facet_version\"").desc(), literal_column("\"created_at\"").desc(), literal_column("\"id\"").desc()),
         Index("topic_clustering_runs_rule_serving_map_idx", "project_id", "rule_id", "facet_id", "status"),
         Index("topic_clustering_runs_project_id_batch_action_id_idx", "project_id", "batch_action_id"),
         ForeignKeyConstraint(["facet_id", "facet_version"], ["evaluator_versions.evaluator_id", "evaluator_versions.version"], ondelete="CASCADE", onupdate="CASCADE", name="topic_clustering_runs_facet_id_facet_version_fkey"),

@@ -10,16 +10,21 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
     #[sea_orm(default_value = false)]
     pub closed: bool,
     pub user_id: Option<i32>,
     pub thread_id: Option<i32>,
     pub workspace_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -30,7 +35,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::users::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_agent_invocations_user_id_fkey"
     )]
     User,
     #[sea_orm(
@@ -38,7 +44,8 @@ pub enum Relation {
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_agent_invocations_workspace_id_fkey"
     )]
     Workspace,
 }

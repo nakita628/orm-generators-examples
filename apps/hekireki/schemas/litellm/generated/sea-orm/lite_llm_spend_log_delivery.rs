@@ -8,17 +8,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SpendLogDelivery")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub delivery_id: String,
+    #[sea_orm(column_type = "Text")]
     pub request_id: String,
     #[sea_orm(default_value = "pending")]
     pub state: AccountingDeliveryState,
+    #[sea_orm(column_type = "JsonBinary")]
     pub accounting_payload: Json,
     pub is_batch: bool,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub next_attempt_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub applied_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

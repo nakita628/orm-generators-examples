@@ -8,15 +8,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "App")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "dirName")]
+    #[sea_orm(column_name = "dirName", column_type = "Text")]
     pub dir_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub keys: Option<Json>,
     pub categories: Vec<AppCategories>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = false)]
     pub enabled: bool,

@@ -852,7 +852,7 @@ export const participants = pgTable(
   },
   (table) => [
     uniqueIndex('participants_token_key').on(table.token),
-    index('participants_poll_id_idx').on(table.pollId),
+    index('participants_poll_id_idx').using('hash', table.pollId),
     index('participants_user_id_idx').on(table.userId),
     foreignKey({
       name: 'participants_poll_id_fkey',
@@ -935,7 +935,10 @@ export const pollActivities = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('poll_activities_poll_id_created_at_idx').on(table.pollId, table.createdAt),
+    index('poll_activities_poll_id_created_at_idx').on(
+      table.pollId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     index('poll_activities_poll_id_participant_id_idx').on(table.pollId, table.participantId),
     index('poll_activities_poll_id_option_id_idx').on(table.pollId, table.optionId),
     index('poll_activities_poll_id_invite_id_idx').on(table.pollId, table.inviteId),
@@ -965,7 +968,7 @@ export const options = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('options_poll_id_idx').on(table.pollId),
+    index('options_poll_id_idx').using('hash', table.pollId),
     foreignKey({
       name: 'options_poll_id_fkey',
       columns: [table.pollId],
@@ -993,9 +996,9 @@ export const votes = pgTable(
     updatedAt: timestamp('updated_at', { precision: 3 }).$onUpdate(utcNow),
   },
   (table) => [
-    index('votes_poll_id_idx').on(table.pollId),
-    index('votes_participant_id_idx').on(table.participantId),
-    index('votes_option_id_idx').on(table.optionId),
+    index('votes_poll_id_idx').using('hash', table.pollId),
+    index('votes_participant_id_idx').using('hash', table.participantId),
+    index('votes_option_id_idx').using('hash', table.optionId),
     foreignKey({
       name: 'votes_participant_id_fkey',
       columns: [table.participantId],

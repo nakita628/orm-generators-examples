@@ -7,16 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "plugin_install")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub plugin_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub position_id: String,
+    #[sea_orm(column_type = "Text")]
     pub position: String,
+    #[sea_orm(column_type = "Text")]
     pub storage: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
 }
 
@@ -26,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::plugin::Entity",
         from = "Column::PluginId",
         to = "super::plugin::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "plugin_install_plugin_id_fkey"
     )]
     Plugin,
 }

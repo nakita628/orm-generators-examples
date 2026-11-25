@@ -8,21 +8,27 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "actorId")]
+    #[sea_orm(column_name = "actorId", column_type = "Text")]
     pub actor_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
-    #[sea_orm(column_name = "tableName")]
+    #[sea_orm(column_name = "tableName", column_type = "Text")]
     pub table_name: String,
-    #[sea_orm(column_name = "channelId")]
+    #[sea_orm(column_name = "channelId", column_type = "Text")]
     pub channel_id: String,
     #[sea_orm(column_name = "statusChangeId")]
     pub status_change_id: i64,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub timestamp: DateTimeWithTimeZone,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
 }
 

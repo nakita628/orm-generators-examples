@@ -18,52 +18,73 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AnomalyRule")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// 'organization' | 'team' | 'project' | 'source_type' | 'source'.
     /// String not enum so new scopes ship without migrations.
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
     /// Org id / team id / project id / source-type string / source id
     /// - narrows what the rule applies to.
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// 'critical' | 'warning' | 'info'. Drives default destination
     /// routing (e.g. critical → PagerDuty, warning → Slack only).
+    #[sea_orm(column_type = "Text")]
     pub severity: String,
     /// Extensible rule taxonomy: 'spend_spike' | 'rate_limit' |
     /// 'tool_mismatch' | 'after_hours' | 'unusual_model' | 'pii_leak'
     /// | 'custom'. New types ship without migrations - evaluator
     /// picks a per-type implementation from a code registry.
-    #[sea_orm(column_name = "ruleType")]
+    #[sea_orm(column_name = "ruleType", column_type = "Text")]
     pub rule_type: String,
     /// Per-rule-type threshold shape. Examples:
     /// spend_spike: { windowSec, ratioVsBaseline, minBaselineUsd }
     /// rate_limit: { windowSec, requestsThreshold }
     /// after_hours: { startHour, endHour, timezone, requestsThreshold }
-    #[sea_orm(column_name = "thresholdConfig", default_value = "{}")]
+    #[sea_orm(
+        column_name = "thresholdConfig",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub threshold_config: Json,
     /// Alert routing per destination. Shape:
     /// { slack?: { channelId }, siem?: { endpointUrl, authHeader },
     /// webhook?: { url, authHeader }, pagerduty?: { routingKey },
     /// email?: { to: string[] } }
     /// Empty map = use org defaults (when defaults exist; today no-op).
-    #[sea_orm(column_name = "destinationConfig", default_value = "{}")]
+    #[sea_orm(
+        column_name = "destinationConfig",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub destination_config: Json,
     /// 'active' (default - evaluator picks it up) | 'disabled' (admin
     /// paused; rule rows kept for audit). 'archived' uses archivedAt
     /// timestamp instead so we can filter `archivedAt IS NULL` cheaply.
-    #[sea_orm(default_value = "active")]
+    #[sea_orm(column_type = "Text", default_value = "active")]
     pub status: String,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
 }
 
@@ -73,14 +94,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AnomalyRule_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AnomalyRule_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(has_many = "super::anomaly_alert::Entity")]

@@ -4,9 +4,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "_BackgroundWorkerToTaskQueue")]
 pub struct Model {
-    #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "A",
+        column_type = "Text"
+    )]
     pub background_worker_id: String,
-    #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "B",
+        column_type = "Text"
+    )]
     pub task_queue_id: String,
 }
 
@@ -15,13 +25,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::background_worker::Entity",
         from = "Column::BackgroundWorkerId",
-        to = "super::background_worker::Column::Id"
+        to = "super::background_worker::Column::Id",
+        fk_name = "_BackgroundWorkerToTaskQueue_A_fkey"
     )]
     BackgroundWorker,
     #[sea_orm(
         belongs_to = "super::task_queue::Entity",
         from = "Column::TaskQueueId",
-        to = "super::task_queue::Column::Id"
+        to = "super::task_queue::Column::Id",
+        fk_name = "_BackgroundWorkerToTaskQueue_B_fkey"
     )]
     TaskQueue,
 }

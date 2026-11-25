@@ -9,16 +9,22 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub command: String,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
+    #[sea_orm(column_type = "Text")]
     pub description: String,
     #[sea_orm(default_value = 0)]
     pub uid: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -28,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
         to = "super::users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "slash_command_presets_userId_fkey"
     )]
     User,
 }

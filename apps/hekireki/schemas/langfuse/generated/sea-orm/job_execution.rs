@@ -8,22 +8,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "job_executions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub job_configuration_id: String,
+    #[sea_orm(column_type = "Text")]
     pub job_template_id: Option<String>,
     pub status: JobExecutionStatus,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub job_input_trace_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub job_input_trace_timestamp: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub job_input_observation_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub job_input_dataset_item_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub job_input_dataset_item_valid_from: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub job_output_score_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub execution_trace_id: Option<String>,
 }
 
@@ -33,7 +55,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "job_executions_project_id_fkey"
     )]
     Project,
 }

@@ -7,18 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ManagedFileTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub unified_file_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub file_object: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_mappings: Json,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub flat_model_file_ids: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub storage_backend: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub storage_url: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

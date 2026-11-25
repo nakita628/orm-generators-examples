@@ -7,15 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SavedView")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub filters: Json,
+    #[sea_orm(column_type = "Text")]
     pub query: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub period: Option<Json>,
     #[sea_orm(default_value = 0)]
     pub order: i32,
@@ -23,11 +27,19 @@ pub struct Model {
     /// - "v1-traces-filter" (default) - legacy /messages page filter map saved views
     /// - "v2-traces-lens"             - new traces v2 lens configs (columns, addons, grouping, sort, filterText) encoded inside `filters` JSON
     /// Each client filters by its own kind on read so neither sees the other's rows.
-    #[sea_orm(default_value = "v1-traces-filter")]
+    #[sea_orm(column_type = "Text", default_value = "v1-traces-filter")]
     pub kind: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -36,13 +48,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "SavedView_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "SavedView_userId_fkey"
     )]
     User,
 }

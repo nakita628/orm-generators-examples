@@ -7,27 +7,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_knowledge_nodes")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "canonicalName")]
+    #[sea_orm(column_name = "canonicalName", column_type = "Text")]
     pub canonical_name: String,
+    #[sea_orm(column_type = "Text")]
     pub kind: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub content: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub scope: Json,
-    #[sea_orm(column_name = "scopeKey")]
+    #[sea_orm(column_name = "scopeKey", column_type = "Text")]
     pub scope_key: String,
     pub version: i32,
-    #[sea_orm(column_name = "mergedInto")]
+    #[sea_orm(column_name = "mergedInto", column_type = "Text")]
     pub merged_into: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

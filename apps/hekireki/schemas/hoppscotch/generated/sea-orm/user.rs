@@ -7,26 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub uid: String,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "photoURL")]
+    #[sea_orm(column_name = "photoURL", column_type = "Text")]
     pub photo_url: Option<String>,
     #[sea_orm(column_name = "isAdmin", default_value = false)]
     pub is_admin: bool,
-    #[sea_orm(column_name = "refreshToken")]
+    #[sea_orm(column_name = "refreshToken", column_type = "Text")]
     pub refresh_token: Option<String>,
-    #[sea_orm(column_name = "currentRESTSession")]
+    #[sea_orm(column_name = "currentRESTSession", column_type = "JsonBinary")]
     pub current_restsession: Option<Json>,
-    #[sea_orm(column_name = "currentGQLSession")]
+    #[sea_orm(column_name = "currentGQLSession", column_type = "JsonBinary")]
     pub current_gqlsession: Option<Json>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "lastLoggedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "lastLoggedOn",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub last_logged_on: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "lastActiveOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "lastActiveOn",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub last_active_on: Option<DateTimeWithTimeZone>,
 }
 

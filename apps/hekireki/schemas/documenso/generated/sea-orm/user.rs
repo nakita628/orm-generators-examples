@@ -10,32 +10,52 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(
+        column_name = "emailVerified",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub source: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub signature: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastSignedIn")]
+    #[sea_orm(
+        column_name = "lastSignedIn",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_signed_in: DateTime,
     pub roles: Vec<Role>,
     #[sea_orm(column_name = "identityProvider", default_value = "DOCUMENSO")]
     pub identity_provider: IdentityProvider,
-    #[sea_orm(column_name = "avatarImageId")]
+    #[sea_orm(column_name = "avatarImageId", column_type = "Text")]
     pub avatar_image_id: Option<String>,
     #[sea_orm(default_value = false)]
     pub disabled: bool,
-    #[sea_orm(column_name = "twoFactorSecret")]
+    #[sea_orm(column_name = "twoFactorSecret", column_type = "Text")]
     pub two_factor_secret: Option<String>,
     #[sea_orm(column_name = "twoFactorEnabled", default_value = false)]
     pub two_factor_enabled: bool,
-    #[sea_orm(column_name = "twoFactorBackupCodes")]
+    #[sea_orm(column_name = "twoFactorBackupCodes", column_type = "Text")]
     pub two_factor_backup_codes: Option<String>,
 }
 
@@ -45,7 +65,8 @@ pub enum Relation {
         belongs_to = "super::avatar_image::Entity",
         from = "Column::AvatarImageId",
         to = "super::avatar_image::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "User_avatarImageId_fkey"
     )]
     AvatarImage,
     #[sea_orm(has_many = "super::account::Entity")]

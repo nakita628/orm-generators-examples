@@ -188,7 +188,7 @@ export const workspace = pgTable(
   },
   (table) => [
     index('Workspace_slug_idx').on(table.slug),
-    index('Workspace_updatedAt_idx').on(table.updatedAt),
+    index('Workspace_updatedAt_idx').on(table.updatedAt.desc().nullsFirst()),
     uniqueIndex('Workspace_slug_key').on(table.slug),
   ],
 )
@@ -374,7 +374,7 @@ export const kv = pgTable(
   },
   (table) => [
     index('kv_expires_at_idx').on(table.expiresAt),
-    index('kv_key_pattern_idx').on(table.key),
+    index('kv_key_pattern_idx').on(table.key.op('text_pattern_ops')),
   ],
 )
 
@@ -454,7 +454,7 @@ export const configurationObject = pgTable(
     config: jsonb('config'),
   },
   (table) => [
-    index('ConfigurationObject_updatedAt_idx').on(table.updatedAt),
+    index('ConfigurationObject_updatedAt_idx').on(table.updatedAt.desc().nullsFirst()),
     foreignKey({
       name: 'ConfigurationObject_workspaceId_fkey',
       columns: [table.workspaceId],
@@ -490,7 +490,7 @@ export const configurationObjectLink = pgTable(
     toId: text('toId').notNull(),
   },
   (table) => [
-    index('ConfigurationObjectLink_updatedAt_idx').on(table.updatedAt),
+    index('ConfigurationObjectLink_updatedAt_idx').on(table.updatedAt.desc().nullsFirst()),
     index('ConfigurationObjectLink_workspaceId_idx').on(table.workspaceId),
     foreignKey({
       name: 'ConfigurationObjectLink_workspaceId_fkey',
@@ -735,7 +735,10 @@ export const sourceTask = pgTable(
   (table) => [
     index('source_task_sync_id_idx').on(table.sync_id),
     index('source_task_started_at_idx').on(table.started_at),
-    index('source_task_sync_id_started_at_idx').on(table.sync_id, table.started_at),
+    index('source_task_sync_id_started_at_idx').on(
+      table.sync_id,
+      table.started_at.desc().nullsFirst(),
+    ),
   ],
 )
 
@@ -1060,7 +1063,7 @@ export const reprocessingJobs = pgTable(
     total_workers: integer('total_workers').default(0),
     error: text('error'),
   },
-  (table) => [index('reprocessing_jobs_created_at_idx').on(table.created_at)],
+  (table) => [index('reprocessing_jobs_created_at_idx').on(table.created_at.desc().nullsFirst())],
 )
 
 export const reprocessingWorkers = pgTable(

@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "two_factor_backup_code")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub user_id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub code_hash: String,
     #[sea_orm(default_value = false)]
     pub used: bool,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 
@@ -22,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "two_factor_backup_code_user_id_fkey"
     )]
     User,
 }

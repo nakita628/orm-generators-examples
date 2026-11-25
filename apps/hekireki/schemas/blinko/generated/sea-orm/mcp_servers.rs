@@ -23,7 +23,11 @@ pub struct Model {
     pub headers: Option<Json>,
     #[sea_orm(column_name = "isEnabled", default_value = true)]
     pub is_enabled: bool,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
     pub updated_at: DateTimeWithTimeZone,

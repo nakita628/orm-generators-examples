@@ -10,12 +10,19 @@ pub struct Model {
     pub event_type_id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "slotUtcStartDate")]
+    #[sea_orm(
+        column_name = "slotUtcStartDate",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub slot_utc_start_date: DateTime,
-    #[sea_orm(column_name = "slotUtcEndDate")]
+    #[sea_orm(
+        column_name = "slotUtcEndDate",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub slot_utc_end_date: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub uid: String,
-    #[sea_orm(column_name = "releaseAt")]
+    #[sea_orm(column_name = "releaseAt", column_type = "custom(\"timestamp(3)\")")]
     pub release_at: DateTime,
     #[sea_orm(column_name = "isSeat", default_value = false)]
     pub is_seat: bool,

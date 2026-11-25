@@ -5,10 +5,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_Lens")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = 0)]
     pub version: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::cust(\"'1970-01-01 00:00:00'::timestamp without time zone\")"
+    )]
     pub due_at: Option<DateTime>,
 }
 

@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Date, Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, text
+from sqlalchemy import BigInteger, Date, Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -940,8 +940,8 @@ class MastraMessages(Base):
     created_at_z: Mapped[Optional[datetime]] = mapped_column("createdAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("public_mastra_messages_thread_id_createdat_idx", "thread_id", "createdAt"),
-        Index("mastra_messages_thread_id_createdat_idx", "thread_id", "createdAt"),
+        Index("public_mastra_messages_thread_id_createdat_idx", "thread_id", literal_column("\"createdAt\"").desc()),
+        Index("mastra_messages_thread_id_createdat_idx", "thread_id", literal_column("\"createdAt\"").desc()),
     )
 
 class MastraResources(Base):
@@ -998,8 +998,8 @@ class MastraScorers(Base):
     dataset_item_id: Mapped[Optional[str]] = mapped_column("datasetItemId")
 
     __table_args__ = (
-        Index("public_mastra_scores_trace_id_span_id_created_at_idx", "traceId", "spanId", "createdAt"),
-        Index("mastra_scores_trace_id_span_id_created_at_idx", "traceId", "spanId", "createdAt"),
+        Index("public_mastra_scores_trace_id_span_id_created_at_idx", "traceId", "spanId", literal_column("\"createdAt\"").desc()),
+        Index("mastra_scores_trace_id_span_id_created_at_idx", "traceId", "spanId", literal_column("\"createdAt\"").desc()),
     )
 
 class MastraThreads(Base):
@@ -1015,8 +1015,8 @@ class MastraThreads(Base):
     updated_at_z: Mapped[Optional[datetime]] = mapped_column("updatedAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("public_mastra_threads_resourceid_createdat_idx", "resourceId", "createdAt"),
-        Index("mastra_threads_resourceid_createdat_idx", "resourceId", "createdAt"),
+        Index("public_mastra_threads_resourceid_createdat_idx", "resourceId", literal_column("\"createdAt\"").desc()),
+        Index("mastra_threads_resourceid_createdat_idx", "resourceId", literal_column("\"createdAt\"").desc()),
     )
 
 class MastraTraces(Base):
@@ -1039,7 +1039,7 @@ class MastraTraces(Base):
     created_at_z: Mapped[Optional[datetime]] = mapped_column("createdAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("public_mastra_traces_name_starttime_idx", "name", "startTime"),
+        Index("public_mastra_traces_name_starttime_idx", "name", literal_column("\"startTime\"").desc()),
     )
 
 class MastraWorkflowSnapshot(Base):
@@ -1055,7 +1055,7 @@ class MastraWorkflowSnapshot(Base):
     updated_at_z: Mapped[Optional[datetime]] = mapped_column("updatedAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("mastra_workflow_snapshot_name_createdat_idx", "workflow_name", "createdAt"),
+        Index("mastra_workflow_snapshot_name_createdat_idx", "workflow_name", literal_column("\"createdAt\"").desc()),
         Index("public_mastra_workflow_snapshot_workflow_name_run_id_key", "workflow_name", "run_id", unique=True),
     )
 
@@ -1278,7 +1278,7 @@ class MastraExperimentResults(Base):
     __table_args__ = (
         Index("idx_experiment_results_experimentid", "experimentId"),
         Index("idx_experiment_results_org_project", "organizationId", "projectId"),
-        Index("idx_experiment_results_tags_gin", "tags"),
+        Index("idx_experiment_results_tags_gin", "tags", postgresql_using="gin"),
         Index("idx_experiment_results_exp_item_attempt", "experimentId", "itemId", "attempt", unique=True),
     )
 
@@ -1350,7 +1350,7 @@ class MastraKnowledgeActivity(Base):
     created_at_z: Mapped[Optional[datetime]] = mapped_column("createdAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("idx_knowledge_activity_latest", "id"),
+        Index("idx_knowledge_activity_latest", literal_column("\"id\"").desc()),
     )
 
 class MastraKnowledgeCursors(Base):
@@ -1417,8 +1417,8 @@ class MastraKnowledgeRecords(Base):
     deleted_at_z: Mapped[Optional[datetime]] = mapped_column("deletedAtZ", UtcDateTimeTz(precision=6), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("idx_knowledge_records_node_latest", "node", "id"),
-        Index("idx_knowledge_records_thread_latest", "sourceThreadId", "id"),
+        Index("idx_knowledge_records_node_latest", "node", literal_column("\"id\"").desc()),
+        Index("idx_knowledge_records_thread_latest", "sourceThreadId", literal_column("\"id\"").desc()),
     )
 
 class MastraKnowledgeSemanticOutbox(Base):
@@ -1613,7 +1613,7 @@ class MastraScheduleTriggers(Base):
     metadata_: Mapped[Optional[dict[str, Any]]] = mapped_column("metadata", JSONB(none_as_null=True))
 
     __table_args__ = (
-        Index("idx_mastra_schedule_triggers_schedule_fire", "schedule_id", "actual_fire_at"),
+        Index("idx_mastra_schedule_triggers_schedule_fire", "schedule_id", literal_column("\"actual_fire_at\"").desc()),
     )
 
 class MastraSchedules(Base):

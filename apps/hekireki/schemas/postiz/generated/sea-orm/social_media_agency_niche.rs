@@ -5,9 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SocialMediaAgencyNiche")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "agencyId")]
+    #[sea_orm(column_name = "agencyId", column_type = "Text")]
     pub agency_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub niche: String,
 }
 
@@ -16,7 +17,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::social_media_agency::Entity",
         from = "Column::AgencyId",
-        to = "super::social_media_agency::Column::Id"
+        to = "super::social_media_agency::Column::Id",
+        fk_name = "SocialMediaAgencyNiche_agencyId_fkey"
     )]
     Agency,
 }

@@ -10,30 +10,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "queued_emails")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// Which handler builds the email. A string rather than an enum so a new
     /// kind needs no migration; the claim only takes kinds the build knows.
+    #[sea_orm(column_type = "Text")]
     pub kind: String,
     /// The row the email is about, interpreted by the kind. Not a foreign key:
     /// kinds point at different tables, and a subject deleted before the send
     /// makes its handler skip the email.
+    #[sea_orm(column_type = "Text")]
     pub subject_id: String,
     /// Groups the emails one action queued, so the action can send its own
     /// first batch at once and its progress can be read back.
+    #[sea_orm(column_type = "Text")]
     pub batch_id: String,
     /// The account whose action queued the email. Banning it skips whatever
     /// is still pending.
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
     #[sea_orm(default_value = "pending")]
     pub status: QueuedEmailStatus,
     /// Not claimed before this time. Unset sends at the next run.
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub send_after: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub claimed_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -43,7 +57,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "queued_emails_user_id_fkey"
     )]
     User,
 }

@@ -8,19 +8,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Orders")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "buyerId")]
+    #[sea_orm(column_name = "buyerId", column_type = "Text")]
     pub buyer_id: String,
-    #[sea_orm(column_name = "sellerId")]
+    #[sea_orm(column_name = "sellerId", column_type = "Text")]
     pub seller_id: String,
     pub status: OrderStatus,
-    #[sea_orm(column_name = "messageGroupId")]
+    #[sea_orm(column_name = "messageGroupId", column_type = "Text")]
     pub message_group_id: String,
-    #[sea_orm(column_name = "captureId")]
+    #[sea_orm(column_name = "captureId", column_type = "Text")]
     pub capture_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -29,19 +34,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::BuyerId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Orders_buyerId_fkey"
     )]
     Buyer,
     #[sea_orm(
         belongs_to = "super::messages_group::Entity",
         from = "Column::MessageGroupId",
-        to = "super::messages_group::Column::Id"
+        to = "super::messages_group::Column::Id",
+        fk_name = "Orders_messageGroupId_fkey"
     )]
     MessageGroup,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::SellerId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Orders_sellerId_fkey"
     )]
     Seller,
     #[sea_orm(has_many = "super::order_items::Entity")]

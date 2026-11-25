@@ -6,12 +6,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ClaudeCodePluginVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub plugin_id: String,
+    #[sea_orm(column_type = "Text")]
     pub version: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub manifest_json: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub published_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub published_by: Option<String>,
     #[sea_orm(default_value = false)]
     pub archive_available: bool,
@@ -25,7 +32,8 @@ pub enum Relation {
         from = "Column::PluginId",
         to = "super::lite_llm_claude_code_plugin_table::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_ClaudeCodePluginVersion_plugin_id_fkey"
     )]
     Plugin,
 }

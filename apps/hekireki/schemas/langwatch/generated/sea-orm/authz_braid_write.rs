@@ -7,27 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuthzBraidWrite")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "commandId")]
+    #[sea_orm(column_name = "commandId", column_type = "Text")]
     pub command_id: String,
-    #[sea_orm(column_name = "grantId")]
+    #[sea_orm(column_name = "grantId", column_type = "Text")]
     pub grant_id: String,
-    #[sea_orm(column_name = "readerProjectId")]
+    #[sea_orm(column_name = "readerProjectId", column_type = "Text")]
     pub reader_project_id: String,
-    #[sea_orm(column_name = "ownerProjectId")]
+    #[sea_orm(column_name = "ownerProjectId", column_type = "Text")]
     pub owner_project_id: String,
-    #[sea_orm(column_name = "termsKey")]
+    #[sea_orm(column_name = "termsKey", column_type = "Text")]
     pub terms_key: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub condition: Json,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "replacesGrantId")]
+    #[sea_orm(column_name = "replacesGrantId", column_type = "Text")]
     pub replaces_grant_id: Option<String>,
-    #[sea_orm(column_name = "createdByUserId")]
+    #[sea_orm(column_name = "createdByUserId", column_type = "Text")]
     pub created_by_user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

@@ -7,17 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ClaimableCustomPlan")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "claimedAt")]
+    #[sea_orm(column_name = "claimedAt", column_type = "custom(\"timestamp(3)\")")]
     pub claimed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     pub price: i32,
+    #[sea_orm(column_type = "Text")]
     pub currency: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(column_name = "chatsLimit")]
     pub chats_limit: i32,
@@ -27,11 +35,11 @@ pub struct Model {
     pub seats_limit: i32,
     #[sea_orm(column_name = "isYearly", default_value = false)]
     pub is_yearly: bool,
-    #[sea_orm(column_name = "companyName")]
+    #[sea_orm(column_name = "companyName", column_type = "Text")]
     pub company_name: Option<String>,
-    #[sea_orm(column_name = "vatType")]
+    #[sea_orm(column_name = "vatType", column_type = "Text")]
     pub vat_type: Option<String>,
-    #[sea_orm(column_name = "vatValue")]
+    #[sea_orm(column_name = "vatValue", column_type = "Text")]
     pub vat_value: Option<String>,
 }
 
@@ -41,7 +49,8 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ClaimableCustomPlan_workspaceId_fkey"
     )]
     Workspace,
 }

@@ -8,13 +8,15 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub description: String,
+    #[sea_orm(column_type = "Text")]
     pub icon: Option<String>,
-    #[sea_orm(column_name = "iconWeight")]
+    #[sea_orm(column_name = "iconWeight", column_type = "Text")]
     pub icon_weight: Option<String>,
-    #[sea_orm(default_value = "#0ea5e9")]
+    #[sea_orm(column_type = "Text", default_value = "#0ea5e9")]
     pub color: String,
     #[sea_orm(column_name = "parentId")]
     pub parent_id: Option<i32>,
@@ -24,9 +26,17 @@ pub struct Model {
     pub owner_id: i32,
     #[sea_orm(column_name = "createdById")]
     pub created_by_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -36,20 +46,23 @@ pub enum Relation {
         belongs_to = "super::collection::Entity",
         from = "Column::ParentId",
         to = "super::collection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Collection_parentId_fkey"
     )]
     Parent,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Collection_ownerId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Collection_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(

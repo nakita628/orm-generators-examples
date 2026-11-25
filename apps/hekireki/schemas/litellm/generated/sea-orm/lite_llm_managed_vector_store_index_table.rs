@@ -7,14 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ManagedVectorStoreIndexTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub index_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub index_info: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

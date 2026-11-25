@@ -27,19 +27,22 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Availability_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
-        to = "super::event_type::Column::Id"
+        to = "super::event_type::Column::Id",
+        fk_name = "Availability_eventTypeId_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::schedule::Entity",
         from = "Column::ScheduleId",
-        to = "super::schedule::Column::Id"
+        to = "super::schedule::Column::Id",
+        fk_name = "Availability_scheduleId_fkey"
     )]
     Schedule,
 }

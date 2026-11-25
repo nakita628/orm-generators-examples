@@ -7,7 +7,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_BackgroundResponseSettlement")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub response_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub settled_at: DateTime,
 }
 

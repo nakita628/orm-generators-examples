@@ -13,23 +13,23 @@ import (
 
 type Customer struct {
 	ID                     string    `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	Name                   *string   `gorm:"column:name;index:Customer_email_name_idx;type:varchar(191)" json:"name"`
-	Email                  *string   `gorm:"column:email;index:Customer_projectId_email_idx;index:Customer_email_name_idx;type:varchar(191)" json:"email"`
-	NormalizedEmail        *string   `gorm:"column:normalizedEmail;index:Customer_projectId_normalizedEmail_idx;type:varchar(191)" json:"normalizedEmail"`
+	Name                   *string   `gorm:"column:name;index:Customer_email_name_idx,priority:2;type:varchar(191)" json:"name"`
+	Email                  *string   `gorm:"column:email;index:Customer_projectId_email_idx,priority:2;index:Customer_email_name_idx,priority:1;type:varchar(191)" json:"email"`
+	NormalizedEmail        *string   `gorm:"column:normalizedEmail;index:Customer_projectId_normalizedEmail_idx,priority:2;type:varchar(191)" json:"normalizedEmail"`
 	Avatar                 *string   `gorm:"column:avatar;type:text" json:"avatar"`
-	ExternalID             *string   `gorm:"column:externalId;uniqueIndex:Customer_projectId_externalId_key;type:varchar(191)" json:"externalId"`
+	ExternalID             *string   `gorm:"column:externalId;uniqueIndex:Customer_projectId_externalId_key,priority:2;type:varchar(191)" json:"externalId"`
 	StripeCustomerID       *string   `gorm:"column:stripeCustomerId;uniqueIndex:Customer_stripeCustomerId_key;type:varchar(191)" json:"stripeCustomerId"`
 	LinkID                 *string   `gorm:"column:linkId;index:Customer_linkId_idx;type:varchar(191)" json:"linkId"`
 	ClickID                *string   `gorm:"column:clickId;type:varchar(191)" json:"clickId"`
 	ClickedAt              *DateTime `gorm:"column:clickedAt" json:"clickedAt"`
 	Country                *string   `gorm:"column:country;index:Customer_country_idx;type:varchar(191)" json:"country"`
 	Sales                  int       `gorm:"column:sales;size:32;default:0;not null" json:"sales"`
-	SaleAmount             int64     `gorm:"column:saleAmount;index:Customer_projectId_saleAmount_idx;default:0;not null" json:"saleAmount"`
-	FirstSaleAt            *DateTime `gorm:"column:firstSaleAt;index:Customer_projectId_firstSaleAt_idx" json:"firstSaleAt"`
-	SubscriptionCanceledAt *DateTime `gorm:"column:subscriptionCanceledAt;index:Customer_projectId_subscriptionCanceledAt_idx" json:"subscriptionCanceledAt"`
-	ProjectID              string    `gorm:"column:projectId;uniqueIndex:Customer_projectId_externalId_key;index:Customer_projectId_email_idx;index:Customer_projectId_normalizedEmail_idx;index:Customer_projectId_createdAt_idx;index:Customer_projectId_saleAmount_idx;index:Customer_projectId_firstSaleAt_idx;index:Customer_projectId_subscriptionCanceledAt_idx;type:varchar(191);not null" json:"projectId"`
+	SaleAmount             int64     `gorm:"column:saleAmount;index:Customer_projectId_saleAmount_idx,priority:2;default:0;not null" json:"saleAmount"`
+	FirstSaleAt            *DateTime `gorm:"column:firstSaleAt;index:Customer_projectId_firstSaleAt_idx,priority:2" json:"firstSaleAt"`
+	SubscriptionCanceledAt *DateTime `gorm:"column:subscriptionCanceledAt;index:Customer_projectId_subscriptionCanceledAt_idx,priority:2" json:"subscriptionCanceledAt"`
+	ProjectID              string    `gorm:"column:projectId;uniqueIndex:Customer_projectId_externalId_key,priority:1;index:Customer_projectId_email_idx,priority:1;index:Customer_projectId_normalizedEmail_idx,priority:1;index:Customer_projectId_createdAt_idx,priority:1;index:Customer_projectId_saleAmount_idx,priority:1;index:Customer_projectId_firstSaleAt_idx,priority:1;index:Customer_projectId_subscriptionCanceledAt_idx,priority:1;type:varchar(191);not null" json:"projectId"`
 	ProjectConnectID       *string   `gorm:"column:projectConnectId;type:varchar(191)" json:"projectConnectId"`
-	CreatedAt              DateTime  `gorm:"column:createdAt;index:Customer_projectId_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt              DateTime  `gorm:"column:createdAt;index:Customer_projectId_createdAt_idx,priority:2;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt              DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
 	Project                *Project  `gorm:"belongsTo"`
 	Link                   *Link     `gorm:"belongsTo"`
@@ -103,8 +103,8 @@ type Domain struct {
 	Slug                    string            `gorm:"column:slug;uniqueIndex:Domain_slug_key;type:varchar(191);not null" json:"slug"`
 	Verified                bool              `gorm:"column:verified;default:false;not null" json:"verified"`
 	Placeholder             *string           `gorm:"column:placeholder;type:varchar(191)" json:"placeholder"`
-	ExpiredURL              *string           `gorm:"column:expiredUrl;type:text" json:"expiredUrl"`
-	NotFoundURL             *string           `gorm:"column:notFoundUrl;type:text" json:"notFoundUrl"`
+	ExpiredURL              *string           `gorm:"column:expiredUrl;type:longtext" json:"expiredUrl"`
+	NotFoundURL             *string           `gorm:"column:notFoundUrl;type:longtext" json:"notFoundUrl"`
 	Primary                 bool              `gorm:"column:primary;default:false;not null" json:"primary"`
 	Archived                bool              `gorm:"column:archived;default:false;not null" json:"archived"`
 	LastChecked             DateTime          `gorm:"column:lastChecked;index:Domain_lastChecked_idx;not null" json:"lastChecked"`
@@ -218,9 +218,9 @@ func (m *DefaultDomains) BeforeCreate(_ *gorm.DB) error {
 
 type Folder struct {
 	ID             string                `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	Name           string                `gorm:"column:name;uniqueIndex:Folder_name_projectId_key;type:varchar(191);not null" json:"name"`
+	Name           string                `gorm:"column:name;uniqueIndex:Folder_name_projectId_key,priority:1;type:varchar(191);not null" json:"name"`
 	Description    *string               `gorm:"column:description;type:text" json:"description"`
-	ProjectID      string                `gorm:"column:projectId;uniqueIndex:Folder_name_projectId_key;index:Folder_projectId_idx;type:varchar(191);not null" json:"projectId"`
+	ProjectID      string                `gorm:"column:projectId;uniqueIndex:Folder_name_projectId_key,priority:2;index:Folder_projectId_idx;type:varchar(191);not null" json:"projectId"`
 	Type           string                `gorm:"column:type;default:'default';not null" json:"type"`
 	AccessLevel    *string               `gorm:"column:accessLevel" json:"accessLevel"`
 	CreatedAt      DateTime              `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
@@ -258,8 +258,8 @@ func (*Folder) BeforeUpdate(tx *gorm.DB) error {
 
 type FolderUser struct {
 	ID        string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderUser_folderId_userId_key;type:varchar(191);not null" json:"folderId"`
-	UserID    string   `gorm:"column:userId;uniqueIndex:FolderUser_folderId_userId_key;index:FolderUser_userId_idx;type:varchar(191);not null" json:"userId"`
+	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderUser_folderId_userId_key,priority:1;type:varchar(191);not null" json:"folderId"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:FolderUser_folderId_userId_key,priority:2;index:FolderUser_userId_idx;type:varchar(191);not null" json:"userId"`
 	Role      *string  `gorm:"column:role" json:"role"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
@@ -295,8 +295,8 @@ func (*FolderUser) BeforeUpdate(tx *gorm.DB) error {
 
 type FolderAccessRequest struct {
 	ID        string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderAccessRequest_folderId_userId_key;type:varchar(191);not null" json:"folderId"`
-	UserID    string   `gorm:"column:userId;uniqueIndex:FolderAccessRequest_folderId_userId_key;index:FolderAccessRequest_userId_idx;type:varchar(191);not null" json:"userId"`
+	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderAccessRequest_folderId_userId_key,priority:1;type:varchar(191);not null" json:"folderId"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:FolderAccessRequest_folderId_userId_key,priority:2;index:FolderAccessRequest_userId_idx;type:varchar(191);not null" json:"userId"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	Folder    *Folder  `gorm:"belongsTo"`
 	User      *User    `gorm:"belongsTo"`
@@ -324,7 +324,7 @@ type Integration struct {
 	Name          string                 `gorm:"column:name;type:varchar(191);not null" json:"name"`
 	Slug          string                 `gorm:"column:slug;uniqueIndex:Integration_slug_key;type:varchar(191);not null" json:"slug"`
 	Description   *string                `gorm:"column:description;type:varchar(191)" json:"description"`
-	Readme        *string                `gorm:"column:readme;type:text" json:"readme"`
+	Readme        *string                `gorm:"column:readme;type:longtext" json:"readme"`
 	Developer     string                 `gorm:"column:developer;type:varchar(191);not null" json:"developer"`
 	Website       string                 `gorm:"column:website;type:varchar(191);not null" json:"website"`
 	Logo          *string                `gorm:"column:logo;type:varchar(191)" json:"logo"`
@@ -370,9 +370,9 @@ func (*Integration) BeforeUpdate(tx *gorm.DB) error {
 
 type InstalledIntegration struct {
 	ID            string              `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	UserID        string              `gorm:"column:userId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key;type:varchar(191);not null" json:"userId"`
-	IntegrationID string              `gorm:"column:integrationId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key;index:InstalledIntegration_integrationId_idx;type:varchar(191);not null" json:"integrationId"`
-	ProjectID     string              `gorm:"column:projectId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key;index:InstalledIntegration_projectId_idx;type:varchar(191);not null" json:"projectId"`
+	UserID        string              `gorm:"column:userId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key,priority:1;type:varchar(191);not null" json:"userId"`
+	IntegrationID string              `gorm:"column:integrationId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key,priority:2;index:InstalledIntegration_integrationId_idx;type:varchar(191);not null" json:"integrationId"`
+	ProjectID     string              `gorm:"column:projectId;uniqueIndex:InstalledIntegration_userId_integrationId_projectId_key,priority:3;index:InstalledIntegration_projectId_idx;type:varchar(191);not null" json:"projectId"`
 	CreatedAt     DateTime            `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime            `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
 	Credentials   datatypes.JSON      `gorm:"column:credentials" json:"credentials"`
@@ -447,8 +447,8 @@ func (m *Invoice) BeforeCreate(tx *gorm.DB) error {
 
 type JacksonIndex struct {
 	ID       int    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Key      string `gorm:"column:key;index:_jackson_index_key_store;type:varchar(250);not null" json:"key"`
-	StoreKey string `gorm:"column:storeKey;index:_jackson_index_key_store;type:varchar(250);not null" json:"storeKey"`
+	Key      string `gorm:"column:key;index:_jackson_index_key_store,priority:1;type:varchar(250);not null" json:"key"`
+	StoreKey string `gorm:"column:storeKey;index:_jackson_index_key_store,priority:2;type:varchar(250);not null" json:"storeKey"`
 }
 
 func (JacksonIndex) TableName() string {
@@ -491,8 +491,8 @@ type Job struct {
 	Name        string         `gorm:"column:name;type:varchar(191);not null" json:"name"`
 	Payload     datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
 	Options     datatypes.JSON `gorm:"column:options" json:"options"`
-	ScheduledAt DateTime       `gorm:"column:scheduledAt;index:Job_scheduledAt_attempts_idx;not null" json:"scheduledAt"`
-	Attempts    int            `gorm:"column:attempts;index:Job_scheduledAt_attempts_idx;size:32;default:0;not null" json:"attempts"`
+	ScheduledAt DateTime       `gorm:"column:scheduledAt;index:Job_scheduledAt_attempts_idx,priority:1;not null" json:"scheduledAt"`
+	Attempts    int            `gorm:"column:attempts;index:Job_scheduledAt_attempts_idx,priority:2;size:32;default:0;not null" json:"attempts"`
 	LastError   *string        `gorm:"column:lastError;type:text" json:"lastError"`
 	CreatedAt   DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
@@ -526,11 +526,11 @@ func (*Job) BeforeUpdate(tx *gorm.DB) error {
 
 type Link struct {
 	ID                             string         `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	Domain                         string         `gorm:"column:domain;uniqueIndex:Link_domain_key_key;index:Link_domain_createdAt_idx;type:varchar(191);not null" json:"domain"`
-	Key                            string         `gorm:"column:key;uniqueIndex:Link_domain_key_key;type:varchar(191);not null" json:"key"`
-	URL                            string         `gorm:"column:url;index:Link_projectId_url_idx;type:text;not null" json:"url"`
+	Domain                         string         `gorm:"column:domain;uniqueIndex:Link_domain_key_key,priority:1;index:Link_domain_createdAt_idx,priority:1;type:varchar(191);not null" json:"domain"`
+	Key                            string         `gorm:"column:key;uniqueIndex:Link_domain_key_key,priority:2;type:varchar(191);not null" json:"key"`
+	URL                            string         `gorm:"column:url;index:Link_projectId_url_idx,priority:2,length:500;type:longtext;not null" json:"url"`
 	ShortLink                      string         `gorm:"column:shortLink;uniqueIndex:Link_shortLink_key;type:varchar(400);not null" json:"shortLink"`
-	Archived                       bool           `gorm:"column:archived;index:Link_projectId_folderId_archived_createdAt_idx;default:false;not null" json:"archived"`
+	Archived                       bool           `gorm:"column:archived;index:Link_projectId_folderId_archived_createdAt_idx,priority:3;default:false;not null" json:"archived"`
 	ExpiresAt                      *DateTime      `gorm:"column:expiresAt" json:"expiresAt"`
 	ExpiredURL                     *string        `gorm:"column:expiredUrl;type:text" json:"expiredUrl"`
 	DisabledAt                     *DateTime      `gorm:"column:disabledAt" json:"disabledAt"`
@@ -539,7 +539,7 @@ type Link struct {
 	Proxy                          bool           `gorm:"column:proxy;default:false;not null" json:"proxy"`
 	Title                          *string        `gorm:"column:title;type:varchar(191)" json:"title"`
 	Description                    *string        `gorm:"column:description;type:varchar(280)" json:"description"`
-	Image                          *string        `gorm:"column:image;type:text" json:"image"`
+	Image                          *string        `gorm:"column:image;type:longtext" json:"image"`
 	Video                          *string        `gorm:"column:video;type:text" json:"video"`
 	UtmSource                      *string        `gorm:"column:utm_source;type:varchar(255)" json:"utm_source"`
 	UtmMedium                      *string        `gorm:"column:utm_medium;type:varchar(255)" json:"utm_medium"`
@@ -556,10 +556,10 @@ type Link struct {
 	TestStartedAt                  *DateTime      `gorm:"column:testStartedAt" json:"testStartedAt"`
 	TestCompletedAt                *DateTime      `gorm:"column:testCompletedAt" json:"testCompletedAt"`
 	UserID                         *string        `gorm:"column:userId;index:Link_userId_idx;type:varchar(191)" json:"userId"`
-	ProjectID                      *string        `gorm:"column:projectId;uniqueIndex:Link_projectId_externalId_key;index:Link_projectId_tenantId_idx;index:Link_projectId_url_idx;index:Link_projectId_folderId_archived_createdAt_idx;type:varchar(191)" json:"projectId"`
-	FolderID                       *string        `gorm:"column:folderId;index:Link_projectId_folderId_archived_createdAt_idx;index:Link_folderId_idx;type:varchar(191)" json:"folderId"`
-	ExternalID                     *string        `gorm:"column:externalId;uniqueIndex:Link_projectId_externalId_key;type:varchar(191)" json:"externalId"`
-	TenantID                       *string        `gorm:"column:tenantId;index:Link_projectId_tenantId_idx;type:varchar(191)" json:"tenantId"`
+	ProjectID                      *string        `gorm:"column:projectId;uniqueIndex:Link_projectId_externalId_key,priority:1;index:Link_projectId_tenantId_idx,priority:1;index:Link_projectId_url_idx,priority:1;index:Link_projectId_folderId_archived_createdAt_idx,priority:1;type:varchar(191)" json:"projectId"`
+	FolderID                       *string        `gorm:"column:folderId;index:Link_projectId_folderId_archived_createdAt_idx,priority:2;index:Link_folderId_idx;type:varchar(191)" json:"folderId"`
+	ExternalID                     *string        `gorm:"column:externalId;uniqueIndex:Link_projectId_externalId_key,priority:2;type:varchar(191)" json:"externalId"`
+	TenantID                       *string        `gorm:"column:tenantId;index:Link_projectId_tenantId_idx,priority:2;type:varchar(191)" json:"tenantId"`
 	PublicStats                    bool           `gorm:"column:publicStats;default:false;not null" json:"publicStats"`
 	Clicks                         int            `gorm:"column:clicks;size:32;default:0;not null" json:"clicks"`
 	Leads                          int            `gorm:"column:leads;size:32;default:0;not null" json:"leads"`
@@ -569,7 +569,7 @@ type Link struct {
 	LastClicked                    *DateTime      `gorm:"column:lastClicked" json:"lastClicked"`
 	LastLeadAt                     *DateTime      `gorm:"column:lastLeadAt" json:"lastLeadAt"`
 	LastConversionAt               *DateTime      `gorm:"column:lastConversionAt" json:"lastConversionAt"`
-	CreatedAt                      DateTime       `gorm:"column:createdAt;index:Link_projectId_folderId_archived_createdAt_idx;index:Link_domain_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt                      DateTime       `gorm:"column:createdAt;index:Link_projectId_folderId_archived_createdAt_idx,priority:4,sort:desc;index:Link_domain_createdAt_idx,priority:2;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
 	Comments                       *string        `gorm:"column:comments;type:text" json:"comments"`
 	User                           *User          `gorm:"belongsTo"`
@@ -793,8 +793,8 @@ type Account struct {
 	ID                    string  `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
 	UserID                string  `gorm:"column:userId;index:Account_userId_idx;type:varchar(191);not null" json:"userId"`
 	Type                  string  `gorm:"column:type;type:varchar(191);not null" json:"type"`
-	Provider              string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;type:varchar(191);not null" json:"provider"`
-	ProviderAccountID     string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;type:varchar(191);not null" json:"providerAccountId"`
+	Provider              string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;type:varchar(191);not null" json:"provider"`
+	ProviderAccountID     string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;type:varchar(191);not null" json:"providerAccountId"`
 	RefreshToken          *string `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	RefreshTokenExpiresIn *int    `gorm:"column:refresh_token_expires_in;size:32" json:"refresh_token_expires_in"`
 	AccessToken           *string `gorm:"column:access_token;type:text" json:"access_token"`
@@ -838,11 +838,11 @@ func (m *Session) BeforeCreate(_ *gorm.DB) error {
 
 type Tag struct {
 	ID        string    `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	Name      string    `gorm:"column:name;uniqueIndex:Tag_name_projectId_key;type:varchar(191);not null" json:"name"`
+	Name      string    `gorm:"column:name;uniqueIndex:Tag_name_projectId_key,priority:1;type:varchar(191);not null" json:"name"`
 	Color     *string   `gorm:"column:color;type:varchar(191);default:'blue';not null" json:"color"`
 	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ProjectID *string   `gorm:"column:projectId;uniqueIndex:Tag_name_projectId_key;index:Tag_projectId_idx;type:varchar(191)" json:"projectId"`
+	ProjectID *string   `gorm:"column:projectId;uniqueIndex:Tag_name_projectId_key,priority:2;index:Tag_projectId_idx;type:varchar(191)" json:"projectId"`
 	Project   *Project  `gorm:"belongsTo"`
 	Links     []LinkTag `gorm:"foreignKey:TagID;constraint:LinkTag_tagId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -874,8 +874,8 @@ type LinkTag struct {
 	ID        string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	LinkID    string   `gorm:"column:linkId;uniqueIndex:LinkTag_linkId_tagId_key;type:varchar(191);not null" json:"linkId"`
-	TagID     string   `gorm:"column:tagId;uniqueIndex:LinkTag_linkId_tagId_key;index:LinkTag_tagId_idx;type:varchar(191);not null" json:"tagId"`
+	LinkID    string   `gorm:"column:linkId;uniqueIndex:LinkTag_linkId_tagId_key,priority:1;type:varchar(191);not null" json:"linkId"`
+	TagID     string   `gorm:"column:tagId;uniqueIndex:LinkTag_linkId_tagId_key,priority:2;index:LinkTag_tagId_idx;type:varchar(191);not null" json:"tagId"`
 	Link      *Link    `gorm:"belongsTo"`
 	Tag       *Tag     `gorm:"belongsTo"`
 }
@@ -991,8 +991,8 @@ func (*RestrictedToken) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;type:varchar(191);not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key;type:varchar(191)" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;type:varchar(191);not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2;type:varchar(191)" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -1001,8 +1001,8 @@ func (VerificationToken) TableName() string {
 }
 
 type EmailVerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:EmailVerificationToken_identifier_token_key;type:varchar(191);not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:EmailVerificationToken_token_key;uniqueIndex:EmailVerificationToken_identifier_token_key;type:varchar(191)" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:EmailVerificationToken_identifier_token_key,priority:1;type:varchar(191);not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:EmailVerificationToken_token_key;uniqueIndex:EmailVerificationToken_identifier_token_key,priority:2;type:varchar(191)" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -1011,8 +1011,8 @@ func (EmailVerificationToken) TableName() string {
 }
 
 type PasswordResetToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:PasswordResetToken_identifier_token_key;type:varchar(191);not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:PasswordResetToken_token_key;uniqueIndex:PasswordResetToken_identifier_token_key;type:varchar(191)" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:PasswordResetToken_identifier_token_key,priority:1;type:varchar(191);not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:PasswordResetToken_token_key;uniqueIndex:PasswordResetToken_identifier_token_key,priority:2;type:varchar(191)" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -1022,7 +1022,7 @@ func (PasswordResetToken) TableName() string {
 
 type UtmTemplate struct {
 	ID          string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	Name        string   `gorm:"column:name;uniqueIndex:UtmTemplate_projectId_name_key;type:varchar(191);not null" json:"name"`
+	Name        string   `gorm:"column:name;uniqueIndex:UtmTemplate_projectId_name_key,priority:2;type:varchar(191);not null" json:"name"`
 	UtmSource   *string  `gorm:"column:utm_source;type:varchar(255)" json:"utm_source"`
 	UtmMedium   *string  `gorm:"column:utm_medium;type:varchar(255)" json:"utm_medium"`
 	UtmCampaign *string  `gorm:"column:utm_campaign;type:varchar(255)" json:"utm_campaign"`
@@ -1030,7 +1030,7 @@ type UtmTemplate struct {
 	UtmContent  *string  `gorm:"column:utm_content;type:varchar(255)" json:"utm_content"`
 	Ref         *string  `gorm:"column:ref;type:varchar(255)" json:"ref"`
 	UserID      *string  `gorm:"column:userId;index:UtmTemplate_userId_idx;type:varchar(191)" json:"userId"`
-	ProjectID   *string  `gorm:"column:projectId;uniqueIndex:UtmTemplate_projectId_name_key;type:varchar(191)" json:"projectId"`
+	ProjectID   *string  `gorm:"column:projectId;uniqueIndex:UtmTemplate_projectId_name_key,priority:1;type:varchar(191)" json:"projectId"`
 	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
 	User        *User    `gorm:"belongsTo"`
@@ -1066,7 +1066,7 @@ type Webhook struct {
 	InstallationID       *string               `gorm:"column:installationId;index:Webhook_installationId_idx;type:varchar(191)" json:"installationId"`
 	Receiver             string                `gorm:"column:receiver;default:'user';not null" json:"receiver"`
 	Name                 string                `gorm:"column:name;type:varchar(191);not null" json:"name"`
-	URL                  string                `gorm:"column:url;type:text;not null" json:"url"`
+	URL                  string                `gorm:"column:url;type:longtext;not null" json:"url"`
 	Secret               string                `gorm:"column:secret;type:varchar(191);not null" json:"secret"`
 	Triggers             datatypes.JSON        `gorm:"column:triggers;not null" json:"triggers"`
 	LinkScope            *string               `gorm:"column:linkScope" json:"linkScope"`
@@ -1106,8 +1106,8 @@ func (*Webhook) BeforeUpdate(tx *gorm.DB) error {
 
 type LinkWebhook struct {
 	ID        string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	LinkID    string   `gorm:"column:linkId;uniqueIndex:LinkWebhook_linkId_webhookId_key;type:varchar(191);not null" json:"linkId"`
-	WebhookID string   `gorm:"column:webhookId;uniqueIndex:LinkWebhook_linkId_webhookId_key;index:LinkWebhook_webhookId_idx;type:varchar(191);not null" json:"webhookId"`
+	LinkID    string   `gorm:"column:linkId;uniqueIndex:LinkWebhook_linkId_webhookId_key,priority:1;type:varchar(191);not null" json:"linkId"`
+	WebhookID string   `gorm:"column:webhookId;uniqueIndex:LinkWebhook_linkId_webhookId_key,priority:2;index:LinkWebhook_webhookId_idx;type:varchar(191);not null" json:"webhookId"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	Link      *Link    `gorm:"belongsTo"`
 	Webhook   *Webhook `gorm:"belongsTo"`
@@ -1130,8 +1130,8 @@ func (m *LinkWebhook) BeforeCreate(tx *gorm.DB) error {
 
 type FolderWebhook struct {
 	ID        string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
-	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderWebhook_folderId_webhookId_key;type:varchar(191);not null" json:"folderId"`
-	WebhookID string   `gorm:"column:webhookId;uniqueIndex:FolderWebhook_folderId_webhookId_key;index:FolderWebhook_webhookId_idx;type:varchar(191);not null" json:"webhookId"`
+	FolderID  string   `gorm:"column:folderId;uniqueIndex:FolderWebhook_folderId_webhookId_key,priority:1;type:varchar(191);not null" json:"folderId"`
+	WebhookID string   `gorm:"column:webhookId;uniqueIndex:FolderWebhook_folderId_webhookId_key,priority:2;index:FolderWebhook_webhookId_idx;type:varchar(191);not null" json:"webhookId"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	Folder    *Folder  `gorm:"belongsTo"`
 	Webhook   *Webhook `gorm:"belongsTo"`
@@ -1168,8 +1168,8 @@ type Project struct {
 	SubscriptionCanceledAt    *DateTime              `gorm:"column:subscriptionCanceledAt" json:"subscriptionCanceledAt"`
 	PaymentFailedAt           *DateTime              `gorm:"column:paymentFailedAt" json:"paymentFailedAt"`
 	InvoicePrefix             *string                `gorm:"column:invoicePrefix;uniqueIndex:Project_invoicePrefix_key;type:varchar(191)" json:"invoicePrefix"`
-	StripeConnectID           *string                `gorm:"column:stripeConnectId;uniqueIndex:Project_stripeConnectId_stripeConnectMode_key;type:varchar(191)" json:"stripeConnectId"`
-	StripeConnectMode         *string                `gorm:"column:stripeConnectMode;uniqueIndex:Project_stripeConnectId_stripeConnectMode_key" json:"stripeConnectMode"`
+	StripeConnectID           *string                `gorm:"column:stripeConnectId;uniqueIndex:Project_stripeConnectId_stripeConnectMode_key,priority:1;type:varchar(191)" json:"stripeConnectId"`
+	StripeConnectMode         *string                `gorm:"column:stripeConnectMode;uniqueIndex:Project_stripeConnectId_stripeConnectMode_key,priority:2" json:"stripeConnectMode"`
 	ShopifyStoreID            *string                `gorm:"column:shopifyStoreId;uniqueIndex:Project_shopifyStoreId_key;type:varchar(191)" json:"shopifyStoreId"`
 	TotalLinks                int                    `gorm:"column:totalLinks;size:32;default:0;not null" json:"totalLinks"`
 	TotalClicks               int                    `gorm:"column:totalClicks;size:32;default:0;not null" json:"totalClicks"`
@@ -1245,9 +1245,9 @@ func (*Project) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ProjectInvite struct {
-	Email     string   `gorm:"column:email;primaryKey;uniqueIndex:ProjectInvite_email_projectId_key;type:varchar(191)" json:"email"`
+	Email     string   `gorm:"column:email;primaryKey;uniqueIndex:ProjectInvite_email_projectId_key,priority:1;type:varchar(191)" json:"email"`
 	Expires   DateTime `gorm:"column:expires;not null" json:"expires"`
-	ProjectID string   `gorm:"column:projectId;primaryKey;uniqueIndex:ProjectInvite_email_projectId_key;index:ProjectInvite_projectId_idx;type:varchar(191)" json:"projectId"`
+	ProjectID string   `gorm:"column:projectId;primaryKey;uniqueIndex:ProjectInvite_email_projectId_key,priority:2;index:ProjectInvite_projectId_idx;type:varchar(191)" json:"projectId"`
 	Role      string   `gorm:"column:role;default:'member';not null" json:"role"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	Project   *Project `gorm:"belongsTo"`
@@ -1268,8 +1268,8 @@ func (m *ProjectInvite) BeforeCreate(tx *gorm.DB) error {
 type ProjectUsers struct {
 	ID                     string                  `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
 	Role                   string                  `gorm:"column:role;default:'member';not null" json:"role"`
-	UserID                 string                  `gorm:"column:userId;uniqueIndex:ProjectUsers_userId_projectId_key;type:varchar(191);not null" json:"userId"`
-	ProjectID              string                  `gorm:"column:projectId;uniqueIndex:ProjectUsers_userId_projectId_key;index:ProjectUsers_projectId_idx;type:varchar(191);not null" json:"projectId"`
+	UserID                 string                  `gorm:"column:userId;uniqueIndex:ProjectUsers_userId_projectId_key,priority:1;type:varchar(191);not null" json:"userId"`
+	ProjectID              string                  `gorm:"column:projectId;uniqueIndex:ProjectUsers_userId_projectId_key,priority:2;index:ProjectUsers_projectId_idx;type:varchar(191);not null" json:"projectId"`
 	WorkspacePreferences   datatypes.JSON          `gorm:"column:workspacePreferences" json:"workspacePreferences"`
 	DefaultFolderID        *string                 `gorm:"column:defaultFolderId;type:varchar(191)" json:"defaultFolderId"`
 	CreatedAt              DateTime                `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`

@@ -7,20 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Folder")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub path: String,
-    #[sea_orm(column_name = "parentId")]
+    #[sea_orm(column_name = "parentId", column_type = "Text")]
     pub parent_id: Option<String>,
     #[sea_orm(column_name = "hiddenInAllDocuments", default_value = false)]
     pub hidden_in_all_documents: bool,
+    #[sea_orm(column_type = "Text")]
     pub icon: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub color: Option<String>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -30,14 +39,16 @@ pub enum Relation {
         belongs_to = "super::folder::Entity",
         from = "Column::ParentId",
         to = "super::folder::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Folder_parentId_fkey"
     )]
     ParentFolder,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Folder_teamId_fkey"
     )]
     Team,
     #[sea_orm(has_many = "super::document::Entity")]

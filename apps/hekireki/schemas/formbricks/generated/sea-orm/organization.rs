@@ -19,16 +19,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// [OrganizationWhitelabel]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub whitelabel: Json,
     #[sea_orm(column_name = "isAISmartToolsEnabled", default_value = false)]
     pub is_aismart_tools_enabled: bool,
-    #[sea_orm(column_name = "displayTimeZone")]
+    #[sea_orm(column_name = "displayTimeZone", column_type = "Text")]
     pub display_time_zone: Option<String>,
 }
 

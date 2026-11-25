@@ -11,20 +11,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeatureFlagExperimentSetting")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "flagKey")]
+    #[sea_orm(column_name = "flagKey", column_type = "Text")]
     pub flag_key: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "subjectType")]
     pub subject_type: FeatureFlagExperimentSubjectType,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "subjectId")]
+    #[sea_orm(column_name = "subjectId", column_type = "Text")]
     pub subject_id: String,
     pub enabled: bool,
-    #[sea_orm(column_name = "changedByUserId")]
+    #[sea_orm(column_name = "changedByUserId", column_type = "Text")]
     pub changed_by_user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

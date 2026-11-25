@@ -7,14 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EmailLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub time: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub email: Json,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "previewUrl")]
+    #[sea_orm(column_name = "previewUrl", column_type = "Text")]
     pub preview_url: Option<String>,
-    #[sea_orm(column_name = "messageId")]
+    #[sea_orm(column_name = "messageId", column_type = "Text")]
     pub message_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
 }
 

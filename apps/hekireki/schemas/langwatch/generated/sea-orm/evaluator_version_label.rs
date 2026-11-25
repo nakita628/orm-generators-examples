@@ -8,21 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EvaluatorVersionLabel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "evaluatorId")]
+    #[sea_orm(column_name = "evaluatorId", column_type = "Text")]
     pub evaluator_id: String,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
-    #[sea_orm(column_name = "versionId")]
+    #[sea_orm(column_name = "versionId", column_type = "Text")]
     pub version_id: String,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

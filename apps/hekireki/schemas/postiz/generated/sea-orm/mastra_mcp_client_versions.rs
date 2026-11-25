@@ -7,21 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_mcp_client_versions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "mcpClientId")]
+    #[sea_orm(column_name = "mcpClientId", column_type = "Text")]
     pub mcp_client_id: String,
     #[sea_orm(column_name = "versionNumber")]
     pub version_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub servers: Json,
-    #[sea_orm(column_name = "changedFields")]
+    #[sea_orm(column_name = "changedFields", column_type = "JsonBinary")]
     pub changed_fields: Option<Json>,
-    #[sea_orm(column_name = "changeMessage")]
+    #[sea_orm(column_name = "changeMessage", column_type = "Text")]
     pub change_message: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

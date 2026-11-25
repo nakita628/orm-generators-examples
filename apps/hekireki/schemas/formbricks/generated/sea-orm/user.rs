@@ -18,47 +18,63 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(default_value = false)]
     pub email_verified: bool,
-    #[sea_orm(column_name = "twoFactorSecret")]
+    #[sea_orm(column_name = "twoFactorSecret", column_type = "Text")]
     pub two_factor_secret: Option<String>,
     #[sea_orm(column_name = "twoFactorEnabled", default_value = false)]
     pub two_factor_enabled: bool,
-    #[sea_orm(column_name = "backupCodes")]
+    #[sea_orm(column_name = "backupCodes", column_type = "Text")]
     pub backup_codes: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
     #[sea_orm(column_name = "identityProvider", default_value = "email")]
     pub identity_provider: IdentityProvider,
-    #[sea_orm(column_name = "identityProviderAccountId")]
+    #[sea_orm(column_name = "identityProviderAccountId", column_type = "Text")]
     pub identity_provider_account_id: Option<String>,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
     /// [UserNotificationSettings]
-    #[sea_orm(column_name = "notificationSettings", default_value = "{}")]
+    #[sea_orm(
+        column_name = "notificationSettings",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub notification_settings: Json,
     /// [Locale]
-    #[sea_orm(default_value = "en-US")]
+    #[sea_orm(column_type = "Text", default_value = "en-US")]
     pub locale: String,
-    #[sea_orm(column_name = "lastLoginAt")]
+    #[sea_orm(column_name = "lastLoginAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_login_at: Option<DateTime>,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
     /// When an admin last reactivated this user. Restarts the members retention clock (ENG-3713)
     /// without touching `lastLoginAt`, which the member list, usage counts and APIs report as a real
     /// sign-in.
-    #[sea_orm(column_name = "reactivatedAt")]
+    #[sea_orm(
+        column_name = "reactivatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub reactivated_at: Option<DateTime>,
     /// When the user last completed a sign-in (`lastActivePlugin`, after any second factor) or renewed a
     /// session (Better Auth `databaseHooks.session.update`), on the database clock and never moved
     /// backwards. The members retention clock reads it: sessions are
     /// deleted on sign-out and expiry, so their own timestamps can't serve as a record of activity.
-    #[sea_orm(column_name = "lastActiveAt")]
+    #[sea_orm(column_name = "lastActiveAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_active_at: Option<DateTime>,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "isBootstrapAdmin")]

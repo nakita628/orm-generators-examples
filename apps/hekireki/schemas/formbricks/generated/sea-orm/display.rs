@@ -15,14 +15,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Display")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: Option<String>,
-    #[sea_orm(column_name = "creativeId")]
+    #[sea_orm(column_name = "creativeId", column_type = "Text")]
     pub creative_id: Option<String>,
 }
 
@@ -32,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Display_surveyId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::contact::Entity",
         from = "Column::ContactId",
         to = "super::contact::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Display_contactId_fkey"
     )]
     Contact,
     #[sea_orm(has_one = "super::response::Entity")]

@@ -7,22 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DigestItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "messageId")]
+    #[sea_orm(column_name = "messageId", column_type = "Text")]
     pub message_id: String,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
     #[sea_orm(column_type = "Text")]
     pub content: String,
-    #[sea_orm(column_name = "digestId")]
+    #[sea_orm(column_name = "digestId", column_type = "Text")]
     pub digest_id: String,
-    #[sea_orm(column_name = "actionId")]
+    #[sea_orm(column_name = "actionId", column_type = "Text")]
     pub action_id: Option<String>,
-    #[sea_orm(column_name = "coldEmailId")]
+    #[sea_orm(column_name = "coldEmailId", column_type = "Text")]
     pub cold_email_id: Option<String>,
 }
 
@@ -32,20 +37,23 @@ pub enum Relation {
         belongs_to = "super::digest::Entity",
         from = "Column::DigestId",
         to = "super::digest::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DigestItem_digestId_fkey"
     )]
     Digest,
     #[sea_orm(
         belongs_to = "super::executed_action::Entity",
         from = "Column::ActionId",
         to = "super::executed_action::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DigestItem_actionId_fkey"
     )]
     Action,
     #[sea_orm(
         belongs_to = "super::cold_email::Entity",
         from = "Column::ColdEmailId",
-        to = "super::cold_email::Column::Id"
+        to = "super::cold_email::Column::Id",
+        fk_name = "DigestItem_coldEmailId_fkey"
     )]
     ColdEmail,
 }

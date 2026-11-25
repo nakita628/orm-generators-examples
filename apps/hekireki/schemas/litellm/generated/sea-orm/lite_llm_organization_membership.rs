@@ -7,14 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_OrganizationMembership")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_role: Option<String>,
     #[sea_orm(default_value = 0)]
     pub spend: Option<f64>,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: Option<DateTime>,
 }
 
@@ -23,19 +35,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_user_table::Entity",
         from = "Column::UserId",
-        to = "super::lite_llm_user_table::Column::UserId"
+        to = "super::lite_llm_user_table::Column::UserId",
+        fk_name = "LiteLLM_OrganizationMembership_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::lite_llm_organization_table::Entity",
         from = "Column::OrganizationId",
-        to = "super::lite_llm_organization_table::Column::OrganizationId"
+        to = "super::lite_llm_organization_table::Column::OrganizationId",
+        fk_name = "LiteLLM_OrganizationMembership_organization_id_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::BudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_OrganizationMembership_budget_id_fkey"
     )]
     LitellmBudgetTable,
 }

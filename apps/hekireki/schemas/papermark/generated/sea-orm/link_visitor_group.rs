@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LinkVisitorGroup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: String,
-    #[sea_orm(column_name = "visitorGroupId")]
+    #[sea_orm(column_name = "visitorGroupId", column_type = "Text")]
     pub visitor_group_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -22,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkVisitorGroup_linkId_fkey"
     )]
     Link,
     #[sea_orm(
         belongs_to = "super::visitor_group::Entity",
         from = "Column::VisitorGroupId",
         to = "super::visitor_group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkVisitorGroup_visitorGroupId_fkey"
     )]
     VisitorGroup,
 }

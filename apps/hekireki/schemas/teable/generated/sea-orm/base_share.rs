@@ -7,19 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "base_share")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub share_id: String,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub node_id: Option<String>,
     pub allow_save: Option<bool>,
     pub allow_copy: Option<bool>,
     pub allow_edit: Option<bool>,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 

@@ -7,30 +7,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_workflow_definitions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "inputSchema")]
+    #[sea_orm(column_name = "inputSchema", column_type = "JsonBinary")]
     pub input_schema: Json,
-    #[sea_orm(column_name = "outputSchema")]
+    #[sea_orm(column_name = "outputSchema", column_type = "JsonBinary")]
     pub output_schema: Json,
-    #[sea_orm(column_name = "stateSchema")]
+    #[sea_orm(column_name = "stateSchema", column_type = "JsonBinary")]
     pub state_schema: Option<Json>,
-    #[sea_orm(column_name = "requestContextSchema")]
+    #[sea_orm(column_name = "requestContextSchema", column_type = "JsonBinary")]
     pub request_context_schema: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub graph: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub schedule: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub source: String,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "Text")]
     pub author_id: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

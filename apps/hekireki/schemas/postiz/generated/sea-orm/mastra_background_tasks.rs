@@ -7,17 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_background_tasks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub tool_call_id: String,
+    #[sea_orm(column_type = "Text")]
     pub tool_name: String,
+    #[sea_orm(column_type = "Text")]
     pub agent_id: String,
+    #[sea_orm(column_type = "Text")]
     pub run_id: String,
+    #[sea_orm(column_type = "Text")]
     pub thread_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub resource_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub args: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub result: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub error: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub suspend_payload: Option<Json>,
     pub retry_count: i32,
     pub max_retries: i32,
@@ -30,13 +42,29 @@ pub struct Model {
     pub suspended_at: Option<DateTime>,
     #[sea_orm(column_name = "completedAt")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "startedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "startedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "suspendedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "suspendedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub suspended_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "completedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "completedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub completed_at_z: Option<DateTimeWithTimeZone>,
 }
 

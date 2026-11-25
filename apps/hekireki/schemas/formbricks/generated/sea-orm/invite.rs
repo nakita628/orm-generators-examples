@@ -21,22 +21,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Invite")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "creatorId")]
+    #[sea_orm(column_name = "creatorId", column_type = "Text")]
     pub creator_id: String,
-    #[sea_orm(column_name = "acceptorId")]
+    #[sea_orm(column_name = "acceptorId", column_type = "Text")]
     pub acceptor_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
     #[sea_orm(default_value = "member")]
     pub role: OrganizationRole,
-    #[sea_orm(column_name = "teamIds")]
+    #[sea_orm(
+        column_name = "teamIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub team_ids: Vec<String>,
 }
 
@@ -46,20 +56,23 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Invite_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatorId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Invite_creatorId_fkey"
     )]
     Creator,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::AcceptorId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Invite_acceptorId_fkey"
     )]
     Acceptor,
 }

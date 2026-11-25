@@ -9,9 +9,13 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
+    #[sea_orm(column_type = "Text")]
     pub tools: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub schedule: String,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
@@ -19,9 +23,9 @@ pub struct Model {
     pub last_run_at: Option<PrismaDateTime>,
     #[sea_orm(column_name = "nextRunAt")]
     pub next_run_at: Option<PrismaDateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", default_expr = "Expr::current_timestamp()")]
     pub updated_at: PrismaDateTime,
 }
 

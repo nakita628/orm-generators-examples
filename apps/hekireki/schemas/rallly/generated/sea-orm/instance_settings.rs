@@ -11,17 +11,32 @@ pub struct Model {
     #[sea_orm(default_value = false)]
     pub disable_user_registration: bool,
     #[sea_orm(unique)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub instance_id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub app_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub primary_color: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub primary_color_dark: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub logo: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub logo_dark: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub logo_icon: Option<String>,
     pub hide_attribution: Option<bool>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub footer_links: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

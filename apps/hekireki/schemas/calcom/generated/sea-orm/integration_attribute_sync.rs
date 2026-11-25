@@ -7,17 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IntegrationAttributeSync")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "organizationId")]
     pub organization_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub integration: String,
     #[sea_orm(column_name = "credentialId")]
     pub credential_id: Option<i32>,
     pub enabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::OrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "IntegrationAttributeSync_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::credential::Entity",
         from = "Column::CredentialId",
         to = "super::credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "IntegrationAttributeSync_credentialId_fkey"
     )]
     Credential,
     #[sea_orm(has_many = "super::attribute_sync_field_mapping::Entity")]

@@ -8,32 +8,48 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BackgroundWorker")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
     #[sea_orm(default_value = "V1")]
     pub engine: RunEngineVersion,
-    #[sea_orm(column_name = "contentHash")]
+    #[sea_orm(column_name = "contentHash", column_type = "Text")]
     pub content_hash: String,
-    #[sea_orm(column_name = "sdkVersion", default_value = "unknown")]
+    #[sea_orm(
+        column_name = "sdkVersion",
+        column_type = "Text",
+        default_value = "unknown"
+    )]
     pub sdk_version: String,
-    #[sea_orm(column_name = "cliVersion", default_value = "unknown")]
+    #[sea_orm(
+        column_name = "cliVersion",
+        column_type = "Text",
+        default_value = "unknown"
+    )]
     pub cli_version: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
+    #[sea_orm(column_type = "Text")]
     pub version: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Json,
+    #[sea_orm(column_type = "Text")]
     pub runtime: Option<String>,
-    #[sea_orm(column_name = "runtimeVersion")]
+    #[sea_orm(column_name = "runtimeVersion", column_type = "Text")]
     pub runtime_version: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "workerGroupId")]
+    #[sea_orm(column_name = "workerGroupId", column_type = "Text")]
     pub worker_group_id: Option<String>,
     #[sea_orm(column_name = "supportsLazyAttempts", default_value = false)]
     pub supports_lazy_attempts: bool,
@@ -46,7 +62,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BackgroundWorker_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -54,7 +71,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BackgroundWorker_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(
@@ -62,7 +80,8 @@ pub enum Relation {
         from = "Column::WorkerGroupId",
         to = "super::worker_instance_group::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "BackgroundWorker_workerGroupId_fkey"
     )]
     WorkerGroup,
     #[sea_orm(has_many = "super::background_worker_task::Entity")]

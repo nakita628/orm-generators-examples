@@ -7,19 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IdentityProjectionCursor")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "acceptedAt")]
+    #[sea_orm(column_name = "acceptedAt", column_type = "custom(\"timestamp(3)\")")]
     pub accepted_at: DateTime,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

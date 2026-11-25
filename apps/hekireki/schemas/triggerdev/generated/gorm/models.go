@@ -106,8 +106,8 @@ func (*User) BeforeUpdate(tx *gorm.DB) error {
 type MfaBackupCode struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// Hash of the actual code
-	Code      string    `gorm:"column:code;uniqueIndex:MfaBackupCode_userId_code_key;not null" json:"code"`
-	UserID    string    `gorm:"column:userId;uniqueIndex:MfaBackupCode_userId_code_key;not null" json:"userId"`
+	Code      string    `gorm:"column:code;uniqueIndex:MfaBackupCode_userId_code_key,priority:2;not null" json:"code"`
+	UserID    string    `gorm:"column:userId;uniqueIndex:MfaBackupCode_userId_code_key,priority:1;not null" json:"userId"`
 	UsedAt    *DateTime `gorm:"column:usedAt;type:timestamp(3)" json:"usedAt"`
 	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -224,7 +224,7 @@ type PersonalAccessToken struct {
 	ObfuscatedToken string `gorm:"column:obfuscatedToken;not null" json:"obfuscatedToken"`
 	// This is used to find the token in the database
 	HashedToken    string    `gorm:"column:hashedToken;uniqueIndex:PersonalAccessToken_hashedToken_key;not null" json:"hashedToken"`
-	UserID         string    `gorm:"column:userId;index:PersonalAccessToken_userId_idx;index:PersonalAccessToken_oauthClientId_userId_idx;not null" json:"userId"`
+	UserID         string    `gorm:"column:userId;index:PersonalAccessToken_userId_idx;index:PersonalAccessToken_oauthClientId_userId_idx,priority:2;not null" json:"userId"`
 	RevokedAt      *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	LastAccessedAt *DateTime `gorm:"column:lastAccessedAt;type:timestamp(3)" json:"lastAccessedAt"`
 	// After this the token no longer authenticates. Null means it never expires.
@@ -238,7 +238,7 @@ type PersonalAccessToken struct {
 	ExpiredNoticeSentAt *DateTime           `gorm:"column:expiredNoticeSentAt;type:timestamp(3)" json:"expiredNoticeSentAt"`
 	CreatedAt           DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt           DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	OauthClientID       *string             `gorm:"column:oauthClientId;index:PersonalAccessToken_oauthClientId_userId_idx" json:"oauthClientId"`
+	OauthClientID       *string             `gorm:"column:oauthClientId;index:PersonalAccessToken_oauthClientId_userId_idx,priority:1" json:"oauthClientId"`
 	User                *User               `gorm:"belongsTo"`
 	OauthClient         *OAuthClient        `gorm:"foreignKey:OauthClientID;belongsTo"`
 	AuthorizationCodes  []AuthorizationCode `gorm:"foreignKey:PersonalAccessTokenID;constraint:AuthorizationCode_personalAccessTokenId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -273,7 +273,7 @@ func (*PersonalAccessToken) BeforeUpdate(tx *gorm.DB) error {
 
 type OAuthClient struct {
 	ID                   string                `gorm:"column:id;primaryKey" json:"id"`
-	Kind                 string                `gorm:"column:kind;index:OAuthClient_kind_lastUsedAt_idx;not null" json:"kind"`
+	Kind                 string                `gorm:"column:kind;index:OAuthClient_kind_lastUsedAt_idx,priority:1;not null" json:"kind"`
 	ClientID             string                `gorm:"column:clientId;uniqueIndex:OAuthClient_clientId_key;not null" json:"clientId"`
 	MetadataURL          *string               `gorm:"column:metadataUrl" json:"metadataUrl"`
 	DisplayName          *string               `gorm:"column:displayName" json:"displayName"`
@@ -281,7 +281,7 @@ type OAuthClient struct {
 	RedirectUris         ScalarList[string]    `gorm:"column:redirectUris;type:text[]" json:"redirectUris"`
 	DedupeKey            *string               `gorm:"column:dedupeKey;uniqueIndex:OAuthClient_dedupeKey_key" json:"dedupeKey"`
 	MetadataExpiresAt    *DateTime             `gorm:"column:metadataExpiresAt;type:timestamp(3)" json:"metadataExpiresAt"`
-	LastUsedAt           *DateTime             `gorm:"column:lastUsedAt;index:OAuthClient_kind_lastUsedAt_idx;type:timestamp(3)" json:"lastUsedAt"`
+	LastUsedAt           *DateTime             `gorm:"column:lastUsedAt;index:OAuthClient_kind_lastUsedAt_idx,priority:2;type:timestamp(3)" json:"lastUsedAt"`
 	CreatedAt            DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime              `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	AuthorizationCodes   []AuthorizationCode   `gorm:"foreignKey:OauthClientID;constraint:AuthorizationCode_oauthClientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -350,15 +350,15 @@ type OrganizationAccessToken struct {
 	// User-provided name for the token
 	Name string `gorm:"column:name;not null" json:"name"`
 	// Used to differentiate between user-generated and system-generated tokens
-	Type string `gorm:"column:type;index:OrganizationAccessToken_organizationId_type_createdAt_idx;default:'USER';not null" json:"type"`
+	Type string `gorm:"column:type;index:OrganizationAccessToken_organizationId_type_createdAt_idx,priority:2;default:'USER';not null" json:"type"`
 	// This is used to find the token in the database
 	HashedToken    string `gorm:"column:hashedToken;uniqueIndex:OrganizationAccessToken_hashedToken_key;not null" json:"hashedToken"`
-	OrganizationID string `gorm:"column:organizationId;index:OrganizationAccessToken_organizationId_type_createdAt_idx;not null" json:"organizationId"`
+	OrganizationID string `gorm:"column:organizationId;index:OrganizationAccessToken_organizationId_type_createdAt_idx,priority:1;not null" json:"organizationId"`
 	// Optional expiration date for the token
 	ExpiresAt      *DateTime     `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
 	RevokedAt      *DateTime     `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	LastAccessedAt *DateTime     `gorm:"column:lastAccessedAt;type:timestamp(3)" json:"lastAccessedAt"`
-	CreatedAt      DateTime      `gorm:"column:createdAt;index:OrganizationAccessToken_organizationId_type_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;index:OrganizationAccessToken_organizationId_type_createdAt_idx,priority:3,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Organization   *Organization `gorm:"belongsTo"`
 }
@@ -484,8 +484,8 @@ func (*Organization) BeforeUpdate(tx *gorm.DB) error {
 
 type OrgMember struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string `gorm:"column:organizationId;uniqueIndex:OrgMember_organizationId_userId_key;not null" json:"organizationId"`
-	UserID         string `gorm:"column:userId;uniqueIndex:OrgMember_organizationId_userId_key;index:OrgMember_userId_idx;not null" json:"userId"`
+	OrganizationID string `gorm:"column:organizationId;uniqueIndex:OrgMember_organizationId_userId_key,priority:1;not null" json:"organizationId"`
+	UserID         string `gorm:"column:userId;uniqueIndex:OrgMember_organizationId_userId_key,priority:2;index:OrgMember_userId_idx;not null" json:"userId"`
 	Role           string `gorm:"column:role;default:'MEMBER';not null" json:"role"`
 	// Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.
 	InvitedByID *string `gorm:"column:invitedById" json:"invitedById"`
@@ -527,7 +527,7 @@ func (*OrgMember) BeforeUpdate(tx *gorm.DB) error {
 type OrgMemberInvite struct {
 	ID    string `gorm:"column:id;primaryKey" json:"id"`
 	Token string `gorm:"column:token;uniqueIndex:OrgMemberInvite_token_key;not null" json:"token"`
-	Email string `gorm:"column:email;uniqueIndex:OrgMemberInvite_organizationId_email_key;not null" json:"email"`
+	Email string `gorm:"column:email;uniqueIndex:OrgMemberInvite_organizationId_email_key,priority:2;not null" json:"email"`
 	Role  string `gorm:"column:role;default:'MEMBER';not null" json:"role"`
 	// Optional RBAC role to assign on invite acceptance. When set, the
 	// accept-invite flow calls the loaded RBAC plugin's setUserRole with
@@ -539,7 +539,7 @@ type OrgMemberInvite struct {
 	// here. Validation happens at write time (action) and read time
 	// (acceptInvite).
 	RbacRoleID     *string       `gorm:"column:rbacRoleId" json:"rbacRoleId"`
-	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:OrgMemberInvite_organizationId_email_key;not null" json:"organizationId"`
+	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:OrgMemberInvite_organizationId_email_key,priority:1;not null" json:"organizationId"`
 	InviterID      string        `gorm:"column:inviterId;not null" json:"inviterId"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -578,7 +578,7 @@ func (*OrgMemberInvite) BeforeUpdate(tx *gorm.DB) error {
 
 type RuntimeEnvironment struct {
 	ID     string `gorm:"column:id;primaryKey" json:"id"`
-	Slug   string `gorm:"column:slug;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key;not null" json:"slug"`
+	Slug   string `gorm:"column:slug;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key,priority:2;not null" json:"slug"`
 	APIKey string `gorm:"column:apiKey;uniqueIndex:RuntimeEnvironment_apiKey_key;not null" json:"apiKey"`
 	// Non-null prevents the root API key from being returned to users.
 	RootAPIKeyHiddenAt *DateTime `gorm:"column:rootApiKeyHiddenAt;type:timestamp(3)" json:"rootApiKeyHiddenAt"`
@@ -603,15 +603,15 @@ type RuntimeEnvironment struct {
 	// When set API calls will fail
 	ArchivedAt *DateTime `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
 	// A memorable code for the environment
-	Shortcode                   string   `gorm:"column:shortcode;uniqueIndex:RuntimeEnvironment_projectId_shortcode_key;not null" json:"shortcode"`
+	Shortcode                   string   `gorm:"column:shortcode;uniqueIndex:RuntimeEnvironment_projectId_shortcode_key,priority:2;not null" json:"shortcode"`
 	MaximumConcurrencyLimit     *int     `gorm:"column:maximumConcurrencyLimit;size:32;default:5;not null" json:"maximumConcurrencyLimit"`
 	ConcurrencyLimitBurstFactor *float64 `gorm:"column:concurrencyLimitBurstFactor;type:decimal(4,2);default:2;not null" json:"concurrencyLimitBurstFactor"`
 	Paused                      bool     `gorm:"column:paused;default:false;not null" json:"paused"`
 	PauseSource                 *string  `gorm:"column:pauseSource" json:"pauseSource"`
 	AutoEnableInternalSources   *bool    `gorm:"column:autoEnableInternalSources;default:true;not null" json:"autoEnableInternalSources"`
 	OrganizationID              string   `gorm:"column:organizationId;index:RuntimeEnvironment_organizationId_idx;not null" json:"organizationId"`
-	ProjectID                   string   `gorm:"column:projectId;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key;uniqueIndex:RuntimeEnvironment_projectId_shortcode_key;index:RuntimeEnvironment_projectId_idx;not null" json:"projectId"`
-	OrgMemberID                 *string  `gorm:"column:orgMemberId;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key" json:"orgMemberId"`
+	ProjectID                   string   `gorm:"column:projectId;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key,priority:1;uniqueIndex:RuntimeEnvironment_projectId_shortcode_key,priority:1;index:RuntimeEnvironment_projectId_idx;not null" json:"projectId"`
+	OrgMemberID                 *string  `gorm:"column:orgMemberId;uniqueIndex:RuntimeEnvironment_projectId_slug_orgMemberId_key,priority:3" json:"orgMemberId"`
 	CreatedAt                   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                   DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// Allows us to customize the built-in environment variables for a specific environment, like TRIGGER_OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT
@@ -689,19 +689,19 @@ type APIKey struct {
 	LastFour string `gorm:"column:last_four;not null" json:"last_four"`
 	// Optional one-line note the creator adds to say what the key is for.
 	Description          *string            `gorm:"column:description" json:"description"`
-	RuntimeEnvironmentID string             `gorm:"column:runtime_environment_id;index:api_keys_runtime_environment_id_revoked_at_created_at_idx;index:api_keys_env_issued_by_revoked_at_created_at_idx;not null" json:"runtime_environment_id"`
+	RuntimeEnvironmentID string             `gorm:"column:runtime_environment_id;index:api_keys_runtime_environment_id_revoked_at_created_at_idx,priority:1;index:api_keys_env_issued_by_revoked_at_created_at_idx,priority:1;not null" json:"runtime_environment_id"`
 	CreatedByUserID      *string            `gorm:"column:created_by_user_id" json:"created_by_user_id"`
-	IssuedBy             string             `gorm:"column:issued_by;index:api_keys_env_issued_by_revoked_at_created_at_idx;default:'USER';not null" json:"issued_by"`
+	IssuedBy             string             `gorm:"column:issued_by;index:api_keys_env_issued_by_revoked_at_created_at_idx,priority:2;default:'USER';not null" json:"issued_by"`
 	PresetID             *string            `gorm:"column:preset_id" json:"preset_id"`
 	Scopes               ScalarList[string] `gorm:"column:scopes;type:text[]" json:"scopes"`
 	// CIDR ranges this key may be used from. Empty means any IP.
 	AllowedIPRanges    ScalarList[string]  `gorm:"column:allowed_ip_ranges;type:text[]" json:"allowed_ip_ranges"`
 	LastUsedAt         *DateTime           `gorm:"column:last_used_at;type:timestamp(3)" json:"last_used_at"`
 	LastUsedIP         *string             `gorm:"column:last_used_ip" json:"last_used_ip"`
-	RevokedAt          *DateTime           `gorm:"column:revoked_at;index:api_keys_runtime_environment_id_revoked_at_created_at_idx;index:api_keys_env_issued_by_revoked_at_created_at_idx;type:timestamp(3)" json:"revoked_at"`
+	RevokedAt          *DateTime           `gorm:"column:revoked_at;index:api_keys_runtime_environment_id_revoked_at_created_at_idx,priority:2;index:api_keys_env_issued_by_revoked_at_created_at_idx,priority:3;type:timestamp(3)" json:"revoked_at"`
 	ExpiresAt          *DateTime           `gorm:"column:expires_at;type:timestamp(3)" json:"expires_at"`
 	UpdatedAt          DateTime            `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	CreatedAt          DateTime            `gorm:"column:created_at;index:api_keys_runtime_environment_id_revoked_at_created_at_idx;index:api_keys_env_issued_by_revoked_at_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt          DateTime            `gorm:"column:created_at;index:api_keys_runtime_environment_id_revoked_at_created_at_idx,priority:3,sort:desc;index:api_keys_env_issued_by_revoked_at_created_at_idx,priority:4,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	RuntimeEnvironment *RuntimeEnvironment `gorm:"belongsTo"`
 	CreatedBy          *User               `gorm:"foreignKey:CreatedByUserID;belongsTo"`
 }
@@ -861,8 +861,8 @@ func (EnvironmentEncryptionPolicy) TableName() string {
 }
 
 type EnvironmentEncryptionKey struct {
-	ID                   string                        `gorm:"column:id;primaryKey;uniqueIndex:EnvironmentEncryptionKey_id_environmentId_key" json:"id"`
-	EnvironmentID        string                        `gorm:"column:environmentId;uniqueIndex:EnvironmentEncryptionKey_id_environmentId_key;index:EnvironmentEncryptionKey_environmentId_idx;not null" json:"environmentId"`
+	ID                   string                        `gorm:"column:id;primaryKey;uniqueIndex:EnvironmentEncryptionKey_id_environmentId_key,priority:1" json:"id"`
+	EnvironmentID        string                        `gorm:"column:environmentId;uniqueIndex:EnvironmentEncryptionKey_id_environmentId_key,priority:2;index:EnvironmentEncryptionKey_environmentId_idx;not null" json:"environmentId"`
 	WrappedKey           datatypes.JSON                `gorm:"column:wrappedKey;not null" json:"wrappedKey"`
 	WrappingProvider     string                        `gorm:"column:wrappingProvider;not null" json:"wrappingProvider"`
 	WrappingKeyReference string                        `gorm:"column:wrappingKeyReference;not null" json:"wrappingKeyReference"`
@@ -925,7 +925,7 @@ func (*SecretReference) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type SecretStore struct {
-	Key       string         `gorm:"column:key;primaryKey;uniqueIndex:SecretStore_key_key;index:SecretStore_key_idx" json:"key"`
+	Key       string         `gorm:"column:key;primaryKey;uniqueIndex:SecretStore_key_key;index:SecretStore_key_idx,expression:\"key\" text_pattern_ops" json:"key"`
 	Value     datatypes.JSON `gorm:"column:value;not null" json:"value"`
 	Version   *string        `gorm:"column:version;default:'1';not null" json:"version"`
 	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1040,13 +1040,13 @@ type BackgroundWorker struct {
 	ContentHash          string                 `gorm:"column:contentHash;not null" json:"contentHash"`
 	SdkVersion           *string                `gorm:"column:sdkVersion;default:'unknown';not null" json:"sdkVersion"`
 	CliVersion           *string                `gorm:"column:cliVersion;default:'unknown';not null" json:"cliVersion"`
-	ProjectID            string                 `gorm:"column:projectId;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key;not null" json:"projectId"`
-	RuntimeEnvironmentID string                 `gorm:"column:runtimeEnvironmentId;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key;index:BackgroundWorker_runtimeEnvironmentId_idx;index:BackgroundWorker_runtimeEnvironmentId_createdAt_idx;not null" json:"runtimeEnvironmentId"`
-	Version              string                 `gorm:"column:version;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key;not null" json:"version"`
+	ProjectID            string                 `gorm:"column:projectId;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key,priority:1;not null" json:"projectId"`
+	RuntimeEnvironmentID string                 `gorm:"column:runtimeEnvironmentId;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key,priority:2;index:BackgroundWorker_runtimeEnvironmentId_idx;index:BackgroundWorker_runtimeEnvironmentId_createdAt_idx,priority:1;not null" json:"runtimeEnvironmentId"`
+	Version              string                 `gorm:"column:version;uniqueIndex:BackgroundWorker_projectId_runtimeEnvironmentId_version_key,priority:3;not null" json:"version"`
 	Metadata             datatypes.JSON         `gorm:"column:metadata;not null" json:"metadata"`
 	Runtime              *string                `gorm:"column:runtime" json:"runtime"`
 	RuntimeVersion       *string                `gorm:"column:runtimeVersion" json:"runtimeVersion"`
-	CreatedAt            DateTime               `gorm:"column:createdAt;index:BackgroundWorker_runtimeEnvironmentId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt            DateTime               `gorm:"column:createdAt;index:BackgroundWorker_runtimeEnvironmentId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	WorkerGroupID        *string                `gorm:"column:workerGroupId" json:"workerGroupId"`
 	SupportsLazyAttempts bool                   `gorm:"column:supportsLazyAttempts;default:false;not null" json:"supportsLazyAttempts"`
@@ -1093,9 +1093,9 @@ type BackgroundWorkerFile struct {
 	ID                string                 `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID        string                 `gorm:"column:friendlyId;uniqueIndex:BackgroundWorkerFile_friendlyId_key;not null" json:"friendlyId"`
 	FilePath          string                 `gorm:"column:filePath;not null" json:"filePath"`
-	ContentHash       string                 `gorm:"column:contentHash;uniqueIndex:BackgroundWorkerFile_projectId_contentHash_key;not null" json:"contentHash"`
+	ContentHash       string                 `gorm:"column:contentHash;uniqueIndex:BackgroundWorkerFile_projectId_contentHash_key,priority:2;not null" json:"contentHash"`
 	Contents          []byte                 `gorm:"column:contents;not null" json:"contents"`
-	ProjectID         string                 `gorm:"column:projectId;uniqueIndex:BackgroundWorkerFile_projectId_contentHash_key;not null" json:"projectId"`
+	ProjectID         string                 `gorm:"column:projectId;uniqueIndex:BackgroundWorkerFile_projectId_contentHash_key,priority:1;not null" json:"projectId"`
 	CreatedAt         DateTime               `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Project           *Project               `gorm:"belongsTo"`
 	Tasks             []BackgroundWorkerTask `gorm:"foreignKey:FileID;constraint:BackgroundWorkerTask_fileId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1120,12 +1120,12 @@ func (m *BackgroundWorkerFile) BeforeCreate(tx *gorm.DB) error {
 type Prompt struct {
 	ID                   string              `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID           string              `gorm:"column:friendly_id;uniqueIndex:prompts_friendly_id_key;not null" json:"friendly_id"`
-	Slug                 string              `gorm:"column:slug;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key;not null" json:"slug"`
+	Slug                 string              `gorm:"column:slug;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key,priority:3;not null" json:"slug"`
 	Description          *string             `gorm:"column:description" json:"description"`
 	Type                 *string             `gorm:"column:type;default:'text';not null" json:"type"`
 	OrganizationID       string              `gorm:"column:organizationId;not null" json:"organizationId"`
-	ProjectID            string              `gorm:"column:projectId;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key;index:prompts_projectId_idx;not null" json:"projectId"`
-	RuntimeEnvironmentID string              `gorm:"column:runtimeEnvironmentId;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key;index:prompts_runtimeEnvironmentId_idx;not null" json:"runtimeEnvironmentId"`
+	ProjectID            string              `gorm:"column:projectId;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key,priority:1;index:prompts_projectId_idx;not null" json:"projectId"`
+	RuntimeEnvironmentID string              `gorm:"column:runtimeEnvironmentId;uniqueIndex:prompts_projectId_runtimeEnvironmentId_slug_key,priority:2;index:prompts_runtimeEnvironmentId_idx;not null" json:"runtimeEnvironmentId"`
 	FilePath             *string             `gorm:"column:filePath" json:"filePath"`
 	ExportName           *string             `gorm:"column:exportName" json:"exportName"`
 	VariableSchema       datatypes.JSON      `gorm:"column:variableSchema" json:"variableSchema"`
@@ -1169,8 +1169,8 @@ func (*Prompt) BeforeUpdate(tx *gorm.DB) error {
 
 type PromptVersion struct {
 	ID            string             `gorm:"column:id;primaryKey" json:"id"`
-	Version       int                `gorm:"column:version;uniqueIndex:prompt_versions_promptId_version_key;size:32;not null" json:"version"`
-	PromptID      string             `gorm:"column:promptId;uniqueIndex:prompt_versions_promptId_version_key;index:prompt_versions_promptId_idx;not null" json:"promptId"`
+	Version       int                `gorm:"column:version;uniqueIndex:prompt_versions_promptId_version_key,priority:2;size:32;not null" json:"version"`
+	PromptID      string             `gorm:"column:promptId;uniqueIndex:prompt_versions_promptId_version_key,priority:1;index:prompt_versions_promptId_idx;not null" json:"promptId"`
 	TextContent   *string            `gorm:"column:textContent" json:"textContent"`
 	ChatContent   datatypes.JSON     `gorm:"column:chatContent" json:"chatContent"`
 	Model         *string            `gorm:"column:model" json:"model"`
@@ -1203,16 +1203,16 @@ func (m *PromptVersion) BeforeCreate(tx *gorm.DB) error {
 
 type BackgroundWorkerTask struct {
 	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
-	Slug                 string         `gorm:"column:slug;uniqueIndex:BackgroundWorkerTask_workerId_slug_key;index:BackgroundWorkerTask_projectId_slug_idx;index:BackgroundWorkerTask_projectId_slug_createdAt_idx;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx;not null" json:"slug"`
+	Slug                 string         `gorm:"column:slug;uniqueIndex:BackgroundWorkerTask_workerId_slug_key,priority:2;index:BackgroundWorkerTask_projectId_slug_idx,priority:2;index:BackgroundWorkerTask_projectId_slug_createdAt_idx,priority:2;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx,priority:2;not null" json:"slug"`
 	Description          *string        `gorm:"column:description" json:"description"`
 	FriendlyID           string         `gorm:"column:friendlyId;uniqueIndex:BackgroundWorkerTask_friendlyId_key;not null" json:"friendlyId"`
 	FilePath             string         `gorm:"column:filePath;not null" json:"filePath"`
 	ExportName           *string        `gorm:"column:exportName" json:"exportName"`
-	WorkerID             string         `gorm:"column:workerId;uniqueIndex:BackgroundWorkerTask_workerId_slug_key;not null" json:"workerId"`
-	ProjectID            string         `gorm:"column:projectId;index:BackgroundWorkerTask_projectId_slug_idx;index:BackgroundWorkerTask_projectId_slug_createdAt_idx;index:BackgroundWorkerTask_runtimeEnvironmentId_projectId_idx;not null" json:"projectId"`
+	WorkerID             string         `gorm:"column:workerId;uniqueIndex:BackgroundWorkerTask_workerId_slug_key,priority:1;not null" json:"workerId"`
+	ProjectID            string         `gorm:"column:projectId;index:BackgroundWorkerTask_projectId_slug_idx,priority:1;index:BackgroundWorkerTask_projectId_slug_createdAt_idx,priority:1;index:BackgroundWorkerTask_runtimeEnvironmentId_projectId_idx,priority:2;not null" json:"projectId"`
 	FileID               *string        `gorm:"column:fileId" json:"fileId"`
-	RuntimeEnvironmentID string         `gorm:"column:runtimeEnvironmentId;index:BackgroundWorkerTask_runtimeEnvironmentId_projectId_idx;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx;not null" json:"runtimeEnvironmentId"`
-	CreatedAt            DateTime       `gorm:"column:createdAt;index:BackgroundWorkerTask_projectId_slug_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	RuntimeEnvironmentID string         `gorm:"column:runtimeEnvironmentId;index:BackgroundWorkerTask_runtimeEnvironmentId_projectId_idx,priority:1;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx,priority:1;not null" json:"runtimeEnvironmentId"`
+	CreatedAt            DateTime       `gorm:"column:createdAt;index:BackgroundWorkerTask_projectId_slug_createdAt_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	QueueConfig          datatypes.JSON `gorm:"column:queueConfig" json:"queueConfig"`
 	RetryConfig          datatypes.JSON `gorm:"column:retryConfig" json:"retryConfig"`
@@ -1223,7 +1223,7 @@ type BackgroundWorkerTask struct {
 	QueueID              *string        `gorm:"column:queueId" json:"queueId"`
 	MaxDurationInSeconds *int           `gorm:"column:maxDurationInSeconds;size:32" json:"maxDurationInSeconds"`
 	TTL                  *string        `gorm:"column:ttl" json:"ttl"`
-	TriggerSource        string         `gorm:"column:triggerSource;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx;default:'STANDARD';not null" json:"triggerSource"`
+	TriggerSource        string         `gorm:"column:triggerSource;index:BackgroundWorkerTask_runtimeEnvironmentId_slug_triggerSourc_idx,priority:3;default:'STANDARD';not null" json:"triggerSource"`
 	// Extra task configuration JSON. Shape depends on triggerSource.
 	// AGENT: { type: "ai-sdk-chat" }
 	Config        datatypes.JSON `gorm:"column:config" json:"config"`
@@ -1273,14 +1273,14 @@ type WebhookEndpoint struct {
 	// Generated by the create path (deploy-sync / P2 API), NOT by @default.
 	OpaqueID             string `gorm:"column:opaqueId;uniqueIndex:WebhookEndpoint_opaqueId_key;not null" json:"opaqueId"`
 	OrganizationID       string `gorm:"column:organizationId;not null" json:"organizationId"`
-	ProjectID            string `gorm:"column:projectId;index:WebhookEndpoint_projectId_createdAt_idx;not null" json:"projectId"`
-	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key;index:WebhookEndpoint_runtimeEnvironmentId_source_idx;not null" json:"runtimeEnvironmentId"`
+	ProjectID            string `gorm:"column:projectId;index:WebhookEndpoint_projectId_createdAt_idx,priority:1;not null" json:"projectId"`
+	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key,priority:1;index:WebhookEndpoint_runtimeEnvironmentId_source_idx,priority:1;not null" json:"runtimeEnvironmentId"`
 	EnvironmentType      string `gorm:"column:environmentType;not null" json:"environmentType"`
-	EndpointTenantID     string `gorm:"column:endpointTenantId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key;default:'';not null" json:"endpointTenantId"`
-	EndpointExternalRef  string `gorm:"column:endpointExternalRef;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key;default:'';not null" json:"endpointExternalRef"`
-	Source               string `gorm:"column:source;index:WebhookEndpoint_runtimeEnvironmentId_source_idx;not null" json:"source"`
+	EndpointTenantID     string `gorm:"column:endpointTenantId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key,priority:3;default:'';not null" json:"endpointTenantId"`
+	EndpointExternalRef  string `gorm:"column:endpointExternalRef;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key,priority:4;default:'';not null" json:"endpointExternalRef"`
+	Source               string `gorm:"column:source;index:WebhookEndpoint_runtimeEnvironmentId_source_idx,priority:2;not null" json:"source"`
 	// The declared webhooks.endpoint.define id (string ref, no relation).
-	DeclaredID string `gorm:"column:declaredId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key;not null" json:"declaredId"`
+	DeclaredID string `gorm:"column:declaredId;uniqueIndex:WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key,priority:2;not null" json:"declaredId"`
 	// Subscribers of this endpoint: StoredWebhookRoutingTarget[] ({ id, type: "task" | "session", ..., filterAst }).
 	RoutingTargets     datatypes.JSON `gorm:"column:routingTargets;default:'[]';not null" json:"routingTargets"`
 	VerifierArtifact   datatypes.JSON `gorm:"column:verifierArtifact;not null" json:"verifierArtifact"`
@@ -1295,7 +1295,7 @@ type WebhookEndpoint struct {
 	// owns the status: a redeploy that re-declares a previously-removed (auto-deactivated) webhook
 	// reactivates it. Non-null means the operator disabled it, so the sync leaves the status alone.
 	ManuallyDeactivatedAt *DateTime `gorm:"column:manuallyDeactivatedAt;type:timestamp(3)" json:"manuallyDeactivatedAt"`
-	CreatedAt             DateTime  `gorm:"column:createdAt;index:WebhookEndpoint_projectId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt             DateTime  `gorm:"column:createdAt;index:WebhookEndpoint_projectId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt             DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -1328,7 +1328,7 @@ func (*WebhookEndpoint) BeforeUpdate(tx *gorm.DB) error {
 type WebhookDelivery struct {
 	ID                   string  `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID           string  `gorm:"column:friendlyId;not null" json:"friendlyId"`
-	WebhookEndpointID    string  `gorm:"column:webhookEndpointId;index:WebhookDelivery_webhookEndpointId_createdAt_idx;not null" json:"webhookEndpointId"`
+	WebhookEndpointID    string  `gorm:"column:webhookEndpointId;index:WebhookDelivery_webhookEndpointId_createdAt_idx,priority:1;not null" json:"webhookEndpointId"`
 	OrganizationID       string  `gorm:"column:organizationId;not null" json:"organizationId"`
 	ProjectID            string  `gorm:"column:projectId;not null" json:"projectId"`
 	RuntimeEnvironmentID string  `gorm:"column:runtimeEnvironmentId;not null" json:"runtimeEnvironmentId"`
@@ -1346,7 +1346,7 @@ type WebhookDelivery struct {
 	FilterReason *string        `gorm:"column:filterReason" json:"filterReason"`
 	// Per-target results: WebhookDeliveryTargetResult[] ({ id, type, status, reason?, runId?, error? }).
 	Targets     datatypes.JSON `gorm:"column:targets;default:'[]';not null" json:"targets"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;primaryKey;index:WebhookDelivery_webhookEndpointId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"createdAt"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;primaryKey;index:WebhookDelivery_webhookEndpointId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"createdAt"`
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	ProcessedAt *DateTime      `gorm:"column:processedAt;type:timestamp(3)" json:"processedAt"`
 	// Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id.
@@ -1383,20 +1383,20 @@ type Alert struct {
 	ID                         string         `gorm:"column:id;primaryKey" json:"id"`
 	OrganizationID             string         `gorm:"column:organizationId;index:Alert_organizationId_idx;not null" json:"organizationId"`
 	ProjectID                  string         `gorm:"column:projectId;index:Alert_projectId_idx;not null" json:"projectId"`
-	EnvironmentID              string         `gorm:"column:environmentId;index:Alert_environmentId_lifecycle_idx;not null" json:"environmentId"`
+	EnvironmentID              string         `gorm:"column:environmentId;index:Alert_environmentId_lifecycle_idx,priority:1;not null" json:"environmentId"`
 	CapabilityKey              string         `gorm:"column:capabilityKey;not null" json:"capabilityKey"`
 	Params                     datatypes.JSON `gorm:"column:params;not null" json:"params"`
 	Condition                  datatypes.JSON `gorm:"column:condition;not null" json:"condition"`
 	Query                      *string        `gorm:"column:query" json:"query"`
 	ExpiresAt                  *DateTime      `gorm:"column:expiresAt;type:timestamptz(6)" json:"expiresAt"`
-	Lifecycle                  *string        `gorm:"column:lifecycle;index:Alert_environmentId_lifecycle_idx;index:Alert_lifecycle_evaluationLeaseUntil_idx;default:'active';not null" json:"lifecycle"`
+	Lifecycle                  *string        `gorm:"column:lifecycle;index:Alert_environmentId_lifecycle_idx,priority:2;index:Alert_lifecycle_evaluationLeaseUntil_idx,priority:1;default:'active';not null" json:"lifecycle"`
 	Attention                  *string        `gorm:"column:attention;default:'clear';not null" json:"attention"`
 	ObservedCondition          *string        `gorm:"column:observedCondition;default:'unknown';not null" json:"observedCondition"`
 	ObservedConditionChangedAt *DateTime      `gorm:"column:observedConditionChangedAt;type:timestamptz(6)" json:"observedConditionChangedAt"`
 	PendingMetSince            *DateTime      `gorm:"column:pendingMetSince;type:timestamptz(6)" json:"pendingMetSince"`
 	EvaluatorState             datatypes.JSON `gorm:"column:evaluatorState" json:"evaluatorState"`
 	EvaluationLeaseID          *string        `gorm:"column:evaluationLeaseId" json:"evaluationLeaseId"`
-	EvaluationLeaseUntil       *DateTime      `gorm:"column:evaluationLeaseUntil;index:Alert_lifecycle_evaluationLeaseUntil_idx;type:timestamptz(6)" json:"evaluationLeaseUntil"`
+	EvaluationLeaseUntil       *DateTime      `gorm:"column:evaluationLeaseUntil;index:Alert_lifecycle_evaluationLeaseUntil_idx,priority:2;type:timestamptz(6)" json:"evaluationLeaseUntil"`
 	LastEvaluatedAt            *DateTime      `gorm:"column:lastEvaluatedAt;type:timestamptz(6)" json:"lastEvaluatedAt"`
 	NextEvaluationAt           *DateTime      `gorm:"column:nextEvaluationAt;type:timestamptz(6)" json:"nextEvaluationAt"`
 	Notifiers                  datatypes.JSON `gorm:"column:notifiers;default:'[]';not null" json:"notifiers"`
@@ -1432,9 +1432,9 @@ func (m *Alert) BeforeCreate(tx *gorm.DB) error {
 // RANGE-partitioned by month on `at` (see migration).
 type AlertEvent struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
-	AlertID       string         `gorm:"column:alertId;index:AlertEvent_alertId_at_idx;not null" json:"alertId"`
+	AlertID       string         `gorm:"column:alertId;index:AlertEvent_alertId_at_idx,priority:1;not null" json:"alertId"`
 	Type          string         `gorm:"column:type;not null" json:"type"`
-	At            DateTime       `gorm:"column:at;primaryKey;index:AlertEvent_alertId_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"at"`
+	At            DateTime       `gorm:"column:at;primaryKey;index:AlertEvent_alertId_at_idx,priority:2,sort:desc;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"at"`
 	Facts         datatypes.JSON `gorm:"column:facts;default:'{}';not null" json:"facts"`
 	ActorID       *string        `gorm:"column:actorId" json:"actorId"`
 	SourceEventID *string        `gorm:"column:sourceEventId" json:"sourceEventId"`
@@ -1475,19 +1475,19 @@ func (m *AlertOccurrenceSeen) BeforeCreate(tx *gorm.DB) error {
 // RANGE-partitioned by month on `eventAt` (see migration).
 type AlertDelivery struct {
 	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	AlertEventID     string         `gorm:"column:alertEventId;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key;not null" json:"alertEventId"`
-	EventAt          DateTime       `gorm:"column:eventAt;primaryKey;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key;type:timestamptz(6)" json:"eventAt"`
-	NotifierID       string         `gorm:"column:notifierId;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key;not null" json:"notifierId"`
+	AlertEventID     string         `gorm:"column:alertEventId;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key,priority:1;not null" json:"alertEventId"`
+	EventAt          DateTime       `gorm:"column:eventAt;primaryKey;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key,priority:3;type:timestamptz(6)" json:"eventAt"`
+	NotifierID       string         `gorm:"column:notifierId;uniqueIndex:AlertDelivery_alertEventId_notifierId_eventAt_key,priority:2;not null" json:"notifierId"`
 	Notifier         datatypes.JSON `gorm:"column:notifier;not null" json:"notifier"`
-	Status           *string        `gorm:"column:status;index:AlertDelivery_status_createdAt_idx;index:AlertDelivery_status_claimedAt_idx;default:'pending';not null" json:"status"`
+	Status           *string        `gorm:"column:status;index:AlertDelivery_status_createdAt_idx,priority:1;index:AlertDelivery_status_claimedAt_idx,priority:1;default:'pending';not null" json:"status"`
 	ClaimID          *string        `gorm:"column:claimId" json:"claimId"`
-	ClaimedAt        *DateTime      `gorm:"column:claimedAt;index:AlertDelivery_status_claimedAt_idx;type:timestamptz(6)" json:"claimedAt"`
+	ClaimedAt        *DateTime      `gorm:"column:claimedAt;index:AlertDelivery_status_claimedAt_idx,priority:2;type:timestamptz(6)" json:"claimedAt"`
 	DeliveredAt      *DateTime      `gorm:"column:deliveredAt;type:timestamptz(6)" json:"deliveredAt"`
 	FailureReason    *string        `gorm:"column:failureReason" json:"failureReason"`
 	ProviderMetadata datatypes.JSON `gorm:"column:providerMetadata" json:"providerMetadata"`
 	Attempts         int            `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	FirstAttemptAt   *DateTime      `gorm:"column:firstAttemptAt;type:timestamptz(6)" json:"firstAttemptAt"`
-	CreatedAt        DateTime       `gorm:"column:createdAt;index:AlertDelivery_status_createdAt_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt        DateTime       `gorm:"column:createdAt;index:AlertDelivery_status_createdAt_idx,priority:2;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (AlertDelivery) TableName() string {
@@ -1505,11 +1505,11 @@ func (m *AlertDelivery) BeforeCreate(tx *gorm.DB) error {
 type PlaygroundConversation struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// The chat session ID used by the transport
-	ChatID string `gorm:"column:chatId;uniqueIndex:PlaygroundConversation_chatId_runtimeEnvironmentId_key;not null" json:"chatId"`
+	ChatID string `gorm:"column:chatId;uniqueIndex:PlaygroundConversation_chatId_runtimeEnvironmentId_key,priority:1;not null" json:"chatId"`
 	// User-editable conversation title (auto-generated from first message)
 	Title *string `gorm:"column:title;default:'New conversation';not null" json:"title"`
 	// Which agent this conversation is with
-	AgentSlug string `gorm:"column:agentSlug;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx;not null" json:"agentSlug"`
+	AgentSlug string `gorm:"column:agentSlug;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx,priority:2;not null" json:"agentSlug"`
 	// The current active run backing this conversation (null if no run yet)
 	RunID *string `gorm:"column:runId" json:"runId"`
 	// The client data JSON used for this conversation
@@ -1519,11 +1519,11 @@ type PlaygroundConversation struct {
 	// Last SSE event ID — resume from this position to avoid replaying old turns
 	LastEventID          *string `gorm:"column:lastEventId" json:"lastEventId"`
 	ProjectID            string  `gorm:"column:projectId;not null" json:"projectId"`
-	RuntimeEnvironmentID string  `gorm:"column:runtimeEnvironmentId;uniqueIndex:PlaygroundConversation_chatId_runtimeEnvironmentId_key;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx;index:PlaygroundConversation_userId_runtimeEnvironmentId_idx;not null" json:"runtimeEnvironmentId"`
+	RuntimeEnvironmentID string  `gorm:"column:runtimeEnvironmentId;uniqueIndex:PlaygroundConversation_chatId_runtimeEnvironmentId_key,priority:2;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx,priority:1;index:PlaygroundConversation_userId_runtimeEnvironmentId_idx,priority:2;not null" json:"runtimeEnvironmentId"`
 	// The user who started this conversation
-	UserID             string              `gorm:"column:userId;index:PlaygroundConversation_userId_runtimeEnvironmentId_idx;not null" json:"userId"`
+	UserID             string              `gorm:"column:userId;index:PlaygroundConversation_userId_runtimeEnvironmentId_idx,priority:1;not null" json:"userId"`
 	CreatedAt          DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt          DateTime            `gorm:"column:updatedAt;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt          DateTime            `gorm:"column:updatedAt;index:PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx,priority:3,sort:desc;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Run                *TaskRun            `gorm:"foreignKey:RunID;belongsTo"`
 	Project            *Project            `gorm:"belongsTo"`
 	RuntimeEnvironment *RuntimeEnvironment `gorm:"belongsTo"`
@@ -1565,12 +1565,12 @@ type Session struct {
 	FriendlyID string `gorm:"column:friendlyId;uniqueIndex:Session_friendlyId_key;not null" json:"friendlyId"`
 	// User-supplied identifier scoped to the environment. Used for
 	// idempotent upsert and for resolving sessions via the public API.
-	ExternalID *string `gorm:"column:externalId;uniqueIndex:Session_runtimeEnvironmentId_externalId_key" json:"externalId"`
+	ExternalID *string `gorm:"column:externalId;uniqueIndex:Session_runtimeEnvironmentId_externalId_key,priority:2" json:"externalId"`
 	// Plain string — intentionally not an enum.
 	Type string `gorm:"column:type;not null" json:"type"`
 	// Denormalized scoping columns — no FK relations.
 	ProjectID            string `gorm:"column:projectId;not null" json:"projectId"`
-	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:Session_runtimeEnvironmentId_externalId_key;not null" json:"runtimeEnvironmentId"`
+	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:Session_runtimeEnvironmentId_externalId_key,priority:1;not null" json:"runtimeEnvironmentId"`
 	EnvironmentType      string `gorm:"column:environmentType;not null" json:"environmentType"`
 	OrganizationID       string `gorm:"column:organizationId;not null" json:"organizationId"`
 	// Task this session triggers runs against. Required — Sessions are
@@ -1649,14 +1649,14 @@ func (*Session) BeforeUpdate(tx *gorm.DB) error {
 // the session lifecycle) but `runId` is a plain string column with no
 // FK to TaskRun so run pruning is independent.
 type SessionRun struct {
-	ID        string `gorm:"column:id;primaryKey;index:SessionRun_sessionId_triggeredAt_id_idx" json:"id"`
-	SessionID string `gorm:"column:sessionId;index:SessionRun_sessionId_idx;index:SessionRun_sessionId_triggeredAt_id_idx;not null" json:"sessionId"`
+	ID        string `gorm:"column:id;primaryKey;index:SessionRun_sessionId_triggeredAt_id_idx,priority:3" json:"id"`
+	SessionID string `gorm:"column:sessionId;index:SessionRun_sessionId_idx;index:SessionRun_sessionId_triggeredAt_id_idx,priority:1;not null" json:"sessionId"`
 	// TaskRun.id (no FK — runs may be archived independently of session history)
 	RunID string `gorm:"column:runId;uniqueIndex:SessionRun_runId_key;not null" json:"runId"`
 	// One of: "initial" | "continuation" | "upgrade" | "manual".
 	// Plain string for forward-compat with future trigger reasons.
 	Reason      string   `gorm:"column:reason;not null" json:"reason"`
-	TriggeredAt DateTime `gorm:"column:triggeredAt;index:SessionRun_sessionId_triggeredAt_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"triggeredAt"`
+	TriggeredAt DateTime `gorm:"column:triggeredAt;index:SessionRun_sessionId_triggeredAt_id_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"triggeredAt"`
 	Session     *Session `gorm:"belongsTo"`
 }
 
@@ -1682,13 +1682,13 @@ type TaskRun struct {
 	Engine                  string    `gorm:"column:engine;default:'V1';not null" json:"engine"`
 	Status                  string    `gorm:"column:status;default:'PENDING';not null" json:"status"`
 	StatusReason            *string   `gorm:"column:statusReason" json:"statusReason"`
-	IdempotencyKey          *string   `gorm:"column:idempotencyKey;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key" json:"idempotencyKey"`
+	IdempotencyKey          *string   `gorm:"column:idempotencyKey;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key,priority:3" json:"idempotencyKey"`
 	IdempotencyKeyExpiresAt *DateTime `gorm:"column:idempotencyKeyExpiresAt;type:timestamp(3)" json:"idempotencyKeyExpiresAt"`
 	// Stores the user-provided key and scope: { key: string, scope: "run" | "attempt" | "global" }
 	IdempotencyKeyOptions datatypes.JSON `gorm:"column:idempotencyKeyOptions" json:"idempotencyKeyOptions"`
 	// Debounce options: { key: string, delay: string, createdAt: Date }
 	Debounce             datatypes.JSON `gorm:"column:debounce" json:"debounce"`
-	TaskIdentifier       string         `gorm:"column:taskIdentifier;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key;not null" json:"taskIdentifier"`
+	TaskIdentifier       string         `gorm:"column:taskIdentifier;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key,priority:2;not null" json:"taskIdentifier"`
 	IsTest               bool           `gorm:"column:isTest;default:false;not null" json:"isTest"`
 	Payload              string         `gorm:"column:payload;not null" json:"payload"`
 	PayloadType          *string        `gorm:"column:payloadType;default:'application/json';not null" json:"payloadType"`
@@ -1696,7 +1696,7 @@ type TaskRun struct {
 	TraceContext         datatypes.JSON `gorm:"column:traceContext" json:"traceContext"`
 	TraceID              string         `gorm:"column:traceId;not null" json:"traceId"`
 	SpanID               string         `gorm:"column:spanId;index:TaskRun_spanId_idx;not null" json:"spanId"`
-	RuntimeEnvironmentID string         `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key;index:TaskRun_runtimeEnvironmentId_batchId_idx;index:TaskRun_runtimeEnvironmentId_createdAt_idx;not null" json:"runtimeEnvironmentId"`
+	RuntimeEnvironmentID string         `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key,priority:1;index:TaskRun_runtimeEnvironmentId_batchId_idx,priority:1;index:TaskRun_runtimeEnvironmentId_createdAt_idx,priority:1;not null" json:"runtimeEnvironmentId"`
 	EnvironmentType      *string        `gorm:"column:environmentType" json:"environmentType"`
 	ProjectID            string         `gorm:"column:projectId;not null" json:"projectId"`
 	OrganizationID       *string        `gorm:"column:organizationId" json:"organizationId"`
@@ -1710,10 +1710,10 @@ type TaskRun struct {
 	SecondaryMasterQueue *string `gorm:"column:secondaryMasterQueue" json:"secondaryMasterQueue"`
 	// From engine v2+ this will be defined after a run has been dequeued (starting at 1)
 	AttemptNumber *int     `gorm:"column:attemptNumber;size:32" json:"attemptNumber"`
-	CreatedAt     DateTime `gorm:"column:createdAt;index:TaskRun_runtimeEnvironmentId_createdAt_idx;index:TaskRun_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt     DateTime `gorm:"column:createdAt;index:TaskRun_runtimeEnvironmentId_createdAt_idx,priority:2,sort:desc;index:TaskRun_createdAt_idx,type:brin;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// Denormized column that holds the raw tags
-	RunTags ScalarList[string] `gorm:"column:runTags;index:TaskRun_runTags_idx;type:text[]" json:"runTags"`
+	RunTags ScalarList[string] `gorm:"column:runTags;index:TaskRun_runTags_idx,type:gin,expression:\"runTags\" array_ops;type:text[]" json:"runTags"`
 	// Denormalized version of the background worker task
 	TaskVersion *string `gorm:"column:taskVersion" json:"taskVersion"`
 	SdkVersion  *string `gorm:"column:sdkVersion" json:"sdkVersion"`
@@ -1756,7 +1756,7 @@ type TaskRun struct {
 	RootTaskRunID                 *string            `gorm:"column:rootTaskRunId" json:"rootTaskRunId"`
 	ParentTaskRunID               *string            `gorm:"column:parentTaskRunId;index:TaskRun_parentTaskRunId_idx" json:"parentTaskRunId"`
 	ParentTaskRunAttemptID        *string            `gorm:"column:parentTaskRunAttemptId" json:"parentTaskRunAttemptId"`
-	BatchID                       *string            `gorm:"column:batchId;index:TaskRun_runtimeEnvironmentId_batchId_idx" json:"batchId"`
+	BatchID                       *string            `gorm:"column:batchId;index:TaskRun_runtimeEnvironmentId_batchId_idx,priority:2" json:"batchId"`
 	// whether or not the task run was created because of a triggerAndWait for batchTriggerAndWait
 	ResumeParentOnCompletion bool `gorm:"column:resumeParentOnCompletion;default:false;not null" json:"resumeParentOnCompletion"`
 	// The depth of this task run in the task run hierarchy
@@ -1854,8 +1854,8 @@ func (*TaskRun) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskRunTemplate struct {
 	ID                 string             `gorm:"column:id;primaryKey" json:"id"`
-	TaskSlug           string             `gorm:"column:taskSlug;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx;not null" json:"taskSlug"`
-	TriggerSource      string             `gorm:"column:triggerSource;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx;not null" json:"triggerSource"`
+	TaskSlug           string             `gorm:"column:taskSlug;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx,priority:2;not null" json:"taskSlug"`
+	TriggerSource      string             `gorm:"column:triggerSource;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx,priority:3;not null" json:"triggerSource"`
 	Label              string             `gorm:"column:label;not null" json:"label"`
 	Payload            *string            `gorm:"column:payload" json:"payload"`
 	PayloadType        *string            `gorm:"column:payloadType;default:'application/json';not null" json:"payloadType"`
@@ -1868,9 +1868,9 @@ type TaskRunTemplate struct {
 	MaxDurationSeconds *int               `gorm:"column:maxDurationSeconds;size:32" json:"maxDurationSeconds"`
 	Tags               ScalarList[string] `gorm:"column:tags;type:text[]" json:"tags"`
 	MachinePreset      *string            `gorm:"column:machinePreset" json:"machinePreset"`
-	ProjectID          string             `gorm:"column:projectId;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx;not null" json:"projectId"`
+	ProjectID          string             `gorm:"column:projectId;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx,priority:1;not null" json:"projectId"`
 	OrganizationID     string             `gorm:"column:organizationId;not null" json:"organizationId"`
-	CreatedAt          DateTime           `gorm:"column:createdAt;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt          DateTime           `gorm:"column:createdAt;index:TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx,priority:4,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt          DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -1914,12 +1914,12 @@ type TaskRunExecutionSnapshot struct {
 	// For debugging
 	Description string `gorm:"column:description;not null" json:"description"`
 	// We store invalid snapshots as a record of the run state when we tried to move
-	IsValid *bool   `gorm:"column:isValid;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx;default:true;not null" json:"isValid"`
+	IsValid *bool   `gorm:"column:isValid;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx,priority:2;default:true;not null" json:"isValid"`
 	Error   *string `gorm:"column:error" json:"error"`
 	// The previous snapshot ID
 	PreviousSnapshotID *string `gorm:"column:previousSnapshotId" json:"previousSnapshotId"`
 	// Run
-	RunID     string  `gorm:"column:runId;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx;not null" json:"runId"`
+	RunID     string  `gorm:"column:runId;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx,priority:1;not null" json:"runId"`
 	RunStatus string  `gorm:"column:runStatus;not null" json:"runStatus"`
 	BatchID   *string `gorm:"column:batchId" json:"batchId"`
 	// This is the current run attempt number. Users can define how many attempts they want for a run.
@@ -1936,7 +1936,7 @@ type TaskRunExecutionSnapshot struct {
 	// Worker
 	WorkerID        *string   `gorm:"column:workerId" json:"workerId"`
 	RunnerID        *string   `gorm:"column:runnerId" json:"runnerId"`
-	CreatedAt       DateTime  `gorm:"column:createdAt;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt       DateTime  `gorm:"column:createdAt;index:TaskRunExecutionSnapshot_runId_isValid_createdAt_idx,priority:3,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt       DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	LastHeartbeatAt *DateTime `gorm:"column:lastHeartbeatAt;type:timestamp(3)" json:"lastHeartbeatAt"`
 	// Metadata used by various systems in the run engine
@@ -2019,13 +2019,13 @@ func (*TaskRunCheckpoint) BeforeUpdate(tx *gorm.DB) error {
 // A Waitpoint blocks a run from continuing until it's completed
 // If there's a waitpoint blocking a run, it shouldn't be in the queue
 type Waitpoint struct {
-	ID          string    `gorm:"column:id;primaryKey;index:Waitpoint_environmentId_type_id_idx" json:"id"`
+	ID          string    `gorm:"column:id;primaryKey;index:Waitpoint_environmentId_type_id_idx,priority:3,sort:desc" json:"id"`
 	FriendlyID  string    `gorm:"column:friendlyId;uniqueIndex:Waitpoint_friendlyId_key;not null" json:"friendlyId"`
-	Type        string    `gorm:"column:type;index:Waitpoint_environmentId_type_createdAt_idx;index:Waitpoint_environmentId_type_status_idx;index:Waitpoint_environmentId_type_id_idx;not null" json:"type"`
-	Status      string    `gorm:"column:status;index:Waitpoint_environmentId_type_status_idx;default:'PENDING';not null" json:"status"`
+	Type        string    `gorm:"column:type;index:Waitpoint_environmentId_type_createdAt_idx,priority:2;index:Waitpoint_environmentId_type_status_idx,priority:2;index:Waitpoint_environmentId_type_id_idx,priority:2;not null" json:"type"`
+	Status      string    `gorm:"column:status;index:Waitpoint_environmentId_type_status_idx,priority:3;default:'PENDING';not null" json:"status"`
 	CompletedAt *DateTime `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
 	// If it's an Event type waitpoint, this is the event. It can also be provided for the DATETIME type
-	IdempotencyKey string `gorm:"column:idempotencyKey;uniqueIndex:Waitpoint_environmentId_idempotencyKey_key;not null" json:"idempotencyKey"`
+	IdempotencyKey string `gorm:"column:idempotencyKey;uniqueIndex:Waitpoint_environmentId_idempotencyKey_key,priority:2;not null" json:"idempotencyKey"`
 	// If this is true then we can show it in the dashboard/return it from the SDK
 	UserProvidedIdempotencyKey bool `gorm:"column:userProvidedIdempotencyKey;not null" json:"userProvidedIdempotencyKey"`
 	// If there's a user provided idempotency key, this is the time it expires at
@@ -2046,8 +2046,8 @@ type Waitpoint struct {
 	OutputType    *string  `gorm:"column:outputType;default:'application/json';not null" json:"outputType"`
 	OutputIsError bool     `gorm:"column:outputIsError;default:false;not null" json:"outputIsError"`
 	ProjectID     string   `gorm:"column:projectId;not null" json:"projectId"`
-	EnvironmentID string   `gorm:"column:environmentId;uniqueIndex:Waitpoint_environmentId_idempotencyKey_key;index:Waitpoint_environmentId_type_createdAt_idx;index:Waitpoint_environmentId_type_status_idx;index:Waitpoint_environmentId_type_id_idx;not null" json:"environmentId"`
-	CreatedAt     DateTime `gorm:"column:createdAt;index:Waitpoint_environmentId_type_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	EnvironmentID string   `gorm:"column:environmentId;uniqueIndex:Waitpoint_environmentId_idempotencyKey_key,priority:1;index:Waitpoint_environmentId_type_createdAt_idx,priority:1;index:Waitpoint_environmentId_type_status_idx,priority:1;index:Waitpoint_environmentId_type_id_idx,priority:1;not null" json:"environmentId"`
+	CreatedAt     DateTime `gorm:"column:createdAt;index:Waitpoint_environmentId_type_createdAt_idx,priority:3,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// Denormized column that holds the raw tags
 	// Denormalized column that holds the raw tags
@@ -2092,13 +2092,13 @@ func (*Waitpoint) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskRunWaitpoint struct {
 	ID          string `gorm:"column:id;primaryKey" json:"id"`
-	TaskRunID   string `gorm:"column:taskRunId;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key;index:TaskRunWaitpoint_taskRunId_idx;not null" json:"taskRunId"`
-	WaitpointID string `gorm:"column:waitpointId;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key;index:TaskRunWaitpoint_waitpointId_idx;not null" json:"waitpointId"`
+	TaskRunID   string `gorm:"column:taskRunId;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key,priority:1;index:TaskRunWaitpoint_taskRunId_idx;not null" json:"taskRunId"`
+	WaitpointID string `gorm:"column:waitpointId;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key,priority:2;index:TaskRunWaitpoint_waitpointId_idx;not null" json:"waitpointId"`
 	ProjectID   string `gorm:"column:projectId;not null" json:"projectId"`
 	// This span id is completed when the waitpoint is completed. This is used with cached runs (idempotent)
 	SpanIDToComplete *string       `gorm:"column:spanIdToComplete" json:"spanIdToComplete"`
 	BatchID          *string       `gorm:"column:batchId" json:"batchId"`
-	BatchIndex       *int          `gorm:"column:batchIndex;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key;size:32" json:"batchIndex"`
+	BatchIndex       *int          `gorm:"column:batchIndex;uniqueIndex:TaskRunWaitpoint_taskRunId_waitpointId_batchIndex_key,priority:3;size:32" json:"batchIndex"`
 	CreatedAt        DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	TaskRun          *TaskRun      `gorm:"belongsTo"`
@@ -2135,8 +2135,8 @@ func (*TaskRunWaitpoint) BeforeUpdate(tx *gorm.DB) error {
 
 type WaitpointTag struct {
 	ID            string              `gorm:"column:id;primaryKey" json:"id"`
-	Name          string              `gorm:"column:name;uniqueIndex:WaitpointTag_environmentId_name_key;not null" json:"name"`
-	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:WaitpointTag_environmentId_name_key;not null" json:"environmentId"`
+	Name          string              `gorm:"column:name;uniqueIndex:WaitpointTag_environmentId_name_key,priority:2;not null" json:"name"`
+	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:WaitpointTag_environmentId_name_key,priority:1;not null" json:"environmentId"`
 	ProjectID     string              `gorm:"column:projectId;not null" json:"projectId"`
 	CreatedAt     DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Environment   *RuntimeEnvironment `gorm:"foreignKey:EnvironmentID;belongsTo"`
@@ -2198,9 +2198,9 @@ type WorkerInstance struct {
 	Name string `gorm:"column:name;not null" json:"name"`
 	// If managed, it will default to the name, e.g. "worker-1"
 	// If unmanged, it will be prefixed with the deployment ID e.g. "deploy-123-worker-1"
-	ResourceIdentifier string               `gorm:"column:resourceIdentifier;uniqueIndex:WorkerInstance_workerGroupId_resourceIdentifier_key;not null" json:"resourceIdentifier"`
+	ResourceIdentifier string               `gorm:"column:resourceIdentifier;uniqueIndex:WorkerInstance_workerGroupId_resourceIdentifier_key,priority:2;not null" json:"resourceIdentifier"`
 	Metadata           datatypes.JSON       `gorm:"column:metadata" json:"metadata"`
-	WorkerGroupID      string               `gorm:"column:workerGroupId;uniqueIndex:WorkerInstance_workerGroupId_resourceIdentifier_key;not null" json:"workerGroupId"`
+	WorkerGroupID      string               `gorm:"column:workerGroupId;uniqueIndex:WorkerInstance_workerGroupId_resourceIdentifier_key,priority:1;not null" json:"workerGroupId"`
 	OrganizationID     *string              `gorm:"column:organizationId" json:"organizationId"`
 	ProjectID          *string              `gorm:"column:projectId" json:"projectId"`
 	EnvironmentID      *string              `gorm:"column:environmentId" json:"environmentId"`
@@ -2342,10 +2342,10 @@ func (*WorkerGroupToken) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TaskRunTag struct {
-	ID         string   `gorm:"column:id;primaryKey;index:TaskRunTag_name_id_idx" json:"id"`
-	Name       string   `gorm:"column:name;uniqueIndex:TaskRunTag_projectId_name_key;index:TaskRunTag_name_id_idx;not null" json:"name"`
+	ID         string   `gorm:"column:id;primaryKey;index:TaskRunTag_name_id_idx,priority:2" json:"id"`
+	Name       string   `gorm:"column:name;uniqueIndex:TaskRunTag_projectId_name_key,priority:2;index:TaskRunTag_name_id_idx,priority:1;not null" json:"name"`
 	FriendlyID string   `gorm:"column:friendlyId;uniqueIndex:TaskRunTag_friendlyId_key;not null" json:"friendlyId"`
-	ProjectID  string   `gorm:"column:projectId;uniqueIndex:TaskRunTag_projectId_name_key;not null" json:"projectId"`
+	ProjectID  string   `gorm:"column:projectId;uniqueIndex:TaskRunTag_projectId_name_key,priority:1;not null" json:"projectId"`
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Project    *Project `gorm:"belongsTo"`
 }
@@ -2423,8 +2423,8 @@ func (TaskRunCounter) TableName() string {
 // Used for the TaskRun number (e.g. #1,421)
 type TaskRunNumberCounter struct {
 	ID             string              `gorm:"column:id;primaryKey" json:"id"`
-	TaskIdentifier string              `gorm:"column:taskIdentifier;uniqueIndex:TaskRunNumberCounter_taskIdentifier_environmentId_key;not null" json:"taskIdentifier"`
-	EnvironmentID  string              `gorm:"column:environmentId;uniqueIndex:TaskRunNumberCounter_taskIdentifier_environmentId_key;not null" json:"environmentId"`
+	TaskIdentifier string              `gorm:"column:taskIdentifier;uniqueIndex:TaskRunNumberCounter_taskIdentifier_environmentId_key,priority:1;not null" json:"taskIdentifier"`
+	EnvironmentID  string              `gorm:"column:environmentId;uniqueIndex:TaskRunNumberCounter_taskIdentifier_environmentId_key,priority:2;not null" json:"environmentId"`
 	LastNumber     int                 `gorm:"column:lastNumber;size:32;default:0;not null" json:"lastNumber"`
 	Environment    *RuntimeEnvironment `gorm:"foreignKey:EnvironmentID;belongsTo"`
 }
@@ -2443,9 +2443,9 @@ func (m *TaskRunNumberCounter) BeforeCreate(_ *gorm.DB) error {
 // This is not used from engine v2+, attempts use the TaskRunExecutionSnapshot and TaskRun
 type TaskRunAttempt struct {
 	ID                     string                   `gorm:"column:id;primaryKey" json:"id"`
-	Number                 int                      `gorm:"column:number;uniqueIndex:TaskRunAttempt_taskRunId_number_key;size:32;default:0;not null" json:"number"`
+	Number                 int                      `gorm:"column:number;uniqueIndex:TaskRunAttempt_taskRunId_number_key,priority:2;size:32;default:0;not null" json:"number"`
 	FriendlyID             string                   `gorm:"column:friendlyId;uniqueIndex:TaskRunAttempt_friendlyId_key;not null" json:"friendlyId"`
-	TaskRunID              string                   `gorm:"column:taskRunId;uniqueIndex:TaskRunAttempt_taskRunId_number_key;index:TaskRunAttempt_taskRunId_idx;not null" json:"taskRunId"`
+	TaskRunID              string                   `gorm:"column:taskRunId;uniqueIndex:TaskRunAttempt_taskRunId_number_key,priority:1;index:TaskRunAttempt_taskRunId_idx;not null" json:"taskRunId"`
 	BackgroundWorkerID     string                   `gorm:"column:backgroundWorkerId;not null" json:"backgroundWorkerId"`
 	BackgroundWorkerTaskID string                   `gorm:"column:backgroundWorkerTaskId;not null" json:"backgroundWorkerTaskId"`
 	RuntimeEnvironmentID   string                   `gorm:"column:runtimeEnvironmentId;not null" json:"runtimeEnvironmentId"`
@@ -2580,7 +2580,7 @@ func (m *TaskEvent) BeforeCreate(tx *gorm.DB) error {
 type TaskQueue struct {
 	ID            string  `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID    string  `gorm:"column:friendlyId;uniqueIndex:TaskQueue_friendlyId_key;not null" json:"friendlyId"`
-	Name          string  `gorm:"column:name;uniqueIndex:TaskQueue_runtimeEnvironmentId_name_key;not null" json:"name"`
+	Name          string  `gorm:"column:name;uniqueIndex:TaskQueue_runtimeEnvironmentId_name_key,priority:2;not null" json:"name"`
 	Type          string  `gorm:"column:type;default:'VIRTUAL';not null" json:"type"`
 	Version       string  `gorm:"column:version;default:'V1';not null" json:"version"`
 	OrderableName *string `gorm:"column:orderableName" json:"orderableName"`
@@ -2591,7 +2591,7 @@ type TaskQueue struct {
 	// excluded from every queue-facing surface.
 	Role                 string `gorm:"column:role;default:'QUEUE';not null" json:"role"`
 	ProjectID            string `gorm:"column:projectId;not null" json:"projectId"`
-	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskQueue_runtimeEnvironmentId_name_key;not null" json:"runtimeEnvironmentId"`
+	RuntimeEnvironmentID string `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskQueue_runtimeEnvironmentId_name_key,priority:1;not null" json:"runtimeEnvironmentId"`
 	// Represents the current concurrency limit for the queue
 	ConcurrencyLimit *int `gorm:"column:concurrencyLimit;size:32" json:"concurrencyLimit"`
 	// When the concurrency limit was overridden
@@ -2653,13 +2653,13 @@ func (*TaskQueue) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type BatchTaskRun struct {
-	ID                      string    `gorm:"column:id;primaryKey;index:BatchTaskRun_runtimeEnvironmentId_id_idx;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx" json:"id"`
+	ID                      string    `gorm:"column:id;primaryKey;index:BatchTaskRun_runtimeEnvironmentId_id_idx,priority:2,sort:desc;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx,priority:3,sort:desc" json:"id"`
 	FriendlyID              string    `gorm:"column:friendlyId;uniqueIndex:BatchTaskRun_friendlyId_key;not null" json:"friendlyId"`
-	IdempotencyKey          *string   `gorm:"column:idempotencyKey;uniqueIndex:BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key" json:"idempotencyKey"`
+	IdempotencyKey          *string   `gorm:"column:idempotencyKey;uniqueIndex:BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key,priority:2" json:"idempotencyKey"`
 	IdempotencyKeyExpiresAt *DateTime `gorm:"column:idempotencyKeyExpiresAt;type:timestamp(3)" json:"idempotencyKeyExpiresAt"`
 	Status                  string    `gorm:"column:status;default:'PENDING';not null" json:"status"`
-	RuntimeEnvironmentID    string    `gorm:"column:runtimeEnvironmentId;uniqueIndex:BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key;index:BatchTaskRun_runtimeEnvironmentId_id_idx;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx;not null" json:"runtimeEnvironmentId"`
-	CreatedAt               DateTime  `gorm:"column:createdAt;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	RuntimeEnvironmentID    string    `gorm:"column:runtimeEnvironmentId;uniqueIndex:BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key,priority:1;index:BatchTaskRun_runtimeEnvironmentId_id_idx,priority:1;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx,priority:1;not null" json:"runtimeEnvironmentId"`
+	CreatedAt               DateTime  `gorm:"column:createdAt;index:BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt               DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// Friendly IDs
 	RunIds       ScalarList[string] `gorm:"column:runIds;type:text[]" json:"runIds"`
@@ -2739,8 +2739,8 @@ func (*BatchTaskRun) BeforeUpdate(tx *gorm.DB) error {
 type BatchTaskRunItem struct {
 	ID               string          `gorm:"column:id;primaryKey" json:"id"`
 	Status           string          `gorm:"column:status;default:'PENDING';not null" json:"status"`
-	BatchTaskRunID   string          `gorm:"column:batchTaskRunId;uniqueIndex:BatchTaskRunItem_batchTaskRunId_taskRunId_key;not null" json:"batchTaskRunId"`
-	TaskRunID        string          `gorm:"column:taskRunId;uniqueIndex:BatchTaskRunItem_batchTaskRunId_taskRunId_key;index:idx_batchtaskrunitem_taskrun;not null" json:"taskRunId"`
+	BatchTaskRunID   string          `gorm:"column:batchTaskRunId;uniqueIndex:BatchTaskRunItem_batchTaskRunId_taskRunId_key,priority:1;not null" json:"batchTaskRunId"`
+	TaskRunID        string          `gorm:"column:taskRunId;uniqueIndex:BatchTaskRunItem_batchTaskRunId_taskRunId_key,priority:2;index:idx_batchtaskrunitem_taskrun;not null" json:"taskRunId"`
 	TaskRunAttemptID *string         `gorm:"column:taskRunAttemptId;index:idx_batchtaskrunitem_taskrunattempt" json:"taskRunAttemptId"`
 	CreatedAt        DateTime        `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime        `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -2779,9 +2779,9 @@ func (*BatchTaskRunItem) BeforeUpdate(tx *gorm.DB) error {
 // Track individual run creation failures in batch processing (Run Engine v2)
 type BatchTaskRunError struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	BatchTaskRunID string `gorm:"column:batchTaskRunId;uniqueIndex:BatchTaskRunError_batchTaskRunId_index_key;index:BatchTaskRunError_batchTaskRunId_idx;not null" json:"batchTaskRunId"`
+	BatchTaskRunID string `gorm:"column:batchTaskRunId;uniqueIndex:BatchTaskRunError_batchTaskRunId_index_key,priority:1;index:BatchTaskRunError_batchTaskRunId_idx;not null" json:"batchTaskRunId"`
 	// Which item in the batch (0-based index)
-	Index int `gorm:"column:index;uniqueIndex:BatchTaskRunError_batchTaskRunId_index_key;size:32;not null" json:"index"`
+	Index int `gorm:"column:index;uniqueIndex:BatchTaskRunError_batchTaskRunId_index_key,priority:2;size:32;not null" json:"index"`
 	// The task identifier that was being triggered
 	TaskIdentifier string `gorm:"column:taskIdentifier;not null" json:"taskIdentifier"`
 	// The payload that failed (JSON, may be truncated)
@@ -2814,8 +2814,8 @@ func (m *BatchTaskRunError) BeforeCreate(tx *gorm.DB) error {
 type EnvironmentVariable struct {
 	ID         string                      `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID string                      `gorm:"column:friendlyId;uniqueIndex:EnvironmentVariable_friendlyId_key;not null" json:"friendlyId"`
-	Key        string                      `gorm:"column:key;uniqueIndex:EnvironmentVariable_projectId_key_key;not null" json:"key"`
-	ProjectID  string                      `gorm:"column:projectId;uniqueIndex:EnvironmentVariable_projectId_key_key;not null" json:"projectId"`
+	Key        string                      `gorm:"column:key;uniqueIndex:EnvironmentVariable_projectId_key_key,priority:2;not null" json:"key"`
+	ProjectID  string                      `gorm:"column:projectId;uniqueIndex:EnvironmentVariable_projectId_key_key,priority:1;not null" json:"projectId"`
 	CreatedAt  DateTime                    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime                    `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project    *Project                    `gorm:"belongsTo"`
@@ -2852,14 +2852,14 @@ func (*EnvironmentVariable) BeforeUpdate(tx *gorm.DB) error {
 type EnvironmentVariableValue struct {
 	ID               string  `gorm:"column:id;primaryKey" json:"id"`
 	ValueReferenceID *string `gorm:"column:valueReferenceId;index:EnvironmentVariableValue_valueReferenceId_idx" json:"valueReferenceId"`
-	VariableID       string  `gorm:"column:variableId;uniqueIndex:EnvironmentVariableValue_variableId_environmentId_key;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx;not null" json:"variableId"`
-	EnvironmentID    string  `gorm:"column:environmentId;uniqueIndex:EnvironmentVariableValue_variableId_environmentId_key;index:EnvironmentVariableValue_environmentId_idx;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx;not null" json:"environmentId"`
+	VariableID       string  `gorm:"column:variableId;uniqueIndex:EnvironmentVariableValue_variableId_environmentId_key,priority:1;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx,priority:3;not null" json:"variableId"`
+	EnvironmentID    string  `gorm:"column:environmentId;uniqueIndex:EnvironmentVariableValue_variableId_environmentId_key,priority:2;index:EnvironmentVariableValue_environmentId_idx;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx,priority:1;not null" json:"environmentId"`
 	// If true, the value is secret and cannot be revealed
 	IsSecret       bool                 `gorm:"column:isSecret;default:false;not null" json:"isSecret"`
 	IsProxyOnly    bool                 `gorm:"column:isProxyOnly;default:false;not null" json:"isProxyOnly"`
 	ProxyConfig    datatypes.JSON       `gorm:"column:proxyConfig" json:"proxyConfig"`
 	CreatedAt      DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime             `gorm:"column:updatedAt;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt      DateTime             `gorm:"column:updatedAt;index:EnvironmentVariableValue_environmentId_updatedAt_variableId_idx,priority:2,sort:desc;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Version        *int                 `gorm:"column:version;size:32;default:1;not null" json:"version"`
 	LastUpdatedBy  datatypes.JSON       `gorm:"column:lastUpdatedBy" json:"lastUpdatedBy"`
 	ValueReference *SecretReference     `gorm:"foreignKey:ValueReferenceID;belongsTo"`
@@ -2898,9 +2898,9 @@ func (*EnvironmentVariableValue) BeforeUpdate(tx *gorm.DB) error {
 type EnvironmentVariableIgnore struct {
 	ID            string              `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID     string              `gorm:"column:projectId;index:EnvironmentVariableIgnore_projectId_idx;not null" json:"projectId"`
-	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key;not null" json:"environmentId"`
-	VariableID    string              `gorm:"column:variableId;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key;index:EnvironmentVariableIgnore_variableId_idx;not null" json:"variableId"`
-	Reason        string              `gorm:"column:reason;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key;not null" json:"reason"`
+	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key,priority:1;not null" json:"environmentId"`
+	VariableID    string              `gorm:"column:variableId;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key,priority:2;index:EnvironmentVariableIgnore_variableId_idx;not null" json:"variableId"`
+	Reason        string              `gorm:"column:reason;uniqueIndex:EnvironmentVariableIgnore_environmentId_variableId_reason_key,priority:3;not null" json:"reason"`
 	CreatedByID   *string             `gorm:"column:createdById;index:EnvironmentVariableIgnore_createdById_idx" json:"createdById"`
 	CreatedAt     DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Project       *Project            `gorm:"belongsTo"`
@@ -3021,11 +3021,11 @@ func (*CheckpointRestoreEvent) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkerDeployment struct {
-	ID             string  `gorm:"column:id;primaryKey;index:WorkerDeployment_environmentId_status_id_idx" json:"id"`
+	ID             string  `gorm:"column:id;primaryKey;index:WorkerDeployment_environmentId_status_id_idx,priority:3" json:"id"`
 	ContentHash    string  `gorm:"column:contentHash;not null" json:"contentHash"`
 	FriendlyID     string  `gorm:"column:friendlyId;uniqueIndex:WorkerDeployment_friendlyId_key;not null" json:"friendlyId"`
-	ShortCode      string  `gorm:"column:shortCode;uniqueIndex:WorkerDeployment_projectId_shortCode_key;not null" json:"shortCode"`
-	Version        string  `gorm:"column:version;uniqueIndex:WorkerDeployment_environmentId_version_key;not null" json:"version"`
+	ShortCode      string  `gorm:"column:shortCode;uniqueIndex:WorkerDeployment_projectId_shortCode_key,priority:2;not null" json:"shortCode"`
+	Version        string  `gorm:"column:version;uniqueIndex:WorkerDeployment_environmentId_version_key,priority:2;not null" json:"version"`
 	Runtime        *string `gorm:"column:runtime" json:"runtime"`
 	RuntimeVersion *string `gorm:"column:runtimeVersion" json:"runtimeVersion"`
 	// CLI version that initiated the deploy, stamped at initialization or worker upload
@@ -3044,15 +3044,15 @@ type WorkerDeployment struct {
 	// Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an
 	// EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep.
 	BuildEnvVars  datatypes.JSON `gorm:"column:buildEnvVars" json:"buildEnvVars"`
-	Status        string         `gorm:"column:status;index:WorkerDeployment_environmentId_status_id_idx;default:'PENDING';not null" json:"status"`
+	Status        string         `gorm:"column:status;index:WorkerDeployment_environmentId_status_id_idx,priority:2;default:'PENDING';not null" json:"status"`
 	Type          string         `gorm:"column:type;default:'V1';not null" json:"type"`
-	ProjectID     string         `gorm:"column:projectId;uniqueIndex:WorkerDeployment_projectId_shortCode_key;not null" json:"projectId"`
-	EnvironmentID string         `gorm:"column:environmentId;uniqueIndex:WorkerDeployment_environmentId_version_key;index:WorkerDeployment_environmentId_createdAt_idx;index:WorkerDeployment_environmentId_status_id_idx;index:WorkerDeployment_environmentId_externalId_idx;not null" json:"environmentId"`
+	ProjectID     string         `gorm:"column:projectId;uniqueIndex:WorkerDeployment_projectId_shortCode_key,priority:1;not null" json:"projectId"`
+	EnvironmentID string         `gorm:"column:environmentId;uniqueIndex:WorkerDeployment_environmentId_version_key,priority:1;index:WorkerDeployment_environmentId_createdAt_idx,priority:1;index:WorkerDeployment_environmentId_status_id_idx,priority:1;index:WorkerDeployment_environmentId_externalId_idx,priority:1;not null" json:"environmentId"`
 	WorkerID      *string        `gorm:"column:workerId;uniqueIndex:WorkerDeployment_workerId_key" json:"workerId"`
 	TriggeredByID *string        `gorm:"column:triggeredById" json:"triggeredById"`
 	TriggeredVia  *string        `gorm:"column:triggeredVia" json:"triggeredVia"`
 	CommitSHA     *string        `gorm:"column:commitSHA;index:WorkerDeployment_commitSHA_idx" json:"commitSHA"`
-	ExternalID    *string        `gorm:"column:externalId;index:WorkerDeployment_environmentId_externalId_idx" json:"externalId"`
+	ExternalID    *string        `gorm:"column:externalId;index:WorkerDeployment_environmentId_externalId_idx,priority:2" json:"externalId"`
 	// The kind of credential that started the deployment. Null when unknown.
 	InitiatedByCredential *string        `gorm:"column:initiatedByCredential" json:"initiatedByCredential"`
 	StartedAt             *DateTime      `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
@@ -3066,7 +3066,7 @@ type WorkerDeployment struct {
 	// The newer GitHub build that superseded this one while it was still queued
 	SupersededByID         *string                     `gorm:"column:supersededById" json:"supersededById"`
 	Git                    datatypes.JSON              `gorm:"column:git" json:"git"`
-	CreatedAt              DateTime                    `gorm:"column:createdAt;index:WorkerDeployment_environmentId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt              DateTime                    `gorm:"column:createdAt;index:WorkerDeployment_environmentId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt              DateTime                    `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project                *Project                    `gorm:"belongsTo"`
 	Environment            *RuntimeEnvironment         `gorm:"foreignKey:EnvironmentID;belongsTo"`
@@ -3107,9 +3107,9 @@ func (*WorkerDeployment) BeforeUpdate(tx *gorm.DB) error {
 type WorkerDeploymentPromotion struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// This is the promotion label, e.g. "current"
-	Label         string              `gorm:"column:label;uniqueIndex:WorkerDeploymentPromotion_environmentId_label_key;not null" json:"label"`
+	Label         string              `gorm:"column:label;uniqueIndex:WorkerDeploymentPromotion_environmentId_label_key,priority:2;not null" json:"label"`
 	DeploymentID  string              `gorm:"column:deploymentId;not null" json:"deploymentId"`
-	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:WorkerDeploymentPromotion_environmentId_label_key;not null" json:"environmentId"`
+	EnvironmentID string              `gorm:"column:environmentId;uniqueIndex:WorkerDeploymentPromotion_environmentId_label_key,priority:1;not null" json:"environmentId"`
 	Deployment    *WorkerDeployment   `gorm:"foreignKey:DeploymentID;belongsTo"`
 	Environment   *RuntimeEnvironment `gorm:"foreignKey:EnvironmentID;belongsTo"`
 }
@@ -3134,7 +3134,7 @@ type TaskSchedule struct {
 	// a reference to a task (not a foreign key because it's across versions)
 	TaskIdentifier string `gorm:"column:taskIdentifier;not null" json:"taskIdentifier"`
 	// can be provided and we won't create another with the same key
-	DeduplicationKey             string `gorm:"column:deduplicationKey;uniqueIndex:TaskSchedule_projectId_deduplicationKey_key;not null" json:"deduplicationKey"`
+	DeduplicationKey             string `gorm:"column:deduplicationKey;uniqueIndex:TaskSchedule_projectId_deduplicationKey_key,priority:2;not null" json:"deduplicationKey"`
 	UserProvidedDeduplicationKey bool   `gorm:"column:userProvidedDeduplicationKey;default:false;not null" json:"userProvidedDeduplicationKey"`
 	// the CRON pattern
 	GeneratorExpression  string `gorm:"column:generatorExpression;not null" json:"generatorExpression"`
@@ -3150,8 +3150,8 @@ type TaskSchedule struct {
 	ExternalID *string `gorm:"column:externalId" json:"externalId"`
 	// @deprecated stop writing 2026-04-30; reads moved out of code (UI now derives from cron's previous slot). Drop in follow-up.
 	LastRunTriggeredAt *DateTime `gorm:"column:lastRunTriggeredAt;type:timestamp(3)" json:"lastRunTriggeredAt"`
-	ProjectID          string    `gorm:"column:projectId;uniqueIndex:TaskSchedule_projectId_deduplicationKey_key;index:TaskSchedule_projectId_idx;index:TaskSchedule_projectId_createdAt_idx;not null" json:"projectId"`
-	CreatedAt          DateTime  `gorm:"column:createdAt;index:TaskSchedule_projectId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	ProjectID          string    `gorm:"column:projectId;uniqueIndex:TaskSchedule_projectId_deduplicationKey_key,priority:1;index:TaskSchedule_projectId_idx;index:TaskSchedule_projectId_createdAt_idx,priority:1;not null" json:"projectId"`
+	CreatedAt          DateTime  `gorm:"column:createdAt;index:TaskSchedule_projectId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt          DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Active             *bool     `gorm:"column:active;default:true;not null" json:"active"`
 	Project            *Project  `gorm:"belongsTo"`
@@ -3191,13 +3191,13 @@ func (*TaskSchedule) BeforeUpdate(tx *gorm.DB) error {
 // An instance links a schedule with an environment
 type TaskScheduleInstance struct {
 	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	TaskScheduleID string   `gorm:"column:taskScheduleId;uniqueIndex:TaskScheduleInstance_taskScheduleId_environmentId_key;not null" json:"taskScheduleId"`
-	EnvironmentID  string   `gorm:"column:environmentId;uniqueIndex:TaskScheduleInstance_taskScheduleId_environmentId_key;index:TaskScheduleInstance_environmentId_idx;not null" json:"environmentId"`
-	ProjectID      string   `gorm:"column:projectId;index:TaskScheduleInstance_projectId_active_idx;not null" json:"projectId"`
+	TaskScheduleID string   `gorm:"column:taskScheduleId;uniqueIndex:TaskScheduleInstance_taskScheduleId_environmentId_key,priority:1;not null" json:"taskScheduleId"`
+	EnvironmentID  string   `gorm:"column:environmentId;uniqueIndex:TaskScheduleInstance_taskScheduleId_environmentId_key,priority:2;index:TaskScheduleInstance_environmentId_idx;not null" json:"environmentId"`
+	ProjectID      string   `gorm:"column:projectId;index:TaskScheduleInstance_projectId_active_idx,priority:1;not null" json:"projectId"`
 	SchedulePhase  *int     `gorm:"column:schedulePhase;size:32" json:"schedulePhase"`
 	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	Active         *bool    `gorm:"column:active;index:TaskScheduleInstance_projectId_active_idx;default:true;not null" json:"active"`
+	Active         *bool    `gorm:"column:active;index:TaskScheduleInstance_projectId_active_idx,priority:2;default:true;not null" json:"active"`
 	// @deprecated stop writing 2026-04-30; engine derives from cron + exactScheduleTime. Drop in follow-up.
 	LastScheduledTimestamp *DateTime `gorm:"column:lastScheduledTimestamp;type:timestamp(3)" json:"lastScheduledTimestamp"`
 	// @deprecated stop writing 2026-04-30; engine derives from cron + now(). Drop in follow-up.
@@ -3274,7 +3274,7 @@ type ProjectAlertChannel struct {
 	ID         string `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID string `gorm:"column:friendlyId;uniqueIndex:ProjectAlertChannel_friendlyId_key;not null" json:"friendlyId"`
 	// can be provided and we won't create another with the same key
-	DeduplicationKey             string                   `gorm:"column:deduplicationKey;uniqueIndex:ProjectAlertChannel_projectId_deduplicationKey_key;not null" json:"deduplicationKey"`
+	DeduplicationKey             string                   `gorm:"column:deduplicationKey;uniqueIndex:ProjectAlertChannel_projectId_deduplicationKey_key,priority:2;not null" json:"deduplicationKey"`
 	UserProvidedDeduplicationKey bool                     `gorm:"column:userProvidedDeduplicationKey;default:false;not null" json:"userProvidedDeduplicationKey"`
 	IntegrationID                *string                  `gorm:"column:integrationId" json:"integrationId"`
 	Enabled                      *bool                    `gorm:"column:enabled;default:true;not null" json:"enabled"`
@@ -3284,7 +3284,7 @@ type ProjectAlertChannel struct {
 	AlertTypes                   ScalarList[string]       `gorm:"column:alertTypes;type:text[]" json:"alertTypes"`
 	EnvironmentTypes             ScalarList[string]       `gorm:"column:environmentTypes;type:text[]" json:"environmentTypes"`
 	ErrorAlertConfig             datatypes.JSON           `gorm:"column:errorAlertConfig" json:"errorAlertConfig"`
-	ProjectID                    string                   `gorm:"column:projectId;uniqueIndex:ProjectAlertChannel_projectId_deduplicationKey_key;not null" json:"projectId"`
+	ProjectID                    string                   `gorm:"column:projectId;uniqueIndex:ProjectAlertChannel_projectId_deduplicationKey_key,priority:1;not null" json:"projectId"`
 	CreatedAt                    DateTime                 `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                    DateTime                 `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Integration                  *OrganizationIntegration `gorm:"foreignKey:IntegrationID;belongsTo"`
@@ -3370,9 +3370,9 @@ func (*ProjectAlert) BeforeUpdate(tx *gorm.DB) error {
 type ProjectAlertStorage struct {
 	ID             string               `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID      string               `gorm:"column:projectId;not null" json:"projectId"`
-	AlertChannelID string               `gorm:"column:alertChannelId;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx;not null" json:"alertChannelId"`
-	AlertType      string               `gorm:"column:alertType;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx;not null" json:"alertType"`
-	StorageID      string               `gorm:"column:storageId;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx;not null" json:"storageId"`
+	AlertChannelID string               `gorm:"column:alertChannelId;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx,priority:1;not null" json:"alertChannelId"`
+	AlertType      string               `gorm:"column:alertType;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx,priority:2;not null" json:"alertType"`
+	StorageID      string               `gorm:"column:storageId;index:ProjectAlertStorage_alertChannelId_alertType_storageId_idx,priority:3;not null" json:"storageId"`
 	StorageData    datatypes.JSON       `gorm:"column:storageData;not null" json:"storageData"`
 	CreatedAt      DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime             `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -3452,8 +3452,8 @@ func (*OrganizationIntegration) BeforeUpdate(tx *gorm.DB) error {
 
 type OrganizationProjectIntegration struct {
 	ID                        string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationIntegrationID string `gorm:"column:organizationIntegrationId;index:OrganizationProjectIntegration_projectId_organizationIntegr_idx;not null" json:"organizationIntegrationId"`
-	ProjectID                 string `gorm:"column:projectId;index:OrganizationProjectIntegration_projectId_idx;index:OrganizationProjectIntegration_projectId_organizationIntegr_idx;not null" json:"projectId"`
+	OrganizationIntegrationID string `gorm:"column:organizationIntegrationId;index:OrganizationProjectIntegration_projectId_organizationIntegr_idx,priority:2;not null" json:"organizationIntegrationId"`
+	ProjectID                 string `gorm:"column:projectId;index:OrganizationProjectIntegration_projectId_idx;index:OrganizationProjectIntegration_projectId_organizationIntegr_idx,priority:1;not null" json:"projectId"`
 	// Identifier for webhooks, for example Vercel's projectId
 	ExternalEntityID string `gorm:"column:externalEntityId;index:OrganizationProjectIntegration_externalEntityId_idx;not null" json:"externalEntityId"`
 	// Save useful data like config or external entity name
@@ -3498,16 +3498,16 @@ type BulkActionGroup struct {
 	ID            string  `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID    string  `gorm:"column:friendlyId;uniqueIndex:BulkActionGroup_friendlyId_key;not null" json:"friendlyId"`
 	ProjectID     string  `gorm:"column:projectId;not null" json:"projectId"`
-	EnvironmentID *string `gorm:"column:environmentId;index:BulkActionGroup_environmentId_createdAt_idx;index:BulkActionGroup_environmentId_type_dedupeKey_idx;index:BulkActionGroup_environmentId_status_type_idx" json:"environmentId"`
-	Type          string  `gorm:"column:type;index:BulkActionGroup_environmentId_type_dedupeKey_idx;index:BulkActionGroup_environmentId_status_type_idx;not null" json:"type"`
+	EnvironmentID *string `gorm:"column:environmentId;index:BulkActionGroup_environmentId_createdAt_idx,priority:1;index:BulkActionGroup_environmentId_type_dedupeKey_idx,priority:1;index:BulkActionGroup_environmentId_status_type_idx,priority:1" json:"environmentId"`
+	Type          string  `gorm:"column:type;index:BulkActionGroup_environmentId_type_dedupeKey_idx,priority:2;index:BulkActionGroup_environmentId_status_type_idx,priority:3;not null" json:"type"`
 	// When the group is created it's pending. After we've processed all the items it's completed. This does not mean the associated runs are completed.
-	Status string `gorm:"column:status;index:BulkActionGroup_environmentId_status_type_idx;default:'PENDING';not null" json:"status"`
+	Status string `gorm:"column:status;index:BulkActionGroup_environmentId_status_type_idx,priority:2;default:'PENDING';not null" json:"status"`
 	// The query that will be executed to get the runs to process (if null, we are passing run ids directly)
 	QueryName *string `gorm:"column:queryName" json:"queryName"`
 	// The params that will be passed to the query
 	Params datatypes.JSON `gorm:"column:params" json:"params"`
 	// Billing-limit dedupe key (grace hitAt or resolve job key). Null for dashboard bulk actions.
-	DedupeKey *string `gorm:"column:dedupeKey;index:BulkActionGroup_environmentId_type_dedupeKey_idx" json:"dedupeKey"`
+	DedupeKey *string `gorm:"column:dedupeKey;index:BulkActionGroup_environmentId_type_dedupeKey_idx,priority:3" json:"dedupeKey"`
 	// The cursor that will be passed to the query (null for the first page)
 	Cursor datatypes.JSON `gorm:"column:cursor" json:"cursor"`
 	// The number of runs that have been processed successfully
@@ -3522,7 +3522,7 @@ type BulkActionGroup struct {
 	Name *string `gorm:"column:name" json:"name"`
 	// The time the bulk action was completed
 	CompletedAt *DateTime `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
-	CreatedAt   DateTime  `gorm:"column:createdAt;index:BulkActionGroup_environmentId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt   DateTime  `gorm:"column:createdAt;index:BulkActionGroup_environmentId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project     *Project  `gorm:"belongsTo"`
 	// If this is set then it's a V2 Bulk Action that supports queries
@@ -3561,14 +3561,14 @@ type BulkActionItem struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// @deprecated not used in new BulkActions
 	FriendlyID *string `gorm:"column:friendlyId" json:"friendlyId"`
-	GroupID    string  `gorm:"column:groupId;index:BulkActionItem_groupId_createdAt_idx;not null" json:"groupId"`
+	GroupID    string  `gorm:"column:groupId;index:BulkActionItem_groupId_createdAt_idx,priority:1;not null" json:"groupId"`
 	Type       string  `gorm:"column:type;not null" json:"type"`
 	// When the item is created it's pending. After we've processed the item it's completed. This does not mean the associated runs are completed.
 	Status           string   `gorm:"column:status;default:'PENDING';not null" json:"status"`
 	SourceRunID      string   `gorm:"column:sourceRunId;not null" json:"sourceRunId"`
 	DestinationRunID *string  `gorm:"column:destinationRunId" json:"destinationRunId"`
 	Error            *string  `gorm:"column:error" json:"error"`
-	CreatedAt        DateTime `gorm:"column:createdAt;index:BulkActionItem_groupId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt        DateTime `gorm:"column:createdAt;index:BulkActionItem_groupId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// The run that is the source of the action, e.g. when replaying this is the original run
 	SourceRun *TaskRun `gorm:"foreignKey:SourceRunID;belongsTo"`
@@ -3750,13 +3750,13 @@ func (*GithubAppInstallation) BeforeUpdate(tx *gorm.DB) error {
 
 type GithubRepository struct {
 	ID                        string                      `gorm:"column:id;primaryKey" json:"id"`
-	GithubID                  int64                       `gorm:"column:githubId;uniqueIndex:GithubRepository_installationId_githubId_key;not null" json:"githubId"`
+	GithubID                  int64                       `gorm:"column:githubId;uniqueIndex:GithubRepository_installationId_githubId_key,priority:2;not null" json:"githubId"`
 	Name                      string                      `gorm:"column:name;not null" json:"name"`
 	FullName                  string                      `gorm:"column:fullName;not null" json:"fullName"`
 	HTMLURL                   string                      `gorm:"column:htmlUrl;not null" json:"htmlUrl"`
 	Private                   bool                        `gorm:"column:private;not null" json:"private"`
 	DefaultBranch             string                      `gorm:"column:defaultBranch;not null" json:"defaultBranch"`
-	InstallationID            string                      `gorm:"column:installationId;uniqueIndex:GithubRepository_installationId_githubId_key;index:GithubRepository_installationId_idx;not null" json:"installationId"`
+	InstallationID            string                      `gorm:"column:installationId;uniqueIndex:GithubRepository_installationId_githubId_key,priority:1;index:GithubRepository_installationId_idx;not null" json:"installationId"`
 	CreatedAt                 DateTime                    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                 DateTime                    `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Installation              *GithubAppInstallation      `gorm:"foreignKey:InstallationID;belongsTo"`
@@ -3942,13 +3942,13 @@ func (m *ImpersonationAuditLog) BeforeCreate(tx *gorm.DB) error {
 
 type SupportAccessRequest struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string        `gorm:"column:organizationId;index:SupportAccessRequest_organizationId_status_expiresAt_idx;not null" json:"organizationId"`
+	OrganizationID string        `gorm:"column:organizationId;index:SupportAccessRequest_organizationId_status_expiresAt_idx,priority:1;not null" json:"organizationId"`
 	RequestedByID  *string       `gorm:"column:requestedById;index:SupportAccessRequest_requestedById_idx" json:"requestedById"`
 	Reason         string        `gorm:"column:reason;not null" json:"reason"`
-	Status         string        `gorm:"column:status;index:SupportAccessRequest_organizationId_status_expiresAt_idx;default:'PENDING';not null" json:"status"`
+	Status         string        `gorm:"column:status;index:SupportAccessRequest_organizationId_status_expiresAt_idx,priority:2;default:'PENDING';not null" json:"status"`
 	ApprovedByID   *string       `gorm:"column:approvedById;index:SupportAccessRequest_approvedById_idx" json:"approvedById"`
 	ApprovedAt     *DateTime     `gorm:"column:approvedAt;type:timestamp(3)" json:"approvedAt"`
-	ExpiresAt      *DateTime     `gorm:"column:expiresAt;index:SupportAccessRequest_organizationId_status_expiresAt_idx;type:timestamp(3)" json:"expiresAt"`
+	ExpiresAt      *DateTime     `gorm:"column:expiresAt;index:SupportAccessRequest_organizationId_status_expiresAt_idx,priority:3;type:timestamp(3)" json:"expiresAt"`
 	CancelledByID  *string       `gorm:"column:cancelledById" json:"cancelledById"`
 	CancelledAt    *DateTime     `gorm:"column:cancelledAt;type:timestamp(3)" json:"cancelledAt"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -3996,7 +3996,7 @@ type CustomerQuery struct {
 	Title *string `gorm:"column:title" json:"title"`
 	// Where the query originated from
 	Source         string  `gorm:"column:source;default:'DASHBOARD';not null" json:"source"`
-	OrganizationID string  `gorm:"column:organizationId;index:CustomerQuery_organizationId_createdAt_idx;not null" json:"organizationId"`
+	OrganizationID string  `gorm:"column:organizationId;index:CustomerQuery_organizationId_createdAt_idx,priority:1;not null" json:"organizationId"`
 	ProjectID      *string `gorm:"column:projectId" json:"projectId"`
 	EnvironmentID  *string `gorm:"column:environmentId" json:"environmentId"`
 	UserID         *string `gorm:"column:userId" json:"userId"`
@@ -4007,7 +4007,7 @@ type CustomerQuery struct {
 	FilterFrom *DateTime `gorm:"column:filterFrom;type:timestamp(3)" json:"filterFrom"`
 	// Custom end date (ISO 8601)
 	FilterTo     *DateTime           `gorm:"column:filterTo;type:timestamp(3)" json:"filterTo"`
-	CreatedAt    DateTime            `gorm:"column:createdAt;index:CustomerQuery_organizationId_createdAt_idx;index:CustomerQuery_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt    DateTime            `gorm:"column:createdAt;index:CustomerQuery_organizationId_createdAt_idx,priority:2,sort:desc;index:CustomerQuery_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Organization *Organization       `gorm:"belongsTo"`
 	Project      *Project            `gorm:"belongsTo"`
 	Environment  *RuntimeEnvironment `gorm:"foreignKey:EnvironmentID;belongsTo"`
@@ -4078,9 +4078,9 @@ type MetricsDashboard struct {
 	Title          string   `gorm:"column:title;not null" json:"title"`
 	Description    string   `gorm:"column:description;default:'';not null" json:"description"`
 	OrganizationID string   `gorm:"column:organizationId;not null" json:"organizationId"`
-	ProjectID      *string  `gorm:"column:projectId;index:MetricsDashboard_projectId_createdAt_idx" json:"projectId"`
+	ProjectID      *string  `gorm:"column:projectId;index:MetricsDashboard_projectId_createdAt_idx,priority:1" json:"projectId"`
 	OwnerID        *string  `gorm:"column:ownerId" json:"ownerId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;index:MetricsDashboard_projectId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;index:MetricsDashboard_projectId_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	// JSON that defines the config, queries, layout and config of all widgets.
 	// There will be a version field for the format.
@@ -4121,10 +4121,10 @@ func (*MetricsDashboard) BeforeUpdate(tx *gorm.DB) error {
 type LlmModel struct {
 	ID              string             `gorm:"column:id;primaryKey" json:"id"`
 	FriendlyID      string             `gorm:"column:friendly_id;uniqueIndex:llm_models_friendly_id_key;not null" json:"friendly_id"`
-	ProjectID       *string            `gorm:"column:project_id;uniqueIndex:llm_models_project_id_model_name_start_date_key;index:llm_models_project_id_idx" json:"project_id"`
-	ModelName       string             `gorm:"column:model_name;uniqueIndex:llm_models_project_id_model_name_start_date_key;not null" json:"model_name"`
+	ProjectID       *string            `gorm:"column:project_id;uniqueIndex:llm_models_project_id_model_name_start_date_key,priority:1;index:llm_models_project_id_idx" json:"project_id"`
+	ModelName       string             `gorm:"column:model_name;uniqueIndex:llm_models_project_id_model_name_start_date_key,priority:2;not null" json:"model_name"`
 	MatchPattern    string             `gorm:"column:match_pattern;not null" json:"match_pattern"`
-	StartDate       *DateTime          `gorm:"column:start_date;uniqueIndex:llm_models_project_id_model_name_start_date_key;type:timestamp(3)" json:"start_date"`
+	StartDate       *DateTime          `gorm:"column:start_date;uniqueIndex:llm_models_project_id_model_name_start_date_key,priority:3;type:timestamp(3)" json:"start_date"`
 	Source          *string            `gorm:"column:source;default:'default';not null" json:"source"`
 	CreatedAt       DateTime           `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt       DateTime           `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
@@ -4170,10 +4170,10 @@ func (*LlmModel) BeforeUpdate(tx *gorm.DB) error {
 // A pricing tier for a model (supports volume-based or conditional pricing)
 type LlmPricingTier struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	ModelID    string         `gorm:"column:model_id;uniqueIndex:llm_pricing_tiers_model_id_priority_key;uniqueIndex:llm_pricing_tiers_model_id_name_key;not null" json:"model_id"`
-	Name       string         `gorm:"column:name;uniqueIndex:llm_pricing_tiers_model_id_name_key;not null" json:"name"`
+	ModelID    string         `gorm:"column:model_id;uniqueIndex:llm_pricing_tiers_model_id_priority_key,priority:1;uniqueIndex:llm_pricing_tiers_model_id_name_key,priority:1;not null" json:"model_id"`
+	Name       string         `gorm:"column:name;uniqueIndex:llm_pricing_tiers_model_id_name_key,priority:2;not null" json:"name"`
 	IsDefault  *bool          `gorm:"column:is_default;default:true;not null" json:"is_default"`
-	Priority   int            `gorm:"column:priority;uniqueIndex:llm_pricing_tiers_model_id_priority_key;size:32;default:0;not null" json:"priority"`
+	Priority   int            `gorm:"column:priority;uniqueIndex:llm_pricing_tiers_model_id_priority_key,priority:2;size:32;default:0;not null" json:"priority"`
 	Conditions datatypes.JSON `gorm:"column:conditions;type:jsonb;default:'[]';not null" json:"conditions"`
 	Model      *LlmModel      `gorm:"foreignKey:ModelID;belongsTo"`
 	Prices     []LlmPrice     `gorm:"foreignKey:PricingTierID;constraint:llm_prices_pricing_tier_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -4193,9 +4193,9 @@ func (m *LlmPricingTier) BeforeCreate(_ *gorm.DB) error {
 // A price point for a usage type within a pricing tier
 type LlmPrice struct {
 	ID            string          `gorm:"column:id;primaryKey" json:"id"`
-	ModelID       string          `gorm:"column:model_id;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key;not null" json:"model_id"`
-	PricingTierID string          `gorm:"column:pricing_tier_id;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key;not null" json:"pricing_tier_id"`
-	UsageType     string          `gorm:"column:usage_type;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key;not null" json:"usage_type"`
+	ModelID       string          `gorm:"column:model_id;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key,priority:1;not null" json:"model_id"`
+	PricingTierID string          `gorm:"column:pricing_tier_id;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key,priority:3;not null" json:"pricing_tier_id"`
+	UsageType     string          `gorm:"column:usage_type;uniqueIndex:llm_prices_model_id_usage_type_pricing_tier_id_key,priority:2;not null" json:"usage_type"`
 	Price         float64         `gorm:"column:price;type:decimal(20,12);not null" json:"price"`
 	Model         *LlmModel       `gorm:"foreignKey:ModelID;belongsTo"`
 	PricingTier   *LlmPricingTier `gorm:"foreignKey:PricingTierID;belongsTo"`
@@ -4220,13 +4220,13 @@ type PlatformNotification struct {
 	Title string `gorm:"column:title;not null" json:"title"`
 	// Versioned JSON rendering content (see payload schema in spec)
 	Payload        datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
-	Surface        string         `gorm:"column:surface;index:PlatformNotification_surface_scope_startsAt_idx;not null" json:"surface"`
-	Scope          string         `gorm:"column:scope;index:PlatformNotification_surface_scope_startsAt_idx;not null" json:"scope"`
+	Surface        string         `gorm:"column:surface;index:PlatformNotification_surface_scope_startsAt_idx,priority:1;not null" json:"surface"`
+	Scope          string         `gorm:"column:scope;index:PlatformNotification_surface_scope_startsAt_idx,priority:2;not null" json:"scope"`
 	UserID         *string        `gorm:"column:userId" json:"userId"`
 	OrganizationID *string        `gorm:"column:organizationId" json:"organizationId"`
 	ProjectID      *string        `gorm:"column:projectId" json:"projectId"`
 	// When notification becomes active
-	StartsAt DateTime `gorm:"column:startsAt;index:PlatformNotification_surface_scope_startsAt_idx;type:timestamp(3);not null" json:"startsAt"`
+	StartsAt DateTime `gorm:"column:startsAt;index:PlatformNotification_surface_scope_startsAt_idx,priority:3;type:timestamp(3);not null" json:"startsAt"`
 	// When notification expires
 	EndsAt DateTime `gorm:"column:endsAt;type:timestamp(3);not null" json:"endsAt"`
 	// CLI: auto-expire N days after user first saw it
@@ -4286,8 +4286,8 @@ func (*PlatformNotification) BeforeUpdate(tx *gorm.DB) error {
 // Per-user tracking of notification views and dismissals
 type PlatformNotificationInteraction struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	NotificationID string `gorm:"column:notificationId;uniqueIndex:PlatformNotificationInteraction_notificationId_userId_key;not null" json:"notificationId"`
-	UserID         string `gorm:"column:userId;uniqueIndex:PlatformNotificationInteraction_notificationId_userId_key;not null" json:"userId"`
+	NotificationID string `gorm:"column:notificationId;uniqueIndex:PlatformNotificationInteraction_notificationId_userId_key,priority:1;not null" json:"notificationId"`
+	UserID         string `gorm:"column:userId;uniqueIndex:PlatformNotificationInteraction_notificationId_userId_key,priority:2;not null" json:"userId"`
 	// Set by beacon/CLI GET on first impression
 	FirstSeenAt DateTime `gorm:"column:firstSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstSeenAt"`
 	// Times shown (incremented per beacon/CLI view)
@@ -4340,10 +4340,10 @@ type ErrorGroupState struct {
 	ID               string  `gorm:"column:id;primaryKey" json:"id"`
 	OrganizationID   string  `gorm:"column:organizationId;not null" json:"organizationId"`
 	ProjectID        string  `gorm:"column:projectId;not null" json:"projectId"`
-	EnvironmentID    *string `gorm:"column:environmentId;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key;index:ErrorGroupState_environmentId_status_idx" json:"environmentId"`
-	TaskIdentifier   string  `gorm:"column:taskIdentifier;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key;not null" json:"taskIdentifier"`
-	ErrorFingerprint string  `gorm:"column:errorFingerprint;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key;not null" json:"errorFingerprint"`
-	Status           string  `gorm:"column:status;index:ErrorGroupState_environmentId_status_idx;default:'UNRESOLVED';not null" json:"status"`
+	EnvironmentID    *string `gorm:"column:environmentId;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key,priority:1;index:ErrorGroupState_environmentId_status_idx,priority:1" json:"environmentId"`
+	TaskIdentifier   string  `gorm:"column:taskIdentifier;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key,priority:2;not null" json:"taskIdentifier"`
+	ErrorFingerprint string  `gorm:"column:errorFingerprint;uniqueIndex:ErrorGroupState_environmentId_taskIdentifier_errorFingerpri_key,priority:3;not null" json:"errorFingerprint"`
+	Status           string  `gorm:"column:status;index:ErrorGroupState_environmentId_status_idx,priority:2;default:'UNRESOLVED';not null" json:"status"`
 	// *
 	// * Error is ignored until this date
 	IgnoredUntil *DateTime `gorm:"column:ignoredUntil;type:timestamp(3)" json:"ignoredUntil"`
@@ -4411,14 +4411,14 @@ func (*ErrorGroupState) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskIdentifier struct {
 	ID                   string              `gorm:"column:id;primaryKey" json:"id"`
-	RuntimeEnvironmentID string              `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskIdentifier_runtimeEnvironmentId_slug_key;index:TaskIdentifier_runtimeEnvironmentId_isInLatestDeployment_idx;not null" json:"runtimeEnvironmentId"`
+	RuntimeEnvironmentID string              `gorm:"column:runtimeEnvironmentId;uniqueIndex:TaskIdentifier_runtimeEnvironmentId_slug_key,priority:1;index:TaskIdentifier_runtimeEnvironmentId_isInLatestDeployment_idx,priority:1;not null" json:"runtimeEnvironmentId"`
 	ProjectID            string              `gorm:"column:projectId;not null" json:"projectId"`
-	Slug                 string              `gorm:"column:slug;uniqueIndex:TaskIdentifier_runtimeEnvironmentId_slug_key;not null" json:"slug"`
+	Slug                 string              `gorm:"column:slug;uniqueIndex:TaskIdentifier_runtimeEnvironmentId_slug_key,priority:2;not null" json:"slug"`
 	CurrentTriggerSource string              `gorm:"column:currentTriggerSource;default:'STANDARD';not null" json:"currentTriggerSource"`
 	CurrentWorkerID      *string             `gorm:"column:currentWorkerId" json:"currentWorkerId"`
 	FirstSeenAt          DateTime            `gorm:"column:firstSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstSeenAt"`
 	LastSeenAt           DateTime            `gorm:"column:lastSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"lastSeenAt"`
-	IsInLatestDeployment *bool               `gorm:"column:isInLatestDeployment;index:TaskIdentifier_runtimeEnvironmentId_isInLatestDeployment_idx;default:true;not null" json:"isInLatestDeployment"`
+	IsInLatestDeployment *bool               `gorm:"column:isInLatestDeployment;index:TaskIdentifier_runtimeEnvironmentId_isInLatestDeployment_idx,priority:2;default:true;not null" json:"isInLatestDeployment"`
 	RuntimeEnvironment   *RuntimeEnvironment `gorm:"belongsTo"`
 	Project              *Project            `gorm:"belongsTo"`
 	CurrentWorker        *BackgroundWorker   `gorm:"foreignKey:CurrentWorkerID;belongsTo"`

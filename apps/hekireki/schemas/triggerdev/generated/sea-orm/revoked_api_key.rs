@@ -9,14 +9,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RevokedApiKey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "apiKey")]
+    #[sea_orm(column_name = "apiKey", column_type = "Text")]
     pub api_key: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -27,7 +32,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RevokedApiKey_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
 }

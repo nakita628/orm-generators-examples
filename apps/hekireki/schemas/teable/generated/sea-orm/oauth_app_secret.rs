@@ -7,13 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "oauth_app_secret")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub client_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
+    #[sea_orm(column_type = "Text")]
     pub masked_secret: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_used_time: Option<DateTime>,
 }
 
@@ -23,7 +33,8 @@ pub enum Relation {
         belongs_to = "super::oauth_app::Entity",
         from = "Column::ClientId",
         to = "super::oauth_app::Column::ClientId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauth_app_secret_client_id_fkey"
     )]
     OAuthApp,
     #[sea_orm(has_many = "super::oauth_app_token::Entity")]

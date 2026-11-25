@@ -7,32 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MockServerLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "mockServerID")]
+    #[sea_orm(column_name = "mockServerID", column_type = "Text")]
     pub mock_server_id: String,
-    #[sea_orm(column_name = "requestMethod")]
+    #[sea_orm(column_name = "requestMethod", column_type = "Text")]
     pub request_method: String,
-    #[sea_orm(column_name = "requestPath")]
+    #[sea_orm(column_name = "requestPath", column_type = "Text")]
     pub request_path: String,
-    #[sea_orm(column_name = "requestHeaders")]
+    #[sea_orm(column_name = "requestHeaders", column_type = "JsonBinary")]
     pub request_headers: Json,
-    #[sea_orm(column_name = "requestBody")]
+    #[sea_orm(column_name = "requestBody", column_type = "JsonBinary")]
     pub request_body: Option<Json>,
-    #[sea_orm(column_name = "requestQuery")]
+    #[sea_orm(column_name = "requestQuery", column_type = "JsonBinary")]
     pub request_query: Option<Json>,
     #[sea_orm(column_name = "responseStatus")]
     pub response_status: i32,
-    #[sea_orm(column_name = "responseHeaders")]
+    #[sea_orm(column_name = "responseHeaders", column_type = "JsonBinary")]
     pub response_headers: Json,
-    #[sea_orm(column_name = "responseBody")]
+    #[sea_orm(column_name = "responseBody", column_type = "JsonBinary")]
     pub response_body: Option<Json>,
     #[sea_orm(column_name = "responseTime")]
     pub response_time: i32,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
-    #[sea_orm(column_name = "executedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "executedAt",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub executed_at: DateTimeWithTimeZone,
 }
 
@@ -42,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::mock_server::Entity",
         from = "Column::MockServerId",
         to = "super::mock_server::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MockServerLog_mockServerID_fkey"
     )]
     MockServer,
 }

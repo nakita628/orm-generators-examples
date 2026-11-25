@@ -8,16 +8,21 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     /// the id of the db row
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     /// the user id fk
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     /// the url to the s3 uploaded assets
     #[sea_orm(column_type = "String(StringLen::N(256))")]
     pub url: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -26,7 +31,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "ImageUpload_userId_fkey"
     )]
     User,
 }

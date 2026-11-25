@@ -8,13 +8,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedStatement")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `ConnectedBillingAccount` row. A plain column ref.
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
     /// First day of the month the statement covers, in UTC.
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub month: DateTime,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: DateTime,
 }
 

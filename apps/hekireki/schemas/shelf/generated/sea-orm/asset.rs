@@ -10,14 +10,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Asset")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "mainImage")]
+    #[sea_orm(column_name = "mainImage", column_type = "Text")]
     pub main_image: Option<String>,
-    #[sea_orm(column_name = "thumbnailImage")]
+    #[sea_orm(column_name = "thumbnailImage", column_type = "Text")]
     pub thumbnail_image: Option<String>,
-    #[sea_orm(column_name = "mainImageExpiration")]
+    #[sea_orm(
+        column_name = "mainImageExpiration",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub main_image_expiration: Option<DateTime>,
     #[sea_orm(default_value = "AVAILABLE")]
     pub status: AssetStatus,
@@ -25,37 +31,47 @@ pub struct Model {
     pub valuation: Option<f64>,
     #[sea_orm(column_name = "availableToBook", default_value = true)]
     pub available_to_book: bool,
-    #[sea_orm(column_name = "sequentialId")]
+    #[sea_orm(column_name = "sequentialId", column_type = "Text")]
     pub sequential_id: Option<String>,
-    #[sea_orm(column_name = "archivedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub archived_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(default_value = "INDIVIDUAL")]
     pub r#type: AssetType,
-    #[sea_orm(column_name = "assetModelId")]
+    #[sea_orm(column_name = "assetModelId", column_type = "Text")]
     pub asset_model_id: Option<String>,
     pub quantity: Option<i32>,
     #[sea_orm(column_name = "minQuantity")]
     pub min_quantity: Option<i32>,
     #[sea_orm(column_name = "consumptionType")]
     pub consumption_type: Option<ConsumptionType>,
-    #[sea_orm(column_name = "unitOfMeasure")]
+    #[sea_orm(column_name = "unitOfMeasure", column_type = "Text")]
     pub unit_of_measure: Option<String>,
-    #[sea_orm(column_name = "lowStockNotifiedAt")]
+    #[sea_orm(
+        column_name = "lowStockNotifiedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub low_stock_notified_at: Option<DateTime>,
-    #[sea_orm(column_name = "stockLedgerStartedAt")]
+    #[sea_orm(
+        column_name = "stockLedgerStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stock_ledger_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "categoryId")]
+    #[sea_orm(column_name = "categoryId", column_type = "Text")]
     pub category_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "preferredBarcodeId")]
+    #[sea_orm(column_name = "preferredBarcodeId", column_type = "Text")]
     pub preferred_barcode_id: Option<String>,
 }
 
@@ -64,7 +80,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::asset_model::Entity",
         from = "Column::AssetModelId",
-        to = "super::asset_model::Column::Id"
+        to = "super::asset_model::Column::Id",
+        fk_name = "Asset_assetModelId_fkey"
     )]
     AssetModel,
     #[sea_orm(
@@ -72,7 +89,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Asset_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -80,20 +98,23 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Asset_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::category::Entity",
         from = "Column::CategoryId",
-        to = "super::category::Column::Id"
+        to = "super::category::Column::Id",
+        fk_name = "Asset_categoryId_fkey"
     )]
     Category,
     #[sea_orm(
         belongs_to = "super::barcode::Entity",
         from = "Column::PreferredBarcodeId",
         to = "super::barcode::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Asset_preferredBarcodeId_fkey"
     )]
     PreferredBarcode,
     #[sea_orm(has_many = "super::custody::Entity")]

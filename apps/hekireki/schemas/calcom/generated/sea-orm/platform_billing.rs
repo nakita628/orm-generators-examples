@@ -6,13 +6,13 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: i32,
-    #[sea_orm(column_name = "customerId")]
+    #[sea_orm(column_name = "customerId", column_type = "Text")]
     pub customer_id: String,
-    #[sea_orm(column_name = "subscriptionId")]
+    #[sea_orm(column_name = "subscriptionId", column_type = "Text")]
     pub subscription_id: Option<String>,
-    #[sea_orm(column_name = "priceId")]
+    #[sea_orm(column_name = "priceId", column_type = "Text")]
     pub price_id: Option<String>,
-    #[sea_orm(default_value = "none")]
+    #[sea_orm(column_type = "Text", default_value = "none")]
     pub plan: String,
     #[sea_orm(column_name = "billingCycleStart")]
     pub billing_cycle_start: Option<i32>,
@@ -29,14 +29,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::platform_billing::Entity",
         from = "Column::ManagerBillingId",
-        to = "super::platform_billing::Column::Id"
+        to = "super::platform_billing::Column::Id",
+        fk_name = "PlatformBilling_managerBillingId_fkey"
     )]
     ManagerBilling,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::Id",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformBilling_id_fkey"
     )]
     Team,
     #[sea_orm(

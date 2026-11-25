@@ -8,24 +8,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Qr")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = 0)]
     pub version: i32,
     #[sea_orm(column_name = "errorCorrection", default_value = "L")]
     pub error_correction: ErrorCorrection,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "kitId")]
+    #[sea_orm(column_name = "kitId", column_type = "Text")]
     pub kit_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "batchId")]
+    #[sea_orm(column_name = "batchId", column_type = "Text")]
     pub batch_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -35,14 +40,16 @@ pub enum Relation {
         belongs_to = "super::asset::Entity",
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Qr_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
         belongs_to = "super::kit::Entity",
         from = "Column::KitId",
         to = "super::kit::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Qr_kitId_fkey"
     )]
     Kit,
     #[sea_orm(
@@ -50,21 +57,24 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Qr_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_update = "Cascade"
+        on_update = "Cascade",
+        fk_name = "Qr_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::print_batch::Entity",
         from = "Column::BatchId",
         to = "super::print_batch::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Qr_batchId_fkey"
     )]
     Batch,
     #[sea_orm(has_many = "super::scan::Entity")]

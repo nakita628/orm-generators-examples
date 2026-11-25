@@ -116,8 +116,8 @@ func (*Tags) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TagsPosts struct {
-	PostID    string   `gorm:"column:postId;primaryKey;uniqueIndex:TagsPosts_postId_tagId_key" json:"postId"`
-	TagID     string   `gorm:"column:tagId;primaryKey;uniqueIndex:TagsPosts_postId_tagId_key" json:"tagId"`
+	PostID    string   `gorm:"column:postId;primaryKey;uniqueIndex:TagsPosts_postId_tagId_key,priority:1" json:"postId"`
+	TagID     string   `gorm:"column:tagId;primaryKey;uniqueIndex:TagsPosts_postId_tagId_key,priority:2" json:"tagId"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Post      *Post    `gorm:"belongsTo"`
@@ -149,16 +149,16 @@ func (*TagsPosts) BeforeUpdate(tx *gorm.DB) error {
 
 type User struct {
 	ID                    string               `gorm:"column:id;primaryKey" json:"id"`
-	Email                 string               `gorm:"column:email;uniqueIndex:User_email_providerName_key;not null" json:"email"`
+	Email                 string               `gorm:"column:email;uniqueIndex:User_email_providerName_key,priority:1;not null" json:"email"`
 	Password              *string              `gorm:"column:password" json:"password"`
-	ProviderName          string               `gorm:"column:providerName;uniqueIndex:User_email_providerName_key;index:User_providerId_providerName_idx;not null" json:"providerName"`
+	ProviderName          string               `gorm:"column:providerName;uniqueIndex:User_email_providerName_key,priority:2;index:User_providerId_providerName_idx,priority:2;not null" json:"providerName"`
 	Name                  *string              `gorm:"column:name" json:"name"`
 	LastName              *string              `gorm:"column:lastName" json:"lastName"`
 	IsSuperAdmin          bool                 `gorm:"column:isSuperAdmin;default:false;not null" json:"isSuperAdmin"`
 	Bio                   *string              `gorm:"column:bio" json:"bio"`
 	Audience              int                  `gorm:"column:audience;size:32;default:0;not null" json:"audience"`
 	PictureID             *string              `gorm:"column:pictureId;index:User_pictureId_idx" json:"pictureId"`
-	ProviderID            *string              `gorm:"column:providerId;index:User_providerId_providerName_idx" json:"providerId"`
+	ProviderID            *string              `gorm:"column:providerId;index:User_providerId_providerName_idx,priority:1" json:"providerId"`
 	Timezone              int                  `gorm:"column:timezone;size:32;not null" json:"timezone"`
 	TimezoneName          *string              `gorm:"column:timezoneName" json:"timezoneName"`
 	CreatedAt             DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -257,8 +257,8 @@ func (*UsedCodes) BeforeUpdate(tx *gorm.DB) error {
 
 type UserOrganization struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	UserID         string        `gorm:"column:userId;uniqueIndex:UserOrganization_userId_organizationId_key;not null" json:"userId"`
-	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:UserOrganization_userId_organizationId_key;index:UserOrganization_organizationId_idx;not null" json:"organizationId"`
+	UserID         string        `gorm:"column:userId;uniqueIndex:UserOrganization_userId_organizationId_key,priority:1;not null" json:"userId"`
+	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:UserOrganization_userId_organizationId_key,priority:2;index:UserOrganization_organizationId_idx;not null" json:"organizationId"`
 	Disabled       bool          `gorm:"column:disabled;index:UserOrganization_disabled_idx;default:false;not null" json:"disabled"`
 	Role           string        `gorm:"column:role;default:'USER';not null" json:"role"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -386,8 +386,8 @@ func (m *TrendingLog) BeforeCreate(_ *gorm.DB) error {
 
 type ItemUser struct {
 	ID     string `gorm:"column:id;primaryKey" json:"id"`
-	UserID string `gorm:"column:userId;uniqueIndex:ItemUser_userId_key_key;index:ItemUser_userId_idx;not null" json:"userId"`
-	Key    string `gorm:"column:key;uniqueIndex:ItemUser_userId_key_key;index:ItemUser_key_idx;not null" json:"key"`
+	UserID string `gorm:"column:userId;uniqueIndex:ItemUser_userId_key_key,priority:1;index:ItemUser_userId_idx;not null" json:"userId"`
+	Key    string `gorm:"column:key;uniqueIndex:ItemUser_userId_key_key,priority:2;index:ItemUser_key_idx;not null" json:"key"`
 	User   *User  `gorm:"belongsTo"`
 }
 
@@ -408,8 +408,8 @@ type Star struct {
 	TotalStars int      `gorm:"column:totalStars;size:32;not null" json:"totalStars"`
 	Forks      int      `gorm:"column:forks;size:32;not null" json:"forks"`
 	TotalForks int      `gorm:"column:totalForks;size:32;not null" json:"totalForks"`
-	Login      string   `gorm:"column:login;uniqueIndex:Star_login_date_key;not null" json:"login"`
-	Date       Date     `gorm:"column:date;uniqueIndex:Star_login_date_key;type:date;default:CURRENT_TIMESTAMP;not null" json:"date"`
+	Login      string   `gorm:"column:login;uniqueIndex:Star_login_date_key,priority:1;not null" json:"login"`
+	Date       Date     `gorm:"column:date;uniqueIndex:Star_login_date_key,priority:2;type:date;default:CURRENT_TIMESTAMP;not null" json:"date"`
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
@@ -448,16 +448,16 @@ type Media struct {
 	Name               string              `gorm:"column:name;not null" json:"name"`
 	OriginalName       *string             `gorm:"column:originalName" json:"originalName"`
 	Path               string              `gorm:"column:path;not null" json:"path"`
-	OrganizationID     string              `gorm:"column:organizationId;index:Media_organizationId_createdAt_deletedAt_status_idx;not null" json:"organizationId"`
-	CreatedAt          DateTime            `gorm:"column:createdAt;index:Media_organizationId_createdAt_deletedAt_status_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	OrganizationID     string              `gorm:"column:organizationId;index:Media_organizationId_createdAt_deletedAt_status_idx,priority:1;not null" json:"organizationId"`
+	CreatedAt          DateTime            `gorm:"column:createdAt;index:Media_organizationId_createdAt_deletedAt_status_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt          DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt          *DateTime           `gorm:"column:deletedAt;index:Media_organizationId_createdAt_deletedAt_status_idx;type:timestamp(3)" json:"deletedAt"`
+	DeletedAt          *DateTime           `gorm:"column:deletedAt;index:Media_organizationId_createdAt_deletedAt_status_idx,priority:3;type:timestamp(3)" json:"deletedAt"`
 	FileSize           int                 `gorm:"column:fileSize;size:32;default:0;not null" json:"fileSize"`
 	Type               *string             `gorm:"column:type;default:'image';not null" json:"type"`
 	Thumbnail          *string             `gorm:"column:thumbnail" json:"thumbnail"`
 	Alt                *string             `gorm:"column:alt" json:"alt"`
 	ThumbnailTimestamp *int                `gorm:"column:thumbnailTimestamp;size:32" json:"thumbnailTimestamp"`
-	Status             *string             `gorm:"column:status;index:Media_organizationId_createdAt_deletedAt_status_idx;default:'ready';not null" json:"status"`
+	Status             *string             `gorm:"column:status;index:Media_organizationId_createdAt_deletedAt_status_idx,priority:4;default:'ready';not null" json:"status"`
 	ProcessingError    *string             `gorm:"column:processingError" json:"processingError"`
 	Organization       *Organization       `gorm:"belongsTo"`
 	Agencies           []SocialMediaAgency `gorm:"foreignKey:LogoID;constraint:SocialMediaAgency_logoId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
@@ -723,11 +723,11 @@ func (*Subscription) BeforeUpdate(tx *gorm.DB) error {
 
 type Customer struct {
 	ID           string        `gorm:"column:id;primaryKey" json:"id"`
-	Name         string        `gorm:"column:name;uniqueIndex:Customer_orgId_name_deletedAt_key;not null" json:"name"`
-	OrgID        string        `gorm:"column:orgId;uniqueIndex:Customer_orgId_name_deletedAt_key;not null" json:"orgId"`
+	Name         string        `gorm:"column:name;uniqueIndex:Customer_orgId_name_deletedAt_key,priority:2;not null" json:"name"`
+	OrgID        string        `gorm:"column:orgId;uniqueIndex:Customer_orgId_name_deletedAt_key,priority:1;not null" json:"orgId"`
 	CreatedAt    DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt    DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt    *DateTime     `gorm:"column:deletedAt;uniqueIndex:Customer_orgId_name_deletedAt_key;type:timestamp(3)" json:"deletedAt"`
+	DeletedAt    *DateTime     `gorm:"column:deletedAt;uniqueIndex:Customer_orgId_name_deletedAt_key,priority:3;type:timestamp(3)" json:"deletedAt"`
 	Organization *Organization `gorm:"foreignKey:OrgID;belongsTo"`
 	Integrations []Integration `gorm:"foreignKey:CustomerID;constraint:Integration_customerId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
@@ -760,8 +760,8 @@ func (*Customer) BeforeUpdate(tx *gorm.DB) error {
 
 type Integration struct {
 	ID                    string                 `gorm:"column:id;primaryKey" json:"id"`
-	InternalID            string                 `gorm:"column:internalId;uniqueIndex:Integration_organizationId_internalId_key;not null" json:"internalId"`
-	OrganizationID        string                 `gorm:"column:organizationId;uniqueIndex:Integration_organizationId_internalId_key;index:Integration_organizationId_idx;not null" json:"organizationId"`
+	InternalID            string                 `gorm:"column:internalId;uniqueIndex:Integration_organizationId_internalId_key,priority:2;not null" json:"internalId"`
+	OrganizationID        string                 `gorm:"column:organizationId;uniqueIndex:Integration_organizationId_internalId_key,priority:1;index:Integration_organizationId_idx;not null" json:"organizationId"`
 	Name                  string                 `gorm:"column:name;not null" json:"name"`
 	CustomName            *string                `gorm:"column:customName" json:"customName"`
 	Picture               *string                `gorm:"column:picture" json:"picture"`
@@ -904,17 +904,17 @@ func (*Comments) BeforeUpdate(tx *gorm.DB) error {
 
 type Post struct {
 	ID                         string           `gorm:"column:id;primaryKey" json:"id"`
-	State                      string           `gorm:"column:state;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_state_idx;index:Post_organizationId_publishDate_state_deletedAt_idx;default:'QUEUE';not null" json:"state"`
-	PublishDate                DateTime         `gorm:"column:publishDate;index:Post_publishDate_idx;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_organizationId_publishDate_state_deletedAt_idx;type:timestamp(3);not null" json:"publishDate"`
-	OrganizationID             string           `gorm:"column:organizationId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_organizationId_idx;index:Post_organizationId_publishDate_state_deletedAt_idx;index:Post_organizationId_intervalInDays_idx;not null" json:"organizationId"`
-	IntegrationID              string           `gorm:"column:integrationId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_integrationId_idx;not null" json:"integrationId"`
+	State                      string           `gorm:"column:state;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:2;index:Post_state_idx;index:Post_organizationId_publishDate_state_deletedAt_idx,priority:3;default:'QUEUE';not null" json:"state"`
+	PublishDate                DateTime         `gorm:"column:publishDate;index:Post_publishDate_idx;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:1;index:Post_organizationId_publishDate_state_deletedAt_idx,priority:2;type:timestamp(3);not null" json:"publishDate"`
+	OrganizationID             string           `gorm:"column:organizationId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:6;index:Post_organizationId_idx;index:Post_organizationId_publishDate_state_deletedAt_idx,priority:1;index:Post_organizationId_intervalInDays_idx,priority:1;not null" json:"organizationId"`
+	IntegrationID              string           `gorm:"column:integrationId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:5;index:Post_integrationId_idx;not null" json:"integrationId"`
 	Content                    string           `gorm:"column:content;not null" json:"content"`
 	Delay                      int              `gorm:"column:delay;size:32;default:0;not null" json:"delay"`
 	Group                      string           `gorm:"column:group;index:Post_group_idx;not null" json:"group"`
 	BatchID                    *string          `gorm:"column:batchId;index:Post_batchId_idx" json:"batchId"`
 	Title                      *string          `gorm:"column:title" json:"title"`
 	Description                *string          `gorm:"column:description" json:"description"`
-	ParentPostID               *string          `gorm:"column:parentPostId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_parentPostId_idx" json:"parentPostId"`
+	ParentPostID               *string          `gorm:"column:parentPostId;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:4;index:Post_parentPostId_idx" json:"parentPostId"`
 	ReleaseID                  *string          `gorm:"column:releaseId" json:"releaseId"`
 	ReleaseURL                 *string          `gorm:"column:releaseURL" json:"releaseURL"`
 	Settings                   *string          `gorm:"column:settings" json:"settings"`
@@ -922,13 +922,13 @@ type Post struct {
 	SubmittedForOrderID        *string          `gorm:"column:submittedForOrderId;index:Post_submittedForOrderId_idx" json:"submittedForOrderId"`
 	SubmittedForOrganizationID *string          `gorm:"column:submittedForOrganizationId" json:"submittedForOrganizationId"`
 	ApprovedSubmitForOrder     string           `gorm:"column:approvedSubmitForOrder;default:'NO';not null" json:"approvedSubmitForOrder"`
-	CreationMethod             string           `gorm:"column:creationMethod;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;default:'UNKNOWN';not null" json:"creationMethod"`
+	CreationMethod             string           `gorm:"column:creationMethod;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:7;default:'UNKNOWN';not null" json:"creationMethod"`
 	LastMessageID              *string          `gorm:"column:lastMessageId;index:Post_lastMessageId_idx" json:"lastMessageId"`
-	IntervalInDays             *int             `gorm:"column:intervalInDays;index:Post_organizationId_intervalInDays_idx;index:Post_intervalInDays_idx;size:32" json:"intervalInDays"`
+	IntervalInDays             *int             `gorm:"column:intervalInDays;index:Post_organizationId_intervalInDays_idx,priority:2;index:Post_intervalInDays_idx;size:32" json:"intervalInDays"`
 	Error                      *string          `gorm:"column:error" json:"error"`
 	CreatedAt                  DateTime         `gorm:"column:createdAt;index:Post_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                  DateTime         `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt                  *DateTime        `gorm:"column:deletedAt;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx;index:Post_organizationId_publishDate_state_deletedAt_idx;type:timestamp(3)" json:"deletedAt"`
+	DeletedAt                  *DateTime        `gorm:"column:deletedAt;index:Post_publishDate_state_deletedAt_parentPostId_integrationId_idx,priority:3;index:Post_organizationId_publishDate_state_deletedAt_idx,priority:4;type:timestamp(3)" json:"deletedAt"`
 	Integration                *Integration     `gorm:"belongsTo"`
 	LastMessage                *Messages        `gorm:"foreignKey:LastMessageID;belongsTo"`
 	Organization               *Organization    `gorm:"foreignKey:OrganizationID;belongsTo"`
@@ -970,12 +970,12 @@ func (*Post) BeforeUpdate(tx *gorm.DB) error {
 
 type Notifications struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string        `gorm:"column:organizationId;index:Notifications_organizationId_idx;index:Notifications_organizationId_createdAt_deletedAt_idx;not null" json:"organizationId"`
+	OrganizationID string        `gorm:"column:organizationId;index:Notifications_organizationId_idx;index:Notifications_organizationId_createdAt_deletedAt_idx,priority:1;not null" json:"organizationId"`
 	Content        string        `gorm:"column:content;not null" json:"content"`
 	Link           *string       `gorm:"column:link" json:"link"`
-	CreatedAt      DateTime      `gorm:"column:createdAt;index:Notifications_createdAt_idx;index:Notifications_organizationId_createdAt_deletedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;index:Notifications_createdAt_idx;index:Notifications_organizationId_createdAt_deletedAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt      *DateTime     `gorm:"column:deletedAt;index:Notifications_organizationId_createdAt_deletedAt_idx;type:timestamp(3)" json:"deletedAt"`
+	DeletedAt      *DateTime     `gorm:"column:deletedAt;index:Notifications_organizationId_createdAt_deletedAt_idx,priority:3;type:timestamp(3)" json:"deletedAt"`
 	Organization   *Organization `gorm:"belongsTo"`
 }
 
@@ -1008,8 +1008,8 @@ func (*Notifications) BeforeUpdate(tx *gorm.DB) error {
 type MessagesGroup struct {
 	ID                  string        `gorm:"column:id;primaryKey" json:"id"`
 	BuyerOrganizationID string        `gorm:"column:buyerOrganizationId;index:MessagesGroup_buyerOrganizationId_idx;not null" json:"buyerOrganizationId"`
-	BuyerID             string        `gorm:"column:buyerId;uniqueIndex:MessagesGroup_buyerId_sellerId_key;not null" json:"buyerId"`
-	SellerID            string        `gorm:"column:sellerId;uniqueIndex:MessagesGroup_buyerId_sellerId_key;not null" json:"sellerId"`
+	BuyerID             string        `gorm:"column:buyerId;uniqueIndex:MessagesGroup_buyerId_sellerId_key,priority:1;not null" json:"buyerId"`
+	SellerID            string        `gorm:"column:sellerId;uniqueIndex:MessagesGroup_buyerId_sellerId_key,priority:2;not null" json:"sellerId"`
 	CreatedAt           DateTime      `gorm:"column:createdAt;index:MessagesGroup_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt           DateTime      `gorm:"column:updatedAt;index:MessagesGroup_updatedAt_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Buyer               *User         `gorm:"foreignKey:BuyerID;belongsTo"`
@@ -1191,9 +1191,9 @@ func (*Messages) BeforeUpdate(tx *gorm.DB) error {
 type Plugs struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
 	OrganizationID string        `gorm:"column:organizationId;index:Plugs_organizationId_idx;not null" json:"organizationId"`
-	PlugFunction   string        `gorm:"column:plugFunction;uniqueIndex:Plugs_plugFunction_integrationId_key;not null" json:"plugFunction"`
+	PlugFunction   string        `gorm:"column:plugFunction;uniqueIndex:Plugs_plugFunction_integrationId_key,priority:1;not null" json:"plugFunction"`
 	Data           string        `gorm:"column:data;not null" json:"data"`
-	IntegrationID  string        `gorm:"column:integrationId;uniqueIndex:Plugs_plugFunction_integrationId_key;not null" json:"integrationId"`
+	IntegrationID  string        `gorm:"column:integrationId;uniqueIndex:Plugs_plugFunction_integrationId_key,priority:2;not null" json:"integrationId"`
 	Activated      *bool         `gorm:"column:activated;default:true;not null" json:"activated"`
 	Integration    *Integration  `gorm:"belongsTo"`
 	Organization   *Organization `gorm:"belongsTo"`
@@ -1212,9 +1212,9 @@ func (m *Plugs) BeforeCreate(_ *gorm.DB) error {
 
 type ExisingPlugData struct {
 	ID            string       `gorm:"column:id;primaryKey" json:"id"`
-	IntegrationID string       `gorm:"column:integrationId;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key;not null" json:"integrationId"`
-	MethodName    string       `gorm:"column:methodName;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key;not null" json:"methodName"`
-	Value         string       `gorm:"column:value;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key;not null" json:"value"`
+	IntegrationID string       `gorm:"column:integrationId;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key,priority:1;not null" json:"integrationId"`
+	MethodName    string       `gorm:"column:methodName;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key,priority:2;not null" json:"methodName"`
+	Value         string       `gorm:"column:value;uniqueIndex:ExisingPlugData_integrationId_methodName_value_key,priority:3;not null" json:"value"`
 	Integration   *Integration `gorm:"belongsTo"`
 }
 
@@ -1266,8 +1266,8 @@ func (*PopularPosts) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type IntegrationsWebhooks struct {
-	IntegrationID string       `gorm:"column:integrationId;primaryKey;uniqueIndex:IntegrationsWebhooks_integrationId_webhookId_key;index:IntegrationsWebhooks_integrationId_idx" json:"integrationId"`
-	WebhookID     string       `gorm:"column:webhookId;primaryKey;uniqueIndex:IntegrationsWebhooks_integrationId_webhookId_key;index:IntegrationsWebhooks_webhookId_idx" json:"webhookId"`
+	IntegrationID string       `gorm:"column:integrationId;primaryKey;uniqueIndex:IntegrationsWebhooks_integrationId_webhookId_key,priority:1;index:IntegrationsWebhooks_integrationId_idx" json:"integrationId"`
+	WebhookID     string       `gorm:"column:webhookId;primaryKey;uniqueIndex:IntegrationsWebhooks_integrationId_webhookId_key,priority:2;index:IntegrationsWebhooks_webhookId_idx" json:"webhookId"`
 	Integration   *Integration `gorm:"belongsTo"`
 	Webhook       *Webhooks    `gorm:"foreignKey:WebhookID;belongsTo"`
 }
@@ -1397,10 +1397,10 @@ func (*Sets) BeforeUpdate(tx *gorm.DB) error {
 
 type ThirdParty struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:ThirdParty_organizationId_internalId_key;index:ThirdParty_organizationId_idx;not null" json:"organizationId"`
+	OrganizationID string        `gorm:"column:organizationId;uniqueIndex:ThirdParty_organizationId_internalId_key,priority:1;index:ThirdParty_organizationId_idx;not null" json:"organizationId"`
 	Identifier     string        `gorm:"column:identifier;not null" json:"identifier"`
 	Name           string        `gorm:"column:name;not null" json:"name"`
-	InternalID     string        `gorm:"column:internalId;uniqueIndex:ThirdParty_organizationId_internalId_key;not null" json:"internalId"`
+	InternalID     string        `gorm:"column:internalId;uniqueIndex:ThirdParty_organizationId_internalId_key,priority:2;not null" json:"internalId"`
 	APIKey         string        `gorm:"column:apiKey;not null" json:"apiKey"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -1437,9 +1437,9 @@ func (*ThirdParty) BeforeUpdate(tx *gorm.DB) error {
 type Errors struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
 	Message        string        `gorm:"column:message;not null" json:"message"`
-	Platform       string        `gorm:"column:platform;index:Errors_createdAt_platform_idx;not null" json:"platform"`
+	Platform       string        `gorm:"column:platform;index:Errors_createdAt_platform_idx,priority:2;not null" json:"platform"`
 	OrganizationID string        `gorm:"column:organizationId;index:Errors_organizationId_idx;not null" json:"organizationId"`
-	CreatedAt      DateTime      `gorm:"column:createdAt;index:Errors_createdAt_idx;index:Errors_createdAt_platform_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;index:Errors_createdAt_idx;index:Errors_createdAt_platform_idx,priority:1;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	PostID         string        `gorm:"column:postId;not null" json:"postId"`
 	Body           *string       `gorm:"column:body;default:'{}';not null" json:"body"`
@@ -1507,11 +1507,11 @@ func (*Mentions) BeforeUpdate(tx *gorm.DB) error {
 
 type MastraMessages struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	ThreadID   string    `gorm:"column:thread_id;index:public_mastra_messages_thread_id_createdat_idx;index:mastra_messages_thread_id_createdat_idx;not null" json:"thread_id"`
+	ThreadID   string    `gorm:"column:thread_id;index:public_mastra_messages_thread_id_createdat_idx,priority:1;index:mastra_messages_thread_id_createdat_idx,priority:1;not null" json:"thread_id"`
 	Content    string    `gorm:"column:content;not null" json:"content"`
 	Role       string    `gorm:"column:role;not null" json:"role"`
 	Type       string    `gorm:"column:type;not null" json:"type"`
-	CreatedAt  DateTime  `gorm:"column:createdAt;index:public_mastra_messages_thread_id_createdat_idx;index:mastra_messages_thread_id_createdat_idx;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime  `gorm:"column:createdAt;index:public_mastra_messages_thread_id_createdat_idx,priority:2,sort:desc;index:mastra_messages_thread_id_createdat_idx,priority:2,sort:desc;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	ResourceID *string   `gorm:"column:resourceId" json:"resourceId"`
 	CreatedAtZ *DateTime `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 }
@@ -1556,7 +1556,7 @@ func (m *MastraResources) BeforeCreate(tx *gorm.DB) error {
 type MastraScorers struct {
 	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
 	ScorerID             string         `gorm:"column:scorerId;not null" json:"scorerId"`
-	TraceID              *string        `gorm:"column:traceId;index:public_mastra_scores_trace_id_span_id_created_at_idx;index:mastra_scores_trace_id_span_id_created_at_idx" json:"traceId"`
+	TraceID              *string        `gorm:"column:traceId;index:public_mastra_scores_trace_id_span_id_created_at_idx,priority:1;index:mastra_scores_trace_id_span_id_created_at_idx,priority:1" json:"traceId"`
 	RunID                string         `gorm:"column:runId;not null" json:"runId"`
 	Scorer               datatypes.JSON `gorm:"column:scorer;not null" json:"scorer"`
 	PreprocessStepResult datatypes.JSON `gorm:"column:preprocessStepResult" json:"preprocessStepResult"`
@@ -1581,11 +1581,11 @@ type MastraScorers struct {
 	Source               string         `gorm:"column:source;not null" json:"source"`
 	ResourceID           *string        `gorm:"column:resourceId" json:"resourceId"`
 	ThreadID             *string        `gorm:"column:threadId" json:"threadId"`
-	CreatedAt            DateTime       `gorm:"column:createdAt;index:public_mastra_scores_trace_id_span_id_created_at_idx;index:mastra_scores_trace_id_span_id_created_at_idx;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt            DateTime       `gorm:"column:createdAt;index:public_mastra_scores_trace_id_span_id_created_at_idx,priority:3,sort:desc;index:mastra_scores_trace_id_span_id_created_at_idx,priority:3,sort:desc;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime       `gorm:"column:updatedAt;type:timestamp(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedAtZ           *DateTime      `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ           *DateTime      `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
-	SpanID               *string        `gorm:"column:spanId;index:public_mastra_scores_trace_id_span_id_created_at_idx;index:mastra_scores_trace_id_span_id_created_at_idx" json:"spanId"`
+	SpanID               *string        `gorm:"column:spanId;index:public_mastra_scores_trace_id_span_id_created_at_idx,priority:2;index:mastra_scores_trace_id_span_id_created_at_idx,priority:2" json:"spanId"`
 	RequestContext       datatypes.JSON `gorm:"column:requestContext" json:"requestContext"`
 	OrganizationID       *string        `gorm:"column:organizationId" json:"organizationId"`
 	ProjectID            *string        `gorm:"column:projectId" json:"projectId"`
@@ -1611,10 +1611,10 @@ func (m *MastraScorers) BeforeCreate(tx *gorm.DB) error {
 
 type MastraThreads struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	ResourceID string    `gorm:"column:resourceId;index:public_mastra_threads_resourceid_createdat_idx;index:mastra_threads_resourceid_createdat_idx;not null" json:"resourceId"`
+	ResourceID string    `gorm:"column:resourceId;index:public_mastra_threads_resourceid_createdat_idx,priority:1;index:mastra_threads_resourceid_createdat_idx,priority:1;not null" json:"resourceId"`
 	Title      string    `gorm:"column:title;not null" json:"title"`
 	Metadata   *string   `gorm:"column:metadata" json:"metadata"`
-	CreatedAt  DateTime  `gorm:"column:createdAt;index:public_mastra_threads_resourceid_createdat_idx;index:mastra_threads_resourceid_createdat_idx;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime  `gorm:"column:createdAt;index:public_mastra_threads_resourceid_createdat_idx,priority:2,sort:desc;index:mastra_threads_resourceid_createdat_idx,priority:2,sort:desc;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedAtZ *DateTime `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ *DateTime `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
@@ -1638,7 +1638,7 @@ func (m *MastraThreads) BeforeCreate(tx *gorm.DB) error {
 type MastraTraces struct {
 	ID           string         `gorm:"column:id;primaryKey" json:"id"`
 	ParentSpanID *string        `gorm:"column:parentSpanId" json:"parentSpanId"`
-	Name         string         `gorm:"column:name;index:public_mastra_traces_name_starttime_idx;not null" json:"name"`
+	Name         string         `gorm:"column:name;index:public_mastra_traces_name_starttime_idx,priority:1;not null" json:"name"`
 	TraceID      string         `gorm:"column:traceId;not null" json:"traceId"`
 	Scope        string         `gorm:"column:scope;not null" json:"scope"`
 	Kind         int            `gorm:"column:kind;size:32;not null" json:"kind"`
@@ -1647,7 +1647,7 @@ type MastraTraces struct {
 	Events       datatypes.JSON `gorm:"column:events" json:"events"`
 	Links        datatypes.JSON `gorm:"column:links" json:"links"`
 	Other        *string        `gorm:"column:other" json:"other"`
-	StartTime    int64          `gorm:"column:startTime;index:public_mastra_traces_name_starttime_idx;not null" json:"startTime"`
+	StartTime    int64          `gorm:"column:startTime;index:public_mastra_traces_name_starttime_idx,priority:2,sort:desc;not null" json:"startTime"`
 	EndTime      int64          `gorm:"column:endTime;not null" json:"endTime"`
 	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	CreatedAtZ   *DateTime      `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
@@ -1666,11 +1666,11 @@ func (m *MastraTraces) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MastraWorkflowSnapshot struct {
-	WorkflowName string    `gorm:"column:workflow_name;primaryKey;uniqueIndex:public_mastra_workflow_snapshot_workflow_name_run_id_key;index:mastra_workflow_snapshot_name_createdat_idx" json:"workflow_name"`
-	RunID        string    `gorm:"column:run_id;primaryKey;uniqueIndex:public_mastra_workflow_snapshot_workflow_name_run_id_key" json:"run_id"`
+	WorkflowName string    `gorm:"column:workflow_name;primaryKey;uniqueIndex:public_mastra_workflow_snapshot_workflow_name_run_id_key,priority:1;index:mastra_workflow_snapshot_name_createdat_idx,priority:1" json:"workflow_name"`
+	RunID        string    `gorm:"column:run_id;primaryKey;uniqueIndex:public_mastra_workflow_snapshot_workflow_name_run_id_key,priority:2" json:"run_id"`
 	ResourceID   *string   `gorm:"column:resourceId" json:"resourceId"`
 	Snapshot     string    `gorm:"column:snapshot;not null" json:"snapshot"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;index:mastra_workflow_snapshot_name_createdat_idx;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt    DateTime  `gorm:"column:createdAt;index:mastra_workflow_snapshot_name_createdat_idx,priority:2,sort:desc;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt    DateTime  `gorm:"column:updatedAt;type:timestamp(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedAtZ   *DateTime `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ   *DateTime `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
@@ -1767,11 +1767,11 @@ type MastraBackgroundTasks struct {
 	ID             string         `gorm:"column:id;primaryKey" json:"id"`
 	ToolCallID     string         `gorm:"column:tool_call_id;index:mastra_bg_tasks_tool_call_idx;not null" json:"tool_call_id"`
 	ToolName       string         `gorm:"column:tool_name;not null" json:"tool_name"`
-	AgentID        string         `gorm:"column:agent_id;index:mastra_bg_tasks_agent_status_idx;not null" json:"agent_id"`
+	AgentID        string         `gorm:"column:agent_id;index:mastra_bg_tasks_agent_status_idx,priority:1;not null" json:"agent_id"`
 	RunID          string         `gorm:"column:run_id;not null" json:"run_id"`
-	ThreadID       *string        `gorm:"column:thread_id;index:mastra_bg_tasks_thread_idx" json:"thread_id"`
+	ThreadID       *string        `gorm:"column:thread_id;index:mastra_bg_tasks_thread_idx,priority:1" json:"thread_id"`
 	ResourceID     *string        `gorm:"column:resource_id" json:"resource_id"`
-	Status         string         `gorm:"column:status;index:mastra_bg_tasks_agent_status_idx;index:mastra_bg_tasks_status_created_at_idx;not null" json:"status"`
+	Status         string         `gorm:"column:status;index:mastra_bg_tasks_agent_status_idx,priority:2;index:mastra_bg_tasks_status_created_at_idx,priority:1;not null" json:"status"`
 	Args           datatypes.JSON `gorm:"column:args;not null" json:"args"`
 	Result         datatypes.JSON `gorm:"column:result" json:"result"`
 	Error          datatypes.JSON `gorm:"column:error" json:"error"`
@@ -1779,7 +1779,7 @@ type MastraBackgroundTasks struct {
 	RetryCount     int            `gorm:"column:retry_count;size:32;not null" json:"retry_count"`
 	MaxRetries     int            `gorm:"column:max_retries;size:32;not null" json:"max_retries"`
 	TimeoutMs      int            `gorm:"column:timeout_ms;size:32;not null" json:"timeout_ms"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;index:mastra_bg_tasks_status_created_at_idx;index:mastra_bg_tasks_thread_idx;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;index:mastra_bg_tasks_status_created_at_idx,priority:2;index:mastra_bg_tasks_thread_idx,priority:2;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	StartedAt      *DateTime      `gorm:"column:startedAt;type:timestamp(6)" json:"startedAt"`
 	SuspendedAt    *DateTime      `gorm:"column:suspendedAt;type:timestamp(6)" json:"suspendedAt"`
 	CompletedAt    *DateTime      `gorm:"column:completedAt;type:timestamp(6)" json:"completedAt"`
@@ -1831,8 +1831,8 @@ func (m *MastraChannelConfig) BeforeCreate(tx *gorm.DB) error {
 
 type MastraChannelInstallations struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	Platform   string         `gorm:"column:platform;index:idx_channel_installations_platform_agent;not null" json:"platform"`
-	AgentID    string         `gorm:"column:agentId;index:idx_channel_installations_platform_agent;not null" json:"agentId"`
+	Platform   string         `gorm:"column:platform;index:idx_channel_installations_platform_agent,priority:1;not null" json:"platform"`
+	AgentID    string         `gorm:"column:agentId;index:idx_channel_installations_platform_agent,priority:2;not null" json:"agentId"`
 	Status     string         `gorm:"column:status;not null" json:"status"`
 	WebhookID  *string        `gorm:"column:webhookId;uniqueIndex:idx_channel_installations_webhook" json:"webhookId"`
 	Data       datatypes.JSON `gorm:"column:data;not null" json:"data"`
@@ -1861,10 +1861,10 @@ func (m *MastraChannelInstallations) BeforeCreate(tx *gorm.DB) error {
 
 type MastraDatasetItems struct {
 	ID                 string         `gorm:"column:id;primaryKey" json:"id"`
-	DatasetID          string         `gorm:"column:datasetId;index:idx_dataset_items_dataset_validto;index:idx_dataset_items_dataset_validto_deleted;index:idx_dataset_items_dataset_version;index:idx_dataset_items_external_id_history;not null" json:"datasetId"`
-	DatasetVersion     int            `gorm:"column:datasetVersion;primaryKey;index:idx_dataset_items_dataset_version;index:idx_dataset_items_external_id_history;size:32" json:"datasetVersion"`
-	ValidTo            *int           `gorm:"column:validTo;index:idx_dataset_items_dataset_validto;index:idx_dataset_items_dataset_validto_deleted;size:32" json:"validTo"`
-	IsDeleted          bool           `gorm:"column:isDeleted;index:idx_dataset_items_dataset_validto_deleted;not null" json:"isDeleted"`
+	DatasetID          string         `gorm:"column:datasetId;index:idx_dataset_items_dataset_validto,priority:1;index:idx_dataset_items_dataset_validto_deleted,priority:1;index:idx_dataset_items_dataset_version,priority:1;index:idx_dataset_items_external_id_history,priority:1;not null" json:"datasetId"`
+	DatasetVersion     int            `gorm:"column:datasetVersion;primaryKey;index:idx_dataset_items_dataset_version,priority:2;index:idx_dataset_items_external_id_history,priority:3;size:32" json:"datasetVersion"`
+	ValidTo            *int           `gorm:"column:validTo;index:idx_dataset_items_dataset_validto,priority:2;index:idx_dataset_items_dataset_validto_deleted,priority:2;size:32" json:"validTo"`
+	IsDeleted          bool           `gorm:"column:isDeleted;index:idx_dataset_items_dataset_validto_deleted,priority:3;not null" json:"isDeleted"`
 	Input              datatypes.JSON `gorm:"column:input;not null" json:"input"`
 	GroundTruth        datatypes.JSON `gorm:"column:groundTruth" json:"groundTruth"`
 	RequestContext     datatypes.JSON `gorm:"column:requestContext" json:"requestContext"`
@@ -1875,12 +1875,12 @@ type MastraDatasetItems struct {
 	CreatedAtZ         *DateTime      `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ         *DateTime      `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
 	ExpectedTrajectory datatypes.JSON `gorm:"column:expectedTrajectory" json:"expectedTrajectory"`
-	OrganizationID     *string        `gorm:"column:organizationId;index:idx_dataset_items_org_project" json:"organizationId"`
-	ProjectID          *string        `gorm:"column:projectId;index:idx_dataset_items_org_project" json:"projectId"`
+	OrganizationID     *string        `gorm:"column:organizationId;index:idx_dataset_items_org_project,priority:1" json:"organizationId"`
+	ProjectID          *string        `gorm:"column:projectId;index:idx_dataset_items_org_project,priority:2" json:"projectId"`
 	ToolMocks          datatypes.JSON `gorm:"column:toolMocks" json:"toolMocks"`
 	UnmockedToolPolicy *string        `gorm:"column:unmockedToolPolicy" json:"unmockedToolPolicy"`
 	ScorerIds          datatypes.JSON `gorm:"column:scorerIds" json:"scorerIds"`
-	ExternalID         *string        `gorm:"column:externalId;index:idx_dataset_items_external_id_history" json:"externalId"`
+	ExternalID         *string        `gorm:"column:externalId;index:idx_dataset_items_external_id_history,priority:2" json:"externalId"`
 }
 
 func (MastraDatasetItems) TableName() string {
@@ -1900,8 +1900,8 @@ func (m *MastraDatasetItems) BeforeCreate(tx *gorm.DB) error {
 
 type MastraDatasetVersions struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	DatasetID  string    `gorm:"column:datasetId;uniqueIndex:idx_dataset_versions_dataset_version_unique;index:idx_dataset_versions_dataset_version;not null" json:"datasetId"`
-	Version    int       `gorm:"column:version;uniqueIndex:idx_dataset_versions_dataset_version_unique;index:idx_dataset_versions_dataset_version;size:32;not null" json:"version"`
+	DatasetID  string    `gorm:"column:datasetId;uniqueIndex:idx_dataset_versions_dataset_version_unique,priority:1;index:idx_dataset_versions_dataset_version,priority:1;not null" json:"datasetId"`
+	Version    int       `gorm:"column:version;uniqueIndex:idx_dataset_versions_dataset_version_unique,priority:2;index:idx_dataset_versions_dataset_version,priority:2;size:32;not null" json:"version"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	CreatedAtZ *DateTime `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 }
@@ -1935,10 +1935,10 @@ type MastraDatasets struct {
 	UpdatedAt            DateTime       `gorm:"column:updatedAt;type:timestamp(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedAtZ           *DateTime      `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ           *DateTime      `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
-	OrganizationID       *string        `gorm:"column:organizationId;index:idx_datasets_org_project" json:"organizationId"`
-	ProjectID            *string        `gorm:"column:projectId;index:idx_datasets_org_project" json:"projectId"`
-	CandidateKey         *string        `gorm:"column:candidateKey;index:idx_datasets_candidate" json:"candidateKey"`
-	CandidateID          *string        `gorm:"column:candidateId;index:idx_datasets_candidate" json:"candidateId"`
+	OrganizationID       *string        `gorm:"column:organizationId;index:idx_datasets_org_project,priority:1" json:"organizationId"`
+	ProjectID            *string        `gorm:"column:projectId;index:idx_datasets_org_project,priority:2" json:"projectId"`
+	CandidateKey         *string        `gorm:"column:candidateKey;index:idx_datasets_candidate,priority:1" json:"candidateKey"`
+	CandidateID          *string        `gorm:"column:candidateId;index:idx_datasets_candidate,priority:2" json:"candidateId"`
 }
 
 func (MastraDatasets) TableName() string {
@@ -1958,8 +1958,8 @@ func (m *MastraDatasets) BeforeCreate(tx *gorm.DB) error {
 
 type MastraExperimentResults struct {
 	ID                 string         `gorm:"column:id;primaryKey" json:"id"`
-	ExperimentID       string         `gorm:"column:experimentId;uniqueIndex:idx_experiment_results_exp_item_attempt;index:idx_experiment_results_experimentid;not null" json:"experimentId"`
-	ItemID             string         `gorm:"column:itemId;uniqueIndex:idx_experiment_results_exp_item_attempt;not null" json:"itemId"`
+	ExperimentID       string         `gorm:"column:experimentId;uniqueIndex:idx_experiment_results_exp_item_attempt,priority:1;index:idx_experiment_results_experimentid;not null" json:"experimentId"`
+	ItemID             string         `gorm:"column:itemId;uniqueIndex:idx_experiment_results_exp_item_attempt,priority:2;not null" json:"itemId"`
 	ItemDatasetVersion *int           `gorm:"column:itemDatasetVersion;size:32" json:"itemDatasetVersion"`
 	Input              datatypes.JSON `gorm:"column:input;not null" json:"input"`
 	Output             datatypes.JSON `gorm:"column:output" json:"output"`
@@ -1970,7 +1970,7 @@ type MastraExperimentResults struct {
 	RetryCount         int            `gorm:"column:retryCount;size:32;not null" json:"retryCount"`
 	TraceID            *string        `gorm:"column:traceId" json:"traceId"`
 	Status             *string        `gorm:"column:status" json:"status"`
-	Tags               datatypes.JSON `gorm:"column:tags;index:idx_experiment_results_tags_gin" json:"tags"`
+	Tags               datatypes.JSON `gorm:"column:tags;index:idx_experiment_results_tags_gin,type:gin" json:"tags"`
 	CreatedAt          DateTime       `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	StartedAtZ         *DateTime      `gorm:"column:startedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"startedAtZ"`
 	CompletedAtZ       *DateTime      `gorm:"column:completedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"completedAtZ"`
@@ -1978,9 +1978,9 @@ type MastraExperimentResults struct {
 	Comment            *string        `gorm:"column:comment" json:"comment"`
 	ToolMockReport     datatypes.JSON `gorm:"column:toolMockReport" json:"toolMockReport"`
 	Metadata           datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	OrganizationID     *string        `gorm:"column:organizationId;index:idx_experiment_results_org_project" json:"organizationId"`
-	ProjectID          *string        `gorm:"column:projectId;index:idx_experiment_results_org_project" json:"projectId"`
-	Attempt            *int           `gorm:"column:attempt;uniqueIndex:idx_experiment_results_exp_item_attempt;size:32" json:"attempt"`
+	OrganizationID     *string        `gorm:"column:organizationId;index:idx_experiment_results_org_project,priority:1" json:"organizationId"`
+	ProjectID          *string        `gorm:"column:projectId;index:idx_experiment_results_org_project,priority:2" json:"projectId"`
+	Attempt            *int           `gorm:"column:attempt;uniqueIndex:idx_experiment_results_exp_item_attempt,priority:3;size:32" json:"attempt"`
 }
 
 func (MastraExperimentResults) TableName() string {
@@ -2024,14 +2024,14 @@ type MastraExperiments struct {
 	CompletedAtZ      *DateTime      `gorm:"column:completedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"completedAtZ"`
 	CreatedAtZ        *DateTime      `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 	UpdatedAtZ        *DateTime      `gorm:"column:updatedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"updatedAtZ"`
-	OrganizationID    *string        `gorm:"column:organizationId;index:idx_experiments_org_project" json:"organizationId"`
-	ProjectID         *string        `gorm:"column:projectId;index:idx_experiments_org_project" json:"projectId"`
+	OrganizationID    *string        `gorm:"column:organizationId;index:idx_experiments_org_project,priority:1" json:"organizationId"`
+	ProjectID         *string        `gorm:"column:projectId;index:idx_experiments_org_project,priority:2" json:"projectId"`
 	Provenance        datatypes.JSON `gorm:"column:provenance" json:"provenance"`
 	RunnerAttestation datatypes.JSON `gorm:"column:runnerAttestation" json:"runnerAttestation"`
-	ExperimentSetID   *string        `gorm:"column:experimentSetId;index:idx_experiments_grouping" json:"experimentSetId"`
-	ComparisonID      *string        `gorm:"column:comparisonId;index:idx_experiments_grouping" json:"comparisonId"`
-	VariantID         *string        `gorm:"column:variantId;index:idx_experiments_grouping" json:"variantId"`
-	TrialIndex        *int           `gorm:"column:trialIndex;index:idx_experiments_grouping;size:32" json:"trialIndex"`
+	ExperimentSetID   *string        `gorm:"column:experimentSetId;index:idx_experiments_grouping,priority:1" json:"experimentSetId"`
+	ComparisonID      *string        `gorm:"column:comparisonId;index:idx_experiments_grouping,priority:2" json:"comparisonId"`
+	VariantID         *string        `gorm:"column:variantId;index:idx_experiments_grouping,priority:3" json:"variantId"`
+	TrialIndex        *int           `gorm:"column:trialIndex;index:idx_experiments_grouping,priority:4;size:32" json:"trialIndex"`
 	ScorerIds         datatypes.JSON `gorm:"column:scorerIds" json:"scorerIds"`
 }
 
@@ -2058,8 +2058,8 @@ func (m *MastraExperiments) BeforeCreate(tx *gorm.DB) error {
 
 type MastraFavorites struct {
 	UserID     string    `gorm:"column:userId;primaryKey" json:"userId"`
-	EntityType string    `gorm:"column:entityType;primaryKey;index:idx_favorites_entity" json:"entityType"`
-	EntityID   string    `gorm:"column:entityId;primaryKey;index:idx_favorites_entity" json:"entityId"`
+	EntityType string    `gorm:"column:entityType;primaryKey;index:idx_favorites_entity,priority:1" json:"entityType"`
+	EntityID   string    `gorm:"column:entityId;primaryKey;index:idx_favorites_entity,priority:2" json:"entityId"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	CreatedAtZ *DateTime `gorm:"column:createdAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"createdAtZ"`
 }
@@ -2077,7 +2077,7 @@ func (m *MastraFavorites) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MastraKnowledgeActivity struct {
-	ID             string         `gorm:"column:id;primaryKey;index:idx_knowledge_activity_latest" json:"id"`
+	ID             string         `gorm:"column:id;primaryKey;index:idx_knowledge_activity_latest,sort:desc" json:"id"`
 	Action         string         `gorm:"column:action;not null" json:"action"`
 	RecordType     string         `gorm:"column:recordType;not null" json:"recordType"`
 	RecordID       string         `gorm:"column:recordId;not null" json:"recordId"`
@@ -2121,9 +2121,9 @@ func (m *MastraKnowledgeCursors) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MastraKnowledgeMentions struct {
-	SourceType string `gorm:"column:sourceType;primaryKey;index:idx_knowledge_mentions_record" json:"sourceType"`
-	SourceID   string `gorm:"column:sourceId;primaryKey;index:idx_knowledge_mentions_record" json:"sourceId"`
-	RecordID   string `gorm:"column:recordId;primaryKey;index:idx_knowledge_mentions_record" json:"recordId"`
+	SourceType string `gorm:"column:sourceType;primaryKey;index:idx_knowledge_mentions_record,priority:2" json:"sourceType"`
+	SourceID   string `gorm:"column:sourceId;primaryKey;index:idx_knowledge_mentions_record,priority:3" json:"sourceId"`
+	RecordID   string `gorm:"column:recordId;primaryKey;index:idx_knowledge_mentions_record,priority:1" json:"recordId"`
 }
 
 func (MastraKnowledgeMentions) TableName() string {
@@ -2132,14 +2132,14 @@ func (MastraKnowledgeMentions) TableName() string {
 
 type MastraKnowledgeNodes struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
-	Type          string         `gorm:"column:type;uniqueIndex:idx_knowledge_nodes_identity;index:idx_knowledge_nodes_scope;not null" json:"type"`
+	Type          string         `gorm:"column:type;uniqueIndex:idx_knowledge_nodes_identity,priority:1;index:idx_knowledge_nodes_scope,priority:2;not null" json:"type"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
-	CanonicalName string         `gorm:"column:canonicalName;uniqueIndex:idx_knowledge_nodes_identity;not null" json:"canonicalName"`
+	CanonicalName string         `gorm:"column:canonicalName;uniqueIndex:idx_knowledge_nodes_identity,priority:3;not null" json:"canonicalName"`
 	Kind          *string        `gorm:"column:kind" json:"kind"`
 	Content       *string        `gorm:"column:content" json:"content"`
 	Description   *string        `gorm:"column:description" json:"description"`
 	Scope         datatypes.JSON `gorm:"column:scope;not null" json:"scope"`
-	ScopeKey      string         `gorm:"column:scopeKey;uniqueIndex:idx_knowledge_nodes_identity;index:idx_knowledge_nodes_scope;not null" json:"scopeKey"`
+	ScopeKey      string         `gorm:"column:scopeKey;uniqueIndex:idx_knowledge_nodes_identity,priority:2;index:idx_knowledge_nodes_scope,priority:1;not null" json:"scopeKey"`
 	Version       int            `gorm:"column:version;size:32;not null" json:"version"`
 	MergedInto    *string        `gorm:"column:mergedInto" json:"mergedInto"`
 	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
@@ -2164,12 +2164,12 @@ func (m *MastraKnowledgeNodes) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MastraKnowledgeRecords struct {
-	ID             string         `gorm:"column:id;primaryKey;index:idx_knowledge_records_node_latest;index:idx_knowledge_records_thread_latest" json:"id"`
-	Node           string         `gorm:"column:node;index:idx_knowledge_records_node_latest;not null" json:"node"`
+	ID             string         `gorm:"column:id;primaryKey;index:idx_knowledge_records_node_latest,priority:2,sort:desc;index:idx_knowledge_records_thread_latest,priority:2,sort:desc" json:"id"`
+	Node           string         `gorm:"column:node;index:idx_knowledge_records_node_latest,priority:1;not null" json:"node"`
 	Text           string         `gorm:"column:text;not null" json:"text"`
 	Scope          datatypes.JSON `gorm:"column:scope;not null" json:"scope"`
 	ScopeKey       string         `gorm:"column:scopeKey;not null" json:"scopeKey"`
-	SourceThreadID string         `gorm:"column:sourceThreadId;index:idx_knowledge_records_thread_latest;not null" json:"sourceThreadId"`
+	SourceThreadID string         `gorm:"column:sourceThreadId;index:idx_knowledge_records_thread_latest,priority:1;not null" json:"sourceThreadId"`
 	CapturedAt     DateTime       `gorm:"column:capturedAt;type:timestamp(6);not null" json:"capturedAt"`
 	When           *DateTime      `gorm:"column:when;type:timestamp(6)" json:"when"`
 	MaxScope       *string        `gorm:"column:maxScope" json:"maxScope"`
@@ -2207,12 +2207,12 @@ type MastraKnowledgeSemanticOutbox struct {
 	Operation      string         `gorm:"column:operation;not null" json:"operation"`
 	Scope          datatypes.JSON `gorm:"column:scope;not null" json:"scope"`
 	ScopeKey       string         `gorm:"column:scopeKey;not null" json:"scopeKey"`
-	Status         string         `gorm:"column:status;index:idx_knowledge_outbox_claim;not null" json:"status"`
+	Status         string         `gorm:"column:status;index:idx_knowledge_outbox_claim,priority:1;not null" json:"status"`
 	Attempts       int            `gorm:"column:attempts;size:32;not null" json:"attempts"`
-	AvailableAt    DateTime       `gorm:"column:availableAt;index:idx_knowledge_outbox_claim;type:timestamp(6);not null" json:"availableAt"`
+	AvailableAt    DateTime       `gorm:"column:availableAt;index:idx_knowledge_outbox_claim,priority:2;type:timestamp(6);not null" json:"availableAt"`
 	ClaimedAt      *DateTime      `gorm:"column:claimedAt;type:timestamp(6)" json:"claimedAt"`
 	ClaimedBy      *string        `gorm:"column:claimedBy" json:"claimedBy"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;index:idx_knowledge_outbox_claim;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;index:idx_knowledge_outbox_claim,priority:3;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
 	CompletedAt    *DateTime      `gorm:"column:completedAt;type:timestamp(6)" json:"completedAt"`
 	AvailableAtZ   *DateTime      `gorm:"column:availableAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"availableAtZ"`
 	ClaimedAtZ     *DateTime      `gorm:"column:claimedAtZ;type:timestamptz(6);default:CURRENT_TIMESTAMP" json:"claimedAtZ"`
@@ -2243,8 +2243,8 @@ func (m *MastraKnowledgeSemanticOutbox) BeforeCreate(tx *gorm.DB) error {
 
 type MastraMcpClientVersions struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
-	McpClientID   string         `gorm:"column:mcpClientId;uniqueIndex:idx_mcp_client_versions_client_version;not null" json:"mcpClientId"`
-	VersionNumber int            `gorm:"column:versionNumber;uniqueIndex:idx_mcp_client_versions_client_version;size:32;not null" json:"versionNumber"`
+	McpClientID   string         `gorm:"column:mcpClientId;uniqueIndex:idx_mcp_client_versions_client_version,priority:1;not null" json:"mcpClientId"`
+	VersionNumber int            `gorm:"column:versionNumber;uniqueIndex:idx_mcp_client_versions_client_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
 	Description   *string        `gorm:"column:description" json:"description"`
 	Servers       datatypes.JSON `gorm:"column:servers;not null" json:"servers"`
@@ -2295,8 +2295,8 @@ func (m *MastraMcpClients) BeforeCreate(tx *gorm.DB) error {
 
 type MastraMcpServerVersions struct {
 	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	McpServerID      string         `gorm:"column:mcpServerId;uniqueIndex:idx_mcp_server_versions_server_version;not null" json:"mcpServerId"`
-	VersionNumber    int            `gorm:"column:versionNumber;uniqueIndex:idx_mcp_server_versions_server_version;size:32;not null" json:"versionNumber"`
+	McpServerID      string         `gorm:"column:mcpServerId;uniqueIndex:idx_mcp_server_versions_server_version,priority:1;not null" json:"mcpServerId"`
+	VersionNumber    int            `gorm:"column:versionNumber;uniqueIndex:idx_mcp_server_versions_server_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name             string         `gorm:"column:name;not null" json:"name"`
 	Version          string         `gorm:"column:version;not null" json:"version"`
 	Description      *string        `gorm:"column:description" json:"description"`
@@ -2421,8 +2421,8 @@ func (m *MastraObservationalMemory) BeforeCreate(tx *gorm.DB) error {
 
 type MastraPromptBlockVersions struct {
 	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
-	BlockID              string         `gorm:"column:blockId;uniqueIndex:idx_prompt_block_versions_block_version;not null" json:"blockId"`
-	VersionNumber        int            `gorm:"column:versionNumber;uniqueIndex:idx_prompt_block_versions_block_version;size:32;not null" json:"versionNumber"`
+	BlockID              string         `gorm:"column:blockId;uniqueIndex:idx_prompt_block_versions_block_version,priority:1;not null" json:"blockId"`
+	VersionNumber        int            `gorm:"column:versionNumber;uniqueIndex:idx_prompt_block_versions_block_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name                 string         `gorm:"column:name;not null" json:"name"`
 	Description          *string        `gorm:"column:description" json:"description"`
 	Content              string         `gorm:"column:content;not null" json:"content"`
@@ -2475,10 +2475,10 @@ func (m *MastraPromptBlocks) BeforeCreate(tx *gorm.DB) error {
 
 type MastraScheduleTriggers struct {
 	ID              string         `gorm:"column:id;primaryKey" json:"id"`
-	ScheduleID      string         `gorm:"column:schedule_id;index:idx_mastra_schedule_triggers_schedule_fire;not null" json:"schedule_id"`
+	ScheduleID      string         `gorm:"column:schedule_id;index:idx_mastra_schedule_triggers_schedule_fire,priority:1;not null" json:"schedule_id"`
 	RunID           *string        `gorm:"column:run_id" json:"run_id"`
 	ScheduledFireAt int64          `gorm:"column:scheduled_fire_at;not null" json:"scheduled_fire_at"`
-	ActualFireAt    int64          `gorm:"column:actual_fire_at;index:idx_mastra_schedule_triggers_schedule_fire;not null" json:"actual_fire_at"`
+	ActualFireAt    int64          `gorm:"column:actual_fire_at;index:idx_mastra_schedule_triggers_schedule_fire,priority:2,sort:desc;not null" json:"actual_fire_at"`
 	Outcome         string         `gorm:"column:outcome;not null" json:"outcome"`
 	Error           *string        `gorm:"column:error" json:"error"`
 	TriggerKind     string         `gorm:"column:trigger_kind;not null" json:"trigger_kind"`
@@ -2495,8 +2495,8 @@ type MastraSchedules struct {
 	Target     datatypes.JSON `gorm:"column:target;not null" json:"target"`
 	Cron       string         `gorm:"column:cron;not null" json:"cron"`
 	Timezone   *string        `gorm:"column:timezone" json:"timezone"`
-	Status     string         `gorm:"column:status;index:idx_mastra_schedules_status_next_fire;not null" json:"status"`
-	NextFireAt int64          `gorm:"column:next_fire_at;index:idx_mastra_schedules_status_next_fire;not null" json:"next_fire_at"`
+	Status     string         `gorm:"column:status;index:idx_mastra_schedules_status_next_fire,priority:1;not null" json:"status"`
+	NextFireAt int64          `gorm:"column:next_fire_at;index:idx_mastra_schedules_status_next_fire,priority:2;not null" json:"next_fire_at"`
 	LastFireAt *int64         `gorm:"column:last_fire_at" json:"last_fire_at"`
 	LastRunID  *string        `gorm:"column:last_run_id" json:"last_run_id"`
 	CreatedAt  int64          `gorm:"column:created_at;autoCreateTime:false;not null" json:"created_at"`
@@ -2512,8 +2512,8 @@ func (MastraSchedules) TableName() string {
 
 type MastraScorerDefinitionVersions struct {
 	ID                 string         `gorm:"column:id;primaryKey" json:"id"`
-	ScorerDefinitionID string         `gorm:"column:scorerDefinitionId;uniqueIndex:idx_scorer_definition_versions_def_version;not null" json:"scorerDefinitionId"`
-	VersionNumber      int            `gorm:"column:versionNumber;uniqueIndex:idx_scorer_definition_versions_def_version;size:32;not null" json:"versionNumber"`
+	ScorerDefinitionID string         `gorm:"column:scorerDefinitionId;uniqueIndex:idx_scorer_definition_versions_def_version,priority:1;not null" json:"scorerDefinitionId"`
+	VersionNumber      int            `gorm:"column:versionNumber;uniqueIndex:idx_scorer_definition_versions_def_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name               string         `gorm:"column:name;not null" json:"name"`
 	Description        *string        `gorm:"column:description" json:"description"`
 	Type               string         `gorm:"column:type;not null" json:"type"`
@@ -2592,8 +2592,8 @@ func (m *MastraSkillBlobs) BeforeCreate(tx *gorm.DB) error {
 
 type MastraSkillVersions struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
-	SkillID       string         `gorm:"column:skillId;uniqueIndex:idx_skill_versions_skill_version;not null" json:"skillId"`
-	VersionNumber int            `gorm:"column:versionNumber;uniqueIndex:idx_skill_versions_skill_version;size:32;not null" json:"versionNumber"`
+	SkillID       string         `gorm:"column:skillId;uniqueIndex:idx_skill_versions_skill_version,priority:1;not null" json:"skillId"`
+	VersionNumber int            `gorm:"column:versionNumber;uniqueIndex:idx_skill_versions_skill_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
 	Description   string         `gorm:"column:description;not null" json:"description"`
 	Instructions  string         `gorm:"column:instructions;not null" json:"instructions"`
@@ -2678,10 +2678,10 @@ func (m *MastraThreadState) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MastraToolProviderConnections struct {
-	AuthorID     string    `gorm:"column:authorId;primaryKey;index:idx_tool_provider_connections_author" json:"authorId"`
-	ProviderID   string    `gorm:"column:providerId;primaryKey;index:idx_tool_provider_connections_author" json:"providerId"`
+	AuthorID     string    `gorm:"column:authorId;primaryKey;index:idx_tool_provider_connections_author,priority:1" json:"authorId"`
+	ProviderID   string    `gorm:"column:providerId;primaryKey;index:idx_tool_provider_connections_author,priority:2" json:"providerId"`
 	ConnectionID string    `gorm:"column:connectionId;primaryKey" json:"connectionId"`
-	Toolkit      string    `gorm:"column:toolkit;index:idx_tool_provider_connections_author;not null" json:"toolkit"`
+	Toolkit      string    `gorm:"column:toolkit;index:idx_tool_provider_connections_author,priority:3;not null" json:"toolkit"`
 	Label        *string   `gorm:"column:label" json:"label"`
 	Scope        string    `gorm:"column:scope;not null" json:"scope"`
 	CreatedAt    DateTime  `gorm:"column:createdAt;type:timestamp(6);autoCreateTime:false;not null" json:"createdAt"`
@@ -2741,8 +2741,8 @@ func (m *MastraWorkflowDefinitions) BeforeCreate(tx *gorm.DB) error {
 
 type MastraWorkspaceVersions struct {
 	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	WorkspaceID      string         `gorm:"column:workspaceId;uniqueIndex:idx_workspace_versions_workspace_version;not null" json:"workspaceId"`
-	VersionNumber    int            `gorm:"column:versionNumber;uniqueIndex:idx_workspace_versions_workspace_version;size:32;not null" json:"versionNumber"`
+	WorkspaceID      string         `gorm:"column:workspaceId;uniqueIndex:idx_workspace_versions_workspace_version,priority:1;not null" json:"workspaceId"`
+	VersionNumber    int            `gorm:"column:versionNumber;uniqueIndex:idx_workspace_versions_workspace_version,priority:2;size:32;not null" json:"versionNumber"`
 	Name             string         `gorm:"column:name;not null" json:"name"`
 	Description      *string        `gorm:"column:description" json:"description"`
 	Filesystem       datatypes.JSON `gorm:"column:filesystem" json:"filesystem"`
@@ -2800,7 +2800,7 @@ func (m *MastraWorkspaces) BeforeCreate(tx *gorm.DB) error {
 
 type OAuthApp struct {
 	ID                       string                         `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID           *string                        `gorm:"column:organizationId;uniqueIndex:OAuthApp_organizationId_deletedAt_key;index:OAuthApp_organizationId_idx" json:"organizationId"`
+	OrganizationID           *string                        `gorm:"column:organizationId;uniqueIndex:OAuthApp_organizationId_deletedAt_key,priority:1;index:OAuthApp_organizationId_idx" json:"organizationId"`
 	Name                     string                         `gorm:"column:name;not null" json:"name"`
 	Description              *string                        `gorm:"column:description" json:"description"`
 	PictureID                *string                        `gorm:"column:pictureId" json:"pictureId"`
@@ -2812,7 +2812,7 @@ type OAuthApp struct {
 	TokenEndpointAuthMethod  *string                        `gorm:"column:tokenEndpointAuthMethod" json:"tokenEndpointAuthMethod"`
 	CreatedAt                DateTime                       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                DateTime                       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt                *DateTime                      `gorm:"column:deletedAt;uniqueIndex:OAuthApp_organizationId_deletedAt_key;index:OAuthApp_deletedAt_idx;type:timestamp(3)" json:"deletedAt"`
+	DeletedAt                *DateTime                      `gorm:"column:deletedAt;uniqueIndex:OAuthApp_organizationId_deletedAt_key,priority:2;index:OAuthApp_deletedAt_idx;type:timestamp(3)" json:"deletedAt"`
 	Organization             *Organization                  `gorm:"belongsTo"`
 	Picture                  *Media                         `gorm:"foreignKey:PictureID;belongsTo"`
 	Authorizations           []OAuthAuthorization           `gorm:"foreignKey:OauthAppID;constraint:OAuthAuthorization_oauthAppId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
@@ -2847,9 +2847,9 @@ func (*OAuthApp) BeforeUpdate(tx *gorm.DB) error {
 
 type OAuthAuthorization struct {
 	ID                  string        `gorm:"column:id;primaryKey" json:"id"`
-	OauthAppID          string        `gorm:"column:oauthAppId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key;index:OAuthAuthorization_oauthAppId_idx;not null" json:"oauthAppId"`
-	UserID              string        `gorm:"column:userId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key;index:OAuthAuthorization_userId_idx;not null" json:"userId"`
-	OrganizationID      string        `gorm:"column:organizationId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key;index:OAuthAuthorization_organizationId_idx;not null" json:"organizationId"`
+	OauthAppID          string        `gorm:"column:oauthAppId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key,priority:1;index:OAuthAuthorization_oauthAppId_idx;not null" json:"oauthAppId"`
+	UserID              string        `gorm:"column:userId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key,priority:2;index:OAuthAuthorization_userId_idx;not null" json:"userId"`
+	OrganizationID      string        `gorm:"column:organizationId;uniqueIndex:OAuthAuthorization_oauthAppId_userId_organizationId_key,priority:3;index:OAuthAuthorization_organizationId_idx;not null" json:"organizationId"`
 	AccessToken         *string       `gorm:"column:accessToken;index:OAuthAuthorization_accessToken_idx" json:"accessToken"`
 	AuthorizationCode   *string       `gorm:"column:authorizationCode;index:OAuthAuthorization_authorizationCode_idx" json:"authorizationCode"`
 	CodeExpiresAt       *DateTime     `gorm:"column:codeExpiresAt;type:timestamp(3)" json:"codeExpiresAt"`

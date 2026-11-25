@@ -21,28 +21,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoConnection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// oidc | saml
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     /// DRAFT | CLAIMED | APPROVED | REJECTED | DISCARDED |
     /// VERIFICATION_PENDING | VERIFIED | ACTIVE | SUSPENDED |
     /// TEARDOWN_PENDING | TORN_DOWN
+    #[sea_orm(column_type = "Text")]
     pub state: String,
-    #[sea_orm(column_name = "claimedDomains")]
+    #[sea_orm(
+        column_name = "claimedDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub claimed_domains: Vec<String>,
     /// [{ domain, state, claimedAtMs, claimedByActorId, decidedAtMs,
     /// decidedByActorId, authority, waitedMs, note }] - every claim this
     /// connection has made and how long each waited to be decided. The tier-3
     /// approval queue is a read of this column, and the epic's Open Q2 wants
     /// that latency measured from the day the queue exists.
-    #[sea_orm(column_name = "domainClaims", default_value = "[]")]
+    #[sea_orm(
+        column_name = "domainClaims",
+        column_type = "JsonBinary",
+        default_value = "[]"
+    )]
     pub domain_claims: Json,
-    #[sea_orm(column_name = "approvedDomains")]
+    #[sea_orm(
+        column_name = "approvedDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub approved_domains: Vec<String>,
     /// The only domains that ever route, and only while state is ACTIVE.
-    #[sea_orm(column_name = "verifiedDomains")]
+    #[sea_orm(
+        column_name = "verifiedDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub verified_domains: Vec<String>,
     /// The subset of `verifiedDomains` whose published record stayed missing
     /// through its grace window (ADR-123). They still ROUTE - everyone already
@@ -50,19 +66,26 @@ pub struct Model {
     /// provisioning on first sign-in, no walking in by domain. A column rather
     /// than a read of the JSON below, because both questions are asked on a
     /// sign-in path and have to be one indexed predicate.
-    #[sea_orm(column_name = "lapsedDomains")]
+    #[sea_orm(
+        column_name = "lapsedDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub lapsed_domains: Vec<String>,
     /// [{ domain, method, actorId, verifiedAtMs, proofState, firstAbsentAtMs,
     /// graceEndsAtMs }] - what proved each verified domain, who, and whether
     /// that evidence is still there. Kept on the row rather than only in the
     /// log so that an operator-attested domain can never be read as one the
     /// customer proved, and a wavering one never as one nothing is doubting.
-    #[sea_orm(column_name = "domainVerifications", default_value = "[]")]
+    #[sea_orm(
+        column_name = "domainVerifications",
+        column_type = "JsonBinary",
+        default_value = "[]"
+    )]
     pub domain_verifications: Json,
     /// { domain, method, tokenHash } while a ceremony is in flight.
-    #[sea_orm(column_name = "pendingVerification")]
+    #[sea_orm(column_name = "pendingVerification", column_type = "JsonBinary")]
     pub pending_verification: Option<Json>,
-    #[sea_orm(column_name = "idpMetadata")]
+    #[sea_orm(column_name = "idpMetadata", column_type = "JsonBinary")]
     pub idp_metadata: Json,
     /// admit | request | refuse - what this connection does with somebody who
     /// signs in through it and is not a member yet (ADR-117 3). Stated at
@@ -70,7 +93,11 @@ pub struct Model {
     /// and no reader has to decide what absence means. This was two fields
     /// for a while - a boolean `allowsJit` beside it, kept in step by the
     /// fold - and they disagreed about the middle answer.
-    #[sea_orm(column_name = "arrivalPolicy", default_value = "refuse")]
+    #[sea_orm(
+        column_name = "arrivalPolicy",
+        column_type = "Text",
+        default_value = "refuse"
+    )]
     pub arrival_policy: String,
     /// DEAD, AND STAYING FOR ONE RELEASE. Nothing reads or writes this; the
     /// routing repository derives the same answer from `arrivalPolicy`. It is
@@ -87,54 +114,71 @@ pub struct Model {
     /// copy of it: a connection always has a behaviour, and separately
     /// somebody has or has not decided on it. Going live waits for the
     /// deciding - "turn everybody away" is a decision too.
-    #[sea_orm(column_name = "arrivalPolicyDecidedAt")]
+    #[sea_orm(
+        column_name = "arrivalPolicyDecidedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub arrival_policy_decided_at: Option<DateTime>,
     /// self-serve | legacy-grandfathered
+    #[sea_orm(column_type = "Text")]
     pub source: String,
-    #[sea_orm(column_name = "testLoginAccountId")]
+    #[sea_orm(column_name = "testLoginAccountId", column_type = "Text")]
     pub test_login_account_id: Option<String>,
     /// The grandfathered connection this direct connection replaces. Null for
     /// ordinary connections and for the grandfathered predecessor itself.
     ///
     /// Partial uniqueness for nonterminal replacements is installed by the
     /// flattened migration; Prisma cannot express that predicate here.
-    #[sea_orm(column_name = "replacesConnectionId")]
+    #[sea_orm(column_name = "replacesConnectionId", column_type = "Text")]
     pub replaces_connection_id: Option<String>,
     /// SETUP | GRACE_LEGACY | GRACE_DIRECT | FINALIZING | FINALIZED.
     /// Null means this connection is not a legacy-to-direct replacement.
     #[sea_orm(column_name = "migrationPhase")]
     pub migration_phase: Option<SsoConnectionMigrationPhase>,
-    #[sea_orm(column_name = "graceStartedAt")]
+    #[sea_orm(
+        column_name = "graceStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub grace_started_at: Option<DateTime>,
     /// When an administrator last selected the normal route. This is audit
     /// evidence only: routing is derived from `migrationPhase`, never recency.
-    #[sea_orm(column_name = "routeChangedAt")]
+    #[sea_orm(
+        column_name = "routeChangedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub route_changed_at: Option<DateTime>,
-    #[sea_orm(column_name = "finalizationRequestedAt")]
+    #[sea_orm(
+        column_name = "finalizationRequestedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub finalization_requested_at: Option<DateTime>,
-    #[sea_orm(column_name = "finalizedAt")]
+    #[sea_orm(column_name = "finalizedAt", column_type = "custom(\"timestamp(3)\")")]
     pub finalized_at: Option<DateTime>,
     /// { domain, note } - the last ops rejection, read back on a re-claim.
+    #[sea_orm(column_type = "JsonBinary")]
     pub rejection: Option<Json>,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
     /// While TEARDOWN_PENDING: when the process manager's wake completes it.
-    #[sea_orm(column_name = "tearDownAfter")]
+    #[sea_orm(
+        column_name = "tearDownAfter",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub tear_down_after: Option<DateTime>,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "acceptedAt")]
+    #[sea_orm(column_name = "acceptedAt", column_type = "custom(\"timestamp(3)\")")]
     pub accepted_at: DateTime,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
     /// Event-derived, not database-managed: `@default(now())` / `@updatedAt`
     /// would make a replayed row differ from the row it rebuilds, which is
     /// exactly the parity this projection has to keep.
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RoleChangeLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "previousRole")]
     pub previous_role: OrganizationRoles,
@@ -17,13 +18,17 @@ pub struct Model {
     /// How the change was made. SSO rows name the member themself as `changedBy`.
     #[sea_orm(default_value = "MANUAL")]
     pub source: RoleChangeSource,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "changedById")]
+    #[sea_orm(column_name = "changedById", column_type = "Text")]
     pub changed_by_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 
@@ -32,19 +37,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "RoleChangeLog_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ChangedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "RoleChangeLog_changedById_fkey"
     )]
     ChangedBy,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "RoleChangeLog_organizationId_fkey"
     )]
     Organization,
 }

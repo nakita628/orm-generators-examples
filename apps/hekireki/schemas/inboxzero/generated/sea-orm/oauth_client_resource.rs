@@ -5,13 +5,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OauthClientResource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "resourceId")]
+    #[sea_orm(column_name = "resourceId", column_type = "Text")]
     pub resource_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: Option<DateTime>,
 }
 
@@ -21,14 +23,16 @@ pub enum Relation {
         belongs_to = "super::oauth_client::Entity",
         from = "Column::ClientId",
         to = "super::oauth_client::Column::ClientId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OauthClientResource_clientId_fkey"
     )]
     Client,
     #[sea_orm(
         belongs_to = "super::oauth_resource::Entity",
         from = "Column::ResourceId",
         to = "super::oauth_resource::Column::Identifier",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OauthClientResource_resourceId_fkey"
     )]
     OauthResource,
 }

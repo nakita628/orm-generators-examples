@@ -7,10 +7,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConversationParticipant")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
-    #[sea_orm(column_name = "memberId")]
+    #[sea_orm(column_name = "memberId", column_type = "Text")]
     pub member_id: String,
     pub generation: i32,
     #[sea_orm(default_value = true)]
@@ -19,7 +20,11 @@ pub struct Model {
     pub read_revision: i32,
     #[sea_orm(default_value = false)]
     pub muted: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -29,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::conversation::Entity",
         from = "Column::ConversationId",
         to = "super::conversation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConversationParticipant_conversationId_fkey"
     )]
     Conversation,
     #[sea_orm(
         belongs_to = "super::member::Entity",
         from = "Column::MemberId",
         to = "super::member::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConversationParticipant_memberId_fkey"
     )]
     Member,
     #[sea_orm(has_many = "super::conversation_activity::Entity")]

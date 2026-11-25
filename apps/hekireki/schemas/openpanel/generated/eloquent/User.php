@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,8 +17,6 @@ class User extends Model
     protected $table = 'users';
 
     protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -41,6 +40,20 @@ class User extends Model
         'twoFactorEnabled' => 'boolean',
         'deletedAt' => 'datetime',
     ];
+
+    protected function insertAndSetId(Builder $query, $attributes)
+    {
+        $base = $query->getQuery();
+        $base->applyBeforeQueryCallbacks();
+        $connection = $base->getConnection();
+        $connection->recordsHaveBeenModified();
+        $keyName = $this->getKeyName();
+        $row = $connection->selectFromWriteConnection(
+            $base->getGrammar()->compileInsertGetId($base, $attributes, $keyName),
+            $base->cleanBindings($attributes),
+        )[0];
+        $this->setAttribute($keyName, is_object($row) ? $row->{$keyName} : $row[$keyName]);
+    }
 
     public function twoFactor(): HasOne
     {

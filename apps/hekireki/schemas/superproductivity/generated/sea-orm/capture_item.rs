@@ -7,13 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "capture_items")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub grant_id: String,
+    #[sea_orm(column_type = "Text")]
     pub ciphertext: String,
     /// Task id the claiming device must use; replaced when another device takes over.
+    #[sea_orm(column_type = "Text")]
     pub task_id: String,
     pub created_at: i64,
+    #[sea_orm(column_type = "Text")]
     pub lease_device_id: Option<String>,
     pub lease_until: Option<i64>,
 }
@@ -24,7 +29,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "capture_items_user_id_fkey"
     )]
     User,
 }

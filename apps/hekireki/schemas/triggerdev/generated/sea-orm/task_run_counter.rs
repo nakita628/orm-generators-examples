@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunCounter")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "taskIdentifier")]
+    #[sea_orm(column_name = "taskIdentifier", column_type = "Text")]
     pub task_identifier: String,
     #[sea_orm(column_name = "lastNumber", default_value = 0)]
     pub last_number: i32,

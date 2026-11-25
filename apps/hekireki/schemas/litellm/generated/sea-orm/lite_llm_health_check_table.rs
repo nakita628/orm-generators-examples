@@ -7,20 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_HealthCheckTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub health_check_id: String,
+    #[sea_orm(column_type = "Text")]
     pub model_name: String,
+    #[sea_orm(column_type = "Text")]
     pub model_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(default_value = 0)]
     pub healthy_count: i32,
     #[sea_orm(default_value = 0)]
     pub unhealthy_count: i32,
+    #[sea_orm(column_type = "Text")]
     pub error_message: Option<String>,
     pub response_time_ms: Option<f64>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub details: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub checked_by: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub checked_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

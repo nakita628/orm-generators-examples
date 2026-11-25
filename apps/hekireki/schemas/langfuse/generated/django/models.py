@@ -1,3 +1,4 @@
+import json
 import uuid
 from datetime import datetime
 from datetime import timezone as dt_timezone
@@ -9,6 +10,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex, HashIndex
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
+from django.db.models import functions as db_functions
 from django.utils import timezone
 
 
@@ -53,6 +55,21 @@ class PlainJSONField(models.JSONField):
         if connection.vendor != "postgresql":
             return super().from_db_value(value, expression, connection)
         return value
+
+    def get_db_prep_value(self, value: Any, connection: BaseDatabaseWrapper, prepared: bool = False) -> Any:
+        if connection.vendor != "postgresql":
+            return super().get_db_prep_value(value, connection, prepared)
+        if not prepared:
+            value = self.get_prep_value(value)
+        return json.dumps(value, cls=self.encoder, ensure_ascii=False, separators=(",", ":"))
+
+    def get_lookup(self, lookup_name: str) -> Any:
+        lookup = super().get_lookup(lookup_name)
+        return None if lookup is None else lambda lhs, rhs: lookup(db_functions.Cast(lhs, models.JSONField()), rhs)
+
+    def get_transform(self, lookup_name: str) -> Any:
+        transform = super().get_transform(lookup_name)
+        return None if transform is None else lambda lhs: transform(db_functions.Cast(lhs, models.JSONField()))
 
 
 _M = TypeVar("_M", bound=models.Model)
@@ -566,7 +583,7 @@ class RoleAssignment(models.Model):
             models.Index(fields=["principal_id"]),
             models.Index(fields=["user"]),
             models.Index(fields=["api_key"]),
-            GinIndex(fields=["tags"]),
+            GinIndex(fields=["tags"], name="role_assignments_tags_idx", opclasses=["array_ops"]),
         ]
 
 
@@ -1146,7 +1163,7 @@ class Prompt(models.Model):
             models.Index(fields=["project", "id"]),
             models.Index(fields=["created_at"]),
             models.Index(fields=["updated_at"]),
-            GinIndex(fields=["tags"]),
+            GinIndex(fields=["tags"], name="prompts_tags_idx", opclasses=["array_ops"]),
         ]
 
 
@@ -1207,8 +1224,8 @@ class Skill(models.Model):
         indexes = [
             models.Index(fields=["created_at"]),
             models.Index(fields=["updated_at"]),
-            GinIndex(fields=["tags"]),
-            GinIndex(fields=["labels"]),
+            GinIndex(fields=["tags"], name="skills_tags_idx", opclasses=["array_ops"]),
+            GinIndex(fields=["labels"], name="skills_labels_idx", opclasses=["array_ops"]),
         ]
 
 

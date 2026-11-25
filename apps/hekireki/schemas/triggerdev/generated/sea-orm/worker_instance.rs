@@ -7,31 +7,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkerInstance")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// For example "worker-1"
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// If managed, it will default to the name, e.g. "worker-1"
     /// If unmanged, it will be prefixed with the deployment ID e.g. "deploy-123-worker-1"
-    #[sea_orm(column_name = "resourceIdentifier")]
+    #[sea_orm(column_name = "resourceIdentifier", column_type = "Text")]
     pub resource_identifier: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "workerGroupId")]
+    #[sea_orm(column_name = "workerGroupId", column_type = "Text")]
     pub worker_group_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: Option<String>,
-    #[sea_orm(column_name = "deploymentId")]
+    #[sea_orm(column_name = "deploymentId", column_type = "Text")]
     pub deployment_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastDequeueAt")]
+    #[sea_orm(
+        column_name = "lastDequeueAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_dequeue_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastHeartbeatAt")]
+    #[sea_orm(
+        column_name = "lastHeartbeatAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_heartbeat_at: Option<DateTime>,
 }
 
@@ -40,7 +53,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::worker_instance_group::Entity",
         from = "Column::WorkerGroupId",
-        to = "super::worker_instance_group::Column::Id"
+        to = "super::worker_instance_group::Column::Id",
+        fk_name = "WorkerInstance_workerGroupId_fkey"
     )]
     WorkerGroup,
     #[sea_orm(
@@ -48,7 +62,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstance_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -56,7 +71,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstance_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -64,7 +80,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstance_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -72,7 +89,8 @@ pub enum Relation {
         from = "Column::DeploymentId",
         to = "super::worker_deployment::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WorkerInstance_deploymentId_fkey"
     )]
     Deployment,
 }

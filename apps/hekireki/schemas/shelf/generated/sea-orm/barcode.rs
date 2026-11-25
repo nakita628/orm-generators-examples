@@ -8,19 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Barcode")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
     #[sea_orm(default_value = "Code128")]
     pub r#type: BarcodeType,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "kitId")]
+    #[sea_orm(column_name = "kitId", column_type = "Text")]
     pub kit_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -30,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::asset::Entity",
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Barcode_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
         belongs_to = "super::kit::Entity",
         from = "Column::KitId",
         to = "super::kit::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Barcode_kitId_fkey"
     )]
     Kit,
     #[sea_orm(
@@ -45,7 +53,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Barcode_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::scan::Entity")]

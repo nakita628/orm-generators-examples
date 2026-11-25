@@ -6,34 +6,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "user")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "firstName", default_value = "")]
+    #[sea_orm(column_name = "firstName", column_type = "Text", default_value = "")]
     pub first_name: String,
-    #[sea_orm(column_name = "lastName", default_value = "")]
+    #[sea_orm(column_name = "lastName", column_type = "Text", default_value = "")]
     pub last_name: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(column_name = "emailVerified")]
     pub email_verified: bool,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
-    #[sea_orm(default_value = "fr")]
+    #[sea_orm(column_type = "Text", default_value = "fr")]
     pub locale: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "user")]
     pub role: Option<UserRole>,
     #[sea_orm(default_value = false)]
     pub banned: Option<bool>,
-    #[sea_orm(column_name = "banReason")]
+    #[sea_orm(column_name = "banReason", column_type = "Text")]
     pub ban_reason: Option<String>,
-    #[sea_orm(column_name = "banExpires")]
+    #[sea_orm(column_name = "banExpires", column_type = "custom(\"timestamp(3)\")")]
     pub ban_expires: Option<DateTime>,
     #[sea_orm(column_name = "isPremium", default_value = false)]
     pub is_premium: Option<bool>,
-    #[sea_orm(column_name = "onboardingPreferences")]
+    #[sea_orm(column_name = "onboardingPreferences", column_type = "JsonBinary")]
     pub onboarding_preferences: Option<Json>,
 }
 

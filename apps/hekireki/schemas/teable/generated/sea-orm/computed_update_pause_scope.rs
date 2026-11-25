@@ -7,16 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "computed_update_pause_scope")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub scope_type: String,
+    #[sea_orm(column_type = "Text")]
     pub scope_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub paused_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub paused_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub resume_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
-    #[sea_orm(default_value = "allow_bounded")]
+    #[sea_orm(column_type = "Text", default_value = "allow_bounded")]
     pub write_policy: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

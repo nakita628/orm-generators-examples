@@ -7,21 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "prompts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub prompt: Json,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub version: i32,
-    #[sea_orm(default_value = "text")]
+    #[sea_orm(column_type = "Text", default_value = "text")]
     pub r#type: String,
     pub is_active: Option<bool>,
     #[sea_orm(default_value = "{}")]
     pub config: Json,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub labels: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub commit_message: Option<String>,
 }
 
@@ -31,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompts_project_id_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::prompt_dependency::Entity")]

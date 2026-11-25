@@ -20,7 +20,10 @@ pub struct Model {
     pub status: String,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub resolved_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 

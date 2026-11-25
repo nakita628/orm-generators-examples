@@ -8,13 +8,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "exercise_attribute_values")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "attributeNameId")]
+    #[sea_orm(column_name = "attributeNameId", column_type = "Text")]
     pub attribute_name_id: String,
     pub value: ExerciseAttributeValueEnum,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -23,7 +28,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::exercise_attribute_name::Entity",
         from = "Column::AttributeNameId",
-        to = "super::exercise_attribute_name::Column::Id"
+        to = "super::exercise_attribute_name::Column::Id",
+        fk_name = "exercise_attribute_values_attributeNameId_fkey"
     )]
     AttributeName,
     #[sea_orm(has_many = "super::exercise_attribute::Entity")]

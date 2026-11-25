@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Star")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub stars: i32,
     #[sea_orm(column_name = "totalStars")]
@@ -14,12 +15,17 @@ pub struct Model {
     pub forks: i32,
     #[sea_orm(column_name = "totalForks")]
     pub total_forks: i32,
+    #[sea_orm(column_type = "Text")]
     pub login: String,
-    #[sea_orm(column_type = "Date")]
+    #[sea_orm(column_type = "Date", default_expr = "Expr::current_timestamp()")]
     pub date: Date,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

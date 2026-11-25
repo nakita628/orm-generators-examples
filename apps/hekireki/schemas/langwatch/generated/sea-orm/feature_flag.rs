@@ -7,14 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeatureFlag")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
     pub enabled: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub rules: Option<Json>,
-    #[sea_orm(column_name = "lastEditedBy")]
+    #[sea_orm(column_name = "lastEditedBy", column_type = "Text")]
     pub last_edited_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

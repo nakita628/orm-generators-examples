@@ -7,11 +7,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamMember")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub role: TeamAccessRole,
-    #[sea_orm(column_name = "userUid")]
+    #[sea_orm(column_name = "userUid", column_type = "Text")]
     pub user_uid: String,
-    #[sea_orm(column_name = "teamID")]
+    #[sea_orm(column_name = "teamID", column_type = "Text")]
     pub team_id: String,
 }
 
@@ -21,7 +22,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamMember_teamID_fkey"
     )]
     Team,
 }

@@ -7,16 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_messages")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub thread_id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "resourceId")]
+    #[sea_orm(column_name = "resourceId", column_type = "Text")]
     pub resource_id: Option<String>,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

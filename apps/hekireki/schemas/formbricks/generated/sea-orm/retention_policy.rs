@@ -20,10 +20,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionPolicy")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub entity: RetentionEntity,
     #[sea_orm(default_value = false)]
@@ -33,7 +39,7 @@ pub struct Model {
     /// conditions). Lengthening does not move it. The warning always runs in full from here, so no
     /// change can delete data on the night it is made (ENG-3614). Also the clock for members with no
     /// recorded sign-in.
-    #[sea_orm(column_name = "enabledAt")]
+    #[sea_orm(column_name = "enabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub enabled_at: Option<DateTime>,
     /// How long before the action the notice goes out. The action never runs before the notice has
     /// been out for this long, so the warning always runs in full.
@@ -48,9 +54,9 @@ pub struct Model {
     /// The last night the sweep's time ran out before it reached this policy's organisation, licensed.
     /// The organisation was due and the sweep was running, so it counts as reached for the gap that
     /// restarts the warning (`RETENTION_SWEEP_GAP_MS`): a backlog of organisations never restarts warnings.
-    #[sea_orm(column_name = "deferredAt")]
+    #[sea_orm(column_name = "deferredAt", column_type = "custom(\"timestamp(3)\")")]
     pub deferred_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -60,14 +66,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionPolicy_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "RetentionPolicy_updatedById_fkey"
     )]
     UpdatedBy,
 }

@@ -7,25 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "McpConnection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
-    #[sea_orm(column_name = "accessToken")]
+    #[sea_orm(column_name = "accessToken", column_type = "Text")]
     pub access_token: Option<String>,
-    #[sea_orm(column_name = "refreshToken")]
+    #[sea_orm(column_name = "refreshToken", column_type = "Text")]
     pub refresh_token: Option<String>,
-    #[sea_orm(column_name = "apiKey")]
+    #[sea_orm(column_name = "apiKey", column_type = "Text")]
     pub api_key: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: String,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: Option<String>,
 }
 
@@ -35,14 +41,16 @@ pub enum Relation {
         belongs_to = "super::mcp_integration::Entity",
         from = "Column::IntegrationId",
         to = "super::mcp_integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpConnection_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpConnection_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(has_many = "super::mcp_tool::Entity")]

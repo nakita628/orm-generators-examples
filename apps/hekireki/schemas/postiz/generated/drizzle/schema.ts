@@ -1458,8 +1458,14 @@ export const mastraMessages = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('public_mastra_messages_thread_id_createdat_idx').on(table.thread_id, table.createdAt),
-    index('mastra_messages_thread_id_createdat_idx').on(table.thread_id, table.createdAt),
+    index('public_mastra_messages_thread_id_createdat_idx').on(
+      table.thread_id,
+      table.createdAt.desc().nullsFirst(),
+    ),
+    index('mastra_messages_thread_id_createdat_idx').on(
+      table.thread_id,
+      table.createdAt.desc().nullsFirst(),
+    ),
   ],
 )
 
@@ -1527,12 +1533,12 @@ export const mastraScorers = pgTable(
     index('public_mastra_scores_trace_id_span_id_created_at_idx').on(
       table.traceId,
       table.spanId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     index('mastra_scores_trace_id_span_id_created_at_idx').on(
       table.traceId,
       table.spanId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
   ],
 )
@@ -1554,8 +1560,14 @@ export const mastraThreads = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('public_mastra_threads_resourceid_createdat_idx').on(table.resourceId, table.createdAt),
-    index('mastra_threads_resourceid_createdat_idx').on(table.resourceId, table.createdAt),
+    index('public_mastra_threads_resourceid_createdat_idx').on(
+      table.resourceId,
+      table.createdAt.desc().nullsFirst(),
+    ),
+    index('mastra_threads_resourceid_createdat_idx').on(
+      table.resourceId,
+      table.createdAt.desc().nullsFirst(),
+    ),
   ],
 )
 
@@ -1580,7 +1592,12 @@ export const mastraTraces = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow),
   },
-  (table) => [index('public_mastra_traces_name_starttime_idx').on(table.name, table.startTime)],
+  (table) => [
+    index('public_mastra_traces_name_starttime_idx').on(
+      table.name,
+      table.startTime.desc().nullsFirst(),
+    ),
+  ],
 )
 
 export const mastraWorkflowSnapshot = pgTable(
@@ -1600,7 +1617,10 @@ export const mastraWorkflowSnapshot = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('mastra_workflow_snapshot_name_createdat_idx').on(table.workflow_name, table.createdAt),
+    index('mastra_workflow_snapshot_name_createdat_idx').on(
+      table.workflow_name,
+      table.createdAt.desc().nullsFirst(),
+    ),
     uniqueIndex('public_mastra_workflow_snapshot_workflow_name_run_id_key').on(
       table.workflow_name,
       table.run_id,
@@ -1872,7 +1892,7 @@ export const mastraExperimentResults = pgTable(
   (table) => [
     index('idx_experiment_results_experimentid').on(table.experimentId),
     index('idx_experiment_results_org_project').on(table.organizationId, table.projectId),
-    index('idx_experiment_results_tags_gin').on(table.tags),
+    index('idx_experiment_results_tags_gin').using('gin', table.tags),
     uniqueIndex('idx_experiment_results_exp_item_attempt').on(
       table.experimentId,
       table.itemId,
@@ -1971,7 +1991,7 @@ export const mastraKnowledgeActivity = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow),
   },
-  (table) => [index('idx_knowledge_activity_latest').on(table.id)],
+  (table) => [index('idx_knowledge_activity_latest').on(table.id.desc().nullsFirst())],
 )
 
 export const mastraKnowledgeCursors = pgTable(
@@ -2064,8 +2084,11 @@ export const mastraKnowledgeRecords = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('idx_knowledge_records_node_latest').on(table.node, table.id),
-    index('idx_knowledge_records_thread_latest').on(table.sourceThreadId, table.id),
+    index('idx_knowledge_records_node_latest').on(table.node, table.id.desc().nullsFirst()),
+    index('idx_knowledge_records_thread_latest').on(
+      table.sourceThreadId,
+      table.id.desc().nullsFirst(),
+    ),
   ],
 )
 
@@ -2303,7 +2326,10 @@ export const mastraScheduleTriggers = pgTable(
     metadata: jsonb('metadata'),
   },
   (table) => [
-    index('idx_mastra_schedule_triggers_schedule_fire').on(table.schedule_id, table.actual_fire_at),
+    index('idx_mastra_schedule_triggers_schedule_fire').on(
+      table.schedule_id,
+      table.actual_fire_at.desc().nullsFirst(),
+    ),
   ],
 )
 

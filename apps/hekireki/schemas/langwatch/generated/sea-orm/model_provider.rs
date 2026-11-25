@@ -9,21 +9,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ModelProvider")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
-    #[sea_orm(column_name = "routingHandle")]
+    #[sea_orm(column_name = "routingHandle", column_type = "Text")]
     pub routing_handle: Option<String>,
     pub enabled: bool,
-    #[sea_orm(column_name = "customKeys")]
+    #[sea_orm(column_name = "customKeys", column_type = "JsonBinary")]
     pub custom_keys: Option<Json>,
-    #[sea_orm(column_name = "extraHeaders")]
+    #[sea_orm(column_name = "extraHeaders", column_type = "JsonBinary")]
     pub extra_headers: Option<Json>,
-    #[sea_orm(column_name = "customModels")]
+    #[sea_orm(column_name = "customModels", column_type = "JsonBinary")]
     pub custom_models: Option<Json>,
-    #[sea_orm(column_name = "customEmbeddingsModels")]
+    #[sea_orm(column_name = "customEmbeddingsModels", column_type = "JsonBinary")]
     pub custom_embeddings_models: Option<Json>,
-    #[sea_orm(column_name = "deploymentMapping")]
+    #[sea_orm(column_name = "deploymentMapping", column_type = "JsonBinary")]
     pub deployment_mapping: Option<Json>,
     #[sea_orm(column_name = "rateLimitRpm")]
     pub rate_limit_rpm: Option<i32>,
@@ -33,25 +36,39 @@ pub struct Model {
     pub rate_limit_rpd: Option<i32>,
     #[sea_orm(column_name = "rotationPolicy", default_value = "MANUAL")]
     pub rotation_policy: GatewayProviderRotationPolicy,
-    #[sea_orm(column_name = "providerConfig")]
+    #[sea_orm(column_name = "providerConfig", column_type = "JsonBinary")]
     pub provider_config: Option<Json>,
     #[sea_orm(column_name = "fallbackPriorityGlobal")]
     pub fallback_priority_global: Option<i32>,
-    #[sea_orm(column_name = "langySkipPermissionsModels")]
+    #[sea_orm(column_name = "langySkipPermissionsModels", column_type = "JsonBinary")]
     pub langy_skip_permissions_models: Option<Json>,
     #[sea_orm(column_name = "healthStatus", default_value = "UNKNOWN")]
     pub health_status: GatewayProviderHealthStatus,
-    #[sea_orm(column_name = "circuitOpenedAt")]
+    #[sea_orm(
+        column_name = "circuitOpenedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub circuit_opened_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastHealthCheckAt")]
+    #[sea_orm(
+        column_name = "lastHealthCheckAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_health_check_at: Option<DateTime>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 

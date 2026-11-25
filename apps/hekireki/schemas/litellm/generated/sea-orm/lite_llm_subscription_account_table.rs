@@ -7,16 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SubscriptionAccountTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub subscription_account_id: String,
+    #[sea_orm(column_type = "Text")]
     pub custom_llm_provider: String,
+    #[sea_orm(column_type = "Text")]
     pub account_id: String,
+    #[sea_orm(column_type = "Text")]
     pub label: Option<String>,
     pub monthly_fee: f64,
+    #[sea_orm(column_type = "Text")]
     pub currency: String,
+    #[sea_orm(column_type = "Text")]
     pub billing_period_start: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 

@@ -8,39 +8,58 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CalendarCacheEvent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "selectedCalendarId")]
+    #[sea_orm(column_name = "selectedCalendarId", column_type = "Text")]
     pub selected_calendar_id: String,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: String,
-    #[sea_orm(column_name = "externalEtag")]
+    #[sea_orm(column_name = "externalEtag", column_type = "Text")]
     pub external_etag: String,
-    #[sea_orm(column_name = "iCalUID")]
+    #[sea_orm(column_name = "iCalUID", column_type = "Text")]
     pub i_cal_uid: Option<String>,
     #[sea_orm(column_name = "iCalSequence", default_value = 0)]
     pub i_cal_sequence: i32,
+    #[sea_orm(column_type = "Text")]
     pub summary: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub location: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end: DateTime,
     #[sea_orm(column_name = "isAllDay", default_value = false)]
     pub is_all_day: bool,
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: Option<String>,
     #[sea_orm(default_value = "confirmed")]
     pub status: CalendarCacheEventStatus,
-    #[sea_orm(column_name = "recurringEventId")]
+    #[sea_orm(column_name = "recurringEventId", column_type = "Text")]
     pub recurring_event_id: Option<String>,
-    #[sea_orm(column_name = "originalStartTime")]
+    #[sea_orm(
+        column_name = "originalStartTime",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub original_start_time: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "externalCreatedAt")]
+    #[sea_orm(
+        column_name = "externalCreatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub external_created_at: Option<DateTime>,
-    #[sea_orm(column_name = "externalUpdatedAt")]
+    #[sea_orm(
+        column_name = "externalUpdatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub external_updated_at: Option<DateTime>,
 }
 
@@ -50,7 +69,8 @@ pub enum Relation {
         belongs_to = "super::selected_calendar::Entity",
         from = "Column::SelectedCalendarId",
         to = "super::selected_calendar::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CalendarCacheEvent_selectedCalendarId_fkey"
     )]
     SelectedCalendar,
 }

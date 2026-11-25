@@ -10,19 +10,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowSample")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
+    #[sea_orm(column_type = "Text")]
     pub source: String,
     /// [WorkflowSampleData]
+    #[sea_orm(column_type = "JsonBinary")]
     pub sample: Json,
-    #[sea_orm(column_name = "lastCalledAt")]
+    #[sea_orm(column_name = "lastCalledAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_called_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastCallerIp")]
+    #[sea_orm(column_name = "lastCallerIp", column_type = "Text")]
     pub last_caller_ip: Option<String>,
 }
 
@@ -32,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "(Column::WorkflowId, Column::WorkspaceId)",
         to = "(super::workflow::Column::Id, super::workflow::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowSample_workflowId_workspaceId_fkey"
     )]
     Workflow,
 }

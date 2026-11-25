@@ -11,68 +11,89 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ExecutedAction")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     pub r#type: ActionType,
     #[sea_orm(column_name = "executionStatus")]
     pub execution_status: Option<ExecutedActionStatus>,
-    #[sea_orm(column_name = "executionStartedAt")]
+    #[sea_orm(
+        column_name = "executionStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub execution_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "executedAt")]
+    #[sea_orm(column_name = "executedAt", column_type = "custom(\"timestamp(3)\")")]
     pub executed_at: Option<DateTime>,
-    #[sea_orm(column_name = "executionError")]
+    #[sea_orm(column_name = "executionError", column_type = "JsonBinary")]
     pub execution_error: Option<Json>,
-    #[sea_orm(column_name = "sentMessageIds")]
+    #[sea_orm(
+        column_name = "sentMessageIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub sent_message_ids: Vec<String>,
-    #[sea_orm(column_name = "executedRuleId")]
+    #[sea_orm(column_name = "executedRuleId", column_type = "Text")]
     pub executed_rule_id: String,
-    #[sea_orm(column_name = "messagingChannelId")]
+    #[sea_orm(column_name = "messagingChannelId", column_type = "Text")]
     pub messaging_channel_id: Option<String>,
-    #[sea_orm(column_name = "messagingMessageId")]
+    #[sea_orm(column_name = "messagingMessageId", column_type = "Text")]
     pub messaging_message_id: Option<String>,
-    #[sea_orm(column_name = "messagingMessageSentAt")]
+    #[sea_orm(
+        column_name = "messagingMessageSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub messaging_message_sent_at: Option<DateTime>,
     #[sea_orm(column_name = "messagingMessageStatus")]
     pub messaging_message_status: Option<MessagingMessageStatus>,
+    #[sea_orm(column_type = "Text")]
     pub label: Option<String>,
-    #[sea_orm(column_name = "labelId")]
+    #[sea_orm(column_name = "labelId", column_type = "Text")]
     pub label_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub subject: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub content: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub to: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub cc: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub bcc: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
-    #[sea_orm(column_name = "folderName")]
+    #[sea_orm(column_name = "folderName", column_type = "Text")]
     pub folder_name: Option<String>,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "Text")]
     pub folder_id: Option<String>,
-    #[sea_orm(column_name = "staticAttachments")]
+    #[sea_orm(column_name = "staticAttachments", column_type = "JsonBinary")]
     pub static_attachments: Option<Json>,
-    #[sea_orm(column_name = "selectedAttachments")]
+    #[sea_orm(column_name = "selectedAttachments", column_type = "JsonBinary")]
     pub selected_attachments: Option<Json>,
-    #[sea_orm(column_name = "integrationName")]
+    #[sea_orm(column_name = "integrationName", column_type = "Text")]
     pub integration_name: Option<String>,
-    #[sea_orm(column_name = "integrationToolName")]
+    #[sea_orm(column_name = "integrationToolName", column_type = "Text")]
     pub integration_tool_name: Option<String>,
-    #[sea_orm(column_name = "integrationArgs")]
+    #[sea_orm(column_name = "integrationArgs", column_type = "JsonBinary")]
     pub integration_args: Option<Json>,
-    #[sea_orm(column_name = "draftId")]
+    #[sea_orm(column_name = "draftId", column_type = "Text")]
     pub draft_id: Option<String>,
     #[sea_orm(column_name = "draftStatus")]
     pub draft_status: Option<DraftEmailStatus>,
     #[sea_orm(column_name = "wasDraftSent")]
     pub was_draft_sent: Option<bool>,
-    #[sea_orm(column_name = "draftModelProvider")]
+    #[sea_orm(column_name = "draftModelProvider", column_type = "Text")]
     pub draft_model_provider: Option<String>,
-    #[sea_orm(column_name = "draftModelName")]
+    #[sea_orm(column_name = "draftModelName", column_type = "Text")]
     pub draft_model_name: Option<String>,
     #[sea_orm(column_name = "draftPipelineVersion")]
     pub draft_pipeline_version: Option<i32>,
-    #[sea_orm(column_name = "draftContextMetadata")]
+    #[sea_orm(column_name = "draftContextMetadata", column_type = "JsonBinary")]
     pub draft_context_metadata: Option<Json>,
 }
 
@@ -82,14 +103,16 @@ pub enum Relation {
         belongs_to = "super::executed_rule::Entity",
         from = "Column::ExecutedRuleId",
         to = "super::executed_rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ExecutedAction_executedRuleId_fkey"
     )]
     ExecutedRule,
     #[sea_orm(
         belongs_to = "super::messaging_channel::Entity",
         from = "Column::MessagingChannelId",
         to = "super::messaging_channel::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "ExecutedAction_messagingChannelId_fkey"
     )]
     MessagingChannel,
     #[sea_orm(has_many = "super::digest_item::Entity")]

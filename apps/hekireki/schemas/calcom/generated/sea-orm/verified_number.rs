@@ -10,7 +10,7 @@ pub struct Model {
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: String,
 }
 
@@ -20,14 +20,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "VerifiedNumber_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "VerifiedNumber_teamId_fkey"
     )]
     Team,
 }

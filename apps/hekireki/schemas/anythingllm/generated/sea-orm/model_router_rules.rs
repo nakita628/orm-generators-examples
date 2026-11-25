@@ -13,18 +13,27 @@ pub struct Model {
     #[sea_orm(default_value = true)]
     pub enabled: bool,
     pub priority: i32,
-    #[sea_orm(default_value = "calculated")]
+    #[sea_orm(column_type = "Text", default_value = "calculated")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub condition_logic: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub conditions: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub route_provider: String,
+    #[sea_orm(column_type = "Text")]
     pub route_model: String,
     pub created_by: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -34,7 +43,8 @@ pub enum Relation {
         belongs_to = "super::model_routers::Entity",
         from = "Column::RouterId",
         to = "super::model_routers::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "model_router_rules_router_id_fkey"
     )]
     Router,
 }

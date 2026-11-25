@@ -8,11 +8,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MailSplitFilter")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub kind: MailSplitFilterKind,
+    #[sea_orm(column_type = "Text")]
     pub value: Option<String>,
     pub order: i32,
-    #[sea_orm(column_name = "mailSplitId")]
+    #[sea_orm(column_name = "mailSplitId", column_type = "Text")]
     pub mail_split_id: String,
 }
 
@@ -22,7 +24,8 @@ pub enum Relation {
         belongs_to = "super::mail_split::Entity",
         from = "Column::MailSplitId",
         to = "super::mail_split::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MailSplitFilter_mailSplitId_fkey"
     )]
     MailSplit,
 }

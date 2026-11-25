@@ -8,21 +8,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EventTypeTranslation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub uid: String,
     #[sea_orm(column_name = "eventTypeId")]
     pub event_type_id: i32,
     pub field: EventTypeAutoTranslatedField,
-    #[sea_orm(column_name = "sourceLocale")]
+    #[sea_orm(column_name = "sourceLocale", column_type = "Text")]
     pub source_locale: String,
-    #[sea_orm(column_name = "targetLocale")]
+    #[sea_orm(column_name = "targetLocale", column_type = "Text")]
     pub target_locale: String,
     #[sea_orm(column_name = "translatedText", column_type = "Text")]
     pub translated_text: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(column_name = "createdBy")]
     pub created_by: i32,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "updatedBy")]
     pub updated_by: Option<i32>,
@@ -34,20 +39,23 @@ pub enum Relation {
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EventTypeTranslation_eventTypeId_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "EventTypeTranslation_createdBy_fkey"
     )]
     Creator,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "EventTypeTranslation_updatedBy_fkey"
     )]
     Updater,
 }

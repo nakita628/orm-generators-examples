@@ -8,31 +8,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ThreadTracker")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: DateTime,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
-    #[sea_orm(column_name = "messageId")]
+    #[sea_orm(column_name = "messageId", column_type = "Text")]
     pub message_id: String,
     #[sea_orm(default_value = false)]
     pub resolved: bool,
     pub r#type: ThreadTrackerType,
-    #[sea_orm(column_name = "followUpAppliedAt")]
+    #[sea_orm(
+        column_name = "followUpAppliedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub follow_up_applied_at: Option<DateTime>,
-    #[sea_orm(column_name = "followUpDraftId")]
+    #[sea_orm(column_name = "followUpDraftId", column_type = "Text")]
     pub follow_up_draft_id: Option<String>,
-    #[sea_orm(column_name = "followUpDraftContent")]
+    #[sea_orm(column_name = "followUpDraftContent", column_type = "Text")]
     pub follow_up_draft_content: Option<String>,
-    #[sea_orm(column_name = "followUpDraftCreatedAt")]
+    #[sea_orm(
+        column_name = "followUpDraftCreatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub follow_up_draft_created_at: Option<DateTime>,
-    #[sea_orm(column_name = "followUpNotifications")]
+    #[sea_orm(column_name = "followUpNotifications", column_type = "JsonBinary")]
     pub follow_up_notifications: Option<Json>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -42,7 +53,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ThreadTracker_emailAccountId_fkey"
     )]
     EmailAccount,
 }

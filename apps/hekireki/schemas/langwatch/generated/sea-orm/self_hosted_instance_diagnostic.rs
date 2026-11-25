@@ -12,29 +12,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SelfHostedInstanceDiagnostic")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `SelfHostedInstance.instanceId` the licence caller presented.
-    #[sea_orm(column_name = "instanceId")]
+    #[sea_orm(column_name = "instanceId", column_type = "Text")]
     pub instance_id: String,
-    #[sea_orm(column_name = "stepId")]
+    #[sea_orm(column_name = "stepId", column_type = "Text")]
     pub step_id: String,
-    #[sea_orm(column_name = "stepDescription")]
+    #[sea_orm(column_name = "stepDescription", column_type = "Text")]
     pub step_description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub release: Option<String>,
     pub attempt: i32,
     /// `operator` or `automatic`.
+    #[sea_orm(column_type = "Text")]
     pub trigger: String,
     #[sea_orm(column_name = "byteLength")]
     pub byte_length: i32,
-    #[sea_orm(column_name = "objectKey")]
+    #[sea_orm(column_name = "objectKey", column_type = "Text")]
     pub object_key: String,
-    #[sea_orm(column_name = "receivedAt")]
+    #[sea_orm(
+        column_name = "receivedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub received_at: DateTime,
     /// When the lifecycle rule removes the bundle; the row is listed until then.
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
     /// Set on the report that posted this step and release's one Slack message.
-    #[sea_orm(column_name = "slackAnnouncedAt")]
+    #[sea_orm(
+        column_name = "slackAnnouncedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub slack_announced_at: Option<DateTime>,
 }
 

@@ -10,17 +10,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EnvironmentVariableIgnore")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
-    #[sea_orm(column_name = "variableId")]
+    #[sea_orm(column_name = "variableId", column_type = "Text")]
     pub variable_id: String,
     pub reason: EnvironmentVariableIgnoreReason,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -31,7 +36,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentVariableIgnore_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -39,7 +45,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentVariableIgnore_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -47,7 +54,8 @@ pub enum Relation {
         from = "Column::VariableId",
         to = "super::environment_variable::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentVariableIgnore_variableId_fkey"
     )]
     Variable,
     #[sea_orm(
@@ -55,7 +63,8 @@ pub enum Relation {
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "EnvironmentVariableIgnore_createdById_fkey"
     )]
     CreatedBy,
 }

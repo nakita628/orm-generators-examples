@@ -25,30 +25,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoBreakGlassBinding")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Who holds the way in.
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// Who granted it. A way back in is never self-served.
-    #[sea_orm(column_name = "grantedByUserId")]
+    #[sea_orm(column_name = "grantedByUserId", column_type = "Text")]
     pub granted_by_user_id: String,
-    #[sea_orm(column_name = "grantedAt")]
+    #[sea_orm(column_name = "grantedAt", column_type = "custom(\"timestamp(3)\")")]
     pub granted_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
     /// Set when a renewal replaced this row; the row itself is never edited.
-    #[sea_orm(column_name = "supersededAt")]
+    #[sea_orm(column_name = "supersededAt", column_type = "custom(\"timestamp(3)\")")]
     pub superseded_at: Option<DateTime>,
     /// The binding this one renewed, so the previous end date stays readable.
-    #[sea_orm(column_name = "renewedFromId")]
+    #[sea_orm(column_name = "renewedFromId", column_type = "Text")]
     pub renewed_from_id: Option<String>,
     /// Which of the fourteen, seven and one day warnings have been sent, so a
     /// sweep that runs twice in a day never says the same thing twice.
     #[sea_orm(column_name = "warnedDays")]
     pub warned_days: Vec<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

@@ -8,13 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "space_members")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "MEMBER")]
     pub role: SpaceMemberRole,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_selected_at: DateTime,
 }
 
@@ -24,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "space_members_space_id_fkey"
     )]
     Space,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "space_members_user_id_fkey"
     )]
     User,
 }

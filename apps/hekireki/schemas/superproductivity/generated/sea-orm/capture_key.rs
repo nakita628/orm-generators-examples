@@ -9,7 +9,9 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub user_id: i32,
     /// Base64 SPKI DER of an ECDH P-256 public key.
+    #[sea_orm(column_type = "Text")]
     pub public_key: String,
+    #[sea_orm(column_type = "Text")]
     pub fingerprint: String,
     pub created_at: i64,
     pub disabled_at: Option<i64>,
@@ -21,7 +23,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "capture_keys_user_id_fkey"
     )]
     User,
 }

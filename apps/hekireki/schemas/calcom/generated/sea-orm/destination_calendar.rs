@@ -8,11 +8,12 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub integration: String,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: String,
     /// @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
-    #[sea_orm(column_name = "primaryEmail")]
+    #[sea_orm(column_name = "primaryEmail", column_type = "Text")]
     pub primary_email: Option<String>,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "userId")]
@@ -22,11 +23,15 @@ pub struct Model {
     pub event_type_id: Option<i32>,
     #[sea_orm(column_name = "credentialId")]
     pub credential_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: Option<DateTime>,
-    #[sea_orm(column_name = "delegationCredentialId")]
+    #[sea_orm(column_name = "delegationCredentialId", column_type = "Text")]
     pub delegation_credential_id: Option<String>,
     #[sea_orm(column_name = "customCalendarReminder")]
     pub custom_calendar_reminder: Option<i32>,
@@ -38,28 +43,32 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DestinationCalendar_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DestinationCalendar_eventTypeId_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::credential::Entity",
         from = "Column::CredentialId",
         to = "super::credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DestinationCalendar_credentialId_fkey"
     )]
     Credential,
     #[sea_orm(
         belongs_to = "super::delegation_credential::Entity",
         from = "Column::DelegationCredentialId",
         to = "super::delegation_credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DestinationCalendar_delegationCredentialId_fkey"
     )]
     DelegationCredential,
     #[sea_orm(has_many = "super::booking::Entity")]

@@ -18,7 +18,10 @@ pub struct Model {
     pub logo_url: Option<String>,
     #[sea_orm(default_value = false)]
     pub two_factor_required: bool,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub updated_at: Option<DateTimeWithTimeZone>,

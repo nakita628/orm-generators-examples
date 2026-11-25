@@ -6,16 +6,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RuntimeMediaIdCache")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_name = "publicTypebotId", column_type = "Text")]
+    pub public_typebot_id: String,
+    #[sea_orm(primary_key, auto_increment = false)]
     pub provider: ChatProvider,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub url: String,
-    #[sea_orm(column_name = "mediaId")]
+    #[sea_orm(column_name = "mediaId", column_type = "Text")]
     pub media_id: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "publicTypebotId")]
-    pub public_typebot_id: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -24,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::public_typebot::Entity",
         from = "Column::PublicTypebotId",
         to = "super::public_typebot::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RuntimeMediaIdCache_publicTypebotId_fkey"
     )]
     PublicTypebot,
 }

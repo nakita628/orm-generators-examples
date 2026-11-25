@@ -7,23 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunWaitpoint")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "taskRunId")]
+    #[sea_orm(column_name = "taskRunId", column_type = "Text")]
     pub task_run_id: String,
-    #[sea_orm(column_name = "waitpointId")]
+    #[sea_orm(column_name = "waitpointId", column_type = "Text")]
     pub waitpoint_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// This span id is completed when the waitpoint is completed. This is used with cached runs (idempotent)
-    #[sea_orm(column_name = "spanIdToComplete")]
+    #[sea_orm(column_name = "spanIdToComplete", column_type = "Text")]
     pub span_id_to_complete: Option<String>,
-    #[sea_orm(column_name = "batchId")]
+    #[sea_orm(column_name = "batchId", column_type = "Text")]
     pub batch_id: Option<String>,
     #[sea_orm(column_name = "batchIndex")]
     pub batch_index: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,13 +37,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::task_run::Entity",
         from = "Column::TaskRunId",
-        to = "super::task_run::Column::Id"
+        to = "super::task_run::Column::Id",
+        fk_name = "TaskRunWaitpoint_taskRunId_fkey"
     )]
     TaskRun,
     #[sea_orm(
         belongs_to = "super::waitpoint::Entity",
         from = "Column::WaitpointId",
-        to = "super::waitpoint::Column::Id"
+        to = "super::waitpoint::Column::Id",
+        fk_name = "TaskRunWaitpoint_waitpointId_fkey"
     )]
     Waitpoint,
     #[sea_orm(
@@ -46,13 +53,15 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunWaitpoint_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::batch_task_run::Entity",
         from = "Column::BatchId",
-        to = "super::batch_task_run::Column::Id"
+        to = "super::batch_task_run::Column::Id",
+        fk_name = "TaskRunWaitpoint_batchId_fkey"
     )]
     Batch,
 }

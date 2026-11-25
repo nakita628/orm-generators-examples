@@ -10,20 +10,26 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "docId")]
+    #[sea_orm(column_name = "docId", column_type = "Text")]
     pub doc_id: String,
+    #[sea_orm(column_type = "Text")]
     pub filename: String,
+    #[sea_orm(column_type = "Text")]
     pub docpath: String,
     #[sea_orm(column_name = "workspaceId")]
     pub workspace_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub metadata: Option<String>,
     #[sea_orm(default_value = false)]
     pub pinned: Option<bool>,
     #[sea_orm(default_value = false)]
     pub watched: Option<bool>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -32,7 +38,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
-        to = "super::workspaces::Column::Id"
+        to = "super::workspaces::Column::Id",
+        fk_name = "workspace_documents_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(has_one = "super::document_sync_queues::Entity")]

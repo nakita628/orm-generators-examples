@@ -7,18 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ClaudeCodePluginTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub version: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub manifest_json: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "Text", default_value = "{}")]
     pub files_json: Option<String>,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
     #[sea_orm(default_value = "0")]
     pub anonymous_download_count: i64,

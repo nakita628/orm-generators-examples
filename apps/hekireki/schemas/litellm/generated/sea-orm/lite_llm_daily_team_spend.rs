@@ -7,14 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_DailyTeamSpend")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub date: String,
+    #[sea_orm(column_type = "Text")]
     pub api_key: String,
+    #[sea_orm(column_type = "Text")]
     pub model: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub model_group: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub custom_llm_provider: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub mcp_namespaced_tool_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub endpoint: Option<String>,
     #[sea_orm(default_value = "0")]
     pub prompt_tokens: i64,
@@ -52,7 +61,12 @@ pub struct Model {
     pub timed_requests: i64,
     #[sea_orm(default_value = 0)]
     pub ptu_flat_cost: f64,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

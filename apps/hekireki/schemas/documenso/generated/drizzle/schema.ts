@@ -1003,8 +1003,8 @@ export const recipient = pgTable(
       table.role,
     ),
     index('Recipient_nextReminderAt_idx').on(table.nextReminderAt),
-    index('Recipient_email_trgm_idx').on(table.email),
-    index('Recipient_name_trgm_idx').on(table.name),
+    index('Recipient_email_trgm_idx').using('gin', table.email.op('gin_trgm_ops')),
+    index('Recipient_name_trgm_idx').using('gin', table.name.op('gin_trgm_ops')),
     foreignKey({
       name: 'Recipient_envelopeId_fkey',
       columns: [table.envelopeId],

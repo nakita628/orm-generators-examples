@@ -7,11 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "skill_blobs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "sha_256_hash", column_type = "String(StringLen::N(44))")]
+    #[sea_orm(column_name = "sha_256_hash", column_type = "Char(Some(44))")]
     pub sha256_hash: String,
+    #[sea_orm(column_type = "Text")]
     pub content_type: String,
     pub content_length: i32,
     #[sea_orm(column_type = "Text")]
@@ -24,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "skill_blobs_project_id_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::skill_file::Entity")]

@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AnnotationQueueScores")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "annotationQueueId")]
+    #[sea_orm(column_name = "annotationQueueId", column_type = "Text")]
     pub annotation_queue_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "annotationScoreId")]
+    #[sea_orm(column_name = "annotationScoreId", column_type = "Text")]
     pub annotation_score_id: String,
 }
 
@@ -17,13 +17,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::annotation_score::Entity",
         from = "Column::AnnotationScoreId",
-        to = "super::annotation_score::Column::Id"
+        to = "super::annotation_score::Column::Id",
+        fk_name = "AnnotationQueueScores_annotationScoreId_fkey"
     )]
     AnnotationScore,
     #[sea_orm(
         belongs_to = "super::annotation_queue::Entity",
         from = "Column::AnnotationQueueId",
-        to = "super::annotation_queue::Column::Id"
+        to = "super::annotation_queue::Column::Id",
+        fk_name = "AnnotationQueueScores_annotationQueueId_fkey"
     )]
     AnnotationQueue,
 }

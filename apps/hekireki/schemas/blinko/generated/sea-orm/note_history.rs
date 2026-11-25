@@ -16,7 +16,11 @@ pub struct Model {
     pub version: i32,
     #[sea_orm(column_name = "accountId")]
     pub account_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 
@@ -26,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::notes::Entity",
         from = "Column::NoteId",
         to = "super::notes::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "noteHistory_noteId_fkey"
     )]
     Note,
 }

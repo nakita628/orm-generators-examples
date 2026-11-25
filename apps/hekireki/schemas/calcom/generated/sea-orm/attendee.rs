@@ -6,13 +6,15 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: String,
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: Option<String>,
-    #[sea_orm(default_value = "en")]
+    #[sea_orm(column_type = "Text", default_value = "en")]
     pub locale: Option<String>,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: Option<i32>,
@@ -26,7 +28,8 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Attendee_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(has_one = "super::booking_seat::Entity")]

@@ -17,8 +17,12 @@ pub struct Model {
     pub name: String,
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub description: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub parameters: Json,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub updated_at: Option<DateTimeWithTimeZone>,
@@ -29,13 +33,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "report_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::website::Entity",
         from = "Column::WebsiteId",
-        to = "super::website::Column::Id"
+        to = "super::website::Column::Id",
+        fk_name = "report_website_id_fkey"
     )]
     Website,
 }

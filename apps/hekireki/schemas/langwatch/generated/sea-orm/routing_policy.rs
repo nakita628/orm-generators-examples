@@ -7,28 +7,51 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RoutingPolicy")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "modelProviderIds", default_value = "[]")]
+    #[sea_orm(
+        column_name = "modelProviderIds",
+        column_type = "JsonBinary",
+        default_value = "[]"
+    )]
     pub model_provider_ids: Json,
-    #[sea_orm(column_name = "modelAliases", default_value = "{}")]
+    #[sea_orm(
+        column_name = "modelAliases",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub model_aliases: Json,
-    #[sea_orm(column_name = "defaultModel")]
+    #[sea_orm(column_name = "defaultModel", column_type = "Text")]
     pub default_model: Option<String>,
-    #[sea_orm(column_name = "policyRules", default_value = "{}")]
+    #[sea_orm(
+        column_name = "policyRules",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub policy_rules: Json,
     #[sea_orm(column_name = "isDefault", default_value = false)]
     pub is_default: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -38,21 +61,24 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RoutingPolicy_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "RoutingPolicy_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "RoutingPolicy_updatedById_fkey"
     )]
     UpdatedBy,
     #[sea_orm(has_many = "super::virtual_key::Entity")]

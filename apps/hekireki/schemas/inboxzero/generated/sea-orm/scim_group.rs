@@ -5,29 +5,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "scimGroup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
-    #[sea_orm(column_name = "provisioningDomainId")]
+    #[sea_orm(column_name = "provisioningDomainId", column_type = "Text")]
     pub provisioning_domain_id: String,
     #[sea_orm(default_value = 0)]
     pub revision: i32,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "displayNameKey")]
+    #[sea_orm(column_name = "displayNameKey", column_type = "Text")]
     pub display_name_key: String,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "externalIdKey")]
+    #[sea_orm(column_name = "externalIdKey", column_type = "Text")]
     pub external_id_key: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "orderKey")]
+    #[sea_orm(column_name = "orderKey", column_type = "Text")]
     pub order_key: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

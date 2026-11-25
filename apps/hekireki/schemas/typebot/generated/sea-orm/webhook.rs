@@ -7,18 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Webhook")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub method: String,
-    #[sea_orm(column_name = "queryParams")]
+    #[sea_orm(column_name = "queryParams", column_type = "JsonBinary")]
     pub query_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub headers: Json,
+    #[sea_orm(column_type = "Text")]
     pub body: Option<String>,
-    #[sea_orm(column_name = "typebotId")]
+    #[sea_orm(column_name = "typebotId", column_type = "Text")]
     pub typebot_id: String,
 }
 
@@ -28,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::typebot::Entity",
         from = "Column::TypebotId",
         to = "super::typebot::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Webhook_typebotId_fkey"
     )]
     Typebot,
 }

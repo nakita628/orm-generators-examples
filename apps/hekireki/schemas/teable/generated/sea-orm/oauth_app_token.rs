@@ -7,13 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "oauth_app_token")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub client_id: String,
+    #[sea_orm(column_type = "Text")]
     pub app_secret_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub refresh_token_sign: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expired_time: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
 }
 
@@ -23,14 +33,16 @@ pub enum Relation {
         belongs_to = "super::oauth_app_secret::Entity",
         from = "Column::AppSecretId",
         to = "super::oauth_app_secret::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauth_app_token_app_secret_id_fkey"
     )]
     OAuthAppSecret,
     #[sea_orm(
         belongs_to = "super::oauth_app::Entity",
         from = "Column::ClientId",
         to = "super::oauth_app::Column::ClientId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "oauth_app_token_client_id_fkey"
     )]
     OAuthApp,
 }

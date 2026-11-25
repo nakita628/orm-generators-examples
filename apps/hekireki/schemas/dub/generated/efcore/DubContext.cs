@@ -135,20 +135,40 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.ProjectId, e.ExternalId }, "Customer_projectId_externalId_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Email).HasColumnName("email");
-            entity.Property(e => e.NormalizedEmail).HasColumnName("normalizedEmail");
-            entity.Property(e => e.Avatar).HasColumnName("avatar");
-            entity.Property(e => e.ExternalId).HasColumnName("externalId");
-            entity.Property(e => e.StripeCustomerId).HasColumnName("stripeCustomerId");
-            entity.Property(e => e.LinkId).HasColumnName("linkId");
-            entity.Property(e => e.ClickId).HasColumnName("clickId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Email)
+                .HasMaxLength(191)
+                .HasColumnName("email");
+            entity.Property(e => e.NormalizedEmail)
+                .HasMaxLength(191)
+                .HasColumnName("normalizedEmail");
+            entity.Property(e => e.Avatar)
+                .HasColumnType("text")
+                .HasColumnName("avatar");
+            entity.Property(e => e.ExternalId)
+                .HasMaxLength(191)
+                .HasColumnName("externalId");
+            entity.Property(e => e.StripeCustomerId)
+                .HasMaxLength(191)
+                .HasColumnName("stripeCustomerId");
+            entity.Property(e => e.LinkId)
+                .HasMaxLength(191)
+                .HasColumnName("linkId");
+            entity.Property(e => e.ClickId)
+                .HasMaxLength(191)
+                .HasColumnName("clickId");
             entity.Property(e => e.ClickedAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("clickedAt");
-            entity.Property(e => e.Country).HasColumnName("country");
+            entity.Property(e => e.Country)
+                .HasMaxLength(191)
+                .HasColumnName("country");
             entity.Property(e => e.Sales)
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
@@ -165,8 +185,12 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("subscriptionCanceledAt");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.ProjectConnectId).HasColumnName("projectConnectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.ProjectConnectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectConnectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -203,16 +227,28 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.UserId, "Dashboard_userId_idx");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.LinkId).HasColumnName("linkId");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.LinkId)
+                .HasMaxLength(191)
+                .HasColumnName("linkId");
+            entity.Property(e => e.FolderId)
+                .HasMaxLength(191)
+                .HasColumnName("folderId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.DoIndex)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("doIndex");
-            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Password)
+                .HasMaxLength(191)
+                .HasColumnName("password");
             entity.Property(e => e.ShowConversions)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -263,15 +299,24 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Slug).HasColumnName("slug");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
             entity.Property(e => e.Verified)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("verified");
-            entity.Property(e => e.Placeholder).HasColumnName("placeholder");
-            entity.Property(e => e.ExpiredUrl).HasColumnName("expiredUrl");
-            entity.Property(e => e.NotFoundUrl).HasColumnName("notFoundUrl");
+            entity.Property(e => e.Placeholder)
+                .HasMaxLength(191)
+                .HasColumnName("placeholder");
+            entity.Property(e => e.ExpiredUrl)
+                .HasColumnType("longtext")
+                .HasColumnName("expiredUrl");
+            entity.Property(e => e.NotFoundUrl)
+                .HasColumnType("longtext")
+                .HasColumnName("notFoundUrl");
             entity.Property(e => e.Primary)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -286,7 +331,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("lastChecked");
-            entity.Property(e => e.Logo).HasColumnName("logo");
+            entity.Property(e => e.Logo)
+                .HasMaxLength(191)
+                .HasColumnName("logo");
             entity.Property(e => e.AppleAppSiteAssociation)
                 .HasColumnType("json")
                 .HasColumnName("appleAppSiteAssociation");
@@ -309,7 +356,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Domains)
                 .HasForeignKey(d => d.ProjectId)
@@ -331,10 +380,17 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Slug).HasColumnName("slug");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.DomainId).HasColumnName("domainId");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.DomainId)
+                .HasMaxLength(191)
+                .HasColumnName("domainId");
             entity.Property(e => e.AutoRenewalDisabledAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -379,6 +435,7 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.Dubsh)
                 .ValueGeneratedNever()
@@ -416,7 +473,9 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("loooooooong");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
 
             entity.HasOne(d => d.Project).WithMany(p => p.DefaultDomains)
                 .HasForeignKey(d => d.ProjectId)
@@ -434,10 +493,18 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.Name, e.ProjectId }, "Folder_name_projectId_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Description)
+                .HasColumnType("text")
+                .HasColumnName("description");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
             entity.Property(e => e.Type)
                 .ValueGeneratedNever()
                 .HasDefaultValue(FolderType.Default)
@@ -475,9 +542,14 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.FolderId)
+                .HasMaxLength(191)
+                .HasColumnName("folderId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.Role)
                 .HasConversion<FolderUserRoleConverter>()
                 .HasColumnName("role");
@@ -515,9 +587,14 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.FolderId)
+                .HasMaxLength(191)
+                .HasColumnName("folderId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -550,16 +627,35 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Slug).HasColumnName("slug");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Readme).HasColumnName("readme");
-            entity.Property(e => e.Developer).HasColumnName("developer");
-            entity.Property(e => e.Website).HasColumnName("website");
-            entity.Property(e => e.Logo).HasColumnName("logo");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
+            entity.Property(e => e.Description)
+                .HasMaxLength(191)
+                .HasColumnName("description");
+            entity.Property(e => e.Readme)
+                .HasColumnType("longtext")
+                .HasColumnName("readme");
+            entity.Property(e => e.Developer)
+                .HasMaxLength(191)
+                .HasColumnName("developer");
+            entity.Property(e => e.Website)
+                .HasMaxLength(191)
+                .HasColumnName("website");
+            entity.Property(e => e.Logo)
+                .HasMaxLength(191)
+                .HasColumnName("logo");
             entity.Property(e => e.Screenshots)
                 .HasColumnType("json")
                 .HasColumnName("screenshots");
@@ -567,9 +663,15 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("verified");
-            entity.Property(e => e.InstallUrl).HasColumnName("installUrl");
-            entity.Property(e => e.GuideUrl).HasColumnName("guideUrl");
-            entity.Property(e => e.Category).HasColumnName("category");
+            entity.Property(e => e.InstallUrl)
+                .HasColumnType("text")
+                .HasColumnName("installUrl");
+            entity.Property(e => e.GuideUrl)
+                .HasColumnType("text")
+                .HasColumnName("guideUrl");
+            entity.Property(e => e.Category)
+                .HasMaxLength(191)
+                .HasColumnName("category");
             entity.Property(e => e.ComingSoon)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -610,10 +712,17 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.IntegrationId).HasColumnName("integrationId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.IntegrationId)
+                .HasMaxLength(191)
+                .HasColumnName("integrationId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -657,9 +766,15 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.WorkspaceId, "Invoice_workspaceId_idx");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
-            entity.Property(e => e.Number).HasColumnName("number");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.WorkspaceId)
+                .HasMaxLength(191)
+                .HasColumnName("workspaceId");
+            entity.Property(e => e.Number)
+                .HasMaxLength(191)
+                .HasColumnName("number");
             entity.Property(e => e.Status)
                 .ValueGeneratedNever()
                 .HasDefaultValue(InvoiceStatus.Processing)
@@ -689,9 +804,15 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
                 .HasColumnName("total");
-            entity.Property(e => e.ReceiptUrl).HasColumnName("receiptUrl");
-            entity.Property(e => e.RefundReason).HasColumnName("refundReason");
-            entity.Property(e => e.FailedReason).HasColumnName("failedReason");
+            entity.Property(e => e.ReceiptUrl)
+                .HasColumnType("text")
+                .HasColumnName("receiptUrl");
+            entity.Property(e => e.RefundReason)
+                .HasColumnType("text")
+                .HasColumnName("refundReason");
+            entity.Property(e => e.FailedReason)
+                .HasColumnType("text")
+                .HasColumnName("failedReason");
             entity.Property(e => e.RegisteredDomains)
                 .HasColumnType("json")
                 .HasColumnName("registeredDomains");
@@ -728,8 +849,12 @@ public partial class DubContext : DbContext
             entity.HasIndex(e => new { e.Key, e.StoreKey }, "_jackson_index_key_store");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Key).HasColumnName("key");
-            entity.Property(e => e.StoreKey).HasColumnName("storeKey");
+            entity.Property(e => e.Key)
+                .HasMaxLength(250)
+                .HasColumnName("key");
+            entity.Property(e => e.StoreKey)
+                .HasMaxLength(250)
+                .HasColumnName("storeKey");
         });
 
         modelBuilder.Entity<JacksonStore>(entity =>
@@ -740,11 +865,21 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.Namespace, "_jackson_store_namespace");
 
-            entity.Property(e => e.Key).HasColumnName("key");
-            entity.Property(e => e.Value).HasColumnName("value");
-            entity.Property(e => e.Iv).HasColumnName("iv");
-            entity.Property(e => e.Tag).HasColumnName("tag");
-            entity.Property(e => e.Namespace).HasColumnName("namespace");
+            entity.Property(e => e.Key)
+                .HasMaxLength(250)
+                .HasColumnName("key");
+            entity.Property(e => e.Value)
+                .HasColumnType("text")
+                .HasColumnName("value");
+            entity.Property(e => e.Iv)
+                .HasMaxLength(64)
+                .HasColumnName("iv");
+            entity.Property(e => e.Tag)
+                .HasMaxLength(64)
+                .HasColumnName("tag");
+            entity.Property(e => e.Namespace)
+                .HasMaxLength(64)
+                .HasColumnName("namespace");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -765,7 +900,9 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.ExpiresAt, "_jackson_ttl_expires_at");
 
-            entity.Property(e => e.Key).HasColumnName("key");
+            entity.Property(e => e.Key)
+                .HasMaxLength(250)
+                .HasColumnName("key");
             entity.Property(e => e.ExpiresAt).HasColumnName("expiresAt");
         });
 
@@ -777,8 +914,12 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.ScheduledAt, e.Attempts }, "Job_scheduledAt_attempts_idx");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
             entity.Property(e => e.Payload)
                 .HasColumnType("json")
                 .HasColumnName("payload");
@@ -795,7 +936,9 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
                 .HasColumnName("attempts");
-            entity.Property(e => e.LastError).HasColumnName("lastError");
+            entity.Property(e => e.LastError)
+                .HasColumnType("text")
+                .HasColumnName("lastError");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -832,11 +975,19 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.ProjectId, e.ExternalId }, "Link_projectId_externalId_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Domain).HasColumnName("domain");
-            entity.Property(e => e.Key).HasColumnName("key");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Domain)
+                .HasMaxLength(191)
+                .HasColumnName("domain");
+            entity.Property(e => e.Key)
+                .HasMaxLength(191)
+                .HasColumnName("key");
             entity.Property(e => e.Url).HasColumnName("url");
-            entity.Property(e => e.ShortLink).HasColumnName("shortLink");
+            entity.Property(e => e.ShortLink)
+                .HasMaxLength(400)
+                .HasColumnName("shortLink");
             entity.Property(e => e.Archived)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -845,12 +996,16 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("expiresAt");
-            entity.Property(e => e.ExpiredUrl).HasColumnName("expiredUrl");
+            entity.Property(e => e.ExpiredUrl)
+                .HasColumnType("text")
+                .HasColumnName("expiredUrl");
             entity.Property(e => e.DisabledAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("disabledAt");
-            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Password)
+                .HasMaxLength(191)
+                .HasColumnName("password");
             entity.Property(e => e.TrackConversion)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -859,15 +1014,33 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("proxy");
-            entity.Property(e => e.Title).HasColumnName("title");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Image).HasColumnName("image");
-            entity.Property(e => e.Video).HasColumnName("video");
-            entity.Property(e => e.UtmSource).HasColumnName("utm_source");
-            entity.Property(e => e.UtmMedium).HasColumnName("utm_medium");
-            entity.Property(e => e.UtmCampaign).HasColumnName("utm_campaign");
-            entity.Property(e => e.UtmTerm).HasColumnName("utm_term");
-            entity.Property(e => e.UtmContent).HasColumnName("utm_content");
+            entity.Property(e => e.Title)
+                .HasMaxLength(191)
+                .HasColumnName("title");
+            entity.Property(e => e.Description)
+                .HasMaxLength(280)
+                .HasColumnName("description");
+            entity.Property(e => e.Image)
+                .HasColumnType("longtext")
+                .HasColumnName("image");
+            entity.Property(e => e.Video)
+                .HasColumnType("text")
+                .HasColumnName("video");
+            entity.Property(e => e.UtmSource)
+                .HasMaxLength(255)
+                .HasColumnName("utm_source");
+            entity.Property(e => e.UtmMedium)
+                .HasMaxLength(255)
+                .HasColumnName("utm_medium");
+            entity.Property(e => e.UtmCampaign)
+                .HasMaxLength(255)
+                .HasColumnName("utm_campaign");
+            entity.Property(e => e.UtmTerm)
+                .HasMaxLength(255)
+                .HasColumnName("utm_term");
+            entity.Property(e => e.UtmContent)
+                .HasMaxLength(255)
+                .HasColumnName("utm_content");
             entity.Property(e => e.Rewrite)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -880,8 +1053,12 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("doIndex");
-            entity.Property(e => e.Ios).HasColumnName("ios");
-            entity.Property(e => e.Android).HasColumnName("android");
+            entity.Property(e => e.Ios)
+                .HasColumnType("text")
+                .HasColumnName("ios");
+            entity.Property(e => e.Android)
+                .HasColumnType("text")
+                .HasColumnName("android");
             entity.Property(e => e.Geo)
                 .HasColumnType("json")
                 .HasColumnName("geo");
@@ -896,11 +1073,21 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("testCompletedAt");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.ExternalId).HasColumnName("externalId");
-            entity.Property(e => e.TenantId).HasColumnName("tenantId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.FolderId)
+                .HasMaxLength(191)
+                .HasColumnName("folderId");
+            entity.Property(e => e.ExternalId)
+                .HasMaxLength(191)
+                .HasColumnName("externalId");
+            entity.Property(e => e.TenantId)
+                .HasMaxLength(191)
+                .HasColumnName("tenantId");
             entity.Property(e => e.PublicStats)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -947,7 +1134,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.Comments).HasColumnName("comments");
+            entity.Property(e => e.Comments)
+                .HasColumnType("text")
+                .HasColumnName("comments");
 
             entity.HasOne(d => d.User).WithMany(p => p.Links)
                 .HasForeignKey(d => d.UserId)
@@ -981,6 +1170,7 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.Year).HasColumnName("year");
             entity.Property(e => e.TotalLinks).HasColumnName("totalLinks");
@@ -991,7 +1181,9 @@ public partial class DubContext : DbContext
             entity.Property(e => e.TopCountries)
                 .HasColumnType("json")
                 .HasColumnName("topCountries");
-            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
+            entity.Property(e => e.WorkspaceId)
+                .HasMaxLength(191)
+                .HasColumnName("workspaceId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -1019,8 +1211,11 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.DubLinks)
                 .ValueGeneratedNever()
                 .HasDefaultValue(true)
@@ -1042,8 +1237,11 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.ProjectUserId).HasColumnName("projectUserId");
+            entity.Property(e => e.ProjectUserId)
+                .HasMaxLength(191)
+                .HasColumnName("projectUserId");
             entity.Property(e => e.LinkUsageSummary)
                 .ValueGeneratedNever()
                 .HasDefaultValue(true)
@@ -1069,11 +1267,21 @@ public partial class DubContext : DbContext
 
             entity.HasAlternateKey(e => e.ClientId).HasName("OAuthApp_clientId_key");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IntegrationId).HasColumnName("integrationId");
-            entity.Property(e => e.ClientId).HasColumnName("clientId");
-            entity.Property(e => e.HashedClientSecret).HasColumnName("hashedClientSecret");
-            entity.Property(e => e.PartialClientSecret).HasColumnName("partialClientSecret");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.IntegrationId)
+                .HasMaxLength(191)
+                .HasColumnName("integrationId");
+            entity.Property(e => e.ClientId)
+                .HasMaxLength(191)
+                .HasColumnName("clientId");
+            entity.Property(e => e.HashedClientSecret)
+                .HasMaxLength(191)
+                .HasColumnName("hashedClientSecret");
+            entity.Property(e => e.PartialClientSecret)
+                .HasMaxLength(191)
+                .HasColumnName("partialClientSecret");
             entity.Property(e => e.RedirectUris)
                 .HasColumnType("json")
                 .HasColumnName("redirectUris");
@@ -1104,15 +1312,32 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.ClientId).HasColumnName("clientId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.Code).HasColumnName("code");
-            entity.Property(e => e.Scopes).HasColumnName("scopes");
-            entity.Property(e => e.RedirectUri).HasColumnName("redirectUri");
-            entity.Property(e => e.CodeChallenge).HasColumnName("codeChallenge");
-            entity.Property(e => e.CodeChallengeMethod).HasColumnName("codeChallengeMethod");
+            entity.Property(e => e.ClientId)
+                .HasMaxLength(191)
+                .HasColumnName("clientId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.Code)
+                .HasMaxLength(191)
+                .HasColumnName("code");
+            entity.Property(e => e.Scopes)
+                .HasColumnType("text")
+                .HasColumnName("scopes");
+            entity.Property(e => e.RedirectUri)
+                .HasMaxLength(191)
+                .HasColumnName("redirectUri");
+            entity.Property(e => e.CodeChallenge)
+                .HasMaxLength(191)
+                .HasColumnName("codeChallenge");
+            entity.Property(e => e.CodeChallengeMethod)
+                .HasMaxLength(191)
+                .HasColumnName("codeChallengeMethod");
             entity.Property(e => e.ExpiresAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1155,10 +1380,17 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.InstallationId).HasColumnName("installationId");
-            entity.Property(e => e.AccessTokenId).HasColumnName("accessTokenId");
-            entity.Property(e => e.HashedRefreshToken).HasColumnName("hashedRefreshToken");
+            entity.Property(e => e.InstallationId)
+                .HasMaxLength(191)
+                .HasColumnName("installationId");
+            entity.Property(e => e.AccessTokenId)
+                .HasMaxLength(191)
+                .HasColumnName("accessTokenId");
+            entity.Property(e => e.HashedRefreshToken)
+                .HasMaxLength(191)
+                .HasColumnName("hashedRefreshToken");
             entity.Property(e => e.ExpiresAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1199,14 +1431,21 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Email)
+                .HasMaxLength(191)
+                .HasColumnName("email");
             entity.Property(e => e.EmailVerified)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("emailVerified");
-            entity.Property(e => e.Image).HasColumnName("image");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
             entity.Property(e => e.IsMachine)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -1217,7 +1456,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
-            entity.Property(e => e.PasswordHash).HasColumnName("passwordHash");
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(191)
+                .HasColumnName("passwordHash");
             entity.Property(e => e.InvalidLoginAttempts)
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
@@ -1226,8 +1467,12 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("lockedAt");
-            entity.Property(e => e.DefaultWorkspace).HasColumnName("defaultWorkspace");
-            entity.Property(e => e.Source).HasColumnName("source");
+            entity.Property(e => e.DefaultWorkspace)
+                .HasMaxLength(191)
+                .HasColumnName("defaultWorkspace");
+            entity.Property(e => e.Source)
+                .HasMaxLength(191)
+                .HasColumnName("source");
             entity.Property(e => e.SentMail)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -1246,19 +1491,40 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.Type).HasColumnName("type");
-            entity.Property(e => e.Provider).HasColumnName("provider");
-            entity.Property(e => e.ProviderAccountId).HasColumnName("providerAccountId");
-            entity.Property(e => e.RefreshToken).HasColumnName("refresh_token");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.Type)
+                .HasMaxLength(191)
+                .HasColumnName("type");
+            entity.Property(e => e.Provider)
+                .HasMaxLength(191)
+                .HasColumnName("provider");
+            entity.Property(e => e.ProviderAccountId)
+                .HasMaxLength(191)
+                .HasColumnName("providerAccountId");
+            entity.Property(e => e.RefreshToken)
+                .HasColumnType("text")
+                .HasColumnName("refresh_token");
             entity.Property(e => e.RefreshTokenExpiresIn).HasColumnName("refresh_token_expires_in");
-            entity.Property(e => e.AccessToken).HasColumnName("access_token");
+            entity.Property(e => e.AccessToken)
+                .HasColumnType("text")
+                .HasColumnName("access_token");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(e => e.TokenType).HasColumnName("token_type");
-            entity.Property(e => e.Scope).HasColumnName("scope");
-            entity.Property(e => e.IdToken).HasColumnName("id_token");
-            entity.Property(e => e.SessionState).HasColumnName("session_state");
+            entity.Property(e => e.TokenType)
+                .HasMaxLength(191)
+                .HasColumnName("token_type");
+            entity.Property(e => e.Scope)
+                .HasMaxLength(191)
+                .HasColumnName("scope");
+            entity.Property(e => e.IdToken)
+                .HasColumnType("text")
+                .HasColumnName("id_token");
+            entity.Property(e => e.SessionState)
+                .HasMaxLength(191)
+                .HasColumnName("session_state");
 
             entity.HasOne(d => d.User).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.UserId)
@@ -1278,9 +1544,14 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.SessionToken).HasColumnName("sessionToken");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.SessionToken)
+                .HasMaxLength(191)
+                .HasColumnName("sessionToken");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1302,10 +1573,15 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.Name, e.ProjectId }, "Tag_name_projectId_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
             entity.Property(e => e.Color)
                 .ValueGeneratedNever()
+                .HasMaxLength(191)
                 .HasDefaultValue("blue")
                 .HasColumnName("color");
             entity.Property(e => e.CreatedAt)
@@ -1318,7 +1594,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Tags)
                 .HasForeignKey(d => d.ProjectId)
@@ -1338,6 +1616,7 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
@@ -1349,8 +1628,12 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.LinkId).HasColumnName("linkId");
-            entity.Property(e => e.TagId).HasColumnName("tagId");
+            entity.Property(e => e.LinkId)
+                .HasMaxLength(191)
+                .HasColumnName("linkId");
+            entity.Property(e => e.TagId)
+                .HasMaxLength(191)
+                .HasColumnName("tagId");
 
             entity.HasOne(d => d.Link).WithMany(p => p.Tags)
                 .HasForeignKey(d => d.LinkId)
@@ -1375,10 +1658,17 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.HashedKey).HasColumnName("hashedKey");
-            entity.Property(e => e.PartialKey).HasColumnName("partialKey");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.HashedKey)
+                .HasMaxLength(191)
+                .HasColumnName("hashedKey");
+            entity.Property(e => e.PartialKey)
+                .HasMaxLength(191)
+                .HasColumnName("partialKey");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1397,7 +1687,9 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Tokens)
                 .HasForeignKey(d => d.UserId)
@@ -1421,11 +1713,20 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.HashedKey).HasColumnName("hashedKey");
-            entity.Property(e => e.PartialKey).HasColumnName("partialKey");
-            entity.Property(e => e.Scopes).HasColumnName("scopes");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.HashedKey)
+                .HasMaxLength(191)
+                .HasColumnName("hashedKey");
+            entity.Property(e => e.PartialKey)
+                .HasMaxLength(191)
+                .HasColumnName("partialKey");
+            entity.Property(e => e.Scopes)
+                .HasColumnType("text")
+                .HasColumnName("scopes");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1444,9 +1745,15 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updatedAt");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.InstallationId).HasColumnName("installationId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.InstallationId)
+                .HasMaxLength(191)
+                .HasColumnName("installationId");
 
             entity.HasOne(d => d.User).WithMany(p => p.RestrictedTokens)
                 .HasForeignKey(d => d.UserId)
@@ -1472,8 +1779,12 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.Identifier, e.Token }, "VerificationToken_identifier_token_key").IsUnique();
 
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Token).HasColumnName("token");
+            entity.Property(e => e.Identifier)
+                .HasMaxLength(191)
+                .HasColumnName("identifier");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1488,8 +1799,12 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.Identifier, e.Token }, "EmailVerificationToken_identifier_token_key").IsUnique();
 
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Token).HasColumnName("token");
+            entity.Property(e => e.Identifier)
+                .HasMaxLength(191)
+                .HasColumnName("identifier");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1504,8 +1819,12 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.Identifier, e.Token }, "PasswordResetToken_identifier_token_key").IsUnique();
 
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Token).HasColumnName("token");
+            entity.Property(e => e.Identifier)
+                .HasMaxLength(191)
+                .HasColumnName("identifier");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1522,16 +1841,36 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.ProjectId, e.Name }, "UtmTemplate_projectId_name_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.UtmSource).HasColumnName("utm_source");
-            entity.Property(e => e.UtmMedium).HasColumnName("utm_medium");
-            entity.Property(e => e.UtmCampaign).HasColumnName("utm_campaign");
-            entity.Property(e => e.UtmTerm).HasColumnName("utm_term");
-            entity.Property(e => e.UtmContent).HasColumnName("utm_content");
-            entity.Property(e => e.Ref).HasColumnName("ref");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.UtmSource)
+                .HasMaxLength(255)
+                .HasColumnName("utm_source");
+            entity.Property(e => e.UtmMedium)
+                .HasMaxLength(255)
+                .HasColumnName("utm_medium");
+            entity.Property(e => e.UtmCampaign)
+                .HasMaxLength(255)
+                .HasColumnName("utm_campaign");
+            entity.Property(e => e.UtmTerm)
+                .HasMaxLength(255)
+                .HasColumnName("utm_term");
+            entity.Property(e => e.UtmContent)
+                .HasMaxLength(255)
+                .HasColumnName("utm_content");
+            entity.Property(e => e.Ref)
+                .HasMaxLength(255)
+                .HasColumnName("ref");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -1564,17 +1903,29 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.InstallationId, "Webhook_installationId_idx");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
-            entity.Property(e => e.InstallationId).HasColumnName("installationId");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
+            entity.Property(e => e.InstallationId)
+                .HasMaxLength(191)
+                .HasColumnName("installationId");
             entity.Property(e => e.Receiver)
                 .ValueGeneratedNever()
                 .HasDefaultValue(WebhookReceiver.User)
                 .HasConversion<WebhookReceiverConverter>()
                 .HasColumnName("receiver");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Url).HasColumnName("url");
-            entity.Property(e => e.Secret).HasColumnName("secret");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Url)
+                .HasColumnType("longtext")
+                .HasColumnName("url");
+            entity.Property(e => e.Secret)
+                .HasMaxLength(191)
+                .HasColumnName("secret");
             entity.Property(e => e.Triggers)
                 .HasColumnType("json")
                 .HasColumnName("triggers");
@@ -1627,9 +1978,14 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.LinkId).HasColumnName("linkId");
-            entity.Property(e => e.WebhookId).HasColumnName("webhookId");
+            entity.Property(e => e.LinkId)
+                .HasMaxLength(191)
+                .HasColumnName("linkId");
+            entity.Property(e => e.WebhookId)
+                .HasMaxLength(191)
+                .HasColumnName("webhookId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -1660,9 +2016,14 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.WebhookId).HasColumnName("webhookId");
+            entity.Property(e => e.FolderId)
+                .HasMaxLength(191)
+                .HasColumnName("folderId");
+            entity.Property(e => e.WebhookId)
+                .HasMaxLength(191)
+                .HasColumnName("webhookId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -1707,13 +2068,24 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => new { e.StripeConnectId, e.StripeConnectMode }, "Project_stripeConnectId_stripeConnectMode_key").IsUnique();
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Slug).HasColumnName("slug");
-            entity.Property(e => e.Logo).HasColumnName("logo");
-            entity.Property(e => e.InviteCode).HasColumnName("inviteCode");
+            entity.Property(e => e.Id)
+                .HasMaxLength(191)
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
+            entity.Property(e => e.Logo)
+                .HasMaxLength(191)
+                .HasColumnName("logo");
+            entity.Property(e => e.InviteCode)
+                .HasMaxLength(191)
+                .HasColumnName("inviteCode");
             entity.Property(e => e.Plan)
                 .ValueGeneratedNever()
+                .HasMaxLength(191)
                 .HasDefaultValue("free")
                 .HasColumnName("plan");
             entity.Property(e => e.PlanTier)
@@ -1723,7 +2095,9 @@ public partial class DubContext : DbContext
             entity.Property(e => e.PlanPeriod)
                 .HasConversion<PlanPeriodConverter>()
                 .HasColumnName("planPeriod");
-            entity.Property(e => e.StripeId).HasColumnName("stripeId");
+            entity.Property(e => e.StripeId)
+                .HasMaxLength(191)
+                .HasColumnName("stripeId");
             entity.Property(e => e.BillingCycleStart).HasColumnName("billingCycleStart");
             entity.Property(e => e.BillingCycleEndsAt)
                 .HasConversion<UtcClockConverter>()
@@ -1741,12 +2115,18 @@ public partial class DubContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("paymentFailedAt");
-            entity.Property(e => e.InvoicePrefix).HasColumnName("invoicePrefix");
-            entity.Property(e => e.StripeConnectId).HasColumnName("stripeConnectId");
+            entity.Property(e => e.InvoicePrefix)
+                .HasMaxLength(191)
+                .HasColumnName("invoicePrefix");
+            entity.Property(e => e.StripeConnectId)
+                .HasMaxLength(191)
+                .HasColumnName("stripeConnectId");
             entity.Property(e => e.StripeConnectMode)
                 .HasConversion<StripeConnectModeConverter>()
                 .HasColumnName("stripeConnectMode");
-            entity.Property(e => e.ShopifyStoreId).HasColumnName("shopifyStoreId");
+            entity.Property(e => e.ShopifyStoreId)
+                .HasMaxLength(191)
+                .HasColumnName("shopifyStoreId");
             entity.Property(e => e.TotalLinks)
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
@@ -1808,7 +2188,9 @@ public partial class DubContext : DbContext
             entity.Property(e => e.AllowedHostnames)
                 .HasColumnType("json")
                 .HasColumnName("allowedHostnames");
-            entity.Property(e => e.PublishableKey).HasColumnName("publishableKey");
+            entity.Property(e => e.PublishableKey)
+                .HasMaxLength(191)
+                .HasColumnName("publishableKey");
             entity.Property(e => e.ConversionEnabled)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -1821,7 +2203,9 @@ public partial class DubContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("dotLinkClaimed");
-            entity.Property(e => e.SsoEmailDomain).HasColumnName("ssoEmailDomain");
+            entity.Property(e => e.SsoEmailDomain)
+                .HasMaxLength(191)
+                .HasColumnName("ssoEmailDomain");
             entity.Property(e => e.SsoEnforcedAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -1856,12 +2240,16 @@ public partial class DubContext : DbContext
 
             entity.HasIndex(e => e.ProjectId, "ProjectInvite_projectId_idx");
 
-            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Email)
+                .HasMaxLength(191)
+                .HasColumnName("email");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("expires");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
             entity.Property(e => e.Role)
                 .ValueGeneratedNever()
                 .HasDefaultValue(WorkspaceRole.Member)
@@ -1892,18 +2280,25 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.Role)
                 .ValueGeneratedNever()
                 .HasDefaultValue(WorkspaceRole.Member)
                 .HasConversion<WorkspaceRoleConverter>()
                 .HasColumnName("role");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
             entity.Property(e => e.WorkspacePreferences)
                 .HasColumnType("json")
                 .HasColumnName("workspacePreferences");
-            entity.Property(e => e.DefaultFolderId).HasColumnName("defaultFolderId");
+            entity.Property(e => e.DefaultFolderId)
+                .HasMaxLength(191)
+                .HasColumnName("defaultFolderId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -1936,15 +2331,20 @@ public partial class DubContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Type).HasColumnName("type");
+            entity.Property(e => e.Type)
+                .HasMaxLength(191)
+                .HasColumnName("type");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
-            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.ProjectId)
+                .HasMaxLength(191)
+                .HasColumnName("projectId");
 
             entity.HasOne(d => d.Project).WithMany(p => p.SentEmails)
                 .HasForeignKey(d => d.ProjectId)

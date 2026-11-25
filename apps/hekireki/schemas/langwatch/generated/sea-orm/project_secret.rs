@@ -7,19 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProjectSecret")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "encryptedValue")]
+    #[sea_orm(column_name = "encryptedValue", column_type = "Text")]
     pub encrypted_value: String,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -28,19 +38,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "ProjectSecret_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "ProjectSecret_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "ProjectSecret_updatedById_fkey"
     )]
     UpdatedBy,
 }

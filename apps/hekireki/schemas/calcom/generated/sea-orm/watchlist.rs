@@ -12,7 +12,9 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub r#type: WatchlistType,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(column_name = "isGlobal", default_value = false)]
     pub is_global: bool,
@@ -22,7 +24,11 @@ pub struct Model {
     pub action: WatchlistAction,
     #[sea_orm(default_value = "MANUAL")]
     pub source: WatchlistSource,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: DateTime,
 }
 

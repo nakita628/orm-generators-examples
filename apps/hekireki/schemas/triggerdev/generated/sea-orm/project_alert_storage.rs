@@ -8,20 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProjectAlertStorage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "alertChannelId")]
+    #[sea_orm(column_name = "alertChannelId", column_type = "Text")]
     pub alert_channel_id: String,
     #[sea_orm(column_name = "alertType")]
     pub alert_type: ProjectAlertType,
-    #[sea_orm(column_name = "storageId")]
+    #[sea_orm(column_name = "storageId", column_type = "Text")]
     pub storage_id: String,
-    #[sea_orm(column_name = "storageData")]
+    #[sea_orm(column_name = "storageData", column_type = "JsonBinary")]
     pub storage_data: Json,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,7 +37,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlertStorage_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -40,7 +46,8 @@ pub enum Relation {
         from = "Column::AlertChannelId",
         to = "super::project_alert_channel::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlertStorage_alertChannelId_fkey"
     )]
     AlertChannel,
 }

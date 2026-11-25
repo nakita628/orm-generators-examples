@@ -7,17 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workflow_transitions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "fromStepId")]
+    #[sea_orm(column_name = "fromStepId", column_type = "Text")]
     pub from_step_id: String,
-    #[sea_orm(column_name = "toStepId")]
+    #[sea_orm(column_name = "toStepId", column_type = "Text")]
     pub to_step_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub condition: Option<Json>,
     #[sea_orm(default_value = 0)]
     pub priority: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,14 +33,16 @@ pub enum Relation {
         belongs_to = "super::workflow_step::Entity",
         from = "Column::FromStepId",
         to = "super::workflow_step::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workflow_transitions_fromStepId_fkey"
     )]
     FromStep,
     #[sea_orm(
         belongs_to = "super::workflow_step::Entity",
         from = "Column::ToStepId",
         to = "super::workflow_step::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workflow_transitions_toStepId_fkey"
     )]
     ToStep,
 }

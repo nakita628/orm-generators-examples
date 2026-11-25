@@ -20,12 +20,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuthzedProjectionOutbox")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "targetType")]
+    #[sea_orm(column_name = "targetType", column_type = "Text")]
     pub target_type: String,
-    #[sea_orm(column_name = "primaryId")]
+    #[sea_orm(column_name = "primaryId", column_type = "Text")]
     pub primary_id: String,
-    #[sea_orm(column_name = "secondaryId")]
+    #[sea_orm(column_name = "secondaryId", column_type = "Text")]
     pub secondary_id: Option<String>,
     #[sea_orm(column_name = "isRevocation", default_value = false)]
     pub is_revocation: bool,
@@ -36,25 +37,42 @@ pub struct Model {
     /// that a SpiceDB outage of any duration cannot dead-letter events that were never the problem.
     #[sea_orm(column_name = "permanentFailures", default_value = 0)]
     pub permanent_failures: i32,
-    #[sea_orm(column_name = "availableAt")]
+    #[sea_orm(
+        column_name = "availableAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub available_at: DateTime,
-    #[sea_orm(column_name = "leasedAt")]
+    #[sea_orm(column_name = "leasedAt", column_type = "custom(\"timestamp(3)\")")]
     pub leased_at: Option<DateTime>,
-    #[sea_orm(column_name = "leaseExpiresAt")]
+    #[sea_orm(
+        column_name = "leaseExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub lease_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "leaseOwner")]
+    #[sea_orm(column_name = "leaseOwner", column_type = "Text")]
     pub lease_owner: Option<String>,
-    #[sea_orm(column_name = "processedAt")]
+    #[sea_orm(column_name = "processedAt", column_type = "custom(\"timestamp(3)\")")]
     pub processed_at: Option<DateTime>,
-    #[sea_orm(column_name = "deadLetteredAt")]
+    #[sea_orm(
+        column_name = "deadLetteredAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub dead_lettered_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastAttemptAt")]
+    #[sea_orm(
+        column_name = "lastAttemptAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_attempt_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastErrorCode")]
+    #[sea_orm(column_name = "lastErrorCode", column_type = "Text")]
     pub last_error_code: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

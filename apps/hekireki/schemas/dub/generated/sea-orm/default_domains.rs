@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DefaultDomains")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(default_value = true)]
     pub dubsh: bool,
@@ -25,7 +26,7 @@ pub struct Model {
     #[sea_orm(default_value = false)]
     pub loooooooong: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: String,
 }
 
@@ -35,7 +36,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DefaultDomains_projectId_fkey"
     )]
     Project,
 }

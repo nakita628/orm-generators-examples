@@ -7,24 +7,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Schedule")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "intervalDays")]
     pub interval_days: Option<i32>,
     pub occurrences: Option<i32>,
     #[sea_orm(column_name = "daysOfWeek")]
     pub days_of_week: Option<i32>,
-    #[sea_orm(column_name = "timeOfDay")]
+    #[sea_orm(column_name = "timeOfDay", column_type = "custom(\"timestamp(3)\")")]
     pub time_of_day: Option<DateTime>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
-    #[sea_orm(column_name = "lastOccurrenceAt")]
+    #[sea_orm(
+        column_name = "lastOccurrenceAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_occurrence_at: Option<DateTime>,
-    #[sea_orm(column_name = "nextOccurrenceAt")]
+    #[sea_orm(
+        column_name = "nextOccurrenceAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub next_occurrence_at: Option<DateTime>,
 }
 
@@ -34,7 +45,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Schedule_emailAccountId_fkey"
     )]
     EmailAccount,
 }

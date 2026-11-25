@@ -8,14 +8,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "triggers")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "eventSource")]
+    #[sea_orm(column_name = "eventSource", column_type = "Text")]
     pub event_source: String,
-    #[sea_orm(column_name = "eventActions")]
+    #[sea_orm(
+        column_name = "eventActions",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub event_actions: Vec<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filter: Option<Json>,
     #[sea_orm(default_value = "ACTIVE")]
     pub status: JobConfigState,
@@ -27,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "triggers_project_id_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::automation_execution::Entity")]

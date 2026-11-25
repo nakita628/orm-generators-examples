@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Dialect, ForeignKey, Index, MetaData, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, BigInteger, Dialect, ForeignKey, Index, MetaData, PrimaryKeyConstraint, Text, TypeDecorator, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -137,7 +137,7 @@ class Operation(Base):
     __table_args__ = (
         Index("operations_user_id_entity_type_entity_id_server_seq_idx", "user_id", "entity_type", "entity_id", "server_seq"),
         Index("operations_user_id_received_at_server_seq_idx", "user_id", "received_at", "server_seq"),
-        Index("operations_entity_ids_gin", "entity_ids"),
+        Index("operations_entity_ids_gin", "entity_ids", postgresql_using="gin"),
         Index("operations_user_id_server_seq_key", "user_id", "server_seq", unique=True),
     )
 
@@ -173,6 +173,10 @@ class SyncDevice(Base):
     last_acked_seq: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     """Reserved: written once at device registration, never read or updated."""
     created_at: Mapped[int] = mapped_column(BigInteger)
+
+    __table_args__ = (
+        PrimaryKeyConstraint("user_id", "client_id"),
+    )
 
     user: Mapped["User"] = relationship(back_populates="devices")
 

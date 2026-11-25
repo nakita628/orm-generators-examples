@@ -10,6 +10,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub filename: String,
     #[sea_orm(column_name = "workspaceId")]
     pub workspace_id: i32,
@@ -17,10 +18,11 @@ pub struct Model {
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "threadId")]
     pub thread_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub metadata: Option<String>,
     #[sea_orm(column_name = "tokenCountEstimate", default_value = 0)]
     pub token_count_estimate: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -30,21 +32,24 @@ pub enum Relation {
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_parsed_files_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
         to = "super::users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_parsed_files_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::workspace_threads::Entity",
         from = "Column::ThreadId",
         to = "super::workspace_threads::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_parsed_files_threadId_fkey"
     )]
     Thread,
 }

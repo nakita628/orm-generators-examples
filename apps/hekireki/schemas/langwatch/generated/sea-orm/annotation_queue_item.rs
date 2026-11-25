@@ -7,27 +7,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AnnotationQueueItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "annotationQueueId")]
+    #[sea_orm(column_name = "annotationQueueId", column_type = "Text")]
     pub annotation_queue_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdByUserId")]
+    #[sea_orm(column_name = "createdByUserId", column_type = "Text")]
     pub created_by_user_id: Option<String>,
-    #[sea_orm(column_name = "traceId")]
+    #[sea_orm(column_name = "traceId", column_type = "Text")]
     pub trace_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "doneAt")]
+    #[sea_orm(column_name = "doneAt", column_type = "custom(\"timestamp(3)\")")]
     pub done_at: Option<DateTime>,
     /// Set while the annotator wants this item's trace added to a dataset once
     /// the queue walk is finished. Persisted rather than kept in the browser so
     /// the selection survives a refresh and stays visible to teammates.
-    #[sea_orm(column_name = "markedForDatasetAt")]
+    #[sea_orm(
+        column_name = "markedForDatasetAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub marked_for_dataset_at: Option<DateTime>,
 }
 
@@ -36,25 +48,29 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::annotation_queue::Entity",
         from = "Column::AnnotationQueueId",
-        to = "super::annotation_queue::Column::Id"
+        to = "super::annotation_queue::Column::Id",
+        fk_name = "AnnotationQueueItem_annotationQueueId_fkey"
     )]
     AnnotationQueue,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "AnnotationQueueItem_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedByUserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "AnnotationQueueItem_createdByUserId_fkey"
     )]
     CreatedByUser,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "AnnotationQueueItem_projectId_fkey"
     )]
     Project,
 }

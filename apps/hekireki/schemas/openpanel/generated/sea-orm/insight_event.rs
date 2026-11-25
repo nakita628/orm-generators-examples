@@ -7,16 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "insight_events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
     #[sea_orm(column_name = "insightId")]
     pub insight_id: Uuid,
-    #[sea_orm(column_name = "eventKind")]
+    #[sea_orm(column_name = "eventKind", column_type = "Text")]
     pub event_kind: String,
-    #[sea_orm(column_name = "changeFrom")]
+    #[sea_orm(column_name = "changeFrom", column_type = "JsonBinary")]
     pub change_from: Option<Json>,
-    #[sea_orm(column_name = "changeTo")]
+    #[sea_orm(column_name = "changeTo", column_type = "JsonBinary")]
     pub change_to: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -26,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::project_insight::Entity",
         from = "Column::InsightId",
         to = "super::project_insight::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "insight_events_insightId_fkey"
     )]
     Insight,
 }

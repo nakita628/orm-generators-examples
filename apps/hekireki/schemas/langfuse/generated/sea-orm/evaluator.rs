@@ -9,18 +9,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "evaluators")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub r#type: EvalTemplateType,
     #[sea_orm(default_value = false)]
     pub is_built_in: bool,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub created_by_user_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub blocked_at: Option<DateTime>,
     pub block_reason: Option<EvaluatorBlockReason>,
+    #[sea_orm(column_type = "Text")]
     pub block_message: Option<String>,
 }
 
@@ -30,14 +45,16 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "evaluators_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedByUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "evaluators_created_by_user_id_fkey"
     )]
     CreatedByUser,
     #[sea_orm(has_many = "super::evaluator_version::Entity")]

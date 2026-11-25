@@ -15,13 +15,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
-        to = "super::event_type::Column::Id"
+        to = "super::event_type::Column::Id",
+        fk_name = "_user_eventtype_A_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "_user_eventtype_B_fkey"
     )]
     User,
 }

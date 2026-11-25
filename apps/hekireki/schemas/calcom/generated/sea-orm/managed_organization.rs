@@ -12,7 +12,11 @@ pub struct Model {
     pub managed_organization_id: i32,
     #[sea_orm(column_name = "managerOrganizationId")]
     pub manager_organization_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -22,14 +26,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::ManagedOrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ManagedOrganization_managedOrganizationId_fkey"
     )]
     ManagedOrganization,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::ManagerOrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ManagedOrganization_managerOrganizationId_fkey"
     )]
     ManagerOrganization,
 }

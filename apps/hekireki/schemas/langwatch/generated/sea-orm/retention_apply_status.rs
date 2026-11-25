@@ -6,12 +6,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionApplyStatus")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "scopeType")]
     pub scope_type: RetentionPolicyScopeType,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
     #[sea_orm(column_name = "changedAt")]
     pub changed_at: Option<f64>,
@@ -29,9 +30,9 @@ pub struct Model {
     pub occurred_at: f64,
     #[sea_orm(column_name = "acceptedAt")]
     pub accepted_at: f64,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
 }
 

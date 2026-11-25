@@ -12,7 +12,10 @@ pub struct Model {
     pub website_id: Uuid,
     pub session_id: Uuid,
     pub visit_id: Uuid,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub url_path: String,
@@ -73,7 +76,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::session::Entity",
         from = "Column::SessionId",
-        to = "super::session::Column::Id"
+        to = "super::session::Column::Id",
+        fk_name = "website_event_session_id_fkey"
     )]
     Session,
     #[sea_orm(has_many = "super::event_data::Entity")]

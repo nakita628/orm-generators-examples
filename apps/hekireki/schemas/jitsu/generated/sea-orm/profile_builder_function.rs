@@ -7,16 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProfileBuilderFunction")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "profileBuilderId")]
+    #[sea_orm(column_name = "profileBuilderId", column_type = "Text")]
     pub profile_builder_id: String,
-    #[sea_orm(column_name = "functionId")]
+    #[sea_orm(column_name = "functionId", column_type = "Text")]
     pub function_id: String,
 }
 
@@ -25,13 +34,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::profile_builder::Entity",
         from = "Column::ProfileBuilderId",
-        to = "super::profile_builder::Column::Id"
+        to = "super::profile_builder::Column::Id",
+        fk_name = "ProfileBuilderFunction_profileBuilderId_fkey"
     )]
     ProfileBuilder,
     #[sea_orm(
         belongs_to = "super::configuration_object::Entity",
         from = "Column::FunctionId",
-        to = "super::configuration_object::Column::Id"
+        to = "super::configuration_object::Column::Id",
+        fk_name = "ProfileBuilderFunction_functionId_fkey"
     )]
     Function,
 }

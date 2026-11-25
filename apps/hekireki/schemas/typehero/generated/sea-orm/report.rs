@@ -10,13 +10,13 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub text: String,
     pub r#type: ReportType,
     pub status: ReportStatus,
-    #[sea_orm(column_name = "reporterId")]
+    #[sea_orm(column_name = "reporterId", column_type = "String(StringLen::N(191))")]
     pub reporter_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: Option<String>,
     #[sea_orm(column_name = "challengeId")]
     pub challenge_id: Option<i32>,
@@ -24,11 +24,15 @@ pub struct Model {
     pub comment_id: Option<i32>,
     #[sea_orm(column_name = "solutionId")]
     pub solution_id: Option<i32>,
-    #[sea_orm(column_name = "moderatorId")]
+    #[sea_orm(column_name = "moderatorId", column_type = "String(StringLen::N(191))")]
     pub moderator_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -37,37 +41,43 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ReporterId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Report_reporterId_fkey"
     )]
     Reporter,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Report_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "Report_challengeId_fkey"
     )]
     Challenge,
     #[sea_orm(
         belongs_to = "super::comment::Entity",
         from = "Column::CommentId",
-        to = "super::comment::Column::Id"
+        to = "super::comment::Column::Id",
+        fk_name = "Report_commentId_fkey"
     )]
     Comment,
     #[sea_orm(
         belongs_to = "super::shared_solution::Entity",
         from = "Column::SolutionId",
-        to = "super::shared_solution::Column::Id"
+        to = "super::shared_solution::Column::Id",
+        fk_name = "Report_solutionId_fkey"
     )]
     Solution,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ModeratorId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Report_moderatorId_fkey"
     )]
     Moderator,
     #[sea_orm(has_many = "super::report_issue::Entity")]

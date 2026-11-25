@@ -12,17 +12,20 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     /// @zod.string.min(1)
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// @zod.string.min(1)
+    #[sea_orm(column_type = "Text")]
     pub slug: Option<String>,
-    #[sea_orm(column_name = "logoUrl")]
+    #[sea_orm(column_name = "logoUrl", column_type = "Text")]
     pub logo_url: Option<String>,
-    #[sea_orm(column_name = "calVideoLogo")]
+    #[sea_orm(column_name = "calVideoLogo", column_type = "Text")]
     pub cal_video_logo: Option<String>,
-    #[sea_orm(column_name = "appLogo")]
+    #[sea_orm(column_name = "appLogo", column_type = "Text")]
     pub app_logo: Option<String>,
-    #[sea_orm(column_name = "appIconLogo")]
+    #[sea_orm(column_name = "appIconLogo", column_type = "Text")]
     pub app_icon_logo: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub bio: Option<String>,
     #[sea_orm(column_name = "hideBranding", default_value = false)]
     pub hide_branding: bool,
@@ -32,28 +35,42 @@ pub struct Model {
     pub is_private: bool,
     #[sea_orm(column_name = "hideBookATeamMember", default_value = false)]
     pub hide_book_ateam_member: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.import(["import { teamMetadataSchema } from '../../zod-utils'"]).custom.use(teamMetadataSchema)
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub theme: Option<String>,
     #[sea_orm(column_name = "rrResetInterval", default_value = "MONTH")]
     pub rr_reset_interval: Option<RRResetInterval>,
     #[sea_orm(column_name = "rrTimestampBasis", default_value = "CREATED_AT")]
     pub rr_timestamp_basis: RRTimestampBasis,
-    #[sea_orm(column_name = "brandColor")]
+    #[sea_orm(column_name = "brandColor", column_type = "Text")]
     pub brand_color: Option<String>,
-    #[sea_orm(column_name = "darkBrandColor")]
+    #[sea_orm(column_name = "darkBrandColor", column_type = "Text")]
     pub dark_brand_color: Option<String>,
-    #[sea_orm(column_name = "bannerUrl")]
+    #[sea_orm(column_name = "bannerUrl", column_type = "Text")]
     pub banner_url: Option<String>,
     #[sea_orm(column_name = "parentId")]
     pub parent_id: Option<i32>,
     #[sea_orm(column_name = "timeFormat")]
     pub time_format: Option<i32>,
-    #[sea_orm(column_name = "timeZone", default_value = "Europe/London")]
+    #[sea_orm(
+        column_name = "timeZone",
+        column_type = "Text",
+        default_value = "Europe/London"
+    )]
     pub time_zone: String,
-    #[sea_orm(column_name = "weekStart", default_value = "Sunday")]
+    #[sea_orm(
+        column_name = "weekStart",
+        column_type = "Text",
+        default_value = "Sunday"
+    )]
     pub week_start: String,
     #[sea_orm(column_name = "isOrganization", default_value = false)]
     pub is_organization: bool,
@@ -61,14 +78,14 @@ pub struct Model {
     pub pending_payment: bool,
     #[sea_orm(column_name = "isPlatform", default_value = false)]
     pub is_platform: bool,
-    #[sea_orm(column_name = "createdByOAuthClientId")]
+    #[sea_orm(column_name = "createdByOAuthClientId", column_type = "Text")]
     pub created_by_oauth_client_id: Option<String>,
     #[sea_orm(column_name = "smsLockState", default_value = "UNLOCKED")]
     pub sms_lock_state: SMSLockState,
     #[sea_orm(column_name = "smsLockReviewedByAdmin", default_value = false)]
     pub sms_lock_reviewed_by_admin: bool,
     /// @zod.import(["import { intervalLimitsType } from '../../zod-utils'"]).custom.use(intervalLimitsType)
-    #[sea_orm(column_name = "bookingLimits")]
+    #[sea_orm(column_name = "bookingLimits", column_type = "JsonBinary")]
     pub booking_limits: Option<Json>,
     #[sea_orm(column_name = "includeManagedEventsInLimits", default_value = false)]
     pub include_managed_events_in_limits: bool,
@@ -82,14 +99,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::ParentId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Team_parentId_fkey"
     )]
     Parent,
     #[sea_orm(
         belongs_to = "super::platform_oauth_client::Entity",
         from = "Column::CreatedByOauthClientId",
         to = "super::platform_oauth_client::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Team_createdByOAuthClientId_fkey"
     )]
     CreatedByOAuthClient,
     #[sea_orm(has_many = "super::membership::Entity")]

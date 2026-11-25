@@ -1519,6 +1519,7 @@ class CalendarCache(Base):
     user_id: Mapped[Optional[int]] = mapped_column("userId")
 
     __table_args__ = (
+        PrimaryKeyConstraint("credentialId", "key"),
         Index("CalendarCache_userId_key_idx", "userId", "key"),
         Index("CalendarCache_credentialId_key_key", "credentialId", "key", unique=True),
     )

@@ -7,18 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "table_view_presets")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub table_name: String,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filters: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub column_order: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub column_visibility: Json,
+    #[sea_orm(column_type = "Text")]
     pub search_query: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub order_by: Option<Json>,
 }
 
@@ -28,21 +47,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "table_view_presets_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "table_view_presets_created_by_fkey"
     )]
     CreatedByUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "table_view_presets_updated_by_fkey"
     )]
     UpdatedByUser,
 }

@@ -7,19 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Member")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
-    #[sea_orm(default_value = "member")]
+    #[sea_orm(column_type = "Text", default_value = "member")]
     pub role: String,
     #[sea_orm(column_name = "allowOrgAdminAnalytics", default_value = false)]
     pub allow_org_admin_analytics: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -29,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Member_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "Member_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(has_many = "super::conversation::Entity")]

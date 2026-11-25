@@ -7,32 +7,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthClient")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "clientName")]
+    #[sea_orm(column_name = "clientName", column_type = "Text")]
     pub client_name: String,
-    #[sea_orm(column_name = "clientUri")]
+    #[sea_orm(column_name = "clientUri", column_type = "Text")]
     pub client_uri: Option<String>,
-    #[sea_orm(column_name = "logoUri")]
+    #[sea_orm(column_name = "logoUri", column_type = "Text")]
     pub logo_uri: Option<String>,
-    #[sea_orm(column_name = "redirectUris")]
+    #[sea_orm(
+        column_name = "redirectUris",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub redirect_uris: Vec<String>,
-    #[sea_orm(column_name = "grantTypes")]
+    #[sea_orm(
+        column_name = "grantTypes",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub grant_types: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub scopes: String,
-    #[sea_orm(column_name = "tokenAuthMethod")]
+    #[sea_orm(column_name = "tokenAuthMethod", column_type = "Text")]
     pub token_auth_method: String,
-    #[sea_orm(column_name = "hashedSecret")]
+    #[sea_orm(column_name = "hashedSecret", column_type = "Text")]
     pub hashed_secret: Option<String>,
-    #[sea_orm(column_name = "registrationType")]
+    #[sea_orm(column_name = "registrationType", column_type = "Text")]
     pub registration_type: String,
-    #[sea_orm(column_name = "metadataUrl")]
+    #[sea_orm(column_name = "metadataUrl", column_type = "Text")]
     pub metadata_url: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

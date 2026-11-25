@@ -845,7 +845,7 @@ export const computedUpdateRunHistory = pgTable(
       table.completedAt,
     ),
     index('computed_update_run_history_completed_at_idx').on(table.completedAt),
-    index('computed_update_run_history_origin_run_ids_gin').on(table.originRunIds),
+    index('computed_update_run_history_origin_run_ids_gin').using('gin', table.originRunIds),
   ],
 )
 

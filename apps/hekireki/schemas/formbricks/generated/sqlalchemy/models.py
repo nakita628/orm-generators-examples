@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Date, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, Numeric, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, BigInteger, Date, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, Numeric, PrimaryKeyConstraint, Text, TypeDecorator, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -1046,6 +1046,7 @@ class Membership(Base):
     role: Mapped[str] = mapped_column(Enum("owner", "manager", "member", "billing", "dashboard_viewer", name="OrganizationRole"), default="member", server_default=text("'member'"))
 
     __table_args__ = (
+        PrimaryKeyConstraint("userId", "organizationId"),
         Index("Membership_organizationId_idx", "organizationId"),
     )
 
@@ -2232,7 +2233,7 @@ class FeedbackSourceFormbricksMapping(Base):
         Index("FeedbackSourceFormbricksMapping_workspaceId_surveyId_idx", "workspaceId", "surveyId"),
         Index("FeedbackSourceFormbricksMapping_surveyId_idx", "surveyId"),
         Index("FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su", "workspaceId", "feedback_source_id", "surveyId", "elementId", unique=True),
-        ForeignKeyConstraint(["feedback_source_id", "workspaceId"], ["FeedbackSource.id", "FeedbackSource.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="FeedbackSourceFormbricksMapping_feedback_source_id_workspa_fkey"),
+        ForeignKeyConstraint(["feedback_source_id", "workspaceId"], ["FeedbackSource.id", "FeedbackSource.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk"),
         ForeignKeyConstraint(["surveyId", "workspaceId"], ["Survey.id", "Survey.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="FeedbackSourceFormbricksMapping_surveyId_workspaceId_fkey"),
     )
 
@@ -2262,7 +2263,7 @@ class FeedbackSourceFieldMapping(Base):
 
     __table_args__ = (
         Index("FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF", "workspaceId", "feedback_source_id", "source_field_id", "target_field_id", unique=True),
-        ForeignKeyConstraint(["feedback_source_id", "workspaceId"], ["FeedbackSource.id", "FeedbackSource.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="FeedbackSourceFieldMapping_feedback_source_id_workspaceId_fkey"),
+        ForeignKeyConstraint(["feedback_source_id", "workspaceId"], ["FeedbackSource.id", "FeedbackSource.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey"),
     )
 
     feedback_source: Mapped["FeedbackSource"] = relationship(back_populates="field_mappings")

@@ -6,16 +6,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LangyMessageProjection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
-    #[sea_orm(column_name = "messageId")]
+    #[sea_orm(column_name = "messageId", column_type = "Text")]
     pub message_id: String,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub parts: Json,
-    #[sea_orm(column_name = "sourceEventId")]
+    #[sea_orm(column_name = "sourceEventId", column_type = "Text")]
     pub source_event_id: String,
     #[sea_orm(column_name = "occurredAt")]
     pub occurred_at: f64,

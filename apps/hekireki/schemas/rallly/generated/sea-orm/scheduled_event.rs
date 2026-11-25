@@ -8,31 +8,50 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "scheduled_events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub event_type_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub sheet_slot_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub location: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub conferencing: Option<Json>,
     pub capacity: Option<i32>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "confirmed")]
     pub status: ScheduledEventStatus,
     /// Venue / anchor timezone for in-person or hybrid events. Null means no fixed venue (e.g. remote-only).
+    #[sea_orm(column_type = "Text")]
     pub time_zone: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end: DateTime,
     #[sea_orm(default_value = false)]
     pub all_day: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub sequence: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uid: String,
     #[sea_orm(default_value = false)]
     pub hide_attendees: bool,
@@ -44,28 +63,32 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scheduled_events_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scheduled_events_space_id_fkey"
     )]
     Space,
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "scheduled_events_event_type_id_fkey"
     )]
     EventType,
     #[sea_orm(
         belongs_to = "super::sheet_slot::Entity",
         from = "Column::SheetSlotId",
         to = "super::sheet_slot::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "scheduled_events_sheet_slot_id_fkey"
     )]
     SheetSlot,
     #[sea_orm(has_many = "super::rescheduled_event_date::Entity")]

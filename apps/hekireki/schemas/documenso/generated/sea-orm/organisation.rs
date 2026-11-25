@@ -8,30 +8,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organisation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     pub r#type: OrganisationType,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub url: String,
-    #[sea_orm(column_name = "avatarImageId")]
+    #[sea_orm(column_name = "avatarImageId", column_type = "Text")]
     pub avatar_image_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "customerId")]
+    #[sea_orm(column_name = "customerId", column_type = "Text")]
     pub customer_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "organisationClaimId")]
+    #[sea_orm(column_name = "organisationClaimId", column_type = "Text")]
     pub organisation_claim_id: String,
     #[sea_orm(column_name = "ownerUserId")]
     pub owner_user_id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "organisationGlobalSettingsId")]
+    #[sea_orm(column_name = "organisationGlobalSettingsId", column_type = "Text")]
     pub organisation_global_settings_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "organisationAuthenticationPortalId")]
+    #[sea_orm(
+        column_name = "organisationAuthenticationPortalId",
+        column_type = "Text"
+    )]
     pub organisation_authentication_portal_id: String,
 }
 
@@ -40,33 +50,38 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organisation_claim::Entity",
         from = "Column::OrganisationClaimId",
-        to = "super::organisation_claim::Column::Id"
+        to = "super::organisation_claim::Column::Id",
+        fk_name = "Organisation_organisationClaimId_fkey"
     )]
     OrganisationClaim,
     #[sea_orm(
         belongs_to = "super::avatar_image::Entity",
         from = "Column::AvatarImageId",
         to = "super::avatar_image::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Organisation_avatarImageId_fkey"
     )]
     AvatarImage,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Organisation_ownerUserId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::organisation_global_settings::Entity",
         from = "Column::OrganisationGlobalSettingsId",
-        to = "super::organisation_global_settings::Column::Id"
+        to = "super::organisation_global_settings::Column::Id",
+        fk_name = "Organisation_organisationGlobalSettingsId_fkey"
     )]
     OrganisationGlobalSettings,
     #[sea_orm(
         belongs_to = "super::organisation_authentication_portal::Entity",
         from = "Column::OrganisationAuthenticationPortalId",
-        to = "super::organisation_authentication_portal::Column::Id"
+        to = "super::organisation_authentication_portal::Column::Id",
+        fk_name = "Organisation_organisationAuthenticationPortalId_fkey"
     )]
     OrganisationAuthenticationPortal,
     #[sea_orm(has_many = "super::organisation_member::Entity")]

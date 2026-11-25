@@ -10,11 +10,13 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(default_value = false)]
     pub enabled: bool,
-    #[sea_orm(default_value = "query")]
+    #[sea_orm(column_type = "Text", default_value = "query")]
     pub chat_mode: String,
+    #[sea_orm(column_type = "Text")]
     pub allowlist_domains: Option<String>,
     #[sea_orm(default_value = false)]
     pub allow_model_override: bool,
@@ -31,7 +33,7 @@ pub struct Model {
     pub created_by: Option<i32>,
     #[sea_orm(column_name = "usersId")]
     pub users_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -41,13 +43,15 @@ pub enum Relation {
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "embed_configs_workspace_id_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UsersId",
-        to = "super::users::Column::Id"
+        to = "super::users::Column::Id",
+        fk_name = "embed_configs_usersId_fkey"
     )]
     Users,
     #[sea_orm(has_many = "super::embed_chats::Entity")]

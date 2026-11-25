@@ -11,30 +11,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LinkPreview")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// `LinkKey` from @shelf/links, never a raw field value. At most 2048
     /// characters (CHECK constraint in the migration).
+    #[sea_orm(column_type = "Text")]
     pub url: String,
-    #[sea_orm(column_name = "pageTitle")]
+    #[sea_orm(column_name = "pageTitle", column_type = "Text")]
     pub page_title: Option<String>,
     /// Null until the first fetch finishes.
     pub outcome: Option<LinkPreviewOutcome>,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
-    #[sea_orm(column_name = "fetchedAt")]
+    #[sea_orm(column_name = "fetchedAt", column_type = "custom(\"timestamp(3)\")")]
     pub fetched_at: Option<DateTime>,
     /// When the link may be fetched next; null means never again. A claim moves
     /// it a few minutes ahead, which is also the lease on a fetch in flight.
-    #[sea_orm(column_name = "nextFetchAt")]
+    #[sea_orm(
+        column_name = "nextFetchAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub next_fetch_at: Option<DateTime>,
     /// The name a person gave the link in this workspace; wins over pageTitle.
-    #[sea_orm(column_name = "customTitle")]
+    #[sea_orm(column_name = "customTitle", column_type = "Text")]
     pub custom_title: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 
@@ -45,7 +55,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkPreview_organizationId_fkey"
     )]
     Organization,
 }

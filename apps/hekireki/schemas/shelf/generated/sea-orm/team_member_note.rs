@@ -8,19 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamMemberNote")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     #[sea_orm(default_value = "COMMENT")]
     pub r#type: NoteType,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "teamMemberId")]
+    #[sea_orm(column_name = "teamMemberId", column_type = "Text")]
     pub team_member_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
 }
 
@@ -31,7 +37,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "TeamMemberNote_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -39,7 +46,8 @@ pub enum Relation {
         from = "Column::TeamMemberId",
         to = "super::team_member::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamMemberNote_teamMemberId_fkey"
     )]
     TeamMember,
     #[sea_orm(
@@ -47,7 +55,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamMemberNote_organizationId_fkey"
     )]
     Organization,
 }

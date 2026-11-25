@@ -7,10 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_BackgroundResponseCreator")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub response_id: String,
+    #[sea_orm(column_type = "Text")]
     pub upstream_url: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub create_context: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub poll_lease_expires_at: Option<DateTime>,
 }
 

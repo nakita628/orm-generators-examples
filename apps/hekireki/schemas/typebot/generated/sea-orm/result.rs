@@ -7,11 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Result")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "typebotId")]
+    #[sea_orm(column_name = "typebotId", column_type = "Text")]
     pub typebot_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub variables: Json,
     #[sea_orm(column_name = "isCompleted")]
     pub is_completed: bool,
@@ -19,7 +25,7 @@ pub struct Model {
     pub has_started: Option<bool>,
     #[sea_orm(column_name = "isArchived", default_value = false)]
     pub is_archived: Option<bool>,
-    #[sea_orm(column_name = "lastChatSessionId")]
+    #[sea_orm(column_name = "lastChatSessionId", column_type = "Text")]
     pub last_chat_session_id: Option<String>,
 }
 
@@ -29,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::typebot::Entity",
         from = "Column::TypebotId",
         to = "super::typebot::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Result_typebotId_fkey"
     )]
     Typebot,
     #[sea_orm(has_many = "super::answer::Entity")]

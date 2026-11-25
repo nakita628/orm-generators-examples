@@ -9,17 +9,22 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
-    #[sea_orm(column_name = "belongsTo")]
+    #[sea_orm(column_name = "belongsTo", column_type = "Text")]
     pub belongs_to: Option<String>,
     #[sea_orm(column_name = "byId")]
     pub by_id: Option<i32>,
     #[sea_orm(column_name = "expiresAt")]
     pub expires_at: Option<PrismaDateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 

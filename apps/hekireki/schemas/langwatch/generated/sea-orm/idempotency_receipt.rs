@@ -7,23 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IdempotencyReceipt")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
+    #[sea_orm(column_type = "Text")]
     pub key: String,
-    #[sea_orm(column_name = "claimId")]
+    #[sea_orm(column_name = "claimId", column_type = "Text")]
     pub claim_id: String,
-    #[sea_orm(column_name = "requestFingerprint")]
+    #[sea_orm(column_name = "requestFingerprint", column_type = "Text")]
     pub request_fingerprint: String,
     #[sea_orm(column_name = "responseStatus")]
     pub response_status: Option<i32>,
     #[sea_orm(column_name = "responseBody", column_type = "Text")]
     pub response_body: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "heartbeatAt")]
+    #[sea_orm(column_name = "heartbeatAt", column_type = "custom(\"timestamp(3)\")")]
     pub heartbeat_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
 }
 

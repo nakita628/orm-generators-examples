@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "VisitedEdge")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "resultId")]
+    #[sea_orm(column_name = "resultId", column_type = "Text")]
     pub result_id: String,
-    #[sea_orm(column_name = "edgeId")]
+    #[sea_orm(column_name = "edgeId", column_type = "Text")]
     pub edge_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     pub index: i32,
@@ -19,7 +19,8 @@ pub enum Relation {
         belongs_to = "super::result::Entity",
         from = "Column::ResultId",
         to = "super::result::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "VisitedEdge_resultId_fkey"
     )]
     Result,
 }

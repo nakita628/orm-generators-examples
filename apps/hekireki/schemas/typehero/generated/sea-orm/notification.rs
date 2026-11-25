@@ -9,24 +9,31 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "isRead", default_value = false)]
     pub is_read: bool,
     pub r#type: NotificationType,
-    #[sea_orm(column_name = "toUserId")]
+    #[sea_orm(column_name = "toUserId", column_type = "String(StringLen::N(191))")]
     pub to_user_id: String,
-    #[sea_orm(column_name = "fromUserId")]
+    #[sea_orm(column_name = "fromUserId", column_type = "String(StringLen::N(191))")]
     pub from_user_id: String,
     #[sea_orm(column_name = "commentId")]
     pub comment_id: Option<i32>,
     /// could be comment text or solution title to avoid having to join to grab this data
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub content: Option<String>,
     /// can be used to replace the blurb (eg: mention you in a comment)
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub blurb: Option<String>,
     /// use this instead of building the url on the fly (avoids a lot of joins and perf hits to build a string)
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub url: String,
     #[sea_orm(column_name = "challengeId")]
     pub challenge_id: Option<i32>,
@@ -39,31 +46,36 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ToUserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Notification_toUserId_fkey"
     )]
     ToUser,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::FromUserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Notification_fromUserId_fkey"
     )]
     FromUser,
     #[sea_orm(
         belongs_to = "super::comment::Entity",
         from = "Column::CommentId",
-        to = "super::comment::Column::Id"
+        to = "super::comment::Column::Id",
+        fk_name = "Notification_commentId_fkey"
     )]
     Comment,
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "Notification_challengeId_fkey"
     )]
     Challenge,
     #[sea_orm(
         belongs_to = "super::shared_solution::Entity",
         from = "Column::SharedSolutionId",
-        to = "super::shared_solution::Column::Id"
+        to = "super::shared_solution::Column::Id",
+        fk_name = "Notification_sharedSolutionId_fkey"
     )]
     SharedSolution,
 }

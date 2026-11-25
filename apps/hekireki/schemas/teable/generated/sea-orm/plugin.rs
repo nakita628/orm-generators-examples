@@ -7,24 +7,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "plugin")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub detail_desc: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub logo: String,
+    #[sea_orm(column_type = "Text")]
     pub help_url: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub positions: String,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
+    #[sea_orm(column_type = "Text")]
     pub masked_secret: String,
+    #[sea_orm(column_type = "Text")]
     pub i18n: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub config: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub plugin_user: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
 }
 

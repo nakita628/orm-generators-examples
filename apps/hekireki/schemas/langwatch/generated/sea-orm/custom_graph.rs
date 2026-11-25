@@ -7,12 +7,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CustomGraph")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// The chart's definition, in the shape its `kind` names.
+    #[sea_orm(column_type = "JsonBinary")]
     pub graph: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filters: Option<Json>,
     /// Discriminator for the chart shapes that share this table:
     /// - "builder" (default) - the chart builder's own `graph` payload
@@ -23,13 +27,21 @@ pub struct Model {
     /// now live in DashboardWidget; nothing new writes this kind
     /// Each reader filters by its own kind, so neither sees the other's rows and
     /// a builder chart can never be interpreted as a workbench definition.
-    #[sea_orm(default_value = "builder")]
+    #[sea_orm(column_type = "Text", default_value = "builder")]
     pub kind: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "dashboardId")]
+    #[sea_orm(column_name = "dashboardId", column_type = "Text")]
     pub dashboard_id: Option<String>,
     #[sea_orm(column_name = "gridColumn", default_value = 0)]
     pub grid_column: i32,
@@ -46,14 +58,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "CustomGraph_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::dashboard::Entity",
         from = "Column::DashboardId",
         to = "super::dashboard::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CustomGraph_dashboardId_fkey"
     )]
     Dashboard,
     #[sea_orm(has_many = "super::trigger_sent::Entity")]

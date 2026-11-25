@@ -7,37 +7,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PlaygroundConversation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The chat session ID used by the transport
-    #[sea_orm(column_name = "chatId")]
+    #[sea_orm(column_name = "chatId", column_type = "Text")]
     pub chat_id: String,
     /// User-editable conversation title (auto-generated from first message)
-    #[sea_orm(default_value = "New conversation")]
+    #[sea_orm(column_type = "Text", default_value = "New conversation")]
     pub title: String,
     /// Which agent this conversation is with
-    #[sea_orm(column_name = "agentSlug")]
+    #[sea_orm(column_name = "agentSlug", column_type = "Text")]
     pub agent_slug: String,
     /// The current active run backing this conversation (null if no run yet)
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: Option<String>,
     /// The client data JSON used for this conversation
-    #[sea_orm(column_name = "clientData")]
+    #[sea_orm(column_name = "clientData", column_type = "JsonBinary")]
     pub client_data: Option<Json>,
     /// Accumulated UIMessages from completed turns (for resume without stream replay)
+    #[sea_orm(column_type = "JsonBinary")]
     pub messages: Option<Json>,
     /// Last SSE event ID — resume from this position to avoid replaying old turns
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
     /// The user who started this conversation
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -48,7 +54,8 @@ pub enum Relation {
         from = "Column::RunId",
         to = "super::task_run::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "PlaygroundConversation_runId_fkey"
     )]
     Run,
     #[sea_orm(
@@ -56,7 +63,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlaygroundConversation_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -64,7 +72,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlaygroundConversation_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
 }

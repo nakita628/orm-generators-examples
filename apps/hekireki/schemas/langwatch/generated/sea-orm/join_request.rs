@@ -27,54 +27,57 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "JoinRequest")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The normalized domain the match was made on.
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
     /// PENDING | APPROVED | REJECTED | EXPIRED | WITHDRAWN
+    #[sea_orm(column_type = "Text")]
     pub state: String,
     /// How the domain was matched: `verified-identifier-domain` or `sso-connection-domain`.
-    #[sea_orm(column_name = "matchedVia")]
+    #[sea_orm(column_name = "matchedVia", column_type = "Text")]
     pub matched_via: String,
     /// Where the request was made: `web` or `cli` (ADR-171 v6). A request from
     /// the terminal lands a Developer seat whatever the joiner seat says.
-    #[sea_orm(default_value = "web")]
+    #[sea_orm(column_type = "Text", default_value = "web")]
     pub origin: String,
     /// While PENDING: when the day-14 wake lapses it. Null once resolved.
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "resolvedAt")]
+    #[sea_orm(column_name = "resolvedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resolved_at: Option<DateTime>,
     /// user | policy | invite - who ended it. `policy` is domain auto-join's
     /// own principal, deliberately not the one SSO auto-join uses.
-    #[sea_orm(column_name = "resolvedByType")]
+    #[sea_orm(column_name = "resolvedByType", column_type = "Text")]
     pub resolved_by_type: Option<String>,
     /// The admin's user id, `domain-auto`, or the invitation id.
-    #[sea_orm(column_name = "resolvedById")]
+    #[sea_orm(column_name = "resolvedById", column_type = "Text")]
     pub resolved_by_id: Option<String>,
     /// user | invite-accepted, on a withdrawal.
-    #[sea_orm(column_name = "withdrawalCause")]
+    #[sea_orm(column_name = "withdrawalCause", column_type = "Text")]
     pub withdrawal_cause: Option<String>,
     /// The SSO connection a single sign-on arrival was admitted through; null otherwise.
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: Option<String>,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "acceptedAt")]
+    #[sea_orm(column_name = "acceptedAt", column_type = "custom(\"timestamp(3)\")")]
     pub accepted_at: DateTime,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
     /// Event-derived, not database-managed: `@default(now())` / `@updatedAt`
     /// would make a replayed row differ from the row it rebuilds, which is
     /// exactly the parity this projection has to keep.
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

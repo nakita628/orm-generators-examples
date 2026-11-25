@@ -7,17 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PromptTag")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -27,19 +37,22 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PromptTag_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "PromptTag_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UpdatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "PromptTag_updatedById_fkey"
     )]
     UpdatedBy,
     #[sea_orm(has_many = "super::prompt_tag_assignment::Entity")]

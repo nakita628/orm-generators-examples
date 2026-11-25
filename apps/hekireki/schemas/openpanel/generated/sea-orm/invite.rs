@@ -8,23 +8,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "invites")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// [IPrismaInviteProjectAccess]
-    #[sea_orm(column_name = "projectAccess", default_value = "[]")]
+    #[sea_orm(
+        column_name = "projectAccess",
+        column_type = "JsonBinary",
+        default_value = "[]"
+    )]
     pub project_access: Json,
     #[sea_orm(column_name = "projectScope", default_value = "all")]
     pub project_scope: ProjectScope,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
 }
 
@@ -34,14 +49,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "invites_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "invites_organizationId_fkey"
     )]
     Organization,
 }

@@ -7,15 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ProxyModelTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub model_id: String,
+    #[sea_orm(column_type = "Text")]
     pub model_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_info: Option<Json>,
     #[sea_orm(default_value = false)]
     pub blocked: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 

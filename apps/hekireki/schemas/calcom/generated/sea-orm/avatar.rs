@@ -8,10 +8,11 @@ pub struct Model {
     pub team_id: i32,
     #[sea_orm(column_name = "userId", default_value = 0)]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "objectKey")]
+    #[sea_orm(column_name = "objectKey", column_type = "Text")]
     pub object_key: String,
     #[sea_orm(column_name = "isBanner", default_value = false)]
     pub is_banner: bool,

@@ -6,9 +6,11 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "fileId")]
+    #[sea_orm(column_name = "fileId", column_type = "Text")]
     pub file_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
 }
 
@@ -17,7 +19,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::files::Entity",
         from = "Column::FileId",
-        to = "super::files::Column::Uuid"
+        to = "super::files::Column::Uuid",
+        fk_name = "quarantineFiles_fileId_fkey"
     )]
     File,
 }

@@ -7,10 +7,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_TelemetryReport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub window_start: f64,
     pub window_end: f64,
+    #[sea_orm(column_type = "JsonBinary")]
     pub report: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

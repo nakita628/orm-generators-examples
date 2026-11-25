@@ -8,12 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "table_meta")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub icon: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub db_table_name: String,
+    #[sea_orm(column_type = "Text")]
     pub db_view_name: Option<String>,
     #[sea_orm(column_type = "JsonBinary")]
     pub search_index: Option<Json>,
@@ -25,10 +32,18 @@ pub struct Model {
     pub provision_state: ProvisionState,
     pub version: i32,
     pub order: f64,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
 }
 
@@ -37,7 +52,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::base::Entity",
         from = "Column::BaseId",
-        to = "super::base::Column::Id"
+        to = "super::base::Column::Id",
+        fk_name = "table_meta_base_id_fkey"
     )]
     Base,
     #[sea_orm(has_many = "super::field::Entity")]

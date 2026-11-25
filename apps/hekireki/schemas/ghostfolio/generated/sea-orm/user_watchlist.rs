@@ -4,9 +4,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "_UserWatchlist")]
 pub struct Model {
-    #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "A",
+        column_type = "Text"
+    )]
     pub symbol_profile_id: String,
-    #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "B",
+        column_type = "Text"
+    )]
     pub user_id: String,
 }
 
@@ -15,13 +25,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::symbol_profile::Entity",
         from = "Column::SymbolProfileId",
-        to = "super::symbol_profile::Column::Id"
+        to = "super::symbol_profile::Column::Id",
+        fk_name = "_UserWatchlist_A_fkey"
     )]
     SymbolProfile,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "_UserWatchlist_B_fkey"
     )]
     User,
 }

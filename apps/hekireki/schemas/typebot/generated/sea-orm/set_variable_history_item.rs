@@ -5,16 +5,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SetVariableHistoryItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "resultId")]
+    #[sea_orm(column_name = "resultId", column_type = "Text")]
     pub result_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     pub index: i32,
-    #[sea_orm(column_name = "variableId")]
+    #[sea_orm(column_name = "variableId", column_type = "Text")]
     pub variable_id: String,
-    #[sea_orm(column_name = "blockId")]
+    #[sea_orm(column_name = "blockId", column_type = "Text")]
     pub block_id: String,
     #[sea_orm(column_name = "blockIndex")]
     pub block_index: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub value: Json,
 }
 
@@ -24,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::result::Entity",
         from = "Column::ResultId",
         to = "super::result::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SetVariableHistoryItem_resultId_fkey"
     )]
     Result,
 }

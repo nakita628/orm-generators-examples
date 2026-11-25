@@ -10,49 +10,65 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Trigger")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     pub action: TriggerAction,
     #[sea_orm(column_name = "triggerKind", default_value = "AUTOMATION")]
     pub trigger_kind: TriggerKind,
-    #[sea_orm(column_name = "actionParams")]
+    #[sea_orm(column_name = "actionParams", column_type = "JsonBinary")]
     pub action_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filters: Json,
-    #[sea_orm(column_name = "filterQuery")]
+    #[sea_orm(column_name = "filterQuery", column_type = "Text")]
     pub filter_query: Option<String>,
     #[sea_orm(column_name = "lastRunAt", default_value = 0)]
     pub last_run_at: f64,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(default_value = true)]
     pub active: bool,
-    #[sea_orm(column_name = "pausedReason")]
+    #[sea_orm(column_name = "pausedReason", column_type = "Text")]
     pub paused_reason: Option<String>,
-    #[sea_orm(column_name = "pausedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "pausedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub paused_at: Option<DateTimeWithTimeZone>,
+    #[sea_orm(column_type = "Text")]
     pub message: Option<String>,
     #[sea_orm(default_value = false)]
     pub deleted: bool,
     #[sea_orm(column_name = "alertType")]
     pub alert_type: Option<AlertType>,
-    #[sea_orm(column_name = "slackTemplateType")]
+    #[sea_orm(column_name = "slackTemplateType", column_type = "Text")]
     pub slack_template_type: Option<String>,
-    #[sea_orm(column_name = "slackTemplate")]
+    #[sea_orm(column_name = "slackTemplate", column_type = "Text")]
     pub slack_template: Option<String>,
-    #[sea_orm(column_name = "emailSubjectTemplate")]
+    #[sea_orm(column_name = "emailSubjectTemplate", column_type = "Text")]
     pub email_subject_template: Option<String>,
-    #[sea_orm(column_name = "emailBodyTemplate")]
+    #[sea_orm(column_name = "emailBodyTemplate", column_type = "Text")]
     pub email_body_template: Option<String>,
-    #[sea_orm(column_name = "notificationCadence", default_value = "immediate")]
+    #[sea_orm(
+        column_name = "notificationCadence",
+        column_type = "Text",
+        default_value = "immediate"
+    )]
     pub notification_cadence: String,
     #[sea_orm(column_name = "traceDebounceMs", default_value = 30000)]
     pub trace_debounce_ms: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "customGraphId")]
+    #[sea_orm(column_name = "customGraphId", column_type = "Text")]
     pub custom_graph_id: Option<String>,
 }
 
@@ -61,14 +77,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Trigger_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::custom_graph::Entity",
         from = "Column::CustomGraphId",
         to = "super::custom_graph::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Trigger_customGraphId_fkey"
     )]
     CustomGraph,
     #[sea_orm(has_many = "super::trigger_sent::Entity")]

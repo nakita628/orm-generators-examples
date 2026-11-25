@@ -7,14 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LinkTag")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "String(StringLen::N(191))")]
     pub link_id: String,
-    #[sea_orm(column_name = "tagId")]
+    #[sea_orm(column_name = "tagId", column_type = "String(StringLen::N(191))")]
     pub tag_id: String,
 }
 
@@ -25,7 +30,8 @@ pub enum Relation {
         from = "Column::LinkId",
         to = "super::link::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkTag_linkId_fkey"
     )]
     Link,
     #[sea_orm(
@@ -33,7 +39,8 @@ pub enum Relation {
         from = "Column::TagId",
         to = "super::tag::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkTag_tagId_fkey"
     )]
     Tag,
 }

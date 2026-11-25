@@ -9,19 +9,24 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub revision: i64,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub kind: GatewayChangeEventKind,
-    #[sea_orm(column_name = "virtualKeyId")]
+    #[sea_orm(column_name = "virtualKeyId", column_type = "Text")]
     pub virtual_key_id: Option<String>,
-    #[sea_orm(column_name = "budgetId")]
+    #[sea_orm(column_name = "budgetId", column_type = "Text")]
     pub budget_id: Option<String>,
-    #[sea_orm(column_name = "modelProviderId")]
+    #[sea_orm(column_name = "modelProviderId", column_type = "Text")]
     pub model_provider_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -31,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GatewayChangeEvent_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "GatewayChangeEvent_projectId_fkey"
     )]
     Project,
 }

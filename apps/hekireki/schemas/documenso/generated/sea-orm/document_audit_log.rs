@@ -7,20 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DocumentAuditLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
 }
 
@@ -30,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::envelope::Entity",
         from = "Column::EnvelopeId",
         to = "super::envelope::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DocumentAuditLog_envelopeId_fkey"
     )]
     Envelope,
 }

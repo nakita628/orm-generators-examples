@@ -6,15 +6,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "InvitedUsers")]
 pub struct Model {
-    #[sea_orm(column_name = "adminUid")]
+    #[sea_orm(column_name = "adminUid", column_type = "Text")]
     pub admin_uid: String,
-    #[sea_orm(column_name = "adminEmail")]
+    #[sea_orm(column_name = "adminEmail", column_type = "Text")]
     pub admin_email: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "inviteeEmail")]
+    #[sea_orm(column_name = "inviteeEmail", column_type = "Text")]
     pub invitee_email: String,
-    #[sea_orm(column_name = "invitedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "invitedOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub invited_on: DateTimeWithTimeZone,
 }
 
@@ -24,7 +28,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::AdminUid",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "InvitedUsers_adminUid_fkey"
     )]
     User,
 }

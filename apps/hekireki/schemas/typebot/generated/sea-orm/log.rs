@@ -7,14 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Log")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "resultId")]
+    #[sea_orm(column_name = "resultId", column_type = "Text")]
     pub result_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub context: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: String,
+    #[sea_orm(column_type = "Text")]
     pub details: Option<String>,
 }
 
@@ -24,7 +33,8 @@ pub enum Relation {
         belongs_to = "super::result::Entity",
         from = "Column::ResultId",
         to = "super::result::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Log_resultId_fkey"
     )]
     Result,
 }

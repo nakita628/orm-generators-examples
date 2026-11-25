@@ -10,25 +10,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LangyActiveTurn")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
-    #[sea_orm(column_name = "turnId")]
+    #[sea_orm(column_name = "turnId", column_type = "Text")]
     pub turn_id: String,
-    #[sea_orm(column_name = "requestId")]
+    #[sea_orm(column_name = "requestId", column_type = "Text")]
     pub request_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "leaseOwner")]
+    #[sea_orm(column_name = "leaseOwner", column_type = "Text")]
     pub lease_owner: String,
-    #[sea_orm(column_name = "leaseExpiresAt")]
+    #[sea_orm(
+        column_name = "leaseExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub lease_expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

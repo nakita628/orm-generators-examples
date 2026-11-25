@@ -8,18 +8,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workflow_steps")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub r#type: WorkflowStepType,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub position: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Json,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "templateId")]
+    #[sea_orm(column_name = "templateId", column_type = "Text")]
     pub template_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -29,13 +37,15 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "Column::WorkflowId",
         to = "super::workflow::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workflow_steps_workflowId_fkey"
     )]
     Workflow,
     #[sea_orm(
         belongs_to = "super::template::Entity",
         from = "Column::TemplateId",
-        to = "super::template::Column::Id"
+        to = "super::template::Column::Id",
+        fk_name = "workflow_steps_templateId_fkey"
     )]
     Template,
     #[sea_orm(

@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "jackson_ttl")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
     #[sea_orm(column_name = "expiresAt")]
     pub expires_at: i64,

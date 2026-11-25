@@ -86,7 +86,7 @@ func (m *Files) BeforeCreate(tx *gorm.DB) error {
 }
 
 type QuarantineFiles struct {
-	FileID string  `gorm:"column:fileId;primaryKey;uniqueIndex:quarantineFiles_fileId_key" json:"fileId"`
+	FileID string  `gorm:"column:fileId;primaryKey;uniqueIndex:quarantineFiles_fileId_key;not null" json:"fileId"`
 	Name   string  `gorm:"column:name;not null" json:"name"`
 	Reason *string `gorm:"column:reason" json:"reason"`
 	File   *Files  `gorm:"foreignKey:FileID;references:UUID;belongsTo"`

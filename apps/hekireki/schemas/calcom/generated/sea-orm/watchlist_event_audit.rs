@@ -15,6 +15,10 @@ pub struct Model {
     pub event_type_id: i32,
     #[sea_orm(column_name = "actionTaken")]
     pub action_taken: WatchlistAction,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub timestamp: DateTime,
 }
 

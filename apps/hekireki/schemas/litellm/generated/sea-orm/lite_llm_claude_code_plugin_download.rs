@@ -8,15 +8,27 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i64,
+    #[sea_orm(column_type = "Text")]
     pub plugin_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub downloaded_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub version: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub digest: String,
     pub authenticated: bool,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_email: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub key_alias: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_alias: Option<String>,
 }
 
@@ -27,7 +39,8 @@ pub enum Relation {
         from = "Column::PluginId",
         to = "super::lite_llm_claude_code_plugin_table::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_ClaudeCodePluginDownload_plugin_id_fkey"
     )]
     Plugin,
 }

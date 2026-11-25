@@ -16,25 +16,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Passkey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(column_name = "publicKey", column_type = "Text")]
     pub public_key: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "credentialID")]
+    #[sea_orm(column_name = "credentialID", column_type = "Text")]
     pub credential_id: String,
     #[sea_orm(default_value = 0)]
     pub counter: i32,
-    #[sea_orm(column_name = "deviceType")]
+    #[sea_orm(column_name = "deviceType", column_type = "Text")]
     pub device_type: String,
     #[sea_orm(column_name = "backedUp", default_value = false)]
     pub backed_up: bool,
+    #[sea_orm(column_type = "Text")]
     pub transports: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub aaguid: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -44,7 +56,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Passkey_userId_fkey"
     )]
     User,
 }

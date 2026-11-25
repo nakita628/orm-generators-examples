@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserUpdateRead")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "updateId")]
+    #[sea_orm(column_name = "updateId", column_type = "Text")]
     pub update_id: String,
-    #[sea_orm(column_name = "readAt")]
+    #[sea_orm(
+        column_name = "readAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub read_at: DateTime,
 }
 
@@ -23,7 +28,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserUpdateRead_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -31,7 +37,8 @@ pub enum Relation {
         from = "Column::UpdateId",
         to = "super::update::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserUpdateRead_updateId_fkey"
     )]
     Update,
 }

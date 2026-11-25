@@ -9,21 +9,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GroupItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
     pub r#type: GroupItemType,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
     #[sea_orm(default_value = false)]
     pub exclude: bool,
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: Option<String>,
-    #[sea_orm(column_name = "messageId")]
+    #[sea_orm(column_name = "messageId", column_type = "Text")]
     pub message_id: Option<String>,
     pub source: Option<GroupItemSource>,
 }
@@ -34,7 +41,8 @@ pub enum Relation {
         belongs_to = "super::group::Entity",
         from = "Column::GroupId",
         to = "super::group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GroupItem_groupId_fkey"
     )]
     Group,
 }

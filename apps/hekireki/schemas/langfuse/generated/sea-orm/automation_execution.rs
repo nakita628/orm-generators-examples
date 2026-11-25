@@ -8,20 +8,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "automation_executions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub source_id: String,
+    #[sea_orm(column_type = "Text")]
     pub automation_id: String,
+    #[sea_orm(column_type = "Text")]
     pub trigger_id: String,
+    #[sea_orm(column_type = "Text")]
     pub action_id: String,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: ActionExecutionStatus,
+    #[sea_orm(column_type = "JsonBinary")]
     pub input: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub output: Option<Json>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
 }
 
@@ -31,28 +50,32 @@ pub enum Relation {
         belongs_to = "super::automation::Entity",
         from = "Column::AutomationId",
         to = "super::automation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "automation_executions_automation_id_fkey"
     )]
     Automation,
     #[sea_orm(
         belongs_to = "super::trigger::Entity",
         from = "Column::TriggerId",
         to = "super::trigger::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "automation_executions_trigger_id_fkey"
     )]
     Trigger,
     #[sea_orm(
         belongs_to = "super::action::Entity",
         from = "Column::ActionId",
         to = "super::action::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "automation_executions_action_id_fkey"
     )]
     Action,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "automation_executions_project_id_fkey"
     )]
     Project,
 }

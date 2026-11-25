@@ -6,19 +6,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "Account")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub currency: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "platformId")]
+    #[sea_orm(column_name = "platformId", column_type = "Text")]
     pub platform_id: Option<String>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -27,14 +35,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::platform::Entity",
         from = "Column::PlatformId",
-        to = "super::platform::Column::Id"
+        to = "super::platform::Column::Id",
+        fk_name = "Account_platformId_fkey"
     )]
     Platform,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Account_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::order::Entity")]

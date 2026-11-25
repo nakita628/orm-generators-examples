@@ -7,11 +7,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AdaptiveRouterSession")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub session_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub router_name: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub model_name: String,
+    #[sea_orm(column_type = "Text")]
     pub classified_type: String,
     #[sea_orm(default_value = 0)]
     pub misalignment_count: i32,
@@ -27,11 +31,13 @@ pub struct Model {
     pub loop_count: i32,
     #[sea_orm(default_value = 0)]
     pub exhaustion_count: i32,
+    #[sea_orm(column_type = "Text")]
     pub last_user_content: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub last_assistant_content: Option<String>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub tool_call_history: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub pending_tool_calls: Json,
     #[sea_orm(default_value = 0)]
     pub turn_count: i32,
@@ -40,6 +46,10 @@ pub struct Model {
     #[sea_orm(default_value = false)]
     pub clean_credit_awarded: bool,
     pub terminal_status: Option<i32>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_activity_at: DateTime,
 }
 

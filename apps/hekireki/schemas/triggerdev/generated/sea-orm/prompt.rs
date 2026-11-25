@@ -7,35 +7,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "prompts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub friendly_id: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(default_value = "text")]
+    #[sea_orm(column_type = "Text", default_value = "text")]
     pub r#type: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
-    #[sea_orm(column_name = "filePath")]
+    #[sea_orm(column_name = "filePath", column_type = "Text")]
     pub file_path: Option<String>,
-    #[sea_orm(column_name = "exportName")]
+    #[sea_orm(column_name = "exportName", column_type = "Text")]
     pub export_name: Option<String>,
-    #[sea_orm(column_name = "variableSchema")]
+    #[sea_orm(column_name = "variableSchema", column_type = "JsonBinary")]
     pub variable_schema: Option<Json>,
-    #[sea_orm(column_name = "defaultModel")]
+    #[sea_orm(column_name = "defaultModel", column_type = "Text")]
     pub default_model: Option<String>,
-    #[sea_orm(column_name = "defaultConfig")]
+    #[sea_orm(column_name = "defaultConfig", column_type = "JsonBinary")]
     pub default_config: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -46,7 +55,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompts_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -54,7 +64,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompts_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -62,7 +73,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompts_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(has_many = "super::prompt_version::Entity")]

@@ -7,17 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AgentsTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub agent_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub agent_name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub agent_card_params: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub static_headers: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub extra_headers: Vec<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub kill_switch: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub agent_access_groups: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub access_group_ids: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub object_permission_id: Option<String>,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
@@ -25,15 +34,25 @@ pub struct Model {
     pub identity_managed: bool,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
-    #[sea_orm(default_value = "autonomous")]
+    #[sea_orm(column_type = "Text", default_value = "autonomous")]
     pub execution_mode: String,
     pub tpm_limit: Option<i32>,
     pub rpm_limit: Option<i32>,
     pub session_tpm_limit: Option<i32>,
     pub session_rpm_limit: Option<i32>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 
@@ -42,7 +61,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_object_permission_table::Entity",
         from = "Column::ObjectPermissionId",
-        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId"
+        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId",
+        fk_name = "LiteLLM_AgentsTable_object_permission_id_fkey"
     )]
     ObjectPermission,
     #[sea_orm(has_many = "super::lite_llm_retired_agent_identity::Entity")]

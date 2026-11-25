@@ -15,22 +15,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DiscoveredPerson")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// "anthropic" | "openai" | "databricks" | ... - the provider that named them.
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
     /// What the provider calls them, verbatim. The join key onto the money rows'
     /// RawActorId. Replaced by a deterministic pseudonym on erasure, which keeps
     /// the row addressable for spend attribution without keeping the identifier.
-    #[sea_orm(column_name = "rawActorId")]
+    #[sea_orm(column_name = "rawActorId", column_type = "Text")]
     pub raw_actor_id: String,
     /// Name or email text as seen. Pseudonymized alongside rawActorId on erasure.
-    #[sea_orm(column_name = "displayText")]
+    #[sea_orm(column_name = "displayText", column_type = "Text")]
     pub display_text: String,
     /// person | service_account - determined deterministically per ADR-128 §10
     /// (a bare UUID in Databricks `executed_by` is a service account, never an
     /// agent), never guessed from the shape of a name.
+    #[sea_orm(column_type = "Text")]
     pub kind: String,
     /// The department the provider's directory filed this person under, verbatim.
     /// An OBSERVATION, not the `Department` entity: it is free text a tenant owns
@@ -40,14 +43,15 @@ pub struct Model {
     /// Null means no directory has named one - never "no department", because a
     /// blank field in the tenant's directory and a person no directory lists are
     /// the same null here.
+    #[sea_orm(column_type = "Text")]
     pub department: Option<String>,
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(column_name = "firstSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub first_seen_at: DateTime,
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(column_name = "lastSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_seen_at: DateTime,
     /// Set when this row's identity has been erased. The row survives so its
     /// spend stays attributable to *someone*; the identifier does not.
-    #[sea_orm(column_name = "erasedAt")]
+    #[sea_orm(column_name = "erasedAt", column_type = "custom(\"timestamp(3)\")")]
     pub erased_at: Option<DateTime>,
     /// Set alongside `erasedAt` and cleared once the daily cost rows have been
     /// removed and their rebuild requested. Non-null means the ClickHouse half
@@ -55,27 +59,38 @@ pub struct Model {
     /// replay leaves days short by the erased amount, and without this marker a
     /// re-run reads `erasedAt`, short-circuits, and reports a clean erasure that
     /// did no work. The re-run resumes at that step instead.
-    #[sea_orm(column_name = "moneyRowsPendingAt")]
+    #[sea_orm(
+        column_name = "moneyRowsPendingAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub money_rows_pending_at: Option<DateTime>,
     /// The earliest day to rebuild from, recorded BEFORE the rows are deleted.
     /// Once they are gone there is nothing left to ask which days they were on,
     /// so a resume with no record of this could only replay everything or
     /// nothing. Null means nothing was rebuildable — either no day carried the
     /// identifier, or every one of them is older than the event log keeps.
-    #[sea_orm(column_name = "moneyRebuildSince")]
+    #[sea_orm(column_name = "moneyRebuildSince", column_type = "Text")]
     pub money_rebuild_since: Option<String>,
     /// ADR-128 §12 conflict rule: automatic linking has stopped for this
     /// identity because evidence pointed at two candidates, or contradicted an
     /// existing link. Stored HERE rather than on the suggestion rows, because a
     /// halt on auto-linking that a recompute or a restart clears is not a halt.
-    #[sea_orm(column_name = "suspendedAt")]
+    #[sea_orm(column_name = "suspendedAt", column_type = "custom(\"timestamp(3)\")")]
     pub suspended_at: Option<DateTime>,
     /// What tripped the suspension, for the human who reviews it.
-    #[sea_orm(column_name = "suspendedReason")]
+    #[sea_orm(column_name = "suspendedReason", column_type = "Text")]
     pub suspended_reason: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

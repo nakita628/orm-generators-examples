@@ -9,41 +9,48 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ActivityEvent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "occurredAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "occurredAt",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub occurred_at: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "actorUserId")]
+    #[sea_orm(column_name = "actorUserId", column_type = "Text")]
     pub actor_user_id: Option<String>,
-    #[sea_orm(column_name = "actorSnapshot")]
+    #[sea_orm(column_name = "actorSnapshot", column_type = "JsonBinary")]
     pub actor_snapshot: Option<Json>,
     pub action: ActivityAction,
     #[sea_orm(column_name = "entityType")]
     pub entity_type: ActivityEntity,
-    #[sea_orm(column_name = "entityId")]
+    #[sea_orm(column_name = "entityId", column_type = "Text")]
     pub entity_id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "bookingId")]
+    #[sea_orm(column_name = "bookingId", column_type = "Text")]
     pub booking_id: Option<String>,
-    #[sea_orm(column_name = "auditSessionId")]
+    #[sea_orm(column_name = "auditSessionId", column_type = "Text")]
     pub audit_session_id: Option<String>,
-    #[sea_orm(column_name = "auditAssetId")]
+    #[sea_orm(column_name = "auditAssetId", column_type = "Text")]
     pub audit_asset_id: Option<String>,
-    #[sea_orm(column_name = "kitId")]
+    #[sea_orm(column_name = "kitId", column_type = "Text")]
     pub kit_id: Option<String>,
-    #[sea_orm(column_name = "locationId")]
+    #[sea_orm(column_name = "locationId", column_type = "Text")]
     pub location_id: Option<String>,
-    #[sea_orm(column_name = "teamMemberId")]
+    #[sea_orm(column_name = "teamMemberId", column_type = "Text")]
     pub team_member_id: Option<String>,
-    #[sea_orm(column_name = "targetUserId")]
+    #[sea_orm(column_name = "targetUserId", column_type = "Text")]
     pub target_user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub field: Option<String>,
-    #[sea_orm(column_name = "fromValue")]
+    #[sea_orm(column_name = "fromValue", column_type = "JsonBinary")]
     pub from_value: Option<Json>,
-    #[sea_orm(column_name = "toValue")]
+    #[sea_orm(column_name = "toValue", column_type = "JsonBinary")]
     pub to_value: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub meta: Option<Json>,
 }
 
@@ -54,7 +61,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ActivityEvent_organizationId_fkey"
     )]
     Organization,
 }

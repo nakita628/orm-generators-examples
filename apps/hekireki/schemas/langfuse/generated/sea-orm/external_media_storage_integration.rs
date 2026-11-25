@@ -9,20 +9,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "external_media_storage_integrations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     pub r#type: ExternalMediaStorageIntegrationType,
+    #[sea_orm(column_type = "Text")]
     pub bucket_name: String,
+    #[sea_orm(column_type = "Text")]
     pub prefix: Option<String>,
     #[sea_orm(default_value = "ACCESS_KEYS")]
     pub auth_type: StorageIntegrationAuthType,
+    #[sea_orm(column_type = "Text")]
     pub access_key_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub secret_access_key: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub role_arn: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub external_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub region: String,
+    #[sea_orm(column_type = "Text")]
     pub endpoint: Option<String>,
     pub force_path_style: bool,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -32,7 +49,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "external_media_storage_integrations_project_id_fkey"
     )]
     Project,
 }

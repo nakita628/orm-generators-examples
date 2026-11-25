@@ -10,12 +10,13 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
     #[sea_orm(column_name = "expiresAt")]
     pub expires_at: PrismaDateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -25,7 +26,8 @@ pub enum Relation {
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
         to = "super::users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "temporary_auth_tokens_userId_fkey"
     )]
     User,
 }

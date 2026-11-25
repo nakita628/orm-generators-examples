@@ -19,19 +19,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DepartmentMembershipHistory")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "departmentId")]
+    #[sea_orm(column_name = "departmentId", column_type = "Text")]
     pub department_id: String,
-    #[sea_orm(column_name = "validFrom")]
+    #[sea_orm(column_name = "validFrom", column_type = "custom(\"timestamp(3)\")")]
     pub valid_from: DateTime,
     /// Null means the link is open. Reassignment and clearing close it.
-    #[sea_orm(column_name = "validTo")]
+    #[sea_orm(column_name = "validTo", column_type = "custom(\"timestamp(3)\")")]
     pub valid_to: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

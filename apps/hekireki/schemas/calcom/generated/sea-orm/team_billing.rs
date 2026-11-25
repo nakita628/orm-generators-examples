@@ -9,25 +9,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamBilling")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "subscriptionId")]
+    #[sea_orm(column_name = "subscriptionId", column_type = "Text")]
     pub subscription_id: String,
-    #[sea_orm(column_name = "subscriptionItemId")]
+    #[sea_orm(column_name = "subscriptionItemId", column_type = "Text")]
     pub subscription_item_id: String,
-    #[sea_orm(column_name = "customerId")]
+    #[sea_orm(column_name = "customerId", column_type = "Text")]
     pub customer_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "planName")]
+    #[sea_orm(column_name = "planName", column_type = "Text")]
     pub plan_name: String,
-    #[sea_orm(column_name = "subscriptionStart")]
+    #[sea_orm(
+        column_name = "subscriptionStart",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub subscription_start: Option<DateTime>,
-    #[sea_orm(column_name = "subscriptionTrialEnd")]
+    #[sea_orm(
+        column_name = "subscriptionTrialEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub subscription_trial_end: Option<DateTime>,
-    #[sea_orm(column_name = "subscriptionEnd")]
+    #[sea_orm(
+        column_name = "subscriptionEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub subscription_end: Option<DateTime>,
     #[sea_orm(column_name = "billingPeriod")]
     pub billing_period: Option<BillingPeriod>,
@@ -39,11 +50,18 @@ pub struct Model {
     pub paid_seats: Option<i32>,
     #[sea_orm(column_name = "highWaterMark")]
     pub high_water_mark: Option<i32>,
-    #[sea_orm(column_name = "highWaterMarkPeriodStart")]
+    #[sea_orm(
+        column_name = "highWaterMarkPeriodStart",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub high_water_mark_period_start: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -53,7 +71,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamBilling_teamId_fkey"
     )]
     Team,
     #[sea_orm(has_many = "super::monthly_proration::Entity")]

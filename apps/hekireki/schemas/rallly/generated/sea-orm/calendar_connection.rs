@@ -7,15 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "calendar_connections")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
+    #[sea_orm(column_type = "Text")]
     pub integration_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider_account_id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub display_name: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub credential_id: String,
 }
 
@@ -25,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::credential::Entity",
         from = "Column::CredentialId",
         to = "super::credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "calendar_connections_credential_id_fkey"
     )]
     Credential,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "calendar_connections_user_id_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::provider_calendar::Entity")]

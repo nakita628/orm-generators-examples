@@ -7,25 +7,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(column_name = "emailVerified", column_type = "custom(\"datetime(3)\")")]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub image: Option<String>,
     #[sea_orm(column_name = "isMachine", default_value = false)]
     pub is_machine: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "passwordHash")]
+    #[sea_orm(
+        column_name = "passwordHash",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub password_hash: Option<String>,
     #[sea_orm(column_name = "invalidLoginAttempts", default_value = 0)]
     pub invalid_login_attempts: i32,
-    #[sea_orm(column_name = "lockedAt")]
+    #[sea_orm(column_name = "lockedAt", column_type = "custom(\"datetime(3)\")")]
     pub locked_at: Option<DateTime>,
-    #[sea_orm(column_name = "defaultWorkspace")]
+    #[sea_orm(
+        column_name = "defaultWorkspace",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub default_workspace: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub source: Option<String>,
     #[sea_orm(column_name = "sentMail", default_value = false)]
     pub sent_mail: bool,

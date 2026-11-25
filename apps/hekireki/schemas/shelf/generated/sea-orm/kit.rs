@@ -8,25 +8,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Kit")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = "AVAILABLE")]
     pub status: KitStatus,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
-    #[sea_orm(column_name = "imageExpiration")]
+    #[sea_orm(
+        column_name = "imageExpiration",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub image_expiration: Option<DateTime>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "categoryId")]
+    #[sea_orm(column_name = "categoryId", column_type = "Text")]
     pub category_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "locationId")]
+    #[sea_orm(column_name = "locationId", column_type = "Text")]
     pub location_id: Option<String>,
 }
 
@@ -37,25 +48,29 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Kit_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Kit_createdById_fkey"
     )]
     CreatedBy,
     #[sea_orm(
         belongs_to = "super::category::Entity",
         from = "Column::CategoryId",
-        to = "super::category::Column::Id"
+        to = "super::category::Column::Id",
+        fk_name = "Kit_categoryId_fkey"
     )]
     Category,
     #[sea_orm(
         belongs_to = "super::location::Entity",
         from = "Column::LocationId",
-        to = "super::location::Column::Id"
+        to = "super::location::Column::Id",
+        fk_name = "Kit_locationId_fkey"
     )]
     Location,
     #[sea_orm(has_many = "super::asset_kit::Entity")]

@@ -5,13 +5,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_knowledge_mentions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "sourceType")]
+    #[sea_orm(column_name = "sourceType", column_type = "Text")]
     pub source_type: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "sourceId")]
+    #[sea_orm(column_name = "sourceId", column_type = "Text")]
     pub source_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "recordId")]
+    #[sea_orm(column_name = "recordId", column_type = "Text")]
     pub record_id: String,
 }
 

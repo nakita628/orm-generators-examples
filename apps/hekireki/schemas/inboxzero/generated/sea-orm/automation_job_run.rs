@@ -8,22 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AutomationJobRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(default_value = "PENDING")]
     pub status: AutomationJobRunStatus,
-    #[sea_orm(column_name = "scheduledFor")]
+    #[sea_orm(column_name = "scheduledFor", column_type = "custom(\"timestamp(3)\")")]
     pub scheduled_for: DateTime,
-    #[sea_orm(column_name = "processedAt")]
+    #[sea_orm(column_name = "processedAt", column_type = "custom(\"timestamp(3)\")")]
     pub processed_at: Option<DateTime>,
     #[sea_orm(column_name = "outboundMessage", column_type = "Text")]
     pub outbound_message: Option<String>,
-    #[sea_orm(column_name = "providerMessageId")]
+    #[sea_orm(column_name = "providerMessageId", column_type = "Text")]
     pub provider_message_id: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "automationJobId")]
+    #[sea_orm(column_name = "automationJobId", column_type = "Text")]
     pub automation_job_id: String,
 }
 
@@ -33,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::automation_job::Entity",
         from = "Column::AutomationJobId",
         to = "super::automation_job::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AutomationJobRun_automationJobId_fkey"
     )]
     AutomationJob,
 }

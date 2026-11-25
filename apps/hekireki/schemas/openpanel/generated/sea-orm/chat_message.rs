@@ -7,15 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "chat_messages")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "Text",
+        default_expr = "Expr::cust(\"gen_random_uuid()\")"
+    )]
     pub id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
     /// [IPrismaUIMessageParts]
     pub parts: Json,
     /// [IPrismaChatMessageMetadata]
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::conversation::Entity",
         from = "Column::ConversationId",
         to = "super::conversation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "chat_messages_conversationId_fkey"
     )]
     Conversation,
 }

@@ -8,21 +8,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "audit_logs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "USER")]
     pub r#type: AuditLogRecordType,
+    #[sea_orm(column_type = "Text")]
     pub api_key_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub org_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_org_role: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub project_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_project_role: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub resource_type: String,
+    #[sea_orm(column_type = "Text")]
     pub resource_id: String,
+    #[sea_orm(column_type = "Text")]
     pub action: String,
+    #[sea_orm(column_type = "Text")]
     pub before: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub after: Option<String>,
 }
 

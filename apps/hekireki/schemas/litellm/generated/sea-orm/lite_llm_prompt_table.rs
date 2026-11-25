@@ -7,16 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_PromptTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub prompt_id: String,
     #[sea_orm(default_value = 1)]
     pub version: i32,
-    #[sea_orm(default_value = "development")]
+    #[sea_orm(column_type = "Text", default_value = "development")]
     pub environment: String,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub litellm_params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub prompt_info: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

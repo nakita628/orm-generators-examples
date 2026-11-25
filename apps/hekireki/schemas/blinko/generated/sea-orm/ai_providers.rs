@@ -19,7 +19,11 @@ pub struct Model {
     pub config: Option<Json>,
     #[sea_orm(column_name = "sortOrder", default_value = 0)]
     pub sort_order: i32,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
     pub updated_at: DateTimeWithTimeZone,

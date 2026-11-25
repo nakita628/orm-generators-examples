@@ -7,8 +7,9 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "directoryId")]
+    #[sea_orm(column_name = "directoryId", column_type = "Text")]
     pub directory_id: String,
+    #[sea_orm(column_type = "Text")]
     pub tenant: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "organizationId")]
@@ -21,7 +22,8 @@ pub enum Relation {
         belongs_to = "super::organization_settings::Entity",
         from = "Column::OrganizationId",
         to = "super::organization_settings::Column::OrganizationId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DSyncData_organizationId_fkey"
     )]
     Org,
     #[sea_orm(has_many = "super::dsync_team_group_mapping::Entity")]

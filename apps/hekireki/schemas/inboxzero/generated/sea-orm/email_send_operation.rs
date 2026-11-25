@@ -8,21 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EmailSendOperation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "clientMutationId")]
+    #[sea_orm(column_name = "clientMutationId", column_type = "Text")]
     pub client_mutation_id: String,
-    #[sea_orm(column_name = "payloadHash")]
+    #[sea_orm(column_name = "payloadHash", column_type = "Text")]
     pub payload_hash: String,
     #[sea_orm(default_value = "PROCESSING")]
     pub status: EmailSendOperationStatus,
-    #[sea_orm(column_name = "processingStartedAt")]
+    #[sea_orm(
+        column_name = "processingStartedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub processing_started_at: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub result: Option<Json>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -32,7 +42,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmailSendOperation_emailAccountId_fkey"
     )]
     EmailAccount,
 }

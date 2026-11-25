@@ -7,6 +7,7 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_type = "String(StringLen::N(64))")]
     pub id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Json,
     #[sea_orm(column_type = "String(StringLen::N(32))")]
     pub status: String,
@@ -22,6 +23,7 @@ pub struct Model {
     pub total_files: Option<i32>,
     #[sea_orm(default_value = 0)]
     pub total_workers: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
 }
 

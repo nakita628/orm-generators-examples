@@ -8,43 +8,55 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Booking")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = "DRAFT")]
     pub status: BookingStatus,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "activeSchedulerReference")]
+    #[sea_orm(column_name = "activeSchedulerReference", column_type = "Text")]
     pub active_scheduler_reference: Option<String>,
-    #[sea_orm(column_name = "creatorId")]
+    #[sea_orm(column_name = "creatorId", column_type = "Text")]
     pub creator_id: String,
-    #[sea_orm(column_name = "custodianUserId")]
+    #[sea_orm(column_name = "custodianUserId", column_type = "Text")]
     pub custodian_user_id: Option<String>,
-    #[sea_orm(column_name = "custodianTeamMemberId")]
+    #[sea_orm(column_name = "custodianTeamMemberId", column_type = "Text")]
     pub custodian_team_member_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_at: DateTimeWithTimeZone,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub from: DateTimeWithTimeZone,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub to: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "originalFrom", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "originalFrom",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub original_from: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "originalTo", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "originalTo", column_type = "custom(\"timestamptz(3)\")")]
     pub original_to: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "autoArchivedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "autoArchivedAt",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub auto_archived_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_name = "archivedWithoutCheckin", default_value = false)]
     pub archived_without_checkin: bool,
-    #[sea_orm(column_name = "cancellationReason")]
+    #[sea_orm(column_name = "cancellationReason", column_type = "Text")]
     pub cancellation_reason: Option<String>,
-    #[sea_orm(column_name = "approvedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "approvedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub approved_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "approvedById")]
+    #[sea_orm(column_name = "approvedById", column_type = "Text")]
     pub approved_by_id: Option<String>,
 }
 
@@ -55,7 +67,8 @@ pub enum Relation {
         from = "Column::CreatorId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_creatorId_fkey"
     )]
     Creator,
     #[sea_orm(
@@ -63,7 +76,8 @@ pub enum Relation {
         from = "Column::CustodianUserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_custodianUserId_fkey"
     )]
     CustodianUser,
     #[sea_orm(
@@ -71,7 +85,8 @@ pub enum Relation {
         from = "Column::CustodianTeamMemberId",
         to = "super::team_member::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_custodianTeamMemberId_fkey"
     )]
     CustodianTeamMember,
     #[sea_orm(
@@ -79,7 +94,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -87,7 +103,8 @@ pub enum Relation {
         from = "Column::ApprovedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Booking_approvedById_fkey"
     )]
     ApprovedBy,
     #[sea_orm(has_many = "super::booking_asset::Entity")]

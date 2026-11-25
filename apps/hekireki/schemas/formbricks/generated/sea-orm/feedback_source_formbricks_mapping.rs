@@ -17,17 +17,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeedbackSourceFormbricksMapping")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub feedback_source_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "elementId")]
+    #[sea_orm(column_name = "elementId", column_type = "Text")]
     pub element_id: String,
     #[sea_orm(column_name = "hubFieldType")]
     pub hub_field_type: HubFieldType,
+    #[sea_orm(column_type = "Text")]
     pub custom_field_label: Option<String>,
 }
 
@@ -37,14 +44,16 @@ pub enum Relation {
         belongs_to = "super::feedback_source::Entity",
         from = "(Column::FeedbackSourceId, Column::WorkspaceId)",
         to = "(super::feedback_source::Column::Id, super::feedback_source::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk"
     )]
     FeedbackSource,
     #[sea_orm(
         belongs_to = "super::survey::Entity",
         from = "(Column::SurveyId, Column::WorkspaceId)",
         to = "(super::survey::Column::Id, super::survey::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackSourceFormbricksMapping_surveyId_workspaceId_fkey"
     )]
     Survey,
 }

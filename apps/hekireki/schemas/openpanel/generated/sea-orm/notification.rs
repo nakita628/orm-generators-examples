@@ -7,16 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "notifications")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub message: String,
-    #[sea_orm(column_name = "isReadAt")]
+    #[sea_orm(column_name = "isReadAt", column_type = "custom(\"timestamp(3)\")")]
     pub is_read_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "sendToApp", default_value = false)]
     pub send_to_app: bool,
@@ -27,6 +38,7 @@ pub struct Model {
     #[sea_orm(column_name = "notificationRuleId")]
     pub notification_rule_id: Option<Uuid>,
     /// [IPrismaNotificationPayload]
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Option<Json>,
 }
 
@@ -36,21 +48,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "notifications_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
         to = "super::integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "notifications_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::notification_rule::Entity",
         from = "Column::NotificationRuleId",
         to = "super::notification_rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "notifications_notificationRuleId_fkey"
     )]
     NotificationRule,
 }

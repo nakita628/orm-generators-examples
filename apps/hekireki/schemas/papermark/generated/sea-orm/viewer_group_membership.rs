@@ -7,14 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ViewerGroupMembership")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "viewerId")]
+    #[sea_orm(column_name = "viewerId", column_type = "Text")]
     pub viewer_id: String,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -24,14 +29,16 @@ pub enum Relation {
         belongs_to = "super::viewer::Entity",
         from = "Column::ViewerId",
         to = "super::viewer::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ViewerGroupMembership_viewerId_fkey"
     )]
     Viewer,
     #[sea_orm(
         belongs_to = "super::viewer_group::Entity",
         from = "Column::GroupId",
         to = "super::viewer_group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ViewerGroupMembership_groupId_fkey"
     )]
     Group,
 }

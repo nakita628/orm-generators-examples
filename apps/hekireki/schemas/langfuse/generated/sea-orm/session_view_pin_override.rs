@@ -5,10 +5,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "session_view_pin_overrides")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
     /// Null identifies the built-in Messages view.
+    #[sea_orm(column_type = "Text")]
     pub view_id: Option<String>,
     #[sea_orm(default_value = true)]
     pub is_pinned: bool,
@@ -21,21 +25,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "session_view_pin_overrides_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "session_view_pin_overrides_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::session_view::Entity",
         from = "(Column::ProjectId, Column::ViewId)",
         to = "(super::session_view::Column::ProjectId, super::session_view::Column::Id)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "session_view_pin_overrides_project_id_view_id_fkey"
     )]
     View,
 }

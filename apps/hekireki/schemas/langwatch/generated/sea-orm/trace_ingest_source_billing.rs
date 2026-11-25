@@ -7,15 +7,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TraceIngestSourceBilling")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "sourceType")]
+    #[sea_orm(column_name = "sourceType", column_type = "Text")]
     pub source_type: String,
     pub billed: bool,
-    #[sea_orm(column_name = "recordedAt")]
+    #[sea_orm(column_name = "recordedAt", column_type = "custom(\"timestamp(3)\")")]
     pub recorded_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

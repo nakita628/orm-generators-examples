@@ -7,12 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "prompt_dependencies")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub parent_id: String,
+    #[sea_orm(column_type = "Text")]
     pub child_name: String,
+    #[sea_orm(column_type = "Text")]
     pub child_label: Option<String>,
     pub child_version: Option<i32>,
 }
@@ -23,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompt_dependencies_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::prompt::Entity",
         from = "Column::ParentId",
         to = "super::prompt::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompt_dependencies_parent_id_fkey"
     )]
     Parent,
 }

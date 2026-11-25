@@ -5,14 +5,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProfileBuilderState2")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "profileBuilderId")]
+    #[sea_orm(column_name = "profileBuilderId", column_type = "Text")]
     pub profile_builder_id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "fullRebuildInfo")]
+    #[sea_orm(column_name = "fullRebuildInfo", column_type = "JsonBinary")]
     pub full_rebuild_info: Option<Json>,
-    #[sea_orm(column_name = "queuesInfo")]
+    #[sea_orm(column_name = "queuesInfo", column_type = "JsonBinary")]
     pub queues_info: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metrics: Option<Json>,
 }
 

@@ -8,24 +8,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BatchTaskRunError")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "batchTaskRunId")]
+    #[sea_orm(column_name = "batchTaskRunId", column_type = "Text")]
     pub batch_task_run_id: String,
     /// Which item in the batch (0-based index)
     pub index: i32,
     /// The task identifier that was being triggered
-    #[sea_orm(column_name = "taskIdentifier")]
+    #[sea_orm(column_name = "taskIdentifier", column_type = "Text")]
     pub task_identifier: String,
     /// The payload that failed (JSON, may be truncated)
+    #[sea_orm(column_type = "Text")]
     pub payload: Option<String>,
     /// The options that were used
+    #[sea_orm(column_type = "JsonBinary")]
     pub options: Option<Json>,
     /// Error message
+    #[sea_orm(column_type = "Text")]
     pub error: String,
     /// Error code if available
-    #[sea_orm(column_name = "errorCode")]
+    #[sea_orm(column_name = "errorCode", column_type = "Text")]
     pub error_code: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -36,7 +44,8 @@ pub enum Relation {
         from = "Column::BatchTaskRunId",
         to = "super::batch_task_run::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BatchTaskRunError_batchTaskRunId_fkey"
     )]
     BatchTaskRun,
 }

@@ -9,20 +9,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OutboundEmailAuditErasureIntent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "userHash")]
+    #[sea_orm(column_name = "userHash", column_type = "Text")]
     pub user_hash: String,
-    #[sea_orm(column_name = "recipientMac")]
+    #[sea_orm(column_name = "recipientMac", column_type = "Text")]
     pub recipient_mac: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "activatedAt")]
+    #[sea_orm(column_name = "activatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub activated_at: Option<DateTime>,
-    #[sea_orm(column_name = "checkedAt")]
+    #[sea_orm(column_name = "checkedAt", column_type = "custom(\"timestamp(3)\")")]
     pub checked_at: Option<DateTime>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
 }
 

@@ -8,15 +8,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FolderUser")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "String(StringLen::N(191))")]
     pub folder_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     pub role: Option<FolderUserRole>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -26,14 +31,16 @@ pub enum Relation {
         belongs_to = "super::folder::Entity",
         from = "Column::FolderId",
         to = "super::folder::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FolderUser_folderId_fkey"
     )]
     Folder,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FolderUser_userId_fkey"
     )]
     User,
 }

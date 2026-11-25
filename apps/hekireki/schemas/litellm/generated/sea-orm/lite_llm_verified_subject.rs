@@ -7,15 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_VerifiedSubject")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub subject_id: String,
+    #[sea_orm(column_type = "Text")]
     pub issuer: String,
+    #[sea_orm(column_type = "Text")]
     pub tenant_id: String,
+    #[sea_orm(column_type = "Text")]
     pub oid: String,
-    #[sea_orm(default_value = "human")]
+    #[sea_orm(column_type = "Text", default_value = "human")]
     pub kind: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(default_value = "sso_interactive")]
+    #[sea_orm(column_type = "Text", default_value = "sso_interactive")]
     pub verified_via: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub verified_at: DateTime,
 }
 
@@ -25,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::lite_llm_user_table::Entity",
         from = "Column::UserId",
         to = "super::lite_llm_user_table::Column::UserId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_VerifiedSubject_user_id_fkey"
     )]
     User,
 }

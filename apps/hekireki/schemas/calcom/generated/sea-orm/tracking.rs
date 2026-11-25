@@ -9,10 +9,15 @@ pub struct Model {
     #[sea_orm(unique)]
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub utm_source: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub utm_medium: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub utm_campaign: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub utm_term: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub utm_content: Option<String>,
 }
 
@@ -22,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Tracking_bookingId_fkey"
     )]
     Booking,
 }

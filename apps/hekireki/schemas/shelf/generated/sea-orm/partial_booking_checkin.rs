@@ -14,23 +14,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PartialBookingCheckin")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "assetIds")]
+    #[sea_orm(
+        column_name = "assetIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub asset_ids: Vec<String>,
     #[sea_orm(column_name = "checkinCount")]
     pub checkin_count: i32,
     #[sea_orm(
         column_name = "checkinTimestamp",
-        column_type = "TimestampWithTimeZone"
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
     )]
     pub checkin_timestamp: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "bookingId")]
+    #[sea_orm(column_name = "bookingId", column_type = "Text")]
     pub booking_id: String,
-    #[sea_orm(column_name = "checkedInById")]
+    #[sea_orm(column_name = "checkedInById", column_type = "Text")]
     pub checked_in_by_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -40,13 +49,15 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PartialBookingCheckin_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CheckedInById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "PartialBookingCheckin_checkedInById_fkey"
     )]
     CheckedInBy,
 }

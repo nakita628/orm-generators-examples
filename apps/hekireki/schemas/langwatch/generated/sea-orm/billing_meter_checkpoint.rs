@@ -7,12 +7,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BillingMeterCheckpoint")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "billingMonth")]
+    #[sea_orm(column_name = "billingMonth", column_type = "Text")]
     pub billing_month: String,
-    #[sea_orm(default_value = "langwatch_billable_events")]
+    #[sea_orm(column_type = "Text", default_value = "langwatch_billable_events")]
     pub meter: String,
     #[sea_orm(column_name = "lastReportedTotal", default_value = 0)]
     pub last_reported_total: i32,
@@ -20,9 +21,9 @@ pub struct Model {
     pub pending_reported_total: Option<i32>,
     #[sea_orm(column_name = "consecutiveFailures", default_value = 0)]
     pub consecutive_failures: i32,
-    #[sea_orm(column_name = "lastCountedEventId")]
+    #[sea_orm(column_name = "lastCountedEventId", column_type = "Text")]
     pub last_counted_event_id: Option<String>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -15,15 +15,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SurveyFollowUp")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// [SurveyFollowUpTrigger]
+    #[sea_orm(column_type = "JsonBinary")]
     pub trigger: Json,
     /// [SurveyFollowUpAction]
+    #[sea_orm(column_type = "JsonBinary")]
     pub action: Json,
 }
 
@@ -33,7 +42,8 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SurveyFollowUp_surveyId_fkey"
     )]
     Survey,
 }

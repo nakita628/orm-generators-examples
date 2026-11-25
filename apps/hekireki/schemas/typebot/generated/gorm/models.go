@@ -15,8 +15,8 @@ type Account struct {
 	ID                    string  `gorm:"column:id;primaryKey" json:"id"`
 	UserID                string  `gorm:"column:userId;not null" json:"userId"`
 	Type                  string  `gorm:"column:type;not null" json:"type"`
-	Provider              string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID     string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider              string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID     string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	RefreshToken          *string `gorm:"column:refresh_token" json:"refresh_token"`
 	AccessToken           *string `gorm:"column:access_token" json:"access_token"`
 	ExpiresAt             *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -202,12 +202,12 @@ func (*Workspace) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Space struct {
-	ID          string     `gorm:"column:id;primaryKey;uniqueIndex:Space_id_workspaceId_key" json:"id"`
+	ID          string     `gorm:"column:id;primaryKey;uniqueIndex:Space_id_workspaceId_key,priority:1" json:"id"`
 	CreatedAt   DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime   `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Name        string     `gorm:"column:name;not null" json:"name"`
 	Icon        *string    `gorm:"column:icon" json:"icon"`
-	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:Space_id_workspaceId_key;not null" json:"workspaceId"`
+	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:Space_id_workspaceId_key,priority:2;not null" json:"workspaceId"`
 	Workspace   *Workspace `gorm:"belongsTo"`
 	Typebots    []Typebot  `gorm:"foreignKey:SpaceID;constraint:Typebot_spaceId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
@@ -241,8 +241,8 @@ func (*Space) BeforeUpdate(tx *gorm.DB) error {
 type MemberInWorkspace struct {
 	CreatedAt   DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime   `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID      string     `gorm:"column:userId;primaryKey;uniqueIndex:MemberInWorkspace_userId_workspaceId_key" json:"userId"`
-	WorkspaceID string     `gorm:"column:workspaceId;primaryKey;uniqueIndex:MemberInWorkspace_userId_workspaceId_key" json:"workspaceId"`
+	UserID      string     `gorm:"column:userId;primaryKey;uniqueIndex:MemberInWorkspace_userId_workspaceId_key,priority:1" json:"userId"`
+	WorkspaceID string     `gorm:"column:workspaceId;primaryKey;uniqueIndex:MemberInWorkspace_userId_workspaceId_key,priority:2" json:"workspaceId"`
 	Role        string     `gorm:"column:role;not null" json:"role"`
 	User        *User      `gorm:"belongsTo"`
 	Workspace   *Workspace `gorm:"belongsTo"`
@@ -379,8 +379,8 @@ func (m *UserCredentials) BeforeCreate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier     string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"identifier"`
-	Token          string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key" json:"token"`
+	Identifier     string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;not null" json:"identifier"`
+	Token          string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2" json:"token"`
 	Value          *string  `gorm:"column:value" json:"value"`
 	FailedAttempts int      `gorm:"column:failedAttempts;size:32;default:0;not null" json:"failedAttempts"`
 	Expires        DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
@@ -432,7 +432,7 @@ func (*DashboardFolder) BeforeUpdate(tx *gorm.DB) error {
 type Typebot struct {
 	ID                      string                    `gorm:"column:id;primaryKey" json:"id"`
 	Version                 *string                   `gorm:"column:version" json:"version"`
-	CreatedAt               DateTime                  `gorm:"column:createdAt;index:Typebot_isArchived_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt               DateTime                  `gorm:"column:createdAt;index:Typebot_isArchived_createdAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt               DateTime                  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Icon                    *string                   `gorm:"column:icon" json:"icon"`
 	Name                    string                    `gorm:"column:name;not null" json:"name"`
@@ -448,7 +448,7 @@ type Typebot struct {
 	CustomDomain            *string                   `gorm:"column:customDomain;uniqueIndex:Typebot_customDomain_key" json:"customDomain"`
 	WorkspaceID             string                    `gorm:"column:workspaceId;index:Typebot_workspaceId_idx;not null" json:"workspaceId"`
 	ResultsTablePreferences datatypes.JSON            `gorm:"column:resultsTablePreferences" json:"resultsTablePreferences"`
-	IsArchived              bool                      `gorm:"column:isArchived;index:Typebot_isArchived_createdAt_idx;default:false;not null" json:"isArchived"`
+	IsArchived              bool                      `gorm:"column:isArchived;index:Typebot_isArchived_createdAt_idx,priority:1;default:false;not null" json:"isArchived"`
 	IsClosed                bool                      `gorm:"column:isClosed;default:false;not null" json:"isClosed"`
 	WhatsAppCredentialsID   *string                   `gorm:"column:whatsAppCredentialsId" json:"whatsAppCredentialsId"`
 	RiskLevel               *int                      `gorm:"column:riskLevel;size:32" json:"riskLevel"`
@@ -493,8 +493,8 @@ func (*Typebot) BeforeUpdate(tx *gorm.DB) error {
 type Invitation struct {
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	Email     string   `gorm:"column:email;primaryKey;uniqueIndex:Invitation_email_typebotId_key" json:"email"`
-	TypebotID string   `gorm:"column:typebotId;primaryKey;uniqueIndex:Invitation_email_typebotId_key" json:"typebotId"`
+	Email     string   `gorm:"column:email;primaryKey;uniqueIndex:Invitation_email_typebotId_key,priority:1" json:"email"`
+	TypebotID string   `gorm:"column:typebotId;primaryKey;uniqueIndex:Invitation_email_typebotId_key,priority:2" json:"typebotId"`
 	Type      string   `gorm:"column:type;not null" json:"type"`
 	Typebot   *Typebot `gorm:"belongsTo"`
 }
@@ -525,8 +525,8 @@ func (*Invitation) BeforeUpdate(tx *gorm.DB) error {
 type CollaboratorsOnTypebots struct {
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID    string   `gorm:"column:userId;primaryKey;uniqueIndex:CollaboratorsOnTypebots_userId_typebotId_key" json:"userId"`
-	TypebotID string   `gorm:"column:typebotId;primaryKey;uniqueIndex:CollaboratorsOnTypebots_userId_typebotId_key" json:"typebotId"`
+	UserID    string   `gorm:"column:userId;primaryKey;uniqueIndex:CollaboratorsOnTypebots_userId_typebotId_key,priority:1" json:"userId"`
+	TypebotID string   `gorm:"column:typebotId;primaryKey;uniqueIndex:CollaboratorsOnTypebots_userId_typebotId_key,priority:2" json:"typebotId"`
 	Type      string   `gorm:"column:type;not null" json:"type"`
 	Typebot   *Typebot `gorm:"belongsTo"`
 	User      *User    `gorm:"belongsTo"`
@@ -591,11 +591,11 @@ func (m *PublicTypebot) BeforeCreate(tx *gorm.DB) error {
 }
 
 type RuntimeMediaIDCache struct {
-	Provider        string         `gorm:"column:provider;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key" json:"provider"`
-	URL             string         `gorm:"column:url;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key" json:"url"`
+	PublicTypebotID string         `gorm:"column:publicTypebotId;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key,priority:1" json:"publicTypebotId"`
+	Provider        string         `gorm:"column:provider;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key,priority:2" json:"provider"`
+	URL             string         `gorm:"column:url;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key,priority:3" json:"url"`
 	MediaID         string         `gorm:"column:mediaId;not null" json:"mediaId"`
 	ExpiresAt       *DateTime      `gorm:"column:expiresAt;index:RuntimeMediaIdCache_expiresAt_idx;type:timestamp(3)" json:"expiresAt"`
-	PublicTypebotID string         `gorm:"column:publicTypebotId;primaryKey;uniqueIndex:RuntimeMediaIdCache_publicTypebotId_provider_url_key" json:"publicTypebotId"`
 	PublicTypebot   *PublicTypebot `gorm:"belongsTo"`
 }
 
@@ -605,11 +605,11 @@ func (RuntimeMediaIDCache) TableName() string {
 
 type Result struct {
 	ID                 string                   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt          DateTime                 `gorm:"column:createdAt;index:Result_typebotId_hasStarted_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	TypebotID          string                   `gorm:"column:typebotId;index:Result_typebotId_hasStarted_createdAt_idx;index:Result_typebotId_isCompleted_idx;not null" json:"typebotId"`
+	CreatedAt          DateTime                 `gorm:"column:createdAt;index:Result_typebotId_hasStarted_createdAt_idx,priority:3,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	TypebotID          string                   `gorm:"column:typebotId;index:Result_typebotId_hasStarted_createdAt_idx,priority:1;index:Result_typebotId_isCompleted_idx,priority:1;not null" json:"typebotId"`
 	Variables          datatypes.JSON           `gorm:"column:variables;not null" json:"variables"`
-	IsCompleted        bool                     `gorm:"column:isCompleted;index:Result_typebotId_isCompleted_idx;not null" json:"isCompleted"`
-	HasStarted         *bool                    `gorm:"column:hasStarted;index:Result_typebotId_hasStarted_createdAt_idx" json:"hasStarted"`
+	IsCompleted        bool                     `gorm:"column:isCompleted;index:Result_typebotId_isCompleted_idx,priority:2;not null" json:"isCompleted"`
+	HasStarted         *bool                    `gorm:"column:hasStarted;index:Result_typebotId_hasStarted_createdAt_idx,priority:2" json:"hasStarted"`
 	IsArchived         *bool                    `gorm:"column:isArchived;default:false" json:"isArchived"`
 	LastChatSessionID  *string                  `gorm:"column:lastChatSessionId" json:"lastChatSessionId"`
 	Typebot            *Typebot                 `gorm:"belongsTo"`
@@ -636,8 +636,8 @@ func (m *Result) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SetVariableHistoryItem struct {
-	ResultID   string         `gorm:"column:resultId;primaryKey;uniqueIndex:SetVariableHistoryItem_resultId_index_key" json:"resultId"`
-	Index      int            `gorm:"column:index;primaryKey;uniqueIndex:SetVariableHistoryItem_resultId_index_key;size:32" json:"index"`
+	ResultID   string         `gorm:"column:resultId;primaryKey;uniqueIndex:SetVariableHistoryItem_resultId_index_key,priority:1" json:"resultId"`
+	Index      int            `gorm:"column:index;primaryKey;uniqueIndex:SetVariableHistoryItem_resultId_index_key,priority:2;size:32" json:"index"`
 	VariableID string         `gorm:"column:variableId;not null" json:"variableId"`
 	BlockID    string         `gorm:"column:blockId;not null" json:"blockId"`
 	BlockIndex *int           `gorm:"column:blockIndex;size:32" json:"blockIndex"`
@@ -650,9 +650,9 @@ func (SetVariableHistoryItem) TableName() string {
 }
 
 type VisitedEdge struct {
-	ResultID string  `gorm:"column:resultId;primaryKey;uniqueIndex:VisitedEdge_resultId_index_key" json:"resultId"`
+	ResultID string  `gorm:"column:resultId;primaryKey;uniqueIndex:VisitedEdge_resultId_index_key,priority:1" json:"resultId"`
 	EdgeID   string  `gorm:"column:edgeId;not null" json:"edgeId"`
-	Index    int     `gorm:"column:index;primaryKey;uniqueIndex:VisitedEdge_resultId_index_key;size:32" json:"index"`
+	Index    int     `gorm:"column:index;primaryKey;uniqueIndex:VisitedEdge_resultId_index_key,priority:2;size:32" json:"index"`
 	Result   *Result `gorm:"belongsTo"`
 }
 
@@ -688,9 +688,9 @@ func (m *Log) BeforeCreate(tx *gorm.DB) error {
 
 type Answer struct {
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
-	ResultID   string   `gorm:"column:resultId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key" json:"resultId"`
-	BlockID    string   `gorm:"column:blockId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key" json:"blockId"`
-	GroupID    string   `gorm:"column:groupId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key" json:"groupId"`
+	ResultID   string   `gorm:"column:resultId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key,priority:1" json:"resultId"`
+	BlockID    string   `gorm:"column:blockId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key,priority:2" json:"blockId"`
+	GroupID    string   `gorm:"column:groupId;primaryKey;uniqueIndex:Answer_resultId_blockId_groupId_key,priority:3" json:"groupId"`
 	VariableID *string  `gorm:"column:variableId" json:"variableId"`
 	Content    string   `gorm:"column:content;not null" json:"content"`
 	Result     *Result  `gorm:"belongsTo"`
@@ -740,7 +740,7 @@ func (m *AnswerV2) BeforeCreate(tx *gorm.DB) error {
 
 type Coupon struct {
 	UserPropertiesToUpdate datatypes.JSON `gorm:"column:userPropertiesToUpdate;not null" json:"userPropertiesToUpdate"`
-	Code                   string         `gorm:"column:code;primaryKey" json:"code"`
+	Code                   string         `gorm:"column:code;primaryKey;uniqueIndex:Coupon_code_key" json:"code"`
 	DateRedeemed           *DateTime      `gorm:"column:dateRedeemed;type:timestamp(3)" json:"dateRedeemed"`
 }
 

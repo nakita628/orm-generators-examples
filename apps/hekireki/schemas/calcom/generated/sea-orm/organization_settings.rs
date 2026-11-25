@@ -13,7 +13,7 @@ pub struct Model {
     pub is_organization_configured: bool,
     #[sea_orm(column_name = "isOrganizationVerified", default_value = false)]
     pub is_organization_verified: bool,
-    #[sea_orm(column_name = "orgAutoAcceptEmail")]
+    #[sea_orm(column_name = "orgAutoAcceptEmail", column_type = "Text")]
     pub org_auto_accept_email: String,
     #[sea_orm(column_name = "lockEventTypeCreationForUsers", default_value = false)]
     pub lock_event_type_creation_for_users: bool,
@@ -80,7 +80,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::OrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganizationSettings_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_one = "super::dsync_data::Entity")]

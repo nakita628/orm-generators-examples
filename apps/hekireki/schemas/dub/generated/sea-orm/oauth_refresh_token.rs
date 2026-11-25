@@ -7,17 +7,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthRefreshToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "installationId")]
+    #[sea_orm(
+        column_name = "installationId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub installation_id: String,
-    #[sea_orm(column_name = "accessTokenId")]
+    #[sea_orm(
+        column_name = "accessTokenId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub access_token_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedRefreshToken")]
+    #[sea_orm(
+        column_name = "hashedRefreshToken",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub hashed_refresh_token: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"datetime(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
 }
 
@@ -27,14 +41,16 @@ pub enum Relation {
         belongs_to = "super::restricted_token::Entity",
         from = "Column::AccessTokenId",
         to = "super::restricted_token::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OAuthRefreshToken_accessTokenId_fkey"
     )]
     AccessToken,
     #[sea_orm(
         belongs_to = "super::installed_integration::Entity",
         from = "Column::InstallationId",
         to = "super::installed_integration::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OAuthRefreshToken_installationId_fkey"
     )]
     InstalledIntegration,
 }

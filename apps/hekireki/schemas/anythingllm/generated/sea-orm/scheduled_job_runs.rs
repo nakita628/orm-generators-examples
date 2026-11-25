@@ -11,11 +11,13 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "jobId")]
     pub job_id: i32,
-    #[sea_orm(default_value = "queued")]
+    #[sea_orm(column_type = "Text", default_value = "queued")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub result: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", default_expr = "Expr::current_timestamp()")]
     pub started_at: PrismaDateTime,
     #[sea_orm(column_name = "completedAt")]
     pub completed_at: Option<PrismaDateTime>,
@@ -29,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::scheduled_jobs::Entity",
         from = "Column::JobId",
         to = "super::scheduled_jobs::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scheduled_job_runs_jobId_fkey"
     )]
     Job,
 }

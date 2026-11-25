@@ -8,8 +8,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "computed_table_activity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(default_value = 0)]
     pub calculating_field_count: i32,
@@ -17,10 +20,14 @@ pub struct Model {
     pub queued_field_count: i32,
     #[sea_orm(default_value = "0")]
     pub estimated_complexity: i64,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub recent_completions: Json,
     #[sea_orm(default_value = "0")]
     pub generation: i64,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

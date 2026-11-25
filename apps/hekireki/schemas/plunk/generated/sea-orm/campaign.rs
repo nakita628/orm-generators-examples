@@ -10,28 +10,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "campaigns")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = "DRAFT")]
     pub status: CampaignStatus,
+    #[sea_orm(column_type = "Text")]
     pub subject: String,
     #[sea_orm(column_type = "Text")]
     pub body: String,
+    #[sea_orm(column_type = "Text")]
     pub from: String,
-    #[sea_orm(column_name = "fromName")]
+    #[sea_orm(column_name = "fromName", column_type = "Text")]
     pub from_name: Option<String>,
-    #[sea_orm(column_name = "replyTo")]
+    #[sea_orm(column_name = "replyTo", column_type = "Text")]
     pub reply_to: Option<String>,
     #[sea_orm(default_value = "MARKETING")]
     pub r#type: TemplateType,
     #[sea_orm(column_name = "audienceType", default_value = "ALL")]
     pub audience_type: CampaignAudienceType,
-    #[sea_orm(column_name = "audienceCondition")]
+    #[sea_orm(column_name = "audienceCondition", column_type = "JsonBinary")]
     pub audience_condition: Option<Json>,
-    #[sea_orm(column_name = "segmentId")]
+    #[sea_orm(column_name = "segmentId", column_type = "Text")]
     pub segment_id: Option<String>,
-    #[sea_orm(column_name = "scheduledFor")]
+    #[sea_orm(column_name = "scheduledFor", column_type = "custom(\"timestamp(3)\")")]
     pub scheduled_for: Option<DateTime>,
     #[sea_orm(column_name = "totalRecipients", default_value = 0)]
     pub total_recipients: i32,
@@ -51,13 +56,17 @@ pub struct Model {
     pub unsubscribed_count: i32,
     #[sea_orm(default_value = false)]
     pub archived: bool,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -66,14 +75,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::segment::Entity",
         from = "Column::SegmentId",
-        to = "super::segment::Column::Id"
+        to = "super::segment::Column::Id",
+        fk_name = "campaigns_segmentId_fkey"
     )]
     Segment,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "campaigns_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::email::Entity")]

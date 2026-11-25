@@ -7,21 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
     #[sea_orm(column_name = "emailVerified", default_value = false)]
     pub email_verified: bool,
     #[sea_orm(column_name = "signupConfirmationPending", default_value = false)]
     pub signup_confirmation_pending: bool,
-    #[sea_orm(column_name = "passkeySignupClaimHash")]
+    #[sea_orm(column_name = "passkeySignupClaimHash", column_type = "Text")]
     pub passkey_signup_claim_hash: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
     #[sea_orm(column_name = "pendingSsoSetup", default_value = false)]
     pub pending_sso_setup: bool,
-    #[sea_orm(column_name = "userHashKey")]
+    #[sea_orm(column_name = "userHashKey", column_type = "Text")]
     pub user_hash_key: Option<String>,
     /// Owned by the two-factor plugin (D06), which is why it is a plain
     /// boolean rather than a state: the plugin flips it when a setup is
@@ -29,49 +32,76 @@ pub struct Model {
     /// it is true. The lifecycle - and the history - lives on MfaEnrollment.
     #[sea_orm(column_name = "twoFactorEnabled", default_value = false)]
     pub two_factor_enabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastLoginAt")]
+    #[sea_orm(column_name = "lastLoginAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_login_at: Option<DateTime>,
-    #[sea_orm(column_name = "deactivatedAt")]
+    #[sea_orm(
+        column_name = "deactivatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub deactivated_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastHomePath")]
+    #[sea_orm(column_name = "lastHomePath", column_type = "Text")]
     pub last_home_path: Option<String>,
-    #[sea_orm(column_name = "tracesExplorerTourDismissedAt")]
+    #[sea_orm(
+        column_name = "tracesExplorerTourDismissedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub traces_explorer_tour_dismissed_at: Option<DateTime>,
     /// How Langy should reach this person's code when a task needs a change
     /// (ADR-129). "github" means they chose the pull request path and asked to
     /// be remembered; NULL means ask. A shared local folder is never stored
     /// here, because a folder has to be shared again each time.
     /// Spec: specs/langy/langy-code-access.feature
-    #[sea_orm(column_name = "langyCodeAccessPreference")]
+    #[sea_orm(column_name = "langyCodeAccessPreference", column_type = "Text")]
     pub langy_code_access_preference: Option<String>,
     /// When this person last said "not now" to being offered a passkey
     /// (ADR-120). On the account rather than in browser storage for two
     /// reasons: a per-browser record forgets on a new device, which is exactly
     /// where the offer should be MORE eager, and an interval nobody can enforce
     /// is not an interval. NULL means never asked.
-    #[sea_orm(column_name = "passkeyNudgeDismissedAt")]
+    #[sea_orm(
+        column_name = "passkeyNudgeDismissedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub passkey_nudge_dismissed_at: Option<DateTime>,
     /// The domains this person has said "no thanks" to being offered their
     /// colleagues on (D12). Per domain rather than one flag: somebody who
     /// changes jobs and verifies a second address should be offered their new
     /// employer's organization, not silenced forever by a decision they made
     /// about the old one. Empty means never dismissed anything.
-    #[sea_orm(column_name = "joinOfferDismissedDomains")]
+    #[sea_orm(
+        column_name = "joinOfferDismissedDomains",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub join_offer_dismissed_domains: Vec<String>,
     /// This person's answer about browser notifications, one entry per topic:
     /// { "langy": "enabled" | "declined" }. A topic that is absent was never
     /// answered. The browser's own permission is not stored here.
     /// Spec: specs/langy/langy-notifications.feature
-    #[sea_orm(column_name = "notificationPreferences", default_value = "{}")]
+    #[sea_orm(
+        column_name = "notificationPreferences",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub notification_preferences: Json,
     /// When an operator marked this person's password as no longer trusted. A
     /// password sign-in opens no session while it is set; any write of a new
     /// password hash clears it. Spec: modules/auth/specs/forced-password-reset.feature
-    #[sea_orm(column_name = "passwordResetRequiredAt")]
+    #[sea_orm(
+        column_name = "passwordResetRequiredAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub password_reset_required_at: Option<DateTime>,
 }
 

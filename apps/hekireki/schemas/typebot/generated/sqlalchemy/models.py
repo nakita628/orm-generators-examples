@@ -1,4 +1,4 @@
-from sqlalchemy import Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, text
+from sqlalchemy import Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -301,7 +301,7 @@ class Typebot(Base):
         Index("Typebot_publicId_key", "publicId", unique=True),
         Index("Typebot_customDomain_key", "customDomain", unique=True),
         Index("Typebot_workspaceId_idx", "workspaceId"),
-        Index("Typebot_isArchived_createdAt_idx", "isArchived", "createdAt"),
+        Index("Typebot_isArchived_createdAt_idx", "isArchived", literal_column("\"createdAt\"").desc()),
     )
 
     folder: Mapped[Optional["DashboardFolder"]] = relationship(back_populates="typebots")
@@ -404,7 +404,7 @@ class Result(Base):
     last_chat_session_id: Mapped[Optional[str]] = mapped_column("lastChatSessionId")
 
     __table_args__ = (
-        Index("Result_typebotId_hasStarted_createdAt_idx", "typebotId", "hasStarted", "createdAt"),
+        Index("Result_typebotId_hasStarted_createdAt_idx", "typebotId", "hasStarted", literal_column("\"createdAt\"").desc()),
         Index("Result_typebotId_isCompleted_idx", "typebotId", "isCompleted"),
     )
 

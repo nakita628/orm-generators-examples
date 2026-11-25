@@ -11,11 +11,14 @@ pub struct Model {
     pub id: i32,
     pub user_id: Option<i32>,
     pub workspace_id: Option<i32>,
-    #[sea_orm(default_value = "workspace")]
+    #[sea_orm(column_type = "Text", default_value = "workspace")]
     pub scope: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     pub last_used_at: Option<PrismaDateTime>,
+    #[sea_orm(default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
+    #[sea_orm(default_expr = "Expr::current_timestamp()")]
     pub updated_at: PrismaDateTime,
 }
 
@@ -25,14 +28,16 @@ pub enum Relation {
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
         to = "super::users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "memories_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "memories_workspace_id_fkey"
     )]
     Workspace,
 }

@@ -11,15 +11,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub entity: RetentionEntity,
     #[sea_orm(default_value = "sweep")]
     pub kind: RetentionRunKind,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(
+        column_name = "startedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "finishedAt")]
+    #[sea_orm(column_name = "finishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
     #[sea_orm(column_name = "notifiedCount", default_value = 0)]
     pub notified_count: i32,
@@ -36,7 +41,7 @@ pub struct Model {
     pub has_changes: bool,
     /// Where the run's scan of candidates stopped for want of time, so the next run resumes there instead
     /// of rescanning the same first targets every night. Null when the scan reached the end.
-    #[sea_orm(column_name = "scanCursor")]
+    #[sea_orm(column_name = "scanCursor", column_type = "Text")]
     pub scan_cursor: Option<String>,
 }
 
@@ -46,7 +51,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionRun_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::retention_run_item::Entity")]

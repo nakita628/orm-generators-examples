@@ -7,38 +7,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserBusinessIntel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "howDidYouHearAboutUs")]
+    #[sea_orm(column_name = "howDidYouHearAboutUs", column_type = "Text")]
     pub how_did_you_hear_about_us: Option<String>,
-    #[sea_orm(column_name = "jobTitle")]
+    #[sea_orm(column_name = "jobTitle", column_type = "Text")]
     pub job_title: Option<String>,
-    #[sea_orm(column_name = "teamSize")]
+    #[sea_orm(column_name = "teamSize", column_type = "Text")]
     pub team_size: Option<String>,
-    #[sea_orm(column_name = "companyName")]
+    #[sea_orm(column_name = "companyName", column_type = "Text")]
     pub company_name: Option<String>,
-    #[sea_orm(column_name = "primaryUseCase")]
+    #[sea_orm(column_name = "primaryUseCase", column_type = "Text")]
     pub primary_use_case: Option<String>,
-    #[sea_orm(column_name = "currentSolution")]
+    #[sea_orm(column_name = "currentSolution", column_type = "Text")]
     pub current_solution: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub timeline: Option<String>,
-    #[sea_orm(column_name = "signupPlan")]
+    #[sea_orm(column_name = "signupPlan", column_type = "Text")]
     pub signup_plan: Option<String>,
     #[sea_orm(column_name = "signupTrial")]
     pub signup_trial: Option<bool>,
-    #[sea_orm(column_name = "utmSource")]
+    #[sea_orm(column_name = "utmSource", column_type = "Text")]
     pub utm_source: Option<String>,
-    #[sea_orm(column_name = "utmMedium")]
+    #[sea_orm(column_name = "utmMedium", column_type = "Text")]
     pub utm_medium: Option<String>,
-    #[sea_orm(column_name = "utmCampaign")]
+    #[sea_orm(column_name = "utmCampaign", column_type = "Text")]
     pub utm_campaign: Option<String>,
-    #[sea_orm(column_name = "utmContent")]
+    #[sea_orm(column_name = "utmContent", column_type = "Text")]
     pub utm_content: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -49,7 +55,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserBusinessIntel_userId_fkey"
     )]
     User,
 }

@@ -174,7 +174,7 @@ func (m *Passkey) BeforeCreate(tx *gorm.DB) error {
 }
 
 type AnonymousVerificationToken struct {
-	ID        string   `gorm:"column:id;primaryKey" json:"id"`
+	ID        string   `gorm:"column:id;primaryKey;uniqueIndex:AnonymousVerificationToken_id_key" json:"id"`
 	Token     string   `gorm:"column:token;uniqueIndex:AnonymousVerificationToken_token_key;not null" json:"token"`
 	ExpiresAt DateTime `gorm:"column:expiresAt;type:timestamp(3);not null" json:"expiresAt"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -465,9 +465,9 @@ type OrganisationMonthlyStat struct {
 	ID             string   `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	OrganisationID string   `gorm:"column:organisationId;uniqueIndex:OrganisationMonthlyStat_organisationId_period_key;index:OrganisationMonthlyStat_organisationId_idx;not null" json:"organisationId"`
+	OrganisationID string   `gorm:"column:organisationId;uniqueIndex:OrganisationMonthlyStat_organisationId_period_key,priority:1;index:OrganisationMonthlyStat_organisationId_idx;not null" json:"organisationId"`
 	// UTC calendar month in `YYYY-MM` form, e.g. "2026-05".
-	Period        string        `gorm:"column:period;uniqueIndex:OrganisationMonthlyStat_organisationId_period_key;not null" json:"period"`
+	Period        string        `gorm:"column:period;uniqueIndex:OrganisationMonthlyStat_organisationId_period_key,priority:2;not null" json:"period"`
 	DocumentCount int           `gorm:"column:documentCount;size:32;default:0;not null" json:"documentCount"`
 	EmailCount    int           `gorm:"column:emailCount;size:32;default:0;not null" json:"emailCount"`
 	APICount      int           `gorm:"column:apiCount;size:32;default:0;not null" json:"apiCount"`
@@ -503,8 +503,8 @@ type Account struct {
 	CreatedAt         DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UserID            int      `gorm:"column:userId;size:32;not null" json:"userId"`
 	Type              string   `gorm:"column:type;not null" json:"type"`
-	Provider          string   `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID string   `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider          string   `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID string   `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	RefreshToken      *string  `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken       *string  `gorm:"column:access_token;type:text" json:"access_token"`
 	ExpiresAt         *int     `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -850,11 +850,11 @@ func (*EnvelopeAttachment) BeforeUpdate(tx *gorm.DB) error {
 // @zod.import(["import { ZRecipientAuthOptionsSchema } from '@documenso/lib/types/document-auth';"])
 type Recipient struct {
 	ID                   int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	EnvelopeID           string    `gorm:"column:envelopeId;index:Recipient_envelopeId_idx;index:Recipient_email_documentDeletedAt_envelopeId_idx;index:Recipient_email_envelopeId_idx;index:Recipient_email_signingStatus_envelopeId_role_idx;not null" json:"envelopeId"`
-	Email                string    `gorm:"column:email;index:Recipient_email_idx;index:Recipient_email_documentDeletedAt_envelopeId_idx;index:Recipient_email_envelopeId_idx;index:Recipient_email_signingStatus_envelopeId_role_idx;index:Recipient_email_trgm_idx;type:varchar(255);not null" json:"email"`
-	Name                 string    `gorm:"column:name;index:Recipient_name_trgm_idx;type:varchar(255);default:'';not null" json:"name"`
+	EnvelopeID           string    `gorm:"column:envelopeId;index:Recipient_envelopeId_idx;index:Recipient_email_documentDeletedAt_envelopeId_idx,priority:3;index:Recipient_email_envelopeId_idx,priority:2;index:Recipient_email_signingStatus_envelopeId_role_idx,priority:3;not null" json:"envelopeId"`
+	Email                string    `gorm:"column:email;index:Recipient_email_idx;index:Recipient_email_documentDeletedAt_envelopeId_idx,priority:1;index:Recipient_email_envelopeId_idx,priority:1;index:Recipient_email_signingStatus_envelopeId_role_idx,priority:1;index:Recipient_email_trgm_idx,type:gin,expression:\"email\" gin_trgm_ops;type:varchar(255);not null" json:"email"`
+	Name                 string    `gorm:"column:name;index:Recipient_name_trgm_idx,type:gin,expression:\"name\" gin_trgm_ops;type:varchar(255);default:'';not null" json:"name"`
 	Token                string    `gorm:"column:token;index:Recipient_token_idx;not null" json:"token"`
-	DocumentDeletedAt    *DateTime `gorm:"column:documentDeletedAt;index:Recipient_email_documentDeletedAt_envelopeId_idx;type:timestamp(3)" json:"documentDeletedAt"`
+	DocumentDeletedAt    *DateTime `gorm:"column:documentDeletedAt;index:Recipient_email_documentDeletedAt_envelopeId_idx,priority:2;type:timestamp(3)" json:"documentDeletedAt"`
 	Expired              *DateTime `gorm:"column:expired;type:timestamp(3)" json:"expired"`
 	ExpiresAt            *DateTime `gorm:"column:expiresAt;index:Recipient_expiresAt_idx;type:timestamp(3)" json:"expiresAt"`
 	ExpirationNotifiedAt *DateTime `gorm:"column:expirationNotifiedAt;type:timestamp(3)" json:"expirationNotifiedAt"`
@@ -868,9 +868,9 @@ type Recipient struct {
 	// @zod.number.describe("The order in which the recipient should sign the document. Only works if the document is set to sequential signing.")
 	SigningOrder    *int           `gorm:"column:signingOrder;size:32" json:"signingOrder"`
 	RejectionReason *string        `gorm:"column:rejectionReason" json:"rejectionReason"`
-	Role            string         `gorm:"column:role;index:Recipient_email_signingStatus_envelopeId_role_idx;default:'SIGNER';not null" json:"role"`
+	Role            string         `gorm:"column:role;index:Recipient_email_signingStatus_envelopeId_role_idx,priority:4;default:'SIGNER';not null" json:"role"`
 	ReadStatus      string         `gorm:"column:readStatus;default:'NOT_OPENED';not null" json:"readStatus"`
-	SigningStatus   string         `gorm:"column:signingStatus;index:Recipient_email_signingStatus_envelopeId_role_idx;default:'NOT_SIGNED';not null" json:"signingStatus"`
+	SigningStatus   string         `gorm:"column:signingStatus;index:Recipient_email_signingStatus_envelopeId_role_idx,priority:2;default:'NOT_SIGNED';not null" json:"signingStatus"`
 	SendStatus      string         `gorm:"column:sendStatus;default:'NOT_SENT';not null" json:"sendStatus"`
 	Envelope        *Envelope      `gorm:"belongsTo"`
 	Fields          []Field        `gorm:"foreignKey:RecipientID;constraint:Field_recipientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1076,9 +1076,9 @@ func (m *CscSession) BeforeCreate(tx *gorm.DB) error {
 
 type DocumentShareLink struct {
 	ID         int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Email      string    `gorm:"column:email;uniqueIndex:DocumentShareLink_envelopeId_email_key;not null" json:"email"`
+	Email      string    `gorm:"column:email;uniqueIndex:DocumentShareLink_envelopeId_email_key,priority:2;not null" json:"email"`
 	Slug       string    `gorm:"column:slug;uniqueIndex:DocumentShareLink_slug_key;not null" json:"slug"`
-	EnvelopeID string    `gorm:"column:envelopeId;uniqueIndex:DocumentShareLink_envelopeId_email_key;not null" json:"envelopeId"`
+	EnvelopeID string    `gorm:"column:envelopeId;uniqueIndex:DocumentShareLink_envelopeId_email_key,priority:1;not null" json:"envelopeId"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Envelope   *Envelope `gorm:"belongsTo"`
@@ -1164,8 +1164,8 @@ type OrganisationMember struct {
 	ID                       string                    `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt                DateTime                  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                DateTime                  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID                   int                       `gorm:"column:userId;uniqueIndex:OrganisationMember_userId_organisationId_key;size:32;not null" json:"userId"`
-	OrganisationID           string                    `gorm:"column:organisationId;uniqueIndex:OrganisationMember_userId_organisationId_key;index:OrganisationMember_organisationId_idx;not null" json:"organisationId"`
+	UserID                   int                       `gorm:"column:userId;uniqueIndex:OrganisationMember_userId_organisationId_key,priority:1;size:32;not null" json:"userId"`
+	OrganisationID           string                    `gorm:"column:organisationId;uniqueIndex:OrganisationMember_userId_organisationId_key,priority:2;index:OrganisationMember_organisationId_idx;not null" json:"organisationId"`
 	User                     *User                     `gorm:"belongsTo"`
 	Organisation             *Organisation             `gorm:"belongsTo"`
 	OrganisationGroupMembers []OrganisationGroupMember `gorm:"foreignKey:OrganisationMemberID;constraint:OrganisationGroupMember_organisationMemberId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1234,8 +1234,8 @@ func (OrganisationGroup) TableName() string {
 
 type OrganisationGroupMember struct {
 	ID                   string              `gorm:"column:id;primaryKey" json:"id"`
-	GroupID              string              `gorm:"column:groupId;uniqueIndex:OrganisationGroupMember_organisationMemberId_groupId_key;index:OrganisationGroupMember_groupId_idx;not null" json:"groupId"`
-	OrganisationMemberID string              `gorm:"column:organisationMemberId;uniqueIndex:OrganisationGroupMember_organisationMemberId_groupId_key;index:OrganisationGroupMember_organisationMemberId_idx;not null" json:"organisationMemberId"`
+	GroupID              string              `gorm:"column:groupId;uniqueIndex:OrganisationGroupMember_organisationMemberId_groupId_key,priority:2;index:OrganisationGroupMember_groupId_idx;not null" json:"groupId"`
+	OrganisationMemberID string              `gorm:"column:organisationMemberId;uniqueIndex:OrganisationGroupMember_organisationMemberId_groupId_key,priority:1;index:OrganisationGroupMember_organisationMemberId_idx;not null" json:"organisationMemberId"`
 	Group                *OrganisationGroup  `gorm:"foreignKey:GroupID;belongsTo"`
 	OrganisationMember   *OrganisationMember `gorm:"belongsTo"`
 }
@@ -1246,9 +1246,9 @@ func (OrganisationGroupMember) TableName() string {
 
 type TeamGroup struct {
 	ID                  string             `gorm:"column:id;primaryKey" json:"id"`
-	OrganisationGroupID string             `gorm:"column:organisationGroupId;uniqueIndex:TeamGroup_teamId_organisationGroupId_key;index:TeamGroup_organisationGroupId_idx;not null" json:"organisationGroupId"`
+	OrganisationGroupID string             `gorm:"column:organisationGroupId;uniqueIndex:TeamGroup_teamId_organisationGroupId_key,priority:2;index:TeamGroup_organisationGroupId_idx;not null" json:"organisationGroupId"`
 	TeamRole            string             `gorm:"column:teamRole;not null" json:"teamRole"`
-	TeamID              int                `gorm:"column:teamId;uniqueIndex:TeamGroup_teamId_organisationGroupId_key;index:TeamGroup_teamId_idx;size:32;not null" json:"teamId"`
+	TeamID              int                `gorm:"column:teamId;uniqueIndex:TeamGroup_teamId_organisationGroupId_key,priority:1;index:TeamGroup_teamId_idx;size:32;not null" json:"teamId"`
 	OrganisationGroup   *OrganisationGroup `gorm:"belongsTo"`
 	Team                *Team              `gorm:"belongsTo"`
 }
@@ -1371,7 +1371,7 @@ func (m *Team) BeforeCreate(tx *gorm.DB) error {
 }
 
 type TeamEmail struct {
-	TeamID    int      `gorm:"column:teamId;primaryKey;size:32" json:"teamId"`
+	TeamID    int      `gorm:"column:teamId;primaryKey;uniqueIndex:TeamEmail_teamId_key;size:32" json:"teamId"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Name      string   `gorm:"column:name;not null" json:"name"`
 	Email     string   `gorm:"column:email;uniqueIndex:TeamEmail_email_key;not null" json:"email"`
@@ -1391,7 +1391,7 @@ func (m *TeamEmail) BeforeCreate(tx *gorm.DB) error {
 }
 
 type TeamEmailVerification struct {
-	TeamID    int      `gorm:"column:teamId;primaryKey;size:32" json:"teamId"`
+	TeamID    int      `gorm:"column:teamId;primaryKey;uniqueIndex:TeamEmailVerification_teamId_key;size:32" json:"teamId"`
 	Name      string   `gorm:"column:name;not null" json:"name"`
 	Email     string   `gorm:"column:email;not null" json:"email"`
 	Token     string   `gorm:"column:token;uniqueIndex:TeamEmailVerification_token_key;not null" json:"token"`
@@ -1414,7 +1414,7 @@ func (m *TeamEmailVerification) BeforeCreate(tx *gorm.DB) error {
 }
 
 type TemplateDirectLink struct {
-	ID                        string    `gorm:"column:id;primaryKey" json:"id"`
+	ID                        string    `gorm:"column:id;primaryKey;uniqueIndex:TemplateDirectLink_id_key" json:"id"`
 	EnvelopeID                string    `gorm:"column:envelopeId;uniqueIndex:TemplateDirectLink_envelopeId_key;not null" json:"envelopeId"`
 	Token                     string    `gorm:"column:token;uniqueIndex:TemplateDirectLink_token_key;not null" json:"token"`
 	CreatedAt                 DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1758,12 +1758,12 @@ type AdminRule struct {
 	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Name        string   `gorm:"column:name;not null" json:"name"`
 	Description *string  `gorm:"column:description" json:"description"`
-	Mode        string   `gorm:"column:mode;index:AdminRule_trigger_mode_priority_idx;not null" json:"mode"`
+	Mode        string   `gorm:"column:mode;index:AdminRule_trigger_mode_priority_idx,priority:2;not null" json:"mode"`
 	// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
-	Trigger string `gorm:"column:trigger;index:AdminRule_trigger_mode_priority_idx;not null" json:"trigger"`
+	Trigger string `gorm:"column:trigger;index:AdminRule_trigger_mode_priority_idx,priority:1;not null" json:"trigger"`
 	// [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)
 	Definition  datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
-	Priority    int            `gorm:"column:priority;index:AdminRule_trigger_mode_priority_idx;size:32;not null" json:"priority"`
+	Priority    int            `gorm:"column:priority;index:AdminRule_trigger_mode_priority_idx,priority:3;size:32;not null" json:"priority"`
 	StopOnMatch bool           `gorm:"column:stopOnMatch;not null" json:"stopOnMatch"`
 	// Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
 	// organisation
@@ -1798,7 +1798,7 @@ func (*AdminRule) BeforeUpdate(tx *gorm.DB) error {
 // @zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])
 type AdminRuleMatch struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt DateTime `gorm:"column:createdAt;index:AdminRuleMatch_ruleId_createdAt_idx;index:AdminRuleMatch_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;index:AdminRuleMatch_ruleId_createdAt_idx,priority:2;index:AdminRuleMatch_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Mode      string   `gorm:"column:mode;not null" json:"mode"`
 	// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
 	Trigger        string  `gorm:"column:trigger;not null" json:"trigger"`
@@ -1808,7 +1808,7 @@ type AdminRuleMatch struct {
 	EventSnapshot datatypes.JSON `gorm:"column:eventSnapshot;not null" json:"eventSnapshot"`
 	// [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)
 	ActionsRun  datatypes.JSON `gorm:"column:actionsRun;not null" json:"actionsRun"`
-	RuleID      string         `gorm:"column:ruleId;index:AdminRuleMatch_ruleId_createdAt_idx;not null" json:"ruleId"`
+	RuleID      string         `gorm:"column:ruleId;index:AdminRuleMatch_ruleId_createdAt_idx,priority:1;not null" json:"ruleId"`
 	ActorUserID *int           `gorm:"column:actorUserId;size:32" json:"actorUserId"`
 	Rule        *AdminRule     `gorm:"foreignKey:RuleID;belongsTo"`
 	ActorUser   *User          `gorm:"foreignKey:ActorUserID;belongsTo"`

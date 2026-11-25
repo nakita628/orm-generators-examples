@@ -6,15 +6,22 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "ReplyMemorySource")]
 pub struct Model {
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "learnedWritingStyleAnalyzedAt")]
+    #[sea_orm(
+        column_name = "learnedWritingStyleAnalyzedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub learned_writing_style_analyzed_at: Option<DateTime>,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "replyMemoryId")]
+    #[sea_orm(column_name = "replyMemoryId", column_type = "Text")]
     pub reply_memory_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "draftSendLogId")]
+    #[sea_orm(column_name = "draftSendLogId", column_type = "Text")]
     pub draft_send_log_id: String,
 }
 
@@ -24,14 +31,16 @@ pub enum Relation {
         belongs_to = "super::reply_memory::Entity",
         from = "Column::ReplyMemoryId",
         to = "super::reply_memory::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ReplyMemorySource_replyMemoryId_fkey"
     )]
     ReplyMemory,
     #[sea_orm(
         belongs_to = "super::draft_send_log::Entity",
         from = "Column::DraftSendLogId",
         to = "super::draft_send_log::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ReplyMemorySource_draftSendLogId_fkey"
     )]
     DraftSendLog,
 }

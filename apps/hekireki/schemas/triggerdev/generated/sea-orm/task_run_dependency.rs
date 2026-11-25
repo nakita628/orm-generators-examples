@@ -8,22 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunDependency")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "taskRunId")]
+    #[sea_orm(column_name = "taskRunId", column_type = "Text")]
     pub task_run_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "checkpointEventId")]
+    #[sea_orm(column_name = "checkpointEventId", column_type = "Text")]
     pub checkpoint_event_id: Option<String>,
-    #[sea_orm(column_name = "dependentAttemptId")]
+    #[sea_orm(column_name = "dependentAttemptId", column_type = "Text")]
     pub dependent_attempt_id: Option<String>,
-    #[sea_orm(column_name = "dependentBatchRunId")]
+    #[sea_orm(column_name = "dependentBatchRunId", column_type = "Text")]
     pub dependent_batch_run_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "resumedAt")]
+    #[sea_orm(column_name = "resumedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resumed_at: Option<DateTime>,
 }
 
@@ -34,7 +39,8 @@ pub enum Relation {
         from = "Column::TaskRunId",
         to = "super::task_run::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunDependency_taskRunId_fkey"
     )]
     TaskRun,
     #[sea_orm(
@@ -42,19 +48,22 @@ pub enum Relation {
         from = "Column::CheckpointEventId",
         to = "super::checkpoint_restore_event::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunDependency_checkpointEventId_fkey"
     )]
     CheckpointEvent,
     #[sea_orm(
         belongs_to = "super::task_run_attempt::Entity",
         from = "Column::DependentAttemptId",
-        to = "super::task_run_attempt::Column::Id"
+        to = "super::task_run_attempt::Column::Id",
+        fk_name = "TaskRunDependency_dependentAttemptId_fkey"
     )]
     DependentAttempt,
     #[sea_orm(
         belongs_to = "super::batch_task_run::Entity",
         from = "Column::DependentBatchRunId",
-        to = "super::batch_task_run::Column::Id"
+        to = "super::batch_task_run::Column::Id",
+        fk_name = "TaskRunDependency_dependentBatchRunId_fkey"
     )]
     DependentBatchRun,
 }

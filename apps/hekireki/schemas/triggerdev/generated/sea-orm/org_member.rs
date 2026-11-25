@@ -8,22 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrgMember")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(default_value = "MEMBER")]
     pub role: OrgMemberRole,
     /// Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.
-    #[sea_orm(column_name = "invitedById")]
+    #[sea_orm(column_name = "invitedById", column_type = "Text")]
     pub invited_by_id: Option<String>,
     /// How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.
-    #[sea_orm(column_name = "joinMethod")]
+    #[sea_orm(column_name = "joinMethod", column_type = "Text")]
     pub join_method: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -34,7 +39,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrgMember_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -42,7 +48,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrgMember_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::runtime_environment::Entity")]

@@ -8,7 +8,9 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     pub rollover_max_budget: Option<f64>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub budget_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     pub max_budget: Option<f64>,
     pub soft_budget: Option<f64>,
@@ -16,21 +18,40 @@ pub struct Model {
     pub tpm_limit: Option<i64>,
     pub rpm_limit: Option<i64>,
     pub tpd_limit: Option<i64>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_max_budget: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_tpm_limit: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_rpm_limit: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub budget_duration: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub budget_limits: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub cap_policy: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub budget_reset_at: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub budget_reset_count: i32,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub allowed_models: Vec<String>,
     pub temp_budget_increase: Option<f64>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub temp_budget_expiry: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 

@@ -7,27 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: Option<String>,
     #[sea_orm(column_name = "isAdmin", default_value = false)]
     pub is_admin: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "paymentProcessorUserId")]
+    #[sea_orm(column_name = "paymentProcessorUserId", column_type = "Text")]
     pub payment_processor_user_id: Option<String>,
-    #[sea_orm(column_name = "subscriptionStatus")]
+    #[sea_orm(column_name = "subscriptionStatus", column_type = "Text")]
     pub subscription_status: Option<String>,
-    #[sea_orm(column_name = "subscriptionPlan")]
+    #[sea_orm(column_name = "subscriptionPlan", column_type = "Text")]
     pub subscription_plan: Option<String>,
-    #[sea_orm(column_name = "currentPeriodEnd")]
+    #[sea_orm(
+        column_name = "currentPeriodEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub current_period_end: Option<DateTime>,
     #[sea_orm(column_name = "cancelAtPeriodEnd", default_value = false)]
     pub cancel_at_period_end: bool,
-    #[sea_orm(column_name = "datePaid")]
+    #[sea_orm(column_name = "datePaid", column_type = "custom(\"timestamp(3)\")")]
     pub date_paid: Option<DateTime>,
     #[sea_orm(default_value = 3)]
     pub credits: i32,

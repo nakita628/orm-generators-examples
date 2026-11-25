@@ -105,8 +105,8 @@ type Brand struct {
 	LinkPreviewImage               *string    `gorm:"column:linkPreviewImage" json:"linkPreviewImage"`
 	LinkPreviewFavicon             *string    `gorm:"column:linkPreviewFavicon" json:"linkPreviewFavicon"`
 	DefaultLanguage                *string    `gorm:"column:defaultLanguage;default:'en';not null" json:"defaultLanguage"`
-	Name                           *string    `gorm:"column:name;uniqueIndex:Brand_teamId_name_key;default:'Default';not null" json:"name"`
-	TeamID                         string     `gorm:"column:teamId;uniqueIndex:Brand_teamId_name_key;index:Brand_teamId_idx;not null" json:"teamId"`
+	Name                           *string    `gorm:"column:name;uniqueIndex:Brand_teamId_name_key,priority:2;default:'Default';not null" json:"name"`
+	TeamID                         string     `gorm:"column:teamId;uniqueIndex:Brand_teamId_name_key,priority:1;index:Brand_teamId_idx;not null" json:"teamId"`
 	CreatedAt                      DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                      DateTime   `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Team                           *Team      `gorm:"belongsTo"`
@@ -152,11 +152,11 @@ type Conversation struct {
 	DocumentPageNumber    *int                      `gorm:"column:documentPageNumber;size:32" json:"documentPageNumber"`
 	LinkID                *string                   `gorm:"column:linkId;index:Conversation_linkId_idx" json:"linkId"`
 	ViewerGroupID         *string                   `gorm:"column:viewerGroupId;index:Conversation_viewerGroupId_idx" json:"viewerGroupId"`
-	QuestionID            *string                   `gorm:"column:questionId;uniqueIndex:Conversation_questionId_recipientViewerId_key;index:Conversation_questionId_idx" json:"questionId"`
+	QuestionID            *string                   `gorm:"column:questionId;uniqueIndex:Conversation_questionId_recipientViewerId_key,priority:1;index:Conversation_questionId_idx" json:"questionId"`
 	Origin                *string                   `gorm:"column:origin;default:'visitor';not null" json:"origin"`
 	Category              *string                   `gorm:"column:category" json:"category"`
 	Priority              *string                   `gorm:"column:priority" json:"priority"`
-	RecipientViewerID     *string                   `gorm:"column:recipientViewerId;uniqueIndex:Conversation_questionId_recipientViewerId_key;index:Conversation_recipientViewerId_idx" json:"recipientViewerId"`
+	RecipientViewerID     *string                   `gorm:"column:recipientViewerId;uniqueIndex:Conversation_questionId_recipientViewerId_key,priority:2;index:Conversation_recipientViewerId_idx" json:"recipientViewerId"`
 	InitialViewID         *string                   `gorm:"column:initialViewId;index:Conversation_initialViewId_idx" json:"initialViewId"`
 	TeamID                string                    `gorm:"column:teamId;index:Conversation_teamId_idx;not null" json:"teamId"`
 	LastMessageAt         *DateTime                 `gorm:"column:lastMessageAt;type:timestamp(3)" json:"lastMessageAt"`
@@ -253,11 +253,11 @@ func (*DataroomQuestion) BeforeUpdate(tx *gorm.DB) error {
 
 type DataroomQuestionAssignment struct {
 	ID         string            `gorm:"column:id;primaryKey" json:"id"`
-	QuestionID string            `gorm:"column:questionId;uniqueIndex:DataroomQuestionAssignment_questionId_linkId_key;uniqueIndex:DataroomQuestionAssignment_questionId_groupId_key;uniqueIndex:DataroomQuestionAssignment_questionId_viewerId_key;uniqueIndex:DataroomQuestionAssignment_questionId_email_key;index:DataroomQuestionAssignment_questionId_idx;not null" json:"questionId"`
-	LinkID     *string           `gorm:"column:linkId;uniqueIndex:DataroomQuestionAssignment_questionId_linkId_key;index:DataroomQuestionAssignment_linkId_idx" json:"linkId"`
-	GroupID    *string           `gorm:"column:groupId;uniqueIndex:DataroomQuestionAssignment_questionId_groupId_key;index:DataroomQuestionAssignment_groupId_idx" json:"groupId"`
-	ViewerID   *string           `gorm:"column:viewerId;uniqueIndex:DataroomQuestionAssignment_questionId_viewerId_key;index:DataroomQuestionAssignment_viewerId_idx" json:"viewerId"`
-	Email      *string           `gorm:"column:email;uniqueIndex:DataroomQuestionAssignment_questionId_email_key" json:"email"`
+	QuestionID string            `gorm:"column:questionId;uniqueIndex:DataroomQuestionAssignment_questionId_linkId_key,priority:1;uniqueIndex:DataroomQuestionAssignment_questionId_groupId_key,priority:1;uniqueIndex:DataroomQuestionAssignment_questionId_viewerId_key,priority:1;uniqueIndex:DataroomQuestionAssignment_questionId_email_key,priority:1;index:DataroomQuestionAssignment_questionId_idx;not null" json:"questionId"`
+	LinkID     *string           `gorm:"column:linkId;uniqueIndex:DataroomQuestionAssignment_questionId_linkId_key,priority:2;index:DataroomQuestionAssignment_linkId_idx" json:"linkId"`
+	GroupID    *string           `gorm:"column:groupId;uniqueIndex:DataroomQuestionAssignment_questionId_groupId_key,priority:2;index:DataroomQuestionAssignment_groupId_idx" json:"groupId"`
+	ViewerID   *string           `gorm:"column:viewerId;uniqueIndex:DataroomQuestionAssignment_questionId_viewerId_key,priority:2;index:DataroomQuestionAssignment_viewerId_idx" json:"viewerId"`
+	Email      *string           `gorm:"column:email;uniqueIndex:DataroomQuestionAssignment_questionId_email_key,priority:2" json:"email"`
 	CreatedAt  DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Question   *DataroomQuestion `gorm:"foreignKey:QuestionID;belongsTo"`
 	Link       *Link             `gorm:"belongsTo"`
@@ -282,10 +282,10 @@ func (m *DataroomQuestionAssignment) BeforeCreate(tx *gorm.DB) error {
 
 type ConversationParticipant struct {
 	ID                   string        `gorm:"column:id;primaryKey" json:"id"`
-	ConversationID       string        `gorm:"column:conversationId;uniqueIndex:ConversationParticipant_conversationId_viewerId_key;uniqueIndex:ConversationParticipant_conversationId_userId_key;index:ConversationParticipant_conversationId_idx;not null" json:"conversationId"`
+	ConversationID       string        `gorm:"column:conversationId;uniqueIndex:ConversationParticipant_conversationId_viewerId_key,priority:1;uniqueIndex:ConversationParticipant_conversationId_userId_key,priority:1;index:ConversationParticipant_conversationId_idx;not null" json:"conversationId"`
 	Role                 string        `gorm:"column:role;default:'PARTICIPANT';not null" json:"role"`
-	ViewerID             *string       `gorm:"column:viewerId;uniqueIndex:ConversationParticipant_conversationId_viewerId_key;index:ConversationParticipant_viewerId_idx" json:"viewerId"`
-	UserID               *string       `gorm:"column:userId;uniqueIndex:ConversationParticipant_conversationId_userId_key;index:ConversationParticipant_userId_idx" json:"userId"`
+	ViewerID             *string       `gorm:"column:viewerId;uniqueIndex:ConversationParticipant_conversationId_viewerId_key,priority:2;index:ConversationParticipant_viewerId_idx" json:"viewerId"`
+	UserID               *string       `gorm:"column:userId;uniqueIndex:ConversationParticipant_conversationId_userId_key,priority:2;index:ConversationParticipant_userId_idx" json:"userId"`
 	ReceiveNotifications bool          `gorm:"column:receiveNotifications;default:false;not null" json:"receiveNotifications"`
 	CreatedAt            DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Conversation         *Conversation `gorm:"belongsTo"`
@@ -355,8 +355,8 @@ func (*Message) BeforeUpdate(tx *gorm.DB) error {
 
 type ConversationView struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	ConversationID string        `gorm:"column:conversationId;uniqueIndex:ConversationView_conversationId_viewId_key;index:ConversationView_conversationId_idx;not null" json:"conversationId"`
-	ViewID         string        `gorm:"column:viewId;uniqueIndex:ConversationView_conversationId_viewId_key;index:ConversationView_viewId_idx;not null" json:"viewId"`
+	ConversationID string        `gorm:"column:conversationId;uniqueIndex:ConversationView_conversationId_viewId_key,priority:1;index:ConversationView_conversationId_idx;not null" json:"conversationId"`
+	ViewID         string        `gorm:"column:viewId;uniqueIndex:ConversationView_conversationId_viewId_key,priority:2;index:ConversationView_viewId_idx;not null" json:"viewId"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Conversation   *Conversation `gorm:"belongsTo"`
 	View           *View         `gorm:"belongsTo"`
@@ -518,8 +518,8 @@ func (*Dataroom) BeforeUpdate(tx *gorm.DB) error {
 type TaskList struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
 	Name       string    `gorm:"column:name;not null" json:"name"`
-	OrderIndex *int      `gorm:"column:orderIndex;index:TaskList_dataroomId_orderIndex_idx;size:32" json:"orderIndex"`
-	DataroomID string    `gorm:"column:dataroomId;index:TaskList_dataroomId_idx;index:TaskList_dataroomId_orderIndex_idx;not null" json:"dataroomId"`
+	OrderIndex *int      `gorm:"column:orderIndex;index:TaskList_dataroomId_orderIndex_idx,priority:2;size:32" json:"orderIndex"`
+	DataroomID string    `gorm:"column:dataroomId;index:TaskList_dataroomId_idx;index:TaskList_dataroomId_orderIndex_idx,priority:1;not null" json:"dataroomId"`
 	TeamID     string    `gorm:"column:teamId;index:TaskList_teamId_idx;not null" json:"teamId"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -562,8 +562,8 @@ type Task struct {
 	Status                 *string          `gorm:"column:status;default:'OPEN';not null" json:"status"`
 	Category               *string          `gorm:"column:category" json:"category"`
 	DueDate                *DateTime        `gorm:"column:dueDate;type:timestamp(3)" json:"dueDate"`
-	OrderIndex             *int             `gorm:"column:orderIndex;index:Task_taskListId_orderIndex_idx;size:32" json:"orderIndex"`
-	TaskListID             string           `gorm:"column:taskListId;index:Task_taskListId_idx;index:Task_taskListId_orderIndex_idx;not null" json:"taskListId"`
+	OrderIndex             *int             `gorm:"column:orderIndex;index:Task_taskListId_orderIndex_idx,priority:2;size:32" json:"orderIndex"`
+	TaskListID             string           `gorm:"column:taskListId;index:Task_taskListId_idx;index:Task_taskListId_orderIndex_idx,priority:1;not null" json:"taskListId"`
 	DataroomID             string           `gorm:"column:dataroomId;index:Task_dataroomId_idx;not null" json:"dataroomId"`
 	TeamID                 string           `gorm:"column:teamId;index:Task_teamId_idx;not null" json:"teamId"`
 	UploadFolderID         *string          `gorm:"column:uploadFolderId;index:Task_uploadFolderId_idx" json:"uploadFolderId"`
@@ -609,11 +609,11 @@ func (*Task) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskAssignment struct {
 	ID             string       `gorm:"column:id;primaryKey" json:"id"`
-	TaskID         string       `gorm:"column:taskId;uniqueIndex:TaskAssignment_taskId_viewerId_key;uniqueIndex:TaskAssignment_taskId_groupId_key;uniqueIndex:TaskAssignment_taskId_linkId_key;uniqueIndex:TaskAssignment_taskId_email_key;index:TaskAssignment_taskId_idx;not null" json:"taskId"`
-	ViewerID       *string      `gorm:"column:viewerId;uniqueIndex:TaskAssignment_taskId_viewerId_key;index:TaskAssignment_viewerId_idx" json:"viewerId"`
-	GroupID        *string      `gorm:"column:groupId;uniqueIndex:TaskAssignment_taskId_groupId_key;index:TaskAssignment_groupId_idx" json:"groupId"`
-	LinkID         *string      `gorm:"column:linkId;uniqueIndex:TaskAssignment_taskId_linkId_key;index:TaskAssignment_linkId_idx" json:"linkId"`
-	Email          *string      `gorm:"column:email;uniqueIndex:TaskAssignment_taskId_email_key" json:"email"`
+	TaskID         string       `gorm:"column:taskId;uniqueIndex:TaskAssignment_taskId_viewerId_key,priority:1;uniqueIndex:TaskAssignment_taskId_groupId_key,priority:1;uniqueIndex:TaskAssignment_taskId_linkId_key,priority:1;uniqueIndex:TaskAssignment_taskId_email_key,priority:1;index:TaskAssignment_taskId_idx;not null" json:"taskId"`
+	ViewerID       *string      `gorm:"column:viewerId;uniqueIndex:TaskAssignment_taskId_viewerId_key,priority:2;index:TaskAssignment_viewerId_idx" json:"viewerId"`
+	GroupID        *string      `gorm:"column:groupId;uniqueIndex:TaskAssignment_taskId_groupId_key,priority:2;index:TaskAssignment_groupId_idx" json:"groupId"`
+	LinkID         *string      `gorm:"column:linkId;uniqueIndex:TaskAssignment_taskId_linkId_key,priority:2;index:TaskAssignment_linkId_idx" json:"linkId"`
+	Email          *string      `gorm:"column:email;uniqueIndex:TaskAssignment_taskId_email_key,priority:2" json:"email"`
 	NotifiedAt     *DateTime    `gorm:"column:notifiedAt;type:timestamp(3)" json:"notifiedAt"`
 	LastReminderAt *DateTime    `gorm:"column:lastReminderAt;type:timestamp(3)" json:"lastReminderAt"`
 	CreatedAt      DateTime     `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -652,7 +652,7 @@ func (*TaskAssignment) BeforeUpdate(tx *gorm.DB) error {
 
 type TaskActivity struct {
 	ID         string   `gorm:"column:id;primaryKey" json:"id"`
-	TaskID     string   `gorm:"column:taskId;index:TaskActivity_taskId_idx;index:TaskActivity_taskId_createdAt_idx;not null" json:"taskId"`
+	TaskID     string   `gorm:"column:taskId;index:TaskActivity_taskId_idx;index:TaskActivity_taskId_createdAt_idx,priority:1;not null" json:"taskId"`
 	Type       string   `gorm:"column:type;not null" json:"type"`
 	Comment    *string  `gorm:"column:comment" json:"comment"`
 	FromStatus *string  `gorm:"column:fromStatus" json:"fromStatus"`
@@ -660,7 +660,7 @@ type TaskActivity struct {
 	UserID     *string  `gorm:"column:userId;index:TaskActivity_userId_idx" json:"userId"`
 	ViewerID   *string  `gorm:"column:viewerId;index:TaskActivity_viewerId_idx" json:"viewerId"`
 	ViewID     *string  `gorm:"column:viewId;index:TaskActivity_viewId_idx" json:"viewId"`
-	CreatedAt  DateTime `gorm:"column:createdAt;index:TaskActivity_taskId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;index:TaskActivity_taskId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Task       *Task    `gorm:"belongsTo"`
 	User       *User    `gorm:"belongsTo"`
 	Viewer     *Viewer  `gorm:"belongsTo"`
@@ -684,10 +684,10 @@ func (m *TaskActivity) BeforeCreate(tx *gorm.DB) error {
 
 type DataroomDocument struct {
 	ID                string             `gorm:"column:id;primaryKey" json:"id"`
-	DataroomID        string             `gorm:"column:dataroomId;uniqueIndex:DataroomDocument_dataroomId_documentId_key;index:DataroomDocument_dataroomId_folderId_orderIndex_idx;not null" json:"dataroomId"`
-	DocumentID        string             `gorm:"column:documentId;uniqueIndex:DataroomDocument_dataroomId_documentId_key;index:DataroomDocument_documentId_idx;not null" json:"documentId"`
-	FolderID          *string            `gorm:"column:folderId;index:DataroomDocument_folderId_idx;index:DataroomDocument_dataroomId_folderId_orderIndex_idx" json:"folderId"`
-	OrderIndex        *int               `gorm:"column:orderIndex;index:DataroomDocument_dataroomId_folderId_orderIndex_idx;size:32" json:"orderIndex"`
+	DataroomID        string             `gorm:"column:dataroomId;uniqueIndex:DataroomDocument_dataroomId_documentId_key,priority:1;index:DataroomDocument_dataroomId_folderId_orderIndex_idx,priority:1;not null" json:"dataroomId"`
+	DocumentID        string             `gorm:"column:documentId;uniqueIndex:DataroomDocument_dataroomId_documentId_key,priority:2;index:DataroomDocument_documentId_idx;not null" json:"documentId"`
+	FolderID          *string            `gorm:"column:folderId;index:DataroomDocument_folderId_idx;index:DataroomDocument_dataroomId_folderId_orderIndex_idx,priority:2" json:"folderId"`
+	OrderIndex        *int               `gorm:"column:orderIndex;index:DataroomDocument_dataroomId_folderId_orderIndex_idx,priority:3;size:32" json:"orderIndex"`
 	HierarchicalIndex *string            `gorm:"column:hierarchicalIndex" json:"hierarchicalIndex"`
 	VectorStoreFileID *string            `gorm:"column:vectorStoreFileId" json:"vectorStoreFileId"`
 	CreatedAt         DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -730,12 +730,12 @@ func (*DataroomDocument) BeforeUpdate(tx *gorm.DB) error {
 type DataroomFolder struct {
 	ID                string             `gorm:"column:id;primaryKey" json:"id"`
 	Name              string             `gorm:"column:name;not null" json:"name"`
-	Path              string             `gorm:"column:path;uniqueIndex:DataroomFolder_dataroomId_path_key;not null" json:"path"`
-	ParentID          *string            `gorm:"column:parentId;index:DataroomFolder_parentId_idx;index:DataroomFolder_dataroomId_parentId_orderIndex_idx" json:"parentId"`
+	Path              string             `gorm:"column:path;uniqueIndex:DataroomFolder_dataroomId_path_key,priority:2;not null" json:"path"`
+	ParentID          *string            `gorm:"column:parentId;index:DataroomFolder_parentId_idx;index:DataroomFolder_dataroomId_parentId_orderIndex_idx,priority:2" json:"parentId"`
 	Icon              *string            `gorm:"column:icon" json:"icon"`
 	Color             *string            `gorm:"column:color" json:"color"`
-	DataroomID        string             `gorm:"column:dataroomId;uniqueIndex:DataroomFolder_dataroomId_path_key;index:DataroomFolder_dataroomId_parentId_orderIndex_idx;not null" json:"dataroomId"`
-	OrderIndex        *int               `gorm:"column:orderIndex;index:DataroomFolder_dataroomId_parentId_orderIndex_idx;size:32" json:"orderIndex"`
+	DataroomID        string             `gorm:"column:dataroomId;uniqueIndex:DataroomFolder_dataroomId_path_key,priority:1;index:DataroomFolder_dataroomId_parentId_orderIndex_idx,priority:1;not null" json:"dataroomId"`
+	OrderIndex        *int               `gorm:"column:orderIndex;index:DataroomFolder_dataroomId_parentId_orderIndex_idx,priority:3;size:32" json:"orderIndex"`
 	HierarchicalIndex *string            `gorm:"column:hierarchicalIndex" json:"hierarchicalIndex"`
 	CreatedAt         DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt         DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -832,9 +832,9 @@ type ViewerGroup struct {
 	Name                string                       `gorm:"column:name;not null" json:"name"`
 	Domains             ScalarList[string]           `gorm:"column:domains;type:text[]" json:"domains"`
 	AllowAll            bool                         `gorm:"column:allowAll;default:false;not null" json:"allowAll"`
-	DataroomID          string                       `gorm:"column:dataroomId;index:ViewerGroup_dataroomId_idx;index:ViewerGroup_dataroomId_createdAt_idx;not null" json:"dataroomId"`
+	DataroomID          string                       `gorm:"column:dataroomId;index:ViewerGroup_dataroomId_idx;index:ViewerGroup_dataroomId_createdAt_idx,priority:1;not null" json:"dataroomId"`
 	TeamID              string                       `gorm:"column:teamId;index:ViewerGroup_teamId_idx;not null" json:"teamId"`
-	CreatedAt           DateTime                     `gorm:"column:createdAt;index:ViewerGroup_dataroomId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt           DateTime                     `gorm:"column:createdAt;index:ViewerGroup_dataroomId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt           DateTime                     `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Dataroom            *Dataroom                    `gorm:"belongsTo"`
 	Team                *Team                        `gorm:"belongsTo"`
@@ -876,8 +876,8 @@ func (*ViewerGroup) BeforeUpdate(tx *gorm.DB) error {
 
 type ViewerGroupMembership struct {
 	ID        string       `gorm:"column:id;primaryKey" json:"id"`
-	ViewerID  string       `gorm:"column:viewerId;uniqueIndex:ViewerGroupMembership_viewerId_groupId_key;index:ViewerGroupMembership_viewerId_idx;not null" json:"viewerId"`
-	GroupID   string       `gorm:"column:groupId;uniqueIndex:ViewerGroupMembership_viewerId_groupId_key;index:ViewerGroupMembership_groupId_idx;not null" json:"groupId"`
+	ViewerID  string       `gorm:"column:viewerId;uniqueIndex:ViewerGroupMembership_viewerId_groupId_key,priority:1;index:ViewerGroupMembership_viewerId_idx;not null" json:"viewerId"`
+	GroupID   string       `gorm:"column:groupId;uniqueIndex:ViewerGroupMembership_viewerId_groupId_key,priority:2;index:ViewerGroupMembership_groupId_idx;not null" json:"groupId"`
 	CreatedAt DateTime     `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime     `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Viewer    *Viewer      `gorm:"belongsTo"`
@@ -912,8 +912,8 @@ func (*ViewerGroupMembership) BeforeUpdate(tx *gorm.DB) error {
 
 type ViewerGroupAccessControls struct {
 	ID          string       `gorm:"column:id;primaryKey" json:"id"`
-	GroupID     string       `gorm:"column:groupId;uniqueIndex:ViewerGroupAccessControls_groupId_itemId_key;index:ViewerGroupAccessControls_groupId_idx;not null" json:"groupId"`
-	ItemID      string       `gorm:"column:itemId;uniqueIndex:ViewerGroupAccessControls_groupId_itemId_key;not null" json:"itemId"`
+	GroupID     string       `gorm:"column:groupId;uniqueIndex:ViewerGroupAccessControls_groupId_itemId_key,priority:1;index:ViewerGroupAccessControls_groupId_idx;not null" json:"groupId"`
+	ItemID      string       `gorm:"column:itemId;uniqueIndex:ViewerGroupAccessControls_groupId_itemId_key,priority:2;not null" json:"itemId"`
 	ItemType    string       `gorm:"column:itemType;not null" json:"itemType"`
 	CanView     *bool        `gorm:"column:canView;default:true;not null" json:"canView"`
 	CanDownload bool         `gorm:"column:canDownload;default:false;not null" json:"canDownload"`
@@ -990,8 +990,8 @@ func (*PermissionGroup) BeforeUpdate(tx *gorm.DB) error {
 
 type PermissionGroupAccessControls struct {
 	ID                  string           `gorm:"column:id;primaryKey" json:"id"`
-	GroupID             string           `gorm:"column:groupId;uniqueIndex:PermissionGroupAccessControls_groupId_itemId_key;index:PermissionGroupAccessControls_groupId_idx;not null" json:"groupId"`
-	ItemID              string           `gorm:"column:itemId;uniqueIndex:PermissionGroupAccessControls_groupId_itemId_key;not null" json:"itemId"`
+	GroupID             string           `gorm:"column:groupId;uniqueIndex:PermissionGroupAccessControls_groupId_itemId_key,priority:1;index:PermissionGroupAccessControls_groupId_idx;not null" json:"groupId"`
+	ItemID              string           `gorm:"column:itemId;uniqueIndex:PermissionGroupAccessControls_groupId_itemId_key,priority:2;not null" json:"itemId"`
 	ItemType            string           `gorm:"column:itemType;not null" json:"itemType"`
 	CanView             *bool            `gorm:"column:canView;default:true;not null" json:"canView"`
 	CanDownload         bool             `gorm:"column:canDownload;default:false;not null" json:"canDownload"`
@@ -1029,7 +1029,7 @@ func (*PermissionGroupAccessControls) BeforeUpdate(tx *gorm.DB) error {
 
 type Document struct {
 	ID                   string                 `gorm:"column:id;primaryKey" json:"id"`
-	Name                 string                 `gorm:"column:name;index:Document_teamId_name_idx;not null" json:"name"`
+	Name                 string                 `gorm:"column:name;index:Document_teamId_name_idx,priority:2;not null" json:"name"`
 	Description          *string                `gorm:"column:description" json:"description"`
 	File                 string                 `gorm:"column:file;not null" json:"file"`
 	OriginalFile         *string                `gorm:"column:originalFile" json:"originalFile"`
@@ -1037,16 +1037,16 @@ type Document struct {
 	ContentType          *string                `gorm:"column:contentType" json:"contentType"`
 	StorageType          string                 `gorm:"column:storageType;default:'VERCEL_BLOB';not null" json:"storageType"`
 	NumPages             *int                   `gorm:"column:numPages;size:32" json:"numPages"`
-	TeamID               string                 `gorm:"column:teamId;index:Document_teamId_idx;index:Document_teamId_folderId_idx;index:Document_teamId_name_idx;index:Document_teamId_hiddenInAllDocuments_idx;not null" json:"teamId"`
+	TeamID               string                 `gorm:"column:teamId;index:Document_teamId_idx;index:Document_teamId_folderId_idx,priority:1;index:Document_teamId_name_idx,priority:1;index:Document_teamId_hiddenInAllDocuments_idx,priority:1;not null" json:"teamId"`
 	OwnerID              *string                `gorm:"column:ownerId;index:Document_ownerId_idx" json:"ownerId"`
 	AssistantEnabled     bool                   `gorm:"column:assistantEnabled;default:false;not null" json:"assistantEnabled"`
 	AdvancedExcelEnabled bool                   `gorm:"column:advancedExcelEnabled;default:false;not null" json:"advancedExcelEnabled"`
 	AgentsEnabled        bool                   `gorm:"column:agentsEnabled;default:false;not null" json:"agentsEnabled"`
 	DownloadOnly         bool                   `gorm:"column:downloadOnly;default:false;not null" json:"downloadOnly"`
-	HiddenInAllDocuments bool                   `gorm:"column:hiddenInAllDocuments;index:Document_teamId_hiddenInAllDocuments_idx;default:false;not null" json:"hiddenInAllDocuments"`
+	HiddenInAllDocuments bool                   `gorm:"column:hiddenInAllDocuments;index:Document_teamId_hiddenInAllDocuments_idx,priority:2;default:false;not null" json:"hiddenInAllDocuments"`
 	CreatedAt            DateTime               `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	FolderID             *string                `gorm:"column:folderId;index:Document_folderId_idx;index:Document_teamId_folderId_idx" json:"folderId"`
+	FolderID             *string                `gorm:"column:folderId;index:Document_folderId_idx;index:Document_teamId_folderId_idx,priority:2" json:"folderId"`
 	IsExternalUpload     bool                   `gorm:"column:isExternalUpload;default:false;not null" json:"isExternalUpload"`
 	Owner                *User                  `gorm:"foreignKey:OwnerID;belongsTo"`
 	Team                 *Team                  `gorm:"belongsTo"`
@@ -1090,8 +1090,8 @@ func (*Document) BeforeUpdate(tx *gorm.DB) error {
 
 type DocumentVersion struct {
 	ID                string                 `gorm:"column:id;primaryKey" json:"id"`
-	VersionNumber     int                    `gorm:"column:versionNumber;uniqueIndex:DocumentVersion_versionNumber_documentId_key;size:32;not null" json:"versionNumber"`
-	DocumentID        string                 `gorm:"column:documentId;uniqueIndex:DocumentVersion_versionNumber_documentId_key;index:DocumentVersion_documentId_idx;index:DocumentVersion_documentId_isPrimary_idx;index:DocumentVersion_documentId_createdAt_idx;index:DocumentVersion_documentId_isPrimary_createdAt_idx;not null" json:"documentId"`
+	VersionNumber     int                    `gorm:"column:versionNumber;uniqueIndex:DocumentVersion_versionNumber_documentId_key,priority:1;size:32;not null" json:"versionNumber"`
+	DocumentID        string                 `gorm:"column:documentId;uniqueIndex:DocumentVersion_versionNumber_documentId_key,priority:2;index:DocumentVersion_documentId_idx;index:DocumentVersion_documentId_isPrimary_idx,priority:1;index:DocumentVersion_documentId_createdAt_idx,priority:1;index:DocumentVersion_documentId_isPrimary_createdAt_idx,priority:1;not null" json:"documentId"`
 	File              string                 `gorm:"column:file;not null" json:"file"`
 	OriginalFile      *string                `gorm:"column:originalFile" json:"originalFile"`
 	Type              *string                `gorm:"column:type" json:"type"`
@@ -1099,13 +1099,13 @@ type DocumentVersion struct {
 	FileSize          *int64                 `gorm:"column:fileSize" json:"fileSize"`
 	StorageType       string                 `gorm:"column:storageType;default:'VERCEL_BLOB';not null" json:"storageType"`
 	NumPages          *int                   `gorm:"column:numPages;size:32" json:"numPages"`
-	IsPrimary         bool                   `gorm:"column:isPrimary;index:DocumentVersion_documentId_isPrimary_idx;index:DocumentVersion_documentId_isPrimary_createdAt_idx;default:false;not null" json:"isPrimary"`
+	IsPrimary         bool                   `gorm:"column:isPrimary;index:DocumentVersion_documentId_isPrimary_idx,priority:2;index:DocumentVersion_documentId_isPrimary_createdAt_idx,priority:2;default:false;not null" json:"isPrimary"`
 	IsVertical        bool                   `gorm:"column:isVertical;default:false;not null" json:"isVertical"`
 	FileID            *string                `gorm:"column:fileId" json:"fileId"`
 	VectorStoreFileID *string                `gorm:"column:vectorStoreFileId" json:"vectorStoreFileId"`
 	HasPages          bool                   `gorm:"column:hasPages;default:false;not null" json:"hasPages"`
 	Length            *int                   `gorm:"column:length;size:32" json:"length"`
-	CreatedAt         DateTime               `gorm:"column:createdAt;index:DocumentVersion_documentId_createdAt_idx;index:DocumentVersion_documentId_isPrimary_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt         DateTime               `gorm:"column:createdAt;index:DocumentVersion_documentId_createdAt_idx,priority:2,sort:desc;index:DocumentVersion_documentId_isPrimary_createdAt_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt         DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Document          *Document              `gorm:"belongsTo"`
 	Pages             []DocumentPage         `gorm:"foreignKey:VersionID;constraint:DocumentPage_versionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1140,8 +1140,8 @@ func (*DocumentVersion) BeforeUpdate(tx *gorm.DB) error {
 
 type DocumentPage struct {
 	ID            string             `gorm:"column:id;primaryKey" json:"id"`
-	VersionID     string             `gorm:"column:versionId;uniqueIndex:DocumentPage_pageNumber_versionId_key;index:DocumentPage_versionId_idx;not null" json:"versionId"`
-	PageNumber    int                `gorm:"column:pageNumber;uniqueIndex:DocumentPage_pageNumber_versionId_key;size:32;not null" json:"pageNumber"`
+	VersionID     string             `gorm:"column:versionId;uniqueIndex:DocumentPage_pageNumber_versionId_key,priority:2;index:DocumentPage_versionId_idx;not null" json:"versionId"`
+	PageNumber    int                `gorm:"column:pageNumber;uniqueIndex:DocumentPage_pageNumber_versionId_key,priority:1;size:32;not null" json:"pageNumber"`
 	EmbeddedLinks ScalarList[string] `gorm:"column:embeddedLinks;type:text[]" json:"embeddedLinks"`
 	PageLinks     datatypes.JSON     `gorm:"column:pageLinks" json:"pageLinks"`
 	Metadata      datatypes.JSON     `gorm:"column:metadata" json:"metadata"`
@@ -1181,12 +1181,12 @@ func (*DocumentPage) BeforeUpdate(tx *gorm.DB) error {
 type Folder struct {
 	ID                   string     `gorm:"column:id;primaryKey" json:"id"`
 	Name                 string     `gorm:"column:name;not null" json:"name"`
-	Path                 string     `gorm:"column:path;uniqueIndex:Folder_teamId_path_key;not null" json:"path"`
+	Path                 string     `gorm:"column:path;uniqueIndex:Folder_teamId_path_key,priority:2;not null" json:"path"`
 	ParentID             *string    `gorm:"column:parentId;index:Folder_parentId_idx" json:"parentId"`
-	HiddenInAllDocuments bool       `gorm:"column:hiddenInAllDocuments;index:Folder_teamId_hiddenInAllDocuments_idx;default:false;not null" json:"hiddenInAllDocuments"`
+	HiddenInAllDocuments bool       `gorm:"column:hiddenInAllDocuments;index:Folder_teamId_hiddenInAllDocuments_idx,priority:2;default:false;not null" json:"hiddenInAllDocuments"`
 	Icon                 *string    `gorm:"column:icon" json:"icon"`
 	Color                *string    `gorm:"column:color" json:"color"`
-	TeamID               string     `gorm:"column:teamId;uniqueIndex:Folder_teamId_path_key;index:Folder_teamId_hiddenInAllDocuments_idx;not null" json:"teamId"`
+	TeamID               string     `gorm:"column:teamId;uniqueIndex:Folder_teamId_path_key,priority:1;index:Folder_teamId_hiddenInAllDocuments_idx,priority:1;not null" json:"teamId"`
 	CreatedAt            DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime   `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	ParentFolder         *Folder    `gorm:"foreignKey:ParentID;belongsTo"`
@@ -1280,12 +1280,12 @@ func (*DocumentUpload) BeforeUpdate(tx *gorm.DB) error {
 type PendingDocumentUpload struct {
 	ID          string    `gorm:"column:id;primaryKey" json:"id"`
 	UploadID    string    `gorm:"column:uploadId;uniqueIndex:PendingDocumentUpload_uploadId_key;not null" json:"uploadId"`
-	TeamID      string    `gorm:"column:teamId;index:PendingDocumentUpload_teamId_expiresAt_idx;not null" json:"teamId"`
-	TokenID     string    `gorm:"column:tokenId;index:PendingDocumentUpload_tokenId_expiresAt_idx;not null" json:"tokenId"`
+	TeamID      string    `gorm:"column:teamId;index:PendingDocumentUpload_teamId_expiresAt_idx,priority:1;not null" json:"teamId"`
+	TokenID     string    `gorm:"column:tokenId;index:PendingDocumentUpload_tokenId_expiresAt_idx,priority:1;not null" json:"tokenId"`
 	Key         string    `gorm:"column:key;not null" json:"key"`
 	ContentType string    `gorm:"column:contentType;not null" json:"contentType"`
 	StorageType string    `gorm:"column:storageType;default:'S3_PATH';not null" json:"storageType"`
-	ExpiresAt   DateTime  `gorm:"column:expiresAt;index:PendingDocumentUpload_teamId_expiresAt_idx;index:PendingDocumentUpload_tokenId_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
+	ExpiresAt   DateTime  `gorm:"column:expiresAt;index:PendingDocumentUpload_teamId_expiresAt_idx,priority:2;index:PendingDocumentUpload_tokenId_expiresAt_idx,priority:2;type:timestamp(3);not null" json:"expiresAt"`
 	ConsumedAt  *DateTime `gorm:"column:consumedAt;type:timestamp(3)" json:"consumedAt"`
 	CreatedAt   DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
@@ -1355,9 +1355,9 @@ type InstalledIntegration struct {
 	Credentials   datatypes.JSON `gorm:"column:credentials" json:"credentials"`
 	Configuration datatypes.JSON `gorm:"column:configuration" json:"configuration"`
 	Enabled       *bool          `gorm:"column:enabled;default:true;not null" json:"enabled"`
-	IntegrationID string         `gorm:"column:integrationId;uniqueIndex:InstalledIntegration_teamId_integrationId_key;index:InstalledIntegration_integrationId_idx;not null" json:"integrationId"`
+	IntegrationID string         `gorm:"column:integrationId;uniqueIndex:InstalledIntegration_teamId_integrationId_key,priority:2;index:InstalledIntegration_integrationId_idx;not null" json:"integrationId"`
 	UserID        *string        `gorm:"column:userId" json:"userId"`
-	TeamID        string         `gorm:"column:teamId;uniqueIndex:InstalledIntegration_teamId_integrationId_key;index:InstalledIntegration_teamId_idx;not null" json:"teamId"`
+	TeamID        string         `gorm:"column:teamId;uniqueIndex:InstalledIntegration_teamId_integrationId_key,priority:1;index:InstalledIntegration_teamId_idx;not null" json:"teamId"`
 	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Integration   *Integration   `gorm:"belongsTo"`
@@ -1393,8 +1393,8 @@ func (*InstalledIntegration) BeforeUpdate(tx *gorm.DB) error {
 
 type JacksonIndex struct {
 	ID       int    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Key      string `gorm:"column:key;index:_jackson_index_key_store;not null" json:"key"`
-	StoreKey string `gorm:"column:storeKey;index:_jackson_index_key_store;not null" json:"storeKey"`
+	Key      string `gorm:"column:key;index:_jackson_index_key_store,priority:1;not null" json:"key"`
+	StoreKey string `gorm:"column:storeKey;index:_jackson_index_key_store,priority:2;not null" json:"storeKey"`
 }
 
 func (JacksonIndex) TableName() string {
@@ -1434,12 +1434,12 @@ func (JacksonTTL) TableName() string {
 
 type Link struct {
 	ID                         string             `gorm:"column:id;primaryKey" json:"id"`
-	DocumentID                 *string            `gorm:"column:documentId;index:Link_documentId_idx;index:Link_documentId_isArchived_idx" json:"documentId"`
+	DocumentID                 *string            `gorm:"column:documentId;index:Link_documentId_idx;index:Link_documentId_isArchived_idx,priority:1" json:"documentId"`
 	DataroomID                 *string            `gorm:"column:dataroomId" json:"dataroomId"`
 	LinkType                   string             `gorm:"column:linkType;default:'DOCUMENT_LINK';not null" json:"linkType"`
 	URL                        *string            `gorm:"column:url;uniqueIndex:Link_url_key" json:"url"`
 	Name                       *string            `gorm:"column:name" json:"name"`
-	Slug                       *string            `gorm:"column:slug;uniqueIndex:Link_domainSlug_slug_key" json:"slug"`
+	Slug                       *string            `gorm:"column:slug;uniqueIndex:Link_domainSlug_slug_key,priority:2" json:"slug"`
 	ExpiresAt                  *DateTime          `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
 	Password                   *string            `gorm:"column:password" json:"password"`
 	AllowList                  ScalarList[string] `gorm:"column:allowList;type:text[]" json:"allowList"`
@@ -1447,10 +1447,10 @@ type Link struct {
 	EmailProtected             *bool              `gorm:"column:emailProtected;default:true;not null" json:"emailProtected"`
 	EmailAuthenticated         bool               `gorm:"column:emailAuthenticated;default:false;not null" json:"emailAuthenticated"`
 	AllowDownload              *bool              `gorm:"column:allowDownload;default:false" json:"allowDownload"`
-	IsArchived                 bool               `gorm:"column:isArchived;index:Link_documentId_isArchived_idx;default:false;not null" json:"isArchived"`
+	IsArchived                 bool               `gorm:"column:isArchived;index:Link_documentId_isArchived_idx,priority:2;default:false;not null" json:"isArchived"`
 	DeletedAt                  *DateTime          `gorm:"column:deletedAt;index:Link_deletedAt_idx;type:timestamp(3)" json:"deletedAt"`
 	DomainID                   *string            `gorm:"column:domainId" json:"domainId"`
-	DomainSlug                 *string            `gorm:"column:domainSlug;uniqueIndex:Link_domainSlug_slug_key" json:"domainSlug"`
+	DomainSlug                 *string            `gorm:"column:domainSlug;uniqueIndex:Link_domainSlug_slug_key,priority:1" json:"domainSlug"`
 	CreatedAt                  DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                  DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	EnableNotification         *bool              `gorm:"column:enableNotification;default:true" json:"enableNotification"`
@@ -1637,8 +1637,8 @@ func (*VisitorGroup) BeforeUpdate(tx *gorm.DB) error {
 
 type LinkVisitorGroup struct {
 	ID             string        `gorm:"column:id;primaryKey" json:"id"`
-	LinkID         string        `gorm:"column:linkId;uniqueIndex:LinkVisitorGroup_linkId_visitorGroupId_key;index:LinkVisitorGroup_linkId_idx;not null" json:"linkId"`
-	VisitorGroupID string        `gorm:"column:visitorGroupId;uniqueIndex:LinkVisitorGroup_linkId_visitorGroupId_key;index:LinkVisitorGroup_visitorGroupId_idx;not null" json:"visitorGroupId"`
+	LinkID         string        `gorm:"column:linkId;uniqueIndex:LinkVisitorGroup_linkId_visitorGroupId_key,priority:1;index:LinkVisitorGroup_linkId_idx;not null" json:"linkId"`
+	VisitorGroupID string        `gorm:"column:visitorGroupId;uniqueIndex:LinkVisitorGroup_linkId_visitorGroupId_key,priority:2;index:LinkVisitorGroup_visitorGroupId_idx;not null" json:"visitorGroupId"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Link           *Link         `gorm:"belongsTo"`
 	VisitorGroup   *VisitorGroup `gorm:"belongsTo"`
@@ -1737,9 +1737,9 @@ func (*CustomFieldResponse) BeforeUpdate(tx *gorm.DB) error {
 
 type NotificationPreference struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	UserID    string   `gorm:"column:userId;uniqueIndex:NotificationPreference_userId_teamId_type_key;index:NotificationPreference_userId_teamId_idx;not null" json:"userId"`
-	TeamID    string   `gorm:"column:teamId;uniqueIndex:NotificationPreference_userId_teamId_type_key;index:NotificationPreference_userId_teamId_idx;not null" json:"teamId"`
-	Type      string   `gorm:"column:type;uniqueIndex:NotificationPreference_userId_teamId_type_key;not null" json:"type"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:NotificationPreference_userId_teamId_type_key,priority:1;index:NotificationPreference_userId_teamId_idx,priority:1;not null" json:"userId"`
+	TeamID    string   `gorm:"column:teamId;uniqueIndex:NotificationPreference_userId_teamId_type_key,priority:2;index:NotificationPreference_userId_teamId_idx,priority:2;not null" json:"teamId"`
+	Type      string   `gorm:"column:type;uniqueIndex:NotificationPreference_userId_teamId_type_key,priority:3;not null" json:"type"`
 	Frequency *string  `gorm:"column:frequency;default:'IMMEDIATE';not null" json:"frequency"`
 	Scope     *string  `gorm:"column:scope;default:'ALL';not null" json:"scope"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1820,8 +1820,8 @@ func (*OAuthClient) BeforeUpdate(tx *gorm.DB) error {
 
 type OAuthClientApproval struct {
 	ID                 string    `gorm:"column:id;primaryKey" json:"id"`
-	UserID             string    `gorm:"column:userId;uniqueIndex:OAuthClientApproval_userId_clientId_key;not null" json:"userId"`
-	ClientID           string    `gorm:"column:clientId;uniqueIndex:OAuthClientApproval_userId_clientId_key;index:OAuthClientApproval_clientId_idx;not null" json:"clientId"`
+	UserID             string    `gorm:"column:userId;uniqueIndex:OAuthClientApproval_userId_clientId_key,priority:1;not null" json:"userId"`
+	ClientID           string    `gorm:"column:clientId;uniqueIndex:OAuthClientApproval_userId_clientId_key,priority:2;index:OAuthClientApproval_clientId_idx;not null" json:"clientId"`
 	ApprovedAt         DateTime  `gorm:"column:approvedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"approvedAt"`
 	RevokedAt          *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	ClientMetadataHash *string   `gorm:"column:clientMetadataHash" json:"clientMetadataHash"`
@@ -1893,9 +1893,9 @@ type DocumentRedactionJob struct {
 	ID                string              `gorm:"column:id;primaryKey" json:"id"`
 	DocumentID        string              `gorm:"column:documentId;index:DocumentRedactionJob_documentId_idx;not null" json:"documentId"`
 	DocumentVersionID string              `gorm:"column:documentVersionId;index:DocumentRedactionJob_documentVersionId_idx;not null" json:"documentVersionId"`
-	TeamID            string              `gorm:"column:teamId;index:DocumentRedactionJob_teamId_idx;index:DocumentRedactionJob_teamId_status_idx;not null" json:"teamId"`
+	TeamID            string              `gorm:"column:teamId;index:DocumentRedactionJob_teamId_idx;index:DocumentRedactionJob_teamId_status_idx,priority:1;not null" json:"teamId"`
 	CreatedByID       string              `gorm:"column:createdById;not null" json:"createdById"`
-	Status            *string             `gorm:"column:status;index:DocumentRedactionJob_teamId_status_idx;default:'PENDING';not null" json:"status"`
+	Status            *string             `gorm:"column:status;index:DocumentRedactionJob_teamId_status_idx,priority:2;default:'PENDING';not null" json:"status"`
 	CustomTerms       ScalarList[string]  `gorm:"column:customTerms;type:text[]" json:"customTerms"`
 	Reasons           ScalarList[string]  `gorm:"column:reasons;type:text[]" json:"reasons"`
 	ResultVersionID   *string             `gorm:"column:resultVersionId" json:"resultVersionId"`
@@ -1939,8 +1939,8 @@ func (*DocumentRedactionJob) BeforeUpdate(tx *gorm.DB) error {
 
 type DocumentRedaction struct {
 	ID          string                `gorm:"column:id;primaryKey" json:"id"`
-	JobID       string                `gorm:"column:jobId;index:DocumentRedaction_jobId_idx;index:DocumentRedaction_jobId_pageNumber_idx;index:DocumentRedaction_jobId_status_idx;not null" json:"jobId"`
-	PageNumber  int                   `gorm:"column:pageNumber;index:DocumentRedaction_jobId_pageNumber_idx;size:32;not null" json:"pageNumber"`
+	JobID       string                `gorm:"column:jobId;index:DocumentRedaction_jobId_idx;index:DocumentRedaction_jobId_pageNumber_idx,priority:1;index:DocumentRedaction_jobId_status_idx,priority:1;not null" json:"jobId"`
+	PageNumber  int                   `gorm:"column:pageNumber;index:DocumentRedaction_jobId_pageNumber_idx,priority:2;size:32;not null" json:"pageNumber"`
 	X           float64               `gorm:"column:x;type:double precision;not null" json:"x"`
 	Y           float64               `gorm:"column:y;type:double precision;not null" json:"y"`
 	Width       float64               `gorm:"column:width;type:double precision;not null" json:"width"`
@@ -1950,7 +1950,7 @@ type DocumentRedaction struct {
 	Confidence  *string               `gorm:"column:confidence" json:"confidence"`
 	Reason      *string               `gorm:"column:reason" json:"reason"`
 	Source      *string               `gorm:"column:source;default:'AI';not null" json:"source"`
-	Status      *string               `gorm:"column:status;index:DocumentRedaction_jobId_status_idx;default:'PENDING';not null" json:"status"`
+	Status      *string               `gorm:"column:status;index:DocumentRedaction_jobId_status_idx,priority:2;default:'PENDING';not null" json:"status"`
 	CreatedAt   DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime              `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Job         *DocumentRedactionJob `gorm:"foreignKey:JobID;belongsTo"`
@@ -1992,8 +1992,8 @@ type ReferralInvite struct {
 	// * nullable teamId every personal invite is distinct to Postgres, so the two
 	// * keys guarded different scopes and a member could not invite a company both
 	// * for their fund and for themselves.
-	ScopeID      string   `gorm:"column:scopeId;uniqueIndex:ReferralInvite_scopeId_email_key;not null" json:"scopeId"`
-	Email        string   `gorm:"column:email;uniqueIndex:ReferralInvite_scopeId_email_key;not null" json:"email"`
+	ScopeID      string   `gorm:"column:scopeId;uniqueIndex:ReferralInvite_scopeId_email_key,priority:1;not null" json:"scopeId"`
+	Email        string   `gorm:"column:email;uniqueIndex:ReferralInvite_scopeId_email_key,priority:2;not null" json:"email"`
 	ReferralLink *string  `gorm:"column:referralLink" json:"referralLink"`
 	SentAt       DateTime `gorm:"column:sentAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"sentAt"`
 	User         *User    `gorm:"belongsTo"`
@@ -2019,8 +2019,8 @@ type Account struct {
 	ID                string  `gorm:"column:id;primaryKey" json:"id"`
 	UserID            string  `gorm:"column:userId;not null" json:"userId"`
 	Type              string  `gorm:"column:type;not null" json:"type"`
-	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	RefreshToken      *string `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token;type:text" json:"access_token"`
 	ExpiresAt         *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -2116,8 +2116,8 @@ func (m *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2" json:"token"`
 	Expires    DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
 }
 
@@ -2173,20 +2173,20 @@ func (*Domain) BeforeUpdate(tx *gorm.DB) error {
 type View struct {
 	ID                   string               `gorm:"column:id;primaryKey" json:"id"`
 	LinkID               string               `gorm:"column:linkId;index:View_linkId_idx;not null" json:"linkId"`
-	DocumentID           *string              `gorm:"column:documentId;index:View_documentId_idx;index:View_viewerId_documentId_idx;index:View_documentId_isArchived_idx;index:View_documentId_viewedAt_idx" json:"documentId"`
+	DocumentID           *string              `gorm:"column:documentId;index:View_documentId_idx;index:View_viewerId_documentId_idx,priority:2;index:View_documentId_isArchived_idx,priority:1;index:View_documentId_viewedAt_idx,priority:1" json:"documentId"`
 	DataroomID           *string              `gorm:"column:dataroomId;index:View_dataroomId_idx" json:"dataroomId"`
 	DataroomViewID       *string              `gorm:"column:dataroomViewId;index:View_dataroomViewId_idx" json:"dataroomViewId"`
 	ViewerEmail          *string              `gorm:"column:viewerEmail;index:View_viewerEmail_idx" json:"viewerEmail"`
 	ViewerName           *string              `gorm:"column:viewerName" json:"viewerName"`
 	Verified             bool                 `gorm:"column:verified;default:false;not null" json:"verified"`
-	ViewedAt             DateTime             `gorm:"column:viewedAt;index:View_viewedAt_idx;index:View_documentId_viewedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"viewedAt"`
+	ViewedAt             DateTime             `gorm:"column:viewedAt;index:View_viewedAt_idx,sort:desc;index:View_documentId_viewedAt_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"viewedAt"`
 	DownloadedAt         *DateTime            `gorm:"column:downloadedAt;type:timestamp(3)" json:"downloadedAt"`
 	DownloadType         *string              `gorm:"column:downloadType" json:"downloadType"`
 	DownloadMetadata     datatypes.JSON       `gorm:"column:downloadMetadata" json:"downloadMetadata"`
 	ViewType             string               `gorm:"column:viewType;default:'DOCUMENT_VIEW';not null" json:"viewType"`
-	ViewerID             *string              `gorm:"column:viewerId;index:View_viewerId_idx;index:View_viewerId_documentId_idx" json:"viewerId"`
+	ViewerID             *string              `gorm:"column:viewerId;index:View_viewerId_idx;index:View_viewerId_documentId_idx,priority:1" json:"viewerId"`
 	GroupID              *string              `gorm:"column:groupId;index:View_groupId_idx" json:"groupId"`
-	IsArchived           bool                 `gorm:"column:isArchived;index:View_documentId_isArchived_idx;default:false;not null" json:"isArchived"`
+	IsArchived           bool                 `gorm:"column:isArchived;index:View_documentId_isArchived_idx,priority:2;default:false;not null" json:"isArchived"`
 	TeamID               *string              `gorm:"column:teamId;index:View_teamId_idx" json:"teamId"`
 	Link                 *Link                `gorm:"belongsTo"`
 	Document             *Document            `gorm:"belongsTo"`
@@ -2223,12 +2223,12 @@ func (m *View) BeforeCreate(tx *gorm.DB) error {
 
 type Viewer struct {
 	ID                        string                       `gorm:"column:id;primaryKey" json:"id"`
-	Email                     string                       `gorm:"column:email;uniqueIndex:Viewer_teamId_email_key;not null" json:"email"`
+	Email                     string                       `gorm:"column:email;uniqueIndex:Viewer_teamId_email_key,priority:2;not null" json:"email"`
 	Verified                  bool                         `gorm:"column:verified;default:false;not null" json:"verified"`
 	InvitedAt                 *DateTime                    `gorm:"column:invitedAt;type:timestamp(3)" json:"invitedAt"`
 	NotificationPreferences   datatypes.JSON               `gorm:"column:notificationPreferences" json:"notificationPreferences"`
 	DataroomID                *string                      `gorm:"column:dataroomId;index:Viewer_dataroomId_idx" json:"dataroomId"`
-	TeamID                    string                       `gorm:"column:teamId;uniqueIndex:Viewer_teamId_email_key;index:Viewer_teamId_idx;not null" json:"teamId"`
+	TeamID                    string                       `gorm:"column:teamId;uniqueIndex:Viewer_teamId_email_key,priority:1;index:Viewer_teamId_idx;not null" json:"teamId"`
 	CreatedAt                 DateTime                     `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                 DateTime                     `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Dataroom                  *Dataroom                    `gorm:"belongsTo"`
@@ -2274,9 +2274,9 @@ func (*Viewer) BeforeUpdate(tx *gorm.DB) error {
 
 type Reaction struct {
 	ID         string   `gorm:"column:id;primaryKey" json:"id"`
-	ViewID     string   `gorm:"column:viewId;index:Reaction_viewId_idx;index:Reaction_viewId_type_idx;not null" json:"viewId"`
+	ViewID     string   `gorm:"column:viewId;index:Reaction_viewId_idx;index:Reaction_viewId_type_idx,priority:1;not null" json:"viewId"`
 	PageNumber int      `gorm:"column:pageNumber;size:32;not null" json:"pageNumber"`
-	Type       string   `gorm:"column:type;index:Reaction_viewId_type_idx;not null" json:"type"`
+	Type       string   `gorm:"column:type;index:Reaction_viewId_type_idx,priority:2;not null" json:"type"`
 	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	View       *View    `gorm:"belongsTo"`
 }
@@ -2297,9 +2297,9 @@ func (m *Reaction) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Invitation struct {
-	Email       string             `gorm:"column:email;uniqueIndex:Invitation_email_teamId_key;not null" json:"email"`
+	Email       string             `gorm:"column:email;uniqueIndex:Invitation_email_teamId_key,priority:1;not null" json:"email"`
 	Expires     DateTime           `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
-	TeamID      string             `gorm:"column:teamId;uniqueIndex:Invitation_email_teamId_key;not null" json:"teamId"`
+	TeamID      string             `gorm:"column:teamId;uniqueIndex:Invitation_email_teamId_key,priority:2;not null" json:"teamId"`
 	CreatedAt   DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Token       string             `gorm:"column:token;primaryKey;uniqueIndex:Invitation_token_key" json:"token"`
 	Role        string             `gorm:"column:role;default:'MEMBER';not null" json:"role"`
@@ -2356,7 +2356,7 @@ type Chat struct {
 	UserID        *string       `gorm:"column:userId;index:Chat_userId_idx" json:"userId"`
 	ViewerID      *string       `gorm:"column:viewerId;index:Chat_viewerId_idx" json:"viewerId"`
 	VectorStoreID *string       `gorm:"column:vectorStoreId" json:"vectorStoreId"`
-	CreatedAt     DateTime      `gorm:"column:createdAt;index:Chat_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt     DateTime      `gorm:"column:createdAt;index:Chat_createdAt_idx,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	LastMessageAt *DateTime     `gorm:"column:lastMessageAt;type:timestamp(3)" json:"lastMessageAt"`
 	Team          *Team         `gorm:"belongsTo"`
@@ -2397,11 +2397,11 @@ func (*Chat) BeforeUpdate(tx *gorm.DB) error {
 
 type ChatMessage struct {
 	ID        string         `gorm:"column:id;primaryKey" json:"id"`
-	ChatID    string         `gorm:"column:chatId;index:ChatMessage_chatId_idx;index:ChatMessage_chatId_createdAt_idx;not null" json:"chatId"`
+	ChatID    string         `gorm:"column:chatId;index:ChatMessage_chatId_idx;index:ChatMessage_chatId_createdAt_idx,priority:1;not null" json:"chatId"`
 	Role      string         `gorm:"column:role;not null" json:"role"`
 	Content   string         `gorm:"column:content;type:text;not null" json:"content"`
 	Metadata  datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	CreatedAt DateTime       `gorm:"column:createdAt;index:ChatMessage_chatId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime       `gorm:"column:createdAt;index:ChatMessage_chatId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Chat      *Chat          `gorm:"belongsTo"`
 }
 
@@ -2719,8 +2719,8 @@ func (*Webhook) BeforeUpdate(tx *gorm.DB) error {
 type YearInReview struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
 	TeamID        string         `gorm:"column:teamId;index:YearInReview_teamId_idx;not null" json:"teamId"`
-	Status        *string        `gorm:"column:status;index:YearInReview_status_attempts_idx;default:'pending';not null" json:"status"`
-	Attempts      int            `gorm:"column:attempts;index:YearInReview_status_attempts_idx;size:32;default:0;not null" json:"attempts"`
+	Status        *string        `gorm:"column:status;index:YearInReview_status_attempts_idx,priority:1;default:'pending';not null" json:"status"`
+	Attempts      int            `gorm:"column:attempts;index:YearInReview_status_attempts_idx,priority:2;size:32;default:0;not null" json:"attempts"`
 	LastAttempted *DateTime      `gorm:"column:lastAttempted;type:timestamp(3)" json:"lastAttempted"`
 	Error         *string        `gorm:"column:error" json:"error"`
 	Stats         datatypes.JSON `gorm:"column:stats;not null" json:"stats"`
@@ -2756,10 +2756,10 @@ func (*YearInReview) BeforeUpdate(tx *gorm.DB) error {
 
 type Tag struct {
 	ID          string    `gorm:"column:id;primaryKey;index:Tag_id_idx" json:"id"`
-	Name        string    `gorm:"column:name;uniqueIndex:Tag_teamId_name_key;index:Tag_name_idx;not null" json:"name"`
+	Name        string    `gorm:"column:name;uniqueIndex:Tag_teamId_name_key,priority:2;index:Tag_name_idx;not null" json:"name"`
 	Color       string    `gorm:"column:color;not null" json:"color"`
 	Description *string   `gorm:"column:description" json:"description"`
-	TeamID      string    `gorm:"column:teamId;uniqueIndex:Tag_teamId_name_key;index:Tag_teamId_idx;not null" json:"teamId"`
+	TeamID      string    `gorm:"column:teamId;uniqueIndex:Tag_teamId_name_key,priority:1;index:Tag_teamId_idx;not null" json:"teamId"`
 	CreatedBy   *string   `gorm:"column:createdBy" json:"createdBy"`
 	CreatedAt   DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -2795,11 +2795,11 @@ func (*Tag) BeforeUpdate(tx *gorm.DB) error {
 
 type TagItem struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	TagID      string    `gorm:"column:tagId;index:TagItem_tagId_linkId_idx;index:TagItem_tagId_documentId_idx;index:TagItem_tagId_dataroomId_idx;not null" json:"tagId"`
+	TagID      string    `gorm:"column:tagId;index:TagItem_tagId_linkId_idx,priority:1;index:TagItem_tagId_documentId_idx,priority:1;index:TagItem_tagId_dataroomId_idx,priority:1;not null" json:"tagId"`
 	ItemType   string    `gorm:"column:itemType;not null" json:"itemType"`
-	LinkID     *string   `gorm:"column:linkId;index:TagItem_tagId_linkId_idx" json:"linkId"`
-	DocumentID *string   `gorm:"column:documentId;index:TagItem_tagId_documentId_idx" json:"documentId"`
-	DataroomID *string   `gorm:"column:dataroomId;index:TagItem_tagId_dataroomId_idx" json:"dataroomId"`
+	LinkID     *string   `gorm:"column:linkId;index:TagItem_tagId_linkId_idx,priority:2" json:"linkId"`
+	DocumentID *string   `gorm:"column:documentId;index:TagItem_tagId_documentId_idx,priority:2" json:"documentId"`
+	DataroomID *string   `gorm:"column:dataroomId;index:TagItem_tagId_dataroomId_idx,priority:2" json:"dataroomId"`
 	TaggedBy   *string   `gorm:"column:taggedBy" json:"taggedBy"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
@@ -3046,9 +3046,9 @@ func (*Workflow) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowStep struct {
 	ID            string            `gorm:"column:id;primaryKey" json:"id"`
-	WorkflowID    string            `gorm:"column:workflowId;uniqueIndex:WorkflowStep_workflowId_stepOrder_key;index:WorkflowStep_workflowId_idx;not null" json:"workflowId"`
+	WorkflowID    string            `gorm:"column:workflowId;uniqueIndex:WorkflowStep_workflowId_stepOrder_key,priority:1;index:WorkflowStep_workflowId_idx;not null" json:"workflowId"`
 	Name          string            `gorm:"column:name;not null" json:"name"`
-	StepOrder     int               `gorm:"column:stepOrder;uniqueIndex:WorkflowStep_workflowId_stepOrder_key;size:32;not null" json:"stepOrder"`
+	StepOrder     int               `gorm:"column:stepOrder;uniqueIndex:WorkflowStep_workflowId_stepOrder_key,priority:2;size:32;not null" json:"stepOrder"`
 	StepType      string            `gorm:"column:stepType;default:'ROUTER';not null" json:"stepType"`
 	Conditions    datatypes.JSON    `gorm:"column:conditions;not null" json:"conditions"`
 	Actions       datatypes.JSON    `gorm:"column:actions;not null" json:"actions"`
@@ -3086,11 +3086,11 @@ func (*WorkflowStep) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowExecution struct {
 	ID           string            `gorm:"column:id;primaryKey" json:"id"`
-	WorkflowID   string            `gorm:"column:workflowId;index:WorkflowExecution_workflowId_startedAt_idx;not null" json:"workflowId"`
+	WorkflowID   string            `gorm:"column:workflowId;index:WorkflowExecution_workflowId_startedAt_idx,priority:1;not null" json:"workflowId"`
 	VisitorEmail *string           `gorm:"column:visitorEmail;index:WorkflowExecution_visitorEmail_idx" json:"visitorEmail"`
 	VisitorIP    *string           `gorm:"column:visitorIp" json:"visitorIp"`
 	Status       string            `gorm:"column:status;index:WorkflowExecution_status_idx;not null" json:"status"`
-	StartedAt    DateTime          `gorm:"column:startedAt;index:WorkflowExecution_workflowId_startedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
+	StartedAt    DateTime          `gorm:"column:startedAt;index:WorkflowExecution_workflowId_startedAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
 	CompletedAt  *DateTime         `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
 	Result       datatypes.JSON    `gorm:"column:result" json:"result"`
 	Metadata     datatypes.JSON    `gorm:"column:metadata" json:"metadata"`

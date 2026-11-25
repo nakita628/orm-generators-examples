@@ -7,20 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(column_name = "emailVerified", column_type = "custom(\"datetime(3)\")")]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub image: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub updated_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub stripe_customer_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub stripe_subscription_id: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub stripe_price_id: Option<String>,
+    #[sea_orm(column_type = "custom(\"datetime(3)\")")]
     pub stripe_current_period_end: Option<DateTime>,
 }
 

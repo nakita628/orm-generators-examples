@@ -8,29 +8,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthClient")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub kind: OAuthClientKind,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "metadataUrl")]
+    #[sea_orm(column_name = "metadataUrl", column_type = "Text")]
     pub metadata_url: Option<String>,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
-    #[sea_orm(column_name = "selfReportedName")]
+    #[sea_orm(column_name = "selfReportedName", column_type = "Text")]
     pub self_reported_name: Option<String>,
-    #[sea_orm(column_name = "redirectUris")]
+    #[sea_orm(
+        column_name = "redirectUris",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub redirect_uris: Vec<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "dedupeKey")]
+    #[sea_orm(column_name = "dedupeKey", column_type = "Text")]
     pub dedupe_key: Option<String>,
-    #[sea_orm(column_name = "metadataExpiresAt")]
+    #[sea_orm(
+        column_name = "metadataExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub metadata_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

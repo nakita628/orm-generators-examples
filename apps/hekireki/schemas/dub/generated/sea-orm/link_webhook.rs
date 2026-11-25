@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LinkWebhook")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "String(StringLen::N(191))")]
     pub link_id: String,
-    #[sea_orm(column_name = "webhookId")]
+    #[sea_orm(column_name = "webhookId", column_type = "String(StringLen::N(191))")]
     pub webhook_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
 }
 
@@ -23,7 +28,8 @@ pub enum Relation {
         from = "Column::LinkId",
         to = "super::link::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkWebhook_linkId_fkey"
     )]
     Link,
     #[sea_orm(
@@ -31,7 +37,8 @@ pub enum Relation {
         from = "Column::WebhookId",
         to = "super::webhook::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LinkWebhook_webhookId_fkey"
     )]
     Webhook,
 }

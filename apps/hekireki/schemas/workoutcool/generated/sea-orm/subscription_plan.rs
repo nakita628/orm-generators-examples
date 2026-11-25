@@ -7,22 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "subscription_plans")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "priceMonthly", column_type = "Decimal(Some((10, 2)))")]
     pub price_monthly: Option<Decimal>,
     #[sea_orm(column_name = "priceYearly", column_type = "Decimal(Some((10, 2)))")]
     pub price_yearly: Option<Decimal>,
-    #[sea_orm(default_value = "EUR")]
+    #[sea_orm(column_type = "Text", default_value = "EUR")]
     pub currency: String,
-    #[sea_orm(default_value = "month")]
+    #[sea_orm(column_type = "Text", default_value = "month")]
     pub interval: String,
     #[sea_orm(column_name = "isActive", default_value = true)]
     pub is_active: bool,
-    #[sea_orm(column_name = "availableRegions")]
+    #[sea_orm(
+        column_name = "availableRegions",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub available_regions: Vec<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -7,22 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IntegrationDeployment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// For example Vercel
-    #[sea_orm(column_name = "integrationName")]
+    #[sea_orm(column_name = "integrationName", column_type = "Text")]
     pub integration_name: String,
     /// External ID
-    #[sea_orm(column_name = "integrationDeploymentId")]
+    #[sea_orm(column_name = "integrationDeploymentId", column_type = "Text")]
     pub integration_deployment_id: String,
-    #[sea_orm(column_name = "commitSHA")]
+    #[sea_orm(column_name = "commitSHA", column_type = "Text")]
     pub commit_sha: String,
-    #[sea_orm(column_name = "deploymentId")]
+    #[sea_orm(column_name = "deploymentId", column_type = "Text")]
     pub deployment_id: Option<String>,
     /// External deployment status
+    #[sea_orm(column_type = "Text")]
     pub status: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,7 +39,8 @@ pub enum Relation {
         from = "Column::DeploymentId",
         to = "super::worker_deployment::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "IntegrationDeployment_deploymentId_fkey"
     )]
     WorkerDeployment,
 }

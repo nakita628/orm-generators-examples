@@ -7,27 +7,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BatchEvaluation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "experimentId")]
+    #[sea_orm(column_name = "experimentId", column_type = "Text")]
     pub experiment_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub data: Json,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     pub score: f64,
+    #[sea_orm(column_type = "Text")]
     pub label: Option<String>,
     pub passed: bool,
+    #[sea_orm(column_type = "Text")]
     pub details: String,
     pub cost: f64,
-    #[sea_orm(column_name = "datasetSlug")]
+    #[sea_orm(column_name = "datasetSlug", column_type = "Text")]
     pub dataset_slug: String,
-    #[sea_orm(column_name = "datasetId")]
+    #[sea_orm(column_name = "datasetId", column_type = "Text")]
     pub dataset_id: String,
+    #[sea_orm(column_type = "Text")]
     pub evaluation: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -36,19 +49,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::experiment::Entity",
         from = "Column::ExperimentId",
-        to = "super::experiment::Column::Id"
+        to = "super::experiment::Column::Id",
+        fk_name = "BatchEvaluation_experimentId_fkey"
     )]
     Experiment,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "BatchEvaluation_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::dataset::Entity",
         from = "Column::DatasetId",
-        to = "super::dataset::Column::Id"
+        to = "super::dataset::Column::Id",
+        fk_name = "BatchEvaluation_datasetId_fkey"
     )]
     Dataset,
 }

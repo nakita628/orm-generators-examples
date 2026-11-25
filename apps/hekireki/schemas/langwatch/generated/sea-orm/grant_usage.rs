@@ -7,19 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GrantUsage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "grantId")]
+    #[sea_orm(column_name = "grantId", column_type = "Text")]
     pub grant_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     #[sea_orm(column_name = "viewCount", default_value = 0)]
     pub view_count: i32,
-    #[sea_orm(column_name = "lastViewedAt")]
+    #[sea_orm(column_name = "lastViewedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_viewed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

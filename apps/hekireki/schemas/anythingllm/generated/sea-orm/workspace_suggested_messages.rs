@@ -11,11 +11,16 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "workspaceId")]
     pub workspace_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub heading: String,
+    #[sea_orm(column_type = "Text")]
     pub message: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -25,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_suggested_messages_workspaceId_fkey"
     )]
     Workspace,
 }

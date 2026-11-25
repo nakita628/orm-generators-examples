@@ -10,30 +10,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskSchedule")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = "IMPERATIVE")]
     pub r#type: ScheduleType,
     /// users see this as `id`. They start with schedule_
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
     /// a reference to a task (not a foreign key because it's across versions)
-    #[sea_orm(column_name = "taskIdentifier")]
+    #[sea_orm(column_name = "taskIdentifier", column_type = "Text")]
     pub task_identifier: String,
     /// can be provided and we won't create another with the same key
-    #[sea_orm(column_name = "deduplicationKey")]
+    #[sea_orm(column_name = "deduplicationKey", column_type = "Text")]
     pub deduplication_key: String,
     #[sea_orm(column_name = "userProvidedDeduplicationKey", default_value = false)]
     pub user_provided_deduplication_key: bool,
     /// the CRON pattern
-    #[sea_orm(column_name = "generatorExpression")]
+    #[sea_orm(column_name = "generatorExpression", column_type = "Text")]
     pub generator_expression: String,
-    #[sea_orm(column_name = "generatorDescription", default_value = "")]
+    #[sea_orm(
+        column_name = "generatorDescription",
+        column_type = "Text",
+        default_value = ""
+    )]
     pub generator_description: String,
     #[sea_orm(column_name = "generatorType", default_value = "CRON")]
     pub generator_type: ScheduleGeneratorType,
     /// These are IANA format string, or the default "UTC". E.g. "America/New_York"
-    #[sea_orm(default_value = "UTC")]
+    #[sea_orm(column_type = "Text", default_value = "UTC")]
     pub timezone: String,
     #[sea_orm(column_name = "windowDurationSeconds")]
     pub window_duration_seconds: Option<i32>,
@@ -44,16 +49,23 @@ pub struct Model {
     #[sea_orm(column_name = "minimumWindowDurationSeconds")]
     pub minimum_window_duration_seconds: Option<i32>,
     /// Can be provided by the user then accessed inside a run
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: Option<String>,
     /// @deprecated stop writing 2026-04-30; reads moved out of code (UI now derives from cron's previous slot). Drop in follow-up.
-    #[sea_orm(column_name = "lastRunTriggeredAt")]
+    #[sea_orm(
+        column_name = "lastRunTriggeredAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_run_triggered_at: Option<DateTime>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = true)]
     pub active: bool,
@@ -66,7 +78,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskSchedule_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::task_schedule_instance::Entity")]

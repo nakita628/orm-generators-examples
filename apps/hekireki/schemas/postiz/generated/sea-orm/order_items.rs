@@ -6,10 +6,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrderItems")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "orderId")]
+    #[sea_orm(column_name = "orderId", column_type = "Text")]
     pub order_id: String,
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: String,
     pub quantity: i32,
     pub price: i32,
@@ -20,13 +21,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
-        to = "super::integration::Column::Id"
+        to = "super::integration::Column::Id",
+        fk_name = "OrderItems_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::orders::Entity",
         from = "Column::OrderId",
-        to = "super::orders::Column::Id"
+        to = "super::orders::Column::Id",
+        fk_name = "OrderItems_orderId_fkey"
     )]
     Order,
 }

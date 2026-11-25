@@ -18,10 +18,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BookingModelRequest")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "bookingId")]
+    #[sea_orm(column_name = "bookingId", column_type = "Text")]
     pub booking_id: String,
-    #[sea_orm(column_name = "assetModelId")]
+    #[sea_orm(column_name = "assetModelId", column_type = "Text")]
     pub asset_model_id: String,
     /// Total units originally reserved. Mutated only by explicit
     /// operator edits (upsert) — never decremented on materialisation.
@@ -53,11 +54,15 @@ pub struct Model {
     /// `quantity` (the claim in `materializeModelRequestForAsset` is a single
     /// statement guarded by `WHERE "fulfilledQuantity" < "quantity"`; upsert
     /// rejects a shrink below it), so any decrement re-opens the row.
-    #[sea_orm(column_name = "fulfilledAt")]
+    #[sea_orm(column_name = "fulfilledAt", column_type = "custom(\"timestamp(3)\")")]
     pub fulfilled_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -68,7 +73,8 @@ pub enum Relation {
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingModelRequest_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
@@ -76,7 +82,8 @@ pub enum Relation {
         from = "Column::AssetModelId",
         to = "super::asset_model::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingModelRequest_assetModelId_fkey"
     )]
     AssetModel,
 }

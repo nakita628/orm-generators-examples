@@ -10,18 +10,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "polls")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deadline: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub location: Option<String>,
     /// What the organizer asked for: a provider to mint a link with at
     /// finalize ("zoom" | "meet" | "teams" | "webex"), or a link they pasted
     /// themselves.
+    #[sea_orm(column_type = "JsonBinary")]
     pub conferencing: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub time_zone: Option<String>,
     #[sea_orm(default_value = "open")]
     pub status: PollStatus,
@@ -30,9 +43,12 @@ pub struct Model {
     pub kind: PollKind,
     #[sea_orm(default_value = false)]
     pub deleted: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub event_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub scheduled_event_id: Option<String>,
     #[sea_orm(default_value = false)]
     pub hide_participants: bool,
@@ -50,6 +66,7 @@ pub struct Model {
     pub allow_tentative_votes: bool,
     #[sea_orm(default_value = false)]
     pub muted: bool,
+    #[sea_orm(column_type = "Text")]
     pub space_id: Option<String>,
 }
 
@@ -59,21 +76,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "polls_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::scheduled_event::Entity",
         from = "Column::ScheduledEventId",
         to = "super::scheduled_event::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "polls_scheduled_event_id_fkey"
     )]
     ScheduledEvent,
     #[sea_orm(
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "polls_space_id_fkey"
     )]
     Space,
     #[sea_orm(has_many = "super::option::Entity")]

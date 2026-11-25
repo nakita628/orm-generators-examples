@@ -8,22 +8,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ScheduledJobRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub job_name: String,
+    #[sea_orm(column_type = "Text")]
     pub lock_group: String,
+    #[sea_orm(column_type = "Text")]
     pub schedule: String,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub scheduled_for: DateTimeWithTimeZone,
     #[sea_orm(default_value = "PENDING")]
     pub status: ScheduledJobRunStatus,
+    #[sea_orm(column_type = "Text")]
     pub claimed_by: Option<String>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub claimed_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub lease_expires_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub finished_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 

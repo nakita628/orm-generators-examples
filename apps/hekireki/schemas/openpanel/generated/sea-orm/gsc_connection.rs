@@ -7,29 +7,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "gsc_connections")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "siteUrl", default_value = "")]
+    #[sea_orm(column_name = "siteUrl", column_type = "Text", default_value = "")]
     pub site_url: String,
-    #[sea_orm(column_name = "accessToken")]
+    #[sea_orm(column_name = "accessToken", column_type = "Text")]
     pub access_token: String,
-    #[sea_orm(column_name = "refreshToken")]
+    #[sea_orm(column_name = "refreshToken", column_type = "Text")]
     pub refresh_token: String,
-    #[sea_orm(column_name = "accessTokenExpiresAt")]
+    #[sea_orm(
+        column_name = "accessTokenExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub access_token_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastSyncedAt")]
+    #[sea_orm(column_name = "lastSyncedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_synced_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastSyncStatus")]
+    #[sea_orm(column_name = "lastSyncStatus", column_type = "Text")]
     pub last_sync_status: Option<String>,
-    #[sea_orm(column_name = "lastSyncError")]
+    #[sea_orm(column_name = "lastSyncError", column_type = "Text")]
     pub last_sync_error: Option<String>,
-    #[sea_orm(column_name = "backfillStatus")]
+    #[sea_orm(column_name = "backfillStatus", column_type = "Text")]
     pub backfill_status: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -39,7 +51,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gsc_connections_projectId_fkey"
     )]
     Project,
 }

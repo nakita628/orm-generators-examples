@@ -10,16 +10,23 @@ pub struct Model {
     pub id: i32,
     /// @zod.string.min(1)
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     /// @zod.string.min(1)
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: String,
     /// @zod.import(["import { serviceAccountKeySchema } from '../../zod-utils'"]).custom.use(serviceAccountKeySchema)
-    #[sea_orm(column_name = "defaultServiceAccountKey")]
+    #[sea_orm(column_name = "defaultServiceAccountKey", column_type = "JsonBinary")]
     pub default_service_account_key: Json,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = false)]
     pub enabled: bool,

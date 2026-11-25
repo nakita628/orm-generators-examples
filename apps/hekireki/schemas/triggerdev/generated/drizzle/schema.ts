@@ -675,7 +675,7 @@ export const organizationAccessToken = pgTable(
     index('OrganizationAccessToken_organizationId_type_createdAt_idx').on(
       table.organizationId,
       table.type,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     foreignKey({
       name: 'OrganizationAccessToken_organizationId_fkey',
@@ -985,13 +985,13 @@ export const apiKeys = pgTable(
     index('api_keys_runtime_environment_id_revoked_at_created_at_idx').on(
       table.runtimeEnvironmentId,
       table.revokedAt,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     index('api_keys_env_issued_by_revoked_at_created_at_idx').on(
       table.runtimeEnvironmentId,
       table.issuedBy,
       table.revokedAt,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     foreignKey({
       name: 'api_keys_runtime_environment_id_fkey',
@@ -1179,7 +1179,7 @@ export const secretStore = pgTable(
   },
   (table) => [
     uniqueIndex('SecretStore_key_key').on(table.key),
-    index('SecretStore_key_idx').on(table.key),
+    index('SecretStore_key_idx').on(table.key.op('text_pattern_ops')),
   ],
 )
 
@@ -1257,7 +1257,7 @@ export const backgroundWorker = pgTable(
     index('BackgroundWorker_runtimeEnvironmentId_idx').on(table.runtimeEnvironmentId),
     index('BackgroundWorker_runtimeEnvironmentId_createdAt_idx').on(
       table.runtimeEnvironmentId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     uniqueIndex('BackgroundWorker_projectId_runtimeEnvironmentId_version_key').on(
       table.projectId,
@@ -1571,7 +1571,10 @@ export const webhookEndpoint = pgTable(
       table.runtimeEnvironmentId,
       table.source,
     ),
-    index('WebhookEndpoint_projectId_createdAt_idx').on(table.projectId, table.createdAt),
+    index('WebhookEndpoint_projectId_createdAt_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     uniqueIndex('WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key').on(
       table.runtimeEnvironmentId,
       table.declaredId,
@@ -1622,7 +1625,7 @@ export const webhookDelivery = pgTable(
     }),
     index('WebhookDelivery_webhookEndpointId_createdAt_idx').on(
       table.webhookEndpointId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
   ],
 )
@@ -1703,7 +1706,7 @@ export const alertEvent = pgTable(
   },
   (table) => [
     primaryKey({ name: 'AlertEvent_pkey', columns: [table.id, table.at] }),
-    index('AlertEvent_alertId_at_idx').on(table.alertId, table.at),
+    index('AlertEvent_alertId_at_idx').on(table.alertId, table.at.desc().nullsFirst()),
   ],
 )
 
@@ -1793,7 +1796,7 @@ export const playgroundConversation = pgTable(
     index('PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx').on(
       table.runtimeEnvironmentId,
       table.agentSlug,
-      table.updatedAt,
+      table.updatedAt.desc().nullsFirst(),
     ),
     index('PlaygroundConversation_userId_runtimeEnvironmentId_idx').on(
       table.userId,
@@ -2104,13 +2107,13 @@ export const taskRun = pgTable(
     index('TaskRun_parentTaskRunId_idx').on(table.parentTaskRunId),
     index('TaskRun_spanId_idx').on(table.spanId),
     index('TaskRun_parentSpanId_idx').on(table.parentSpanId),
-    index('TaskRun_runTags_idx').on(table.runTags),
+    index('TaskRun_runTags_idx').using('gin', table.runTags.op('array_ops')),
     index('TaskRun_runtimeEnvironmentId_batchId_idx').on(table.runtimeEnvironmentId, table.batchId),
     index('TaskRun_runtimeEnvironmentId_createdAt_idx').on(
       table.runtimeEnvironmentId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
-    index('TaskRun_createdAt_idx').on(table.createdAt),
+    index('TaskRun_createdAt_idx').using('brin', table.createdAt),
     uniqueIndex('TaskRun_oneTimeUseToken_key').on(table.oneTimeUseToken),
     uniqueIndex('TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key').on(
       table.runtimeEnvironmentId,
@@ -2209,7 +2212,7 @@ export const taskRunTemplate = pgTable(
       table.projectId,
       table.taskSlug,
       table.triggerSource,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
   ],
 )
@@ -2269,7 +2272,7 @@ export const taskRunExecutionSnapshot = pgTable(
     index('TaskRunExecutionSnapshot_runId_isValid_createdAt_idx').on(
       table.runId,
       table.isValid,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     foreignKey({
       name: 'TaskRunExecutionSnapshot_runId_fkey',
@@ -2386,14 +2389,18 @@ export const waitpoint = pgTable(
     index('Waitpoint_environmentId_type_createdAt_idx').on(
       table.environmentId,
       table.type,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     index('Waitpoint_environmentId_type_status_idx').on(
       table.environmentId,
       table.type,
       table.status,
     ),
-    index('Waitpoint_environmentId_type_id_idx').on(table.environmentId, table.type, table.id),
+    index('Waitpoint_environmentId_type_id_idx').on(
+      table.environmentId,
+      table.type,
+      table.id.desc().nullsFirst(),
+    ),
     uniqueIndex('Waitpoint_environmentId_idempotencyKey_key').on(
       table.environmentId,
       table.idempotencyKey,
@@ -3105,11 +3112,14 @@ export const batchTaskRun = pgTable(
     uniqueIndex('BatchTaskRun_friendlyId_key').on(table.friendlyId),
     uniqueIndex('BatchTaskRun_checkpointEventId_key').on(table.checkpointEventId),
     index('BatchTaskRun_dependentTaskAttemptId_idx').on(table.dependentTaskAttemptId),
-    index('BatchTaskRun_runtimeEnvironmentId_id_idx').on(table.runtimeEnvironmentId, table.id),
+    index('BatchTaskRun_runtimeEnvironmentId_id_idx').on(
+      table.runtimeEnvironmentId,
+      table.id.desc().nullsFirst(),
+    ),
     index('BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx').on(
       table.runtimeEnvironmentId,
-      table.createdAt,
-      table.id,
+      table.createdAt.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
     uniqueIndex('BatchTaskRun_oneTimeUseToken_key').on(table.oneTimeUseToken),
     uniqueIndex('BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key').on(
@@ -3274,7 +3284,7 @@ export const environmentVariableValue = pgTable(
     index('EnvironmentVariableValue_valueReferenceId_idx').on(table.valueReferenceId),
     index('EnvironmentVariableValue_environmentId_updatedAt_variableId_idx').on(
       table.environmentId,
-      table.updatedAt,
+      table.updatedAt.desc().nullsFirst(),
       table.variableId,
     ),
     uniqueIndex('EnvironmentVariableValue_variableId_environmentId_key').on(
@@ -3667,7 +3677,10 @@ export const taskSchedule = pgTable(
   (table) => [
     uniqueIndex('TaskSchedule_friendlyId_key').on(table.friendlyId),
     index('TaskSchedule_projectId_idx').on(table.projectId),
-    index('TaskSchedule_projectId_createdAt_idx').on(table.projectId, table.createdAt),
+    index('TaskSchedule_projectId_createdAt_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     uniqueIndex('TaskSchedule_projectId_deduplicationKey_key').on(
       table.projectId,
       table.deduplicationKey,
@@ -4036,7 +4049,10 @@ export const bulkActionGroup = pgTable(
   },
   (table) => [
     uniqueIndex('BulkActionGroup_friendlyId_key').on(table.friendlyId),
-    index('BulkActionGroup_environmentId_createdAt_idx').on(table.environmentId, table.createdAt),
+    index('BulkActionGroup_environmentId_createdAt_idx').on(
+      table.environmentId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     index('BulkActionGroup_environmentId_type_dedupeKey_idx').on(
       table.environmentId,
       table.type,
@@ -4516,7 +4532,10 @@ export const customerQuery = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('CustomerQuery_organizationId_createdAt_idx').on(table.organizationId, table.createdAt),
+    index('CustomerQuery_organizationId_createdAt_idx').on(
+      table.organizationId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     index('CustomerQuery_createdAt_idx').on(table.createdAt),
     foreignKey({
       name: 'CustomerQuery_organizationId_fkey',
@@ -4608,7 +4627,10 @@ export const metricsDashboard = pgTable(
   },
   (table) => [
     uniqueIndex('MetricsDashboard_friendlyId_key').on(table.friendlyId),
-    index('MetricsDashboard_projectId_createdAt_idx').on(table.projectId, table.createdAt),
+    index('MetricsDashboard_projectId_createdAt_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     foreignKey({
       name: 'MetricsDashboard_organizationId_fkey',
       columns: [table.organizationId],

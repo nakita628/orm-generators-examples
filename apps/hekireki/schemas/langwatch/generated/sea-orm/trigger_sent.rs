@@ -7,23 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TriggerSent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "triggerId")]
+    #[sea_orm(column_name = "triggerId", column_type = "Text")]
     pub trigger_id: String,
-    #[sea_orm(column_name = "traceId")]
+    #[sea_orm(column_name = "traceId", column_type = "Text")]
     pub trace_id: Option<String>,
-    #[sea_orm(column_name = "customGraphId")]
+    #[sea_orm(column_name = "customGraphId", column_type = "Text")]
     pub custom_graph_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "resolvedAt")]
+    #[sea_orm(column_name = "resolvedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resolved_at: Option<DateTime>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "openIncidentKey")]
+    #[sea_orm(column_name = "openIncidentKey", column_type = "Text")]
     pub open_incident_key: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -33,19 +42,22 @@ pub enum Relation {
         belongs_to = "super::custom_graph::Entity",
         from = "Column::CustomGraphId",
         to = "super::custom_graph::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TriggerSent_customGraphId_fkey"
     )]
     CustomGraph,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "TriggerSent_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::trigger::Entity",
         from = "Column::TriggerId",
-        to = "super::trigger::Column::Id"
+        to = "super::trigger::Column::Id",
+        fk_name = "TriggerSent_triggerId_fkey"
     )]
     Trigger,
 }

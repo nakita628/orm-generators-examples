@@ -7,17 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Announcement")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
+    #[sea_orm(column_type = "Text")]
     pub link: Option<String>,
-    #[sea_orm(column_name = "linkText")]
+    #[sea_orm(column_name = "linkText", column_type = "Text")]
     pub link_text: Option<String>,
     #[sea_orm(default_value = false)]
     pub published: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

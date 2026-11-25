@@ -7,18 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OidcLoginGroup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "oidcProviderId")]
+    #[sea_orm(column_name = "oidcProviderId", column_type = "Text")]
     pub oidc_provider_id: String,
-    #[sea_orm(column_name = "groupValue")]
+    #[sea_orm(column_name = "groupValue", column_type = "Text")]
     pub group_value: Option<String>,
     #[sea_orm(column_name = "allowAllUsers", default_value = false)]
     pub allow_all_users: bool,
@@ -29,13 +38,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
-        to = "super::workspace::Column::Id"
+        to = "super::workspace::Column::Id",
+        fk_name = "OidcLoginGroup_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::oidc_provider::Entity",
         from = "Column::OidcProviderId",
-        to = "super::oidc_provider::Column::Id"
+        to = "super::oidc_provider::Column::Id",
+        fk_name = "OidcLoginGroup_oidcProviderId_fkey"
     )]
     OidcProvider,
 }

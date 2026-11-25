@@ -7,9 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ProxyWorkerHeartbeat")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub worker_id: String,
+    #[sea_orm(column_type = "Text")]
     pub hostname: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_heartbeat_at: DateTime,
 }
 

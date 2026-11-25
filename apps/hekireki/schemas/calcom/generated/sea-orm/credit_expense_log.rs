@@ -8,28 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CreditExpenseLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "creditBalanceId")]
+    #[sea_orm(column_name = "creditBalanceId", column_type = "Text")]
     pub credit_balance_id: String,
-    #[sea_orm(column_name = "bookingUid")]
+    #[sea_orm(column_name = "bookingUid", column_type = "Text")]
     pub booking_uid: Option<String>,
     pub credits: Option<i32>,
     #[sea_orm(column_name = "creditType")]
     pub credit_type: CreditType,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub date: DateTime,
-    #[sea_orm(column_name = "smsSid")]
+    #[sea_orm(column_name = "smsSid", column_type = "Text")]
     pub sms_sid: Option<String>,
     #[sea_orm(column_name = "smsSegments")]
     pub sms_segments: Option<i32>,
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
     #[sea_orm(column_name = "callDuration")]
     pub call_duration: Option<i32>,
     #[sea_orm(column_name = "creditFor")]
     pub credit_for: Option<CreditUsageType>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "externalRef")]
+    #[sea_orm(column_name = "externalRef", column_type = "Text")]
     pub external_ref: Option<String>,
 }
 
@@ -39,14 +42,16 @@ pub enum Relation {
         belongs_to = "super::credit_balance::Entity",
         from = "Column::CreditBalanceId",
         to = "super::credit_balance::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreditExpenseLog_creditBalanceId_fkey"
     )]
     CreditBalance,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingUid",
         to = "super::booking::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreditExpenseLog_bookingUid_fkey"
     )]
     Booking,
 }

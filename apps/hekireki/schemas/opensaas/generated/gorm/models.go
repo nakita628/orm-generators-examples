@@ -178,8 +178,8 @@ func (m *DailyStats) BeforeCreate(tx *gorm.DB) error {
 }
 
 type PageViewSource struct {
-	Name         string      `gorm:"column:name;primaryKey" json:"name"`
 	Date         DateTime    `gorm:"column:date;primaryKey;type:timestamp(3);default:CURRENT_TIMESTAMP" json:"date"`
+	Name         string      `gorm:"column:name;primaryKey" json:"name"`
 	DailyStatsID *int        `gorm:"column:dailyStatsId;size:32" json:"dailyStatsId"`
 	Visitors     int         `gorm:"column:visitors;size:32;not null" json:"visitors"`
 	DailyStats   *DailyStats `gorm:"belongsTo"`

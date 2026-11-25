@@ -18,13 +18,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::notes::Entity",
         from = "Column::NoteId",
-        to = "super::notes::Column::Id"
+        to = "super::notes::Column::Id",
+        fk_name = "tagsToNote_noteId_fkey"
     )]
     Note,
     #[sea_orm(
         belongs_to = "super::tag::Entity",
         from = "Column::TagId",
-        to = "super::tag::Column::Id"
+        to = "super::tag::Column::Id",
+        fk_name = "tagsToNote_tagId_fkey"
     )]
     Tag,
 }

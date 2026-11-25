@@ -9,18 +9,24 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub password_hash: Option<String>,
     #[sea_orm(default_value = 0)]
     pub is_verified: i32,
+    #[sea_orm(column_type = "Text")]
     pub verification_token: Option<String>,
     pub verification_token_expires_at: Option<i64>,
     #[sea_orm(default_value = 0)]
     pub verification_resend_count: i32,
+    #[sea_orm(column_type = "Text")]
     pub reset_password_token: Option<String>,
     pub reset_password_token_expires_at: Option<i64>,
+    #[sea_orm(column_type = "Text")]
     pub passkey_recovery_token: Option<String>,
     pub passkey_recovery_token_expires_at: Option<i64>,
+    #[sea_orm(column_type = "Text")]
     pub login_token: Option<String>,
     pub login_token_expires_at: Option<i64>,
     #[sea_orm(default_value = 0)]
@@ -29,6 +35,10 @@ pub struct Model {
     #[sea_orm(default_value = 0)]
     pub token_version: i32,
     pub terms_accepted_at: Option<i64>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(default_value = "104857600")]
     pub storage_quota_bytes: i64,

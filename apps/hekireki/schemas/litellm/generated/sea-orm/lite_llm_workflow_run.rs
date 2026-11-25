@@ -7,17 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_WorkflowRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub run_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub session_id: String,
+    #[sea_orm(column_type = "Text")]
     pub workflow_type: String,
-    #[sea_orm(default_value = "pending")]
+    #[sea_orm(column_type = "Text", default_value = "pending")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub input: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub output: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
 }
 

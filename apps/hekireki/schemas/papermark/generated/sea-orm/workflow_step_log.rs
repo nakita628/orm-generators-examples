@@ -7,20 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowStepLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "executionId")]
+    #[sea_orm(column_name = "executionId", column_type = "Text")]
     pub execution_id: String,
-    #[sea_orm(column_name = "workflowStepId")]
+    #[sea_orm(column_name = "workflowStepId", column_type = "Text")]
     pub workflow_step_id: String,
     #[sea_orm(column_name = "conditionsMatched")]
     pub conditions_matched: bool,
-    #[sea_orm(column_name = "conditionResults")]
+    #[sea_orm(column_name = "conditionResults", column_type = "JsonBinary")]
     pub condition_results: Option<Json>,
-    #[sea_orm(column_name = "actionsExecuted")]
+    #[sea_orm(column_name = "actionsExecuted", column_type = "JsonBinary")]
     pub actions_executed: Option<Json>,
-    #[sea_orm(column_name = "executedAt")]
+    #[sea_orm(
+        column_name = "executedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub executed_at: DateTime,
     pub duration: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
 }
 
@@ -30,14 +36,16 @@ pub enum Relation {
         belongs_to = "super::workflow_execution::Entity",
         from = "Column::ExecutionId",
         to = "super::workflow_execution::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowStepLog_executionId_fkey"
     )]
     Execution,
     #[sea_orm(
         belongs_to = "super::workflow_step::Entity",
         from = "Column::WorkflowStepId",
         to = "super::workflow_step::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowStepLog_workflowStepId_fkey"
     )]
     Step,
 }

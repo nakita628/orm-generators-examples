@@ -11,16 +11,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskQueue")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = "VIRTUAL")]
     pub r#type: TaskQueueType,
     #[sea_orm(default_value = "V1")]
     pub version: TaskQueueVersion,
-    #[sea_orm(column_name = "orderableName")]
+    #[sea_orm(column_name = "orderableName", column_type = "Text")]
     pub orderable_name: Option<String>,
     /// How the queue's concurrency was declared: V1 = legacy concurrencyLimit semantics
     /// (per key when keyed, whole queue otherwise), V2 = the explicit perKey/total shape.
@@ -30,18 +32,21 @@ pub struct Model {
     /// excluded from every queue-facing surface.
     #[sea_orm(default_value = "QUEUE")]
     pub role: TaskQueueRole,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
     /// Represents the current concurrency limit for the queue
     #[sea_orm(column_name = "concurrencyLimit")]
     pub concurrency_limit: Option<i32>,
     /// When the concurrency limit was overridden
-    #[sea_orm(column_name = "concurrencyLimitOverriddenAt")]
+    #[sea_orm(
+        column_name = "concurrencyLimitOverriddenAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub concurrency_limit_overridden_at: Option<DateTime>,
     /// Who overrode the concurrency limit (will be null if overridden via the API)
-    #[sea_orm(column_name = "concurrencyLimitOverriddenBy")]
+    #[sea_orm(column_name = "concurrencyLimitOverriddenBy", column_type = "Text")]
     pub concurrency_limit_overridden_by: Option<String>,
     /// If concurrencyLimit is overridden, this is the overridden value
     #[sea_orm(column_name = "concurrencyLimitBase")]
@@ -59,24 +64,34 @@ pub struct Model {
     #[sea_orm(column_name = "totalConcurrencyLimit")]
     pub total_concurrency_limit: Option<i32>,
     /// When the total concurrency limit was overridden
-    #[sea_orm(column_name = "totalConcurrencyLimitOverriddenAt")]
+    #[sea_orm(
+        column_name = "totalConcurrencyLimitOverriddenAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub total_concurrency_limit_overridden_at: Option<DateTime>,
     /// Who overrode the total concurrency limit (null when overridden via the API)
-    #[sea_orm(column_name = "totalConcurrencyLimitOverriddenBy")]
+    #[sea_orm(
+        column_name = "totalConcurrencyLimitOverriddenBy",
+        column_type = "Text"
+    )]
     pub total_concurrency_limit_overridden_by: Option<String>,
     /// If totalConcurrencyLimit is overridden, the declared value it reverts to on reset
     #[sea_orm(column_name = "totalConcurrencyLimitBase")]
     pub total_concurrency_limit_base: Option<i32>,
-    #[sea_orm(column_name = "rateLimit")]
+    #[sea_orm(column_name = "rateLimit", column_type = "JsonBinary")]
     pub rate_limit: Option<Json>,
     #[sea_orm(default_value = false)]
     pub paused: bool,
     /// Hidden from the dashboard queue list. Display-only: never read on trigger/dequeue paths.
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -87,7 +102,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskQueue_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -95,7 +111,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskQueue_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(has_many = "super::task_run_attempt::Entity")]

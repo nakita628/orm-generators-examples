@@ -7,10 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "sso_configs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub auth_provider: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub auth_config: Option<Json>,
 }
 

@@ -19,13 +19,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "TrackChallenge_challengeId_fkey"
     )]
     Challenge,
     #[sea_orm(
         belongs_to = "super::track::Entity",
         from = "Column::TrackId",
-        to = "super::track::Column::Id"
+        to = "super::track::Column::Id",
+        fk_name = "TrackChallenge_trackId_fkey"
     )]
     Track,
 }

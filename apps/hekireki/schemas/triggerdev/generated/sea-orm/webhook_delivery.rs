@@ -9,48 +9,54 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WebhookDelivery")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
-    #[sea_orm(column_name = "webhookEndpointId")]
+    #[sea_orm(column_name = "webhookEndpointId", column_type = "Text")]
     pub webhook_endpoint_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
     #[sea_orm(column_name = "environmentType")]
     pub environment_type: RuntimeEnvironmentType,
-    #[sea_orm(column_name = "externalDeliveryId")]
+    #[sea_orm(column_name = "externalDeliveryId", column_type = "Text")]
     pub external_delivery_id: String,
-    #[sea_orm(column_name = "idempotencyKey")]
+    #[sea_orm(column_name = "idempotencyKey", column_type = "Text")]
     pub idempotency_key: String,
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: Option<String>,
     #[sea_orm(default_value = "PENDING")]
     pub status: WebhookDeliveryStatus,
     /// Set from the x-trigger-test ingress header; marks console/test-send deliveries so the list can filter them.
     #[sea_orm(column_name = "isTest", default_value = false)]
     pub is_test: bool,
-    #[sea_orm(column_name = "parsedEvent")]
+    #[sea_orm(column_name = "parsedEvent", column_type = "JsonBinary")]
     pub parsed_event: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub headers: Option<Json>,
-    #[sea_orm(column_name = "rawBodyHash")]
+    #[sea_orm(column_name = "rawBodyHash", column_type = "Text")]
     pub raw_body_hash: Option<String>,
-    #[sea_orm(column_name = "errorMessage")]
+    #[sea_orm(column_name = "errorMessage", column_type = "Text")]
     pub error_message: Option<String>,
-    #[sea_orm(column_name = "filterReason")]
+    #[sea_orm(column_name = "filterReason", column_type = "Text")]
     pub filter_reason: Option<String>,
     /// Per-target results: WebhookDeliveryTargetResult[] ({ id, type, status, reason?, runId?, error? }).
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub targets: Json,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "processedAt")]
+    #[sea_orm(column_name = "processedAt", column_type = "custom(\"timestamp(3)\")")]
     pub processed_at: Option<DateTime>,
     /// Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id.
     #[sea_orm(primary_key, auto_increment = false)]

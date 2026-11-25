@@ -7,24 +7,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "accounts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub r#type: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub provider: String,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(
+        column_name = "providerAccountId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub provider_account_id: String,
     #[sea_orm(column_type = "Text")]
     pub refresh_token: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub access_token: Option<String>,
     pub expires_at: Option<i32>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub token_type: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub scope: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub id_token: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub session_state: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -34,7 +51,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "accounts_userId_fkey"
     )]
     User,
 }

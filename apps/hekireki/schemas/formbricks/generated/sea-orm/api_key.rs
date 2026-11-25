@@ -17,23 +17,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ApiKey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
-    #[sea_orm(column_name = "hashedKey")]
+    #[sea_orm(column_name = "hashedKey", column_type = "Text")]
     pub hashed_key: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "lookupHash")]
+    #[sea_orm(column_name = "lookupHash", column_type = "Text")]
     pub lookup_hash: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// [OrganizationAccess]
-    #[sea_orm(column_name = "organizationAccess", default_value = "{}")]
+    #[sea_orm(
+        column_name = "organizationAccess",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub organization_access: Json,
 }
 
@@ -43,7 +53,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ApiKey_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::api_key_workspace::Entity")]

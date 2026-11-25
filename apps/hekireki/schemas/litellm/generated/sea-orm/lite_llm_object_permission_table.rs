@@ -6,19 +6,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ObjectPermissionTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub object_permission_id: String,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub mcp_servers: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub mcp_access_groups: Vec<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub mcp_tool_permissions: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub vector_stores: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub agents: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub agent_access_groups: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub models: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub blocked_tools: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub mcp_toolsets: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub search_tools: Vec<String>,
     pub mcp_tool_search_enabled: Option<bool>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub skills: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub apps: Vec<String>,
 }
 

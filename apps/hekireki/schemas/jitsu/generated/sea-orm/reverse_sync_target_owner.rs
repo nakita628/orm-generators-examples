@@ -5,8 +5,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "reverse_sync_target_owner")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub target_hash: String,
+    #[sea_orm(column_type = "Text")]
     pub workspace_id: String,
+    #[sea_orm(column_type = "Text")]
     pub sync_id: String,
 }
 

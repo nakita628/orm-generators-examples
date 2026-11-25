@@ -10,21 +10,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(default_value = "Personal")]
+    #[sea_orm(column_type = "Text", default_value = "Personal")]
     pub name: String,
     #[sea_orm(default_value = "PERSONAL")]
     pub r#type: OrganizationType,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(default_value = "USD")]
     pub currency: Currency,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "imageId")]
+    #[sea_orm(column_name = "imageId", column_type = "Text")]
     pub image_id: Option<String>,
     #[sea_orm(column_name = "enabledSso", default_value = false)]
     pub enabled_sso: bool,
-    #[sea_orm(column_name = "ssoDetailsId")]
+    #[sea_orm(column_name = "ssoDetailsId", column_type = "Text")]
     pub sso_details_id: Option<String>,
     #[sea_orm(column_name = "selfServiceCanSeeCustody", default_value = false)]
     pub self_service_can_see_custody: bool,
@@ -38,21 +39,31 @@ pub struct Model {
     pub managers_can_edit_assets: bool,
     #[sea_orm(column_name = "barcodesEnabled", default_value = false)]
     pub barcodes_enabled: bool,
-    #[sea_orm(column_name = "barcodesEnabledAt")]
+    #[sea_orm(
+        column_name = "barcodesEnabledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub barcodes_enabled_at: Option<DateTime>,
     #[sea_orm(column_name = "usedBarcodeTrial", default_value = false)]
     pub used_barcode_trial: bool,
     #[sea_orm(column_name = "auditsEnabled", default_value = false)]
     pub audits_enabled: bool,
-    #[sea_orm(column_name = "auditsEnabledAt")]
+    #[sea_orm(
+        column_name = "auditsEnabledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub audits_enabled_at: Option<DateTime>,
     #[sea_orm(column_name = "usedAuditTrial", default_value = false)]
     pub used_audit_trial: bool,
     #[sea_orm(column_name = "workspaceDisabled", default_value = false)]
     pub workspace_disabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_name = "hasSequentialIdsMigrated", default_value = false)]
     pub has_sequential_ids_migrated: bool,
@@ -76,19 +87,22 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Organization_userId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::image::Entity",
         from = "Column::ImageId",
-        to = "super::image::Column::Id"
+        to = "super::image::Column::Id",
+        fk_name = "Organization_imageId_fkey"
     )]
     Image,
     #[sea_orm(
         belongs_to = "super::sso_details::Entity",
         from = "Column::SsoDetailsId",
-        to = "super::sso_details::Column::Id"
+        to = "super::sso_details::Column::Id",
+        fk_name = "Organization_ssoDetailsId_fkey"
     )]
     SsoDetails,
     #[sea_orm(has_many = "super::team_member::Entity")]

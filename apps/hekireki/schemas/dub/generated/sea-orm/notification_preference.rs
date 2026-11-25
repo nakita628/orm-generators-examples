@@ -5,9 +5,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NotificationPreference")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "projectUserId")]
+    #[sea_orm(
+        column_name = "projectUserId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub project_user_id: String,
     #[sea_orm(column_name = "linkUsageSummary", default_value = true)]
     pub link_usage_summary: bool,
@@ -21,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::project_users::Entity",
         from = "Column::ProjectUserId",
         to = "super::project_users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "NotificationPreference_projectUserId_fkey"
     )]
     ProjectUser,
 }

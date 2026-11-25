@@ -648,7 +648,7 @@ class EmailAccount(models.Model):
             models.Index(fields=["last_summary_email_at"]),
             models.Index(fields=["last_inbox_health_email_at"]),
             models.Index(fields=["watch_emails_subscription_id"]),
-            GinIndex(fields=["watch_emails_subscription_history"]),
+            GinIndex(fields=["watch_emails_subscription_history"], name="EmailAccount_watchEma_9c88f67a", opclasses=["jsonb_path_ops"]),
         ]
 
 
@@ -1261,8 +1261,11 @@ class ExecutedAction(models.Model):
             models.Index(fields=["execution_status", "created_at"]),
             GinIndex(fields=["sent_message_ids"]),
             models.Index(fields=["messaging_channel", "created_at"]),
-            models.Index(fields=["draft_status", "created_at"]),
         ]
+        # The partial index "ExecutedAction_draftStatus_createdAt_draft_idx" on ("draftStatus", "createdAt") WHERE ("draftId" IS NOT NULL) is left out:
+        # Django's condition= takes a Q, not SQL, so it is left to a migration (e.g. RunSQL).
+        # The partial index "ExecutedAction_executedRuleId_draft_idx" on ("executedRuleId") WHERE ("draftId" IS NOT NULL) is left out:
+        # Django's condition= takes a Q, not SQL, so it is left to a migration (e.g. RunSQL).
 
 
 class ScheduledAction(models.Model):
@@ -1612,8 +1615,9 @@ class ThreadTracker(models.Model):
             models.Index(fields=["email_account", "resolved", "sent_at", "type"]),
             models.Index(fields=["email_account", "type", "resolved", "sent_at"]),
             models.Index(fields=["email_account", "type", "resolved", "follow_up_applied_at", "sent_at"]),
-            models.Index(fields=["email_account", "follow_up_draft_created_at"]),
         ]
+        # The partial index "ThreadTracker_followUpDraft_cleanup_idx" on ("emailAccountId", "followUpDraftCreatedAt") WHERE ("followUpDraftContent" IS NOT NULL) is left out:
+        # Django's condition= takes a Q, not SQL, so it is left to a migration (e.g. RunSQL).
 
 
 class CleanupJob(models.Model):
@@ -3030,6 +3034,10 @@ class LoopsEmailSource(models.Model):
 
     class Meta:
         db_table = "LoopsEmailSource"
+        # The partial unique index "LoopsEmailSource_loopId_unversioned_key" on ("loopId") WHERE ("emailMessageId" IS NULL AND "loopId" IS NOT NULL) is left out:
+        # Django's condition= takes a Q, not SQL, so it is left to a migration (e.g. RunSQL).
+        # The partial unique index "LoopsEmailSource_campaignId_unversioned_key" on ("campaignId") WHERE ("emailMessageId" IS NULL AND "campaignId" IS NOT NULL) is left out:
+        # Django's condition= takes a Q, not SQL, so it is left to a migration (e.g. RunSQL).
         indexes = [
             models.Index(fields=["loop_id"]),
             models.Index(fields=["campaign_id"]),

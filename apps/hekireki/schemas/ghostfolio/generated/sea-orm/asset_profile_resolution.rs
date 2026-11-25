@@ -7,22 +7,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "AssetProfileResolution")]
 pub struct Model {
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub currency: String,
     #[sea_orm(column_name = "dataSourceOrigin")]
     pub data_source_origin: DataSource,
     #[sea_orm(column_name = "dataSourceTarget")]
     pub data_source_target: DataSource,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "requestCount", default_value = 1)]
     pub request_count: i32,
-    #[sea_orm(column_name = "symbolOrigin")]
+    #[sea_orm(column_name = "symbolOrigin", column_type = "Text")]
     pub symbol_origin: String,
-    #[sea_orm(column_name = "symbolTarget")]
+    #[sea_orm(column_name = "symbolTarget", column_type = "Text")]
     pub symbol_target: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

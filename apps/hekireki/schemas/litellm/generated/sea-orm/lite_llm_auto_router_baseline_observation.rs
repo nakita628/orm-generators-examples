@@ -5,11 +5,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AutoRouterBaselineObservation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub request_id: String,
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
     pub started_at: f64,
     pub revision: i64,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
+    #[sea_orm(column_type = "Text")]
     pub publication: Option<String>,
     #[sea_orm(default_value = false)]
     pub conflicted: bool,

@@ -9,20 +9,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RuntimeEnvironment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "apiKey")]
+    #[sea_orm(column_name = "apiKey", column_type = "Text")]
     pub api_key: String,
     /// Non-null prevents the root API key from being returned to users.
-    #[sea_orm(column_name = "rootApiKeyHiddenAt")]
+    #[sea_orm(
+        column_name = "rootApiKeyHiddenAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub root_api_key_hidden_at: Option<DateTime>,
     /// Non-null disables automatic root key injection into new deployed attempts.
-    #[sea_orm(column_name = "rootKeyInjectionDisabledAt")]
+    #[sea_orm(
+        column_name = "rootKeyInjectionDisabledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub root_key_injection_disabled_at: Option<DateTime>,
     /// @deprecated was for v2
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "pkApiKey")]
+    #[sea_orm(column_name = "pkApiKey", column_type = "Text")]
     pub pk_api_key: String,
     #[sea_orm(default_value = "DEVELOPMENT")]
     pub r#type: RuntimeEnvironmentType,
@@ -30,27 +38,38 @@ pub struct Model {
     /// NB: this flag is NOT used for Development branches, instead (type, parentEnvironmentId) = (DEVELOPMENT, NULL) is used
     #[sea_orm(column_name = "isBranchableEnvironment", default_value = false)]
     pub is_branchable_environment: bool,
-    #[sea_orm(column_name = "branchName")]
+    #[sea_orm(column_name = "branchName", column_type = "Text")]
     pub branch_name: Option<String>,
-    #[sea_orm(column_name = "parentEnvironmentId")]
+    #[sea_orm(column_name = "parentEnvironmentId", column_type = "Text")]
     pub parent_environment_id: Option<String>,
     /// Only configured on the PREVIEW root. Null disables automatic archiving.
     #[sea_orm(column_name = "previewAutoArchiveAfterDays")]
     pub preview_auto_archive_after_days: Option<i32>,
-    #[sea_orm(column_name = "previewAutoArchiveExcludedBranches")]
+    #[sea_orm(
+        column_name = "previewAutoArchiveExcludedBranches",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub preview_auto_archive_excluded_branches: Vec<String>,
     /// Durable per-project cleanup progress. Null next-check disables scheduling.
-    #[sea_orm(column_name = "previewAutoArchiveNextCheckAt")]
+    #[sea_orm(
+        column_name = "previewAutoArchiveNextCheckAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub preview_auto_archive_next_check_at: Option<DateTime>,
-    #[sea_orm(column_name = "previewAutoArchiveCursorCreatedAt")]
+    #[sea_orm(
+        column_name = "previewAutoArchiveCursorCreatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub preview_auto_archive_cursor_created_at: Option<DateTime>,
-    #[sea_orm(column_name = "previewAutoArchiveCursorId")]
+    #[sea_orm(column_name = "previewAutoArchiveCursorId", column_type = "Text")]
     pub preview_auto_archive_cursor_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub git: Option<Json>,
     /// When set API calls will fail
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
     /// A memorable code for the environment
+    #[sea_orm(column_type = "Text")]
     pub shortcode: String,
     #[sea_orm(column_name = "maximumConcurrencyLimit", default_value = 5)]
     pub maximum_concurrency_limit: i32,
@@ -66,22 +85,29 @@ pub struct Model {
     pub pause_source: Option<EnvironmentPauseSource>,
     #[sea_orm(column_name = "autoEnableInternalSources", default_value = true)]
     pub auto_enable_internal_sources: bool,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "orgMemberId")]
+    #[sea_orm(column_name = "orgMemberId", column_type = "Text")]
     pub org_member_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     /// Allows us to customize the built-in environment variables for a specific environment, like TRIGGER_OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT
-    #[sea_orm(column_name = "builtInEnvironmentVariableOverrides")]
+    #[sea_orm(
+        column_name = "builtInEnvironmentVariableOverrides",
+        column_type = "JsonBinary"
+    )]
     pub built_in_environment_variable_overrides: Option<Json>,
-    #[sea_orm(column_name = "tunnelId")]
+    #[sea_orm(column_name = "tunnelId", column_type = "Text")]
     pub tunnel_id: Option<String>,
-    #[sea_orm(column_name = "currentSessionId")]
+    #[sea_orm(column_name = "currentSessionId", column_type = "Text")]
     pub current_session_id: Option<String>,
 }
 
@@ -92,7 +118,8 @@ pub enum Relation {
         from = "Column::ParentEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RuntimeEnvironment_parentEnvironmentId_fkey"
     )]
     ParentEnvironment,
     #[sea_orm(
@@ -100,7 +127,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RuntimeEnvironment_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -108,7 +136,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RuntimeEnvironment_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -116,7 +145,8 @@ pub enum Relation {
         from = "Column::OrgMemberId",
         to = "super::org_member::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "RuntimeEnvironment_orgMemberId_fkey"
     )]
     OrgMember,
     #[sea_orm(
@@ -124,7 +154,8 @@ pub enum Relation {
         from = "Column::CurrentSessionId",
         to = "super::runtime_environment_session::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "RuntimeEnvironment_currentSessionId_fkey"
     )]
     CurrentSession,
     #[sea_orm(has_many = "super::environment_encryption_key::Entity")]

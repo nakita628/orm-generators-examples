@@ -7,21 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub sessions_expired_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
     #[sea_orm(default_value = false)]
     pub admin: bool,
     #[sea_orm(default_value = false)]
     pub v4_beta_enabled: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub support_access: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub feature_flags: Vec<String>,
 }
 

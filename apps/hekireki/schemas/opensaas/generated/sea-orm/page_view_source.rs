@@ -7,9 +7,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PageViewSource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub name: String,
-    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub date: DateTime,
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
+    pub name: String,
     #[sea_orm(column_name = "dailyStatsId")]
     pub daily_stats_id: Option<i32>,
     pub visitors: i32,
@@ -20,7 +25,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::daily_stats::Entity",
         from = "Column::DailyStatsId",
-        to = "super::daily_stats::Column::Id"
+        to = "super::daily_stats::Column::Id",
+        fk_name = "PageViewSource_dailyStatsId_fkey"
     )]
     DailyStats,
 }

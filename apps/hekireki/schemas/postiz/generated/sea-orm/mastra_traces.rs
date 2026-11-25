@@ -7,18 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_traces")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "parentSpanId")]
+    #[sea_orm(column_name = "parentSpanId", column_type = "Text")]
     pub parent_span_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "traceId")]
+    #[sea_orm(column_name = "traceId", column_type = "Text")]
     pub trace_id: String,
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
     pub kind: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub attributes: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub status: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub events: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub links: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub other: Option<String>,
     #[sea_orm(column_name = "startTime")]
     pub start_time: i64,
@@ -26,7 +34,11 @@ pub struct Model {
     pub end_time: i64,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

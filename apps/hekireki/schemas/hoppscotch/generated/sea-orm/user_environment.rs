@@ -5,10 +5,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserEnvironment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userUid")]
+    #[sea_orm(column_name = "userUid", column_type = "Text")]
     pub user_uid: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub variables: Json,
     #[sea_orm(column_name = "isGlobal")]
     pub is_global: bool,
@@ -20,7 +23,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserUid",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserEnvironment_userUid_fkey"
     )]
     User,
 }

@@ -7,16 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ReportFound")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "kitId")]
+    #[sea_orm(column_name = "kitId", column_type = "Text")]
     pub kit_id: Option<String>,
 }
 
@@ -27,7 +34,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ReportFound_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
@@ -35,7 +43,8 @@ pub enum Relation {
         from = "Column::KitId",
         to = "super::kit::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ReportFound_kitId_fkey"
     )]
     Kit,
 }

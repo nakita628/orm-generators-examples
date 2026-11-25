@@ -5,10 +5,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workout_session_exercises")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workoutSessionId")]
+    #[sea_orm(column_name = "workoutSessionId", column_type = "Text")]
     pub workout_session_id: String,
-    #[sea_orm(column_name = "exerciseId")]
+    #[sea_orm(column_name = "exerciseId", column_type = "Text")]
     pub exercise_id: String,
     pub order: i32,
 }
@@ -19,13 +20,15 @@ pub enum Relation {
         belongs_to = "super::workout_session::Entity",
         from = "Column::WorkoutSessionId",
         to = "super::workout_session::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workout_session_exercises_workoutSessionId_fkey"
     )]
     WorkoutSession,
     #[sea_orm(
         belongs_to = "super::exercise::Entity",
         from = "Column::ExerciseId",
-        to = "super::exercise::Column::Id"
+        to = "super::exercise::Column::Id",
+        fk_name = "workout_session_exercises_exerciseId_fkey"
     )]
     Exercise,
     #[sea_orm(has_many = "super::workout_set::Entity")]

@@ -9,43 +9,52 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkerInstanceGroup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub r#type: WorkerInstanceGroupType,
     /// For example "us-east-1"
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// If managed, it will default to the name, e.g. "us-east-1"
     /// If unmanged, it will be prefixed with the project ID e.g. "project_1-us-east-1"
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "masterQueue")]
+    #[sea_orm(column_name = "masterQueue", column_type = "Text")]
     pub master_queue: String,
     /// "N. Virginia, USA", "Frankfurt, Germany", etc. Used for display purposes
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(default_value = false)]
     pub hidden: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "tokenId")]
+    #[sea_orm(column_name = "tokenId", column_type = "Text")]
     pub token_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "cloudProvider")]
+    #[sea_orm(column_name = "cloudProvider", column_type = "Text")]
     pub cloud_provider: Option<String>,
     /// "usa", "europe", etc. Used like a pseudo enum for things like flags
+    #[sea_orm(column_type = "Text")]
     pub location: Option<String>,
-    #[sea_orm(column_name = "staticIPs")]
+    #[sea_orm(column_name = "staticIPs", column_type = "Text")]
     pub static_ips: Option<String>,
     #[sea_orm(column_name = "workloadType", default_value = "CONTAINER")]
     pub workload_type: WorkloadType,
     /// Geo region; container + MICROVM groups for one geo share it. Set-once once it has runs.
+    #[sea_orm(column_type = "Text")]
     pub region: Option<String>,
     /// When true, runs enqueued to this worker queue may skip the intermediate queue
     /// and be pushed directly to the worker queue when concurrency is available.
     #[sea_orm(column_name = "enableFastPath", default_value = false)]
     pub enable_fast_path: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -56,7 +65,8 @@ pub enum Relation {
         from = "Column::TokenId",
         to = "super::worker_group_token::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstanceGroup_tokenId_fkey"
     )]
     Token,
     #[sea_orm(
@@ -64,7 +74,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstanceGroup_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -72,7 +83,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerInstanceGroup_projectId_fkey"
     )]
     Project,
     #[sea_orm(

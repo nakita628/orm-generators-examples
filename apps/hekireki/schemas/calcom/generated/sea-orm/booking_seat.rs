@@ -7,7 +7,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "referenceUid")]
+    #[sea_orm(column_name = "referenceUid", column_type = "Text")]
     pub reference_uid: String,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: i32,
@@ -15,7 +15,9 @@ pub struct Model {
     #[sea_orm(column_name = "attendeeId")]
     pub attendee_id: i32,
     /// @zod.import(["import { bookingSeatDataSchema } from '../../zod-utils'"]).custom.use(bookingSeatDataSchema)
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
 }
 
@@ -25,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingSeat_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
         belongs_to = "super::attendee::Entity",
         from = "Column::AttendeeId",
         to = "super::attendee::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingSeat_attendeeId_fkey"
     )]
     Attendee,
 }

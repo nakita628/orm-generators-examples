@@ -10,26 +10,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgentRegistryEntry")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Where the agent came from and its id there, e.g. `langwatch:<agentId>`.
-    #[sea_orm(column_name = "sourceKey")]
+    #[sea_orm(column_name = "sourceKey", column_type = "Text")]
     pub source_key: String,
+    #[sea_orm(column_type = "Text")]
     pub source: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     pub version: i32,
+    #[sea_orm(column_type = "Text")]
     pub fingerprint: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub entry: Json,
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(column_name = "firstSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub first_seen_at: DateTime,
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(column_name = "lastSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_seen_at: Option<DateTime>,
-    #[sea_orm(column_name = "removedAt")]
+    #[sea_orm(column_name = "removedAt", column_type = "custom(\"timestamp(3)\")")]
     pub removed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

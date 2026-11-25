@@ -826,8 +826,8 @@ class Recipient(models.Model):
             models.Index(fields=["email", "envelope"], name="Recipient_email_envelopeId_idx"),
             models.Index(fields=["email", "signing_status", "envelope", "role"]),
             models.Index(fields=["next_reminder_at"]),
-            GinIndex(fields=["email"], name="Recipient_email_trgm_idx"),
-            GinIndex(fields=["name"], name="Recipient_name_trgm_idx"),
+            GinIndex(fields=["email"], name="Recipient_email_trgm_idx", opclasses=["gin_trgm_ops"]),
+            GinIndex(fields=["name"], name="Recipient_name_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 

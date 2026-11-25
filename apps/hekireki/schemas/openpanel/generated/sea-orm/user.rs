@@ -7,24 +7,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "Text",
+        default_expr = "Expr::cust(\"gen_random_uuid()\")"
+    )]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "firstName")]
+    #[sea_orm(column_name = "firstName", column_type = "Text")]
     pub first_name: Option<String>,
-    #[sea_orm(column_name = "lastName")]
+    #[sea_orm(column_name = "lastName", column_type = "Text")]
     pub last_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(column_name = "emailVerified", default_value = false)]
     pub email_verified: bool,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
     #[sea_orm(column_name = "twoFactorEnabled", default_value = false)]
     pub two_factor_enabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 

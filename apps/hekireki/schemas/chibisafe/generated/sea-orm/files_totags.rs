@@ -15,13 +15,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::files::Entity",
         from = "Column::FilesId",
-        to = "super::files::Column::Id"
+        to = "super::files::Column::Id",
+        fk_name = "_filesTotags_A_fkey"
     )]
     Files,
     #[sea_orm(
         belongs_to = "super::tags::Entity",
         from = "Column::TagsId",
-        to = "super::tags::Column::Id"
+        to = "super::tags::Column::Id",
+        fk_name = "_filesTotags_B_fkey"
     )]
     Tags,
 }

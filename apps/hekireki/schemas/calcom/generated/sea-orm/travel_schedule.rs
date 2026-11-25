@@ -8,13 +8,13 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: String,
-    #[sea_orm(column_name = "startDate")]
+    #[sea_orm(column_name = "startDate", column_type = "custom(\"timestamp(3)\")")]
     pub start_date: DateTime,
-    #[sea_orm(column_name = "endDate")]
+    #[sea_orm(column_name = "endDate", column_type = "custom(\"timestamp(3)\")")]
     pub end_date: Option<DateTime>,
-    #[sea_orm(column_name = "prevTimeZone")]
+    #[sea_orm(column_name = "prevTimeZone", column_type = "Text")]
     pub prev_time_zone: Option<String>,
 }
 
@@ -24,7 +24,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TravelSchedule_userId_fkey"
     )]
     User,
 }

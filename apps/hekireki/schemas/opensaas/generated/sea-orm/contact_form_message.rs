@@ -7,15 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ContactFormMessage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     #[sea_orm(column_name = "isRead", default_value = false)]
     pub is_read: bool,
-    #[sea_orm(column_name = "repliedAt")]
+    #[sea_orm(column_name = "repliedAt", column_type = "custom(\"timestamp(3)\")")]
     pub replied_at: Option<DateTime>,
 }
 
@@ -24,7 +30,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "ContactFormMessage_userId_fkey"
     )]
     User,
 }

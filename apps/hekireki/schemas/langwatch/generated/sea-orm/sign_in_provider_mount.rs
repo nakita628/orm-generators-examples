@@ -9,14 +9,20 @@ pub struct Model {
     /// Fixed, so this table holds one row: licensing's copy of sso's sign-in
     /// provider fact (ADR-179).
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The configured provider's name; null when the deployment signs in by email.
+    #[sea_orm(column_type = "Text")]
     pub provider: Option<String>,
     pub mounted: bool,
     /// The last sso event applied: the row's idempotency guard and its version.
-    #[sea_orm(column_name = "lastAppliedEventId")]
+    #[sea_orm(column_name = "lastAppliedEventId", column_type = "Text")]
     pub last_applied_event_id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

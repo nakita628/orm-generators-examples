@@ -7,14 +7,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamGlobalSettings")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "documentVisibility")]
     pub document_visibility: Option<DocumentVisibility>,
-    #[sea_orm(column_name = "documentLanguage")]
+    #[sea_orm(column_name = "documentLanguage", column_type = "Text")]
     pub document_language: Option<String>,
-    #[sea_orm(column_name = "documentTimezone")]
+    #[sea_orm(column_name = "documentTimezone", column_type = "Text")]
     pub document_timezone: Option<String>,
-    #[sea_orm(column_name = "documentDateFormat")]
+    #[sea_orm(column_name = "documentDateFormat", column_type = "Text")]
     pub document_date_format: Option<String>,
     #[sea_orm(column_name = "delegateDocumentOwnership")]
     pub delegate_document_ownership: Option<bool>,
@@ -31,33 +32,33 @@ pub struct Model {
     #[sea_orm(column_name = "drawSignatureEnabled")]
     pub draw_signature_enabled: Option<bool>,
     /// [DefaultRecipient[]] @zod.custom.use(ZDefaultRecipientsSchema)
-    #[sea_orm(column_name = "defaultRecipients")]
+    #[sea_orm(column_name = "defaultRecipients", column_type = "JsonBinary")]
     pub default_recipients: Option<Json>,
-    #[sea_orm(column_name = "emailId")]
+    #[sea_orm(column_name = "emailId", column_type = "Text")]
     pub email_id: Option<String>,
-    #[sea_orm(column_name = "emailReplyTo")]
+    #[sea_orm(column_name = "emailReplyTo", column_type = "Text")]
     pub email_reply_to: Option<String>,
     /// [DocumentEmailSettingsNullable] @zod.custom.use(ZDocumentEmailSettingsSchema)
-    #[sea_orm(column_name = "emailDocumentSettings")]
+    #[sea_orm(column_name = "emailDocumentSettings", column_type = "JsonBinary")]
     pub email_document_settings: Option<Json>,
     #[sea_orm(column_name = "brandingEnabled")]
     pub branding_enabled: Option<bool>,
-    #[sea_orm(column_name = "brandingLogo")]
+    #[sea_orm(column_name = "brandingLogo", column_type = "Text")]
     pub branding_logo: Option<String>,
-    #[sea_orm(column_name = "brandingUrl")]
+    #[sea_orm(column_name = "brandingUrl", column_type = "Text")]
     pub branding_url: Option<String>,
-    #[sea_orm(column_name = "brandingCompanyDetails")]
+    #[sea_orm(column_name = "brandingCompanyDetails", column_type = "Text")]
     pub branding_company_details: Option<String>,
     /// [TCssVarsSchema] @zod.custom.use(ZCssVarsSchema)
-    #[sea_orm(column_name = "brandingColors")]
+    #[sea_orm(column_name = "brandingColors", column_type = "JsonBinary")]
     pub branding_colors: Option<Json>,
-    #[sea_orm(column_name = "brandingCss")]
+    #[sea_orm(column_name = "brandingCss", column_type = "Text")]
     pub branding_css: Option<String>,
     /// [EnvelopeExpirationPeriod] @zod.custom.use(ZEnvelopeExpirationPeriodSchema)
-    #[sea_orm(column_name = "envelopeExpirationPeriod")]
+    #[sea_orm(column_name = "envelopeExpirationPeriod", column_type = "JsonBinary")]
     pub envelope_expiration_period: Option<Json>,
     /// [EnvelopeReminderSettings] @zod.custom.use(ZEnvelopeReminderSettingsSchema)
-    #[sea_orm(column_name = "reminderSettings")]
+    #[sea_orm(column_name = "reminderSettings", column_type = "JsonBinary")]
     pub reminder_settings: Option<Json>,
     #[sea_orm(column_name = "aiFeaturesEnabled")]
     pub ai_features_enabled: Option<bool>,
@@ -68,7 +69,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organisation_email::Entity",
         from = "Column::EmailId",
-        to = "super::organisation_email::Column::Id"
+        to = "super::organisation_email::Column::Id",
+        fk_name = "TeamGlobalSettings_emailId_fkey"
     )]
     Email,
     #[sea_orm(has_one = "super::team::Entity")]

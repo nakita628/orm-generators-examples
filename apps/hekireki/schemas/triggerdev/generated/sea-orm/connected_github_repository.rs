@@ -7,13 +7,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedGithubRepository")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "repositoryId")]
+    #[sea_orm(column_name = "repositoryId", column_type = "Text")]
     pub repository_id: String,
-    #[sea_orm(column_name = "branchTracking")]
+    #[sea_orm(column_name = "branchTracking", column_type = "JsonBinary")]
     pub branch_tracking: Json,
     #[sea_orm(column_name = "previewDeploymentsEnabled", default_value = true)]
     pub preview_deployments_enabled: bool,
@@ -24,11 +25,15 @@ pub struct Model {
     pub supersede_staging_builds: bool,
     #[sea_orm(column_name = "supersedePreviewBuilds", default_value = true)]
     pub supersede_preview_builds: bool,
-    #[sea_orm(column_name = "buildFilters")]
+    #[sea_orm(column_name = "buildFilters", column_type = "JsonBinary")]
     pub build_filters: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -39,7 +44,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConnectedGithubRepository_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -47,7 +53,8 @@ pub enum Relation {
         from = "Column::RepositoryId",
         to = "super::github_repository::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConnectedGithubRepository_repositoryId_fkey"
     )]
     Repository,
 }

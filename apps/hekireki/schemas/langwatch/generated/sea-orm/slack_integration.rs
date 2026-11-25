@@ -15,34 +15,44 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SlackIntegration")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub kind: SlackIntegrationKind,
     #[sea_orm(column_name = "scopeType")]
     pub scope_type: SlackIntegrationScopeType,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "botTokenEncrypted")]
+    #[sea_orm(column_name = "botTokenEncrypted", column_type = "Text")]
     pub bot_token_encrypted: Option<String>,
-    #[sea_orm(column_name = "webhookUrlEncrypted")]
+    #[sea_orm(column_name = "webhookUrlEncrypted", column_type = "Text")]
     pub webhook_url_encrypted: Option<String>,
-    #[sea_orm(column_name = "secretFingerprint")]
+    #[sea_orm(column_name = "secretFingerprint", column_type = "Text")]
     pub secret_fingerprint: String,
-    #[sea_orm(column_name = "secretHint")]
+    #[sea_orm(column_name = "secretHint", column_type = "Text")]
     pub secret_hint: String,
-    #[sea_orm(column_name = "slackTeamId")]
+    #[sea_orm(column_name = "slackTeamId", column_type = "Text")]
     pub slack_team_id: Option<String>,
-    #[sea_orm(column_name = "slackTeamName")]
+    #[sea_orm(column_name = "slackTeamName", column_type = "Text")]
     pub slack_team_name: Option<String>,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: String,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

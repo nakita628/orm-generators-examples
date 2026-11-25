@@ -7,20 +7,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_OrganizationTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub organization_alias: String,
+    #[sea_orm(column_type = "Text")]
     pub budget_id: String,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Json,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub models: Vec<String>,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub model_spend: Json,
+    #[sea_orm(column_type = "Text")]
     pub object_permission_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: String,
 }
 
@@ -29,13 +44,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_budget_table::Entity",
         from = "Column::BudgetId",
-        to = "super::lite_llm_budget_table::Column::BudgetId"
+        to = "super::lite_llm_budget_table::Column::BudgetId",
+        fk_name = "LiteLLM_OrganizationTable_budget_id_fkey"
     )]
     LitellmBudgetTable,
     #[sea_orm(
         belongs_to = "super::lite_llm_object_permission_table::Entity",
         from = "Column::ObjectPermissionId",
-        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId"
+        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId",
+        fk_name = "LiteLLM_OrganizationTable_object_permission_id_fkey"
     )]
     ObjectPermission,
     #[sea_orm(has_many = "super::lite_llm_team_table::Entity")]

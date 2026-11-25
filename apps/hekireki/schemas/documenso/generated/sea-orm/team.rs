@@ -8,17 +8,23 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub url: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "avatarImageId")]
+    #[sea_orm(column_name = "avatarImageId", column_type = "Text")]
     pub avatar_image_id: Option<String>,
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "teamGlobalSettingsId")]
+    #[sea_orm(column_name = "teamGlobalSettingsId", column_type = "Text")]
     pub team_global_settings_id: String,
 }
 
@@ -28,21 +34,24 @@ pub enum Relation {
         belongs_to = "super::avatar_image::Entity",
         from = "Column::AvatarImageId",
         to = "super::avatar_image::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Team_avatarImageId_fkey"
     )]
     AvatarImage,
     #[sea_orm(
         belongs_to = "super::organisation::Entity",
         from = "Column::OrganisationId",
         to = "super::organisation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Team_organisationId_fkey"
     )]
     Organisation,
     #[sea_orm(
         belongs_to = "super::team_global_settings::Entity",
         from = "Column::TeamGlobalSettingsId",
         to = "super::team_global_settings::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Team_teamGlobalSettingsId_fkey"
     )]
     TeamGlobalSettings,
     #[sea_orm(has_many = "super::envelope::Entity")]

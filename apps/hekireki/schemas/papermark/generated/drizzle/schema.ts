@@ -1387,7 +1387,10 @@ export const documentVersion = pgTable(
   (table) => [
     index('DocumentVersion_documentId_idx').on(table.documentId),
     index('DocumentVersion_documentId_isPrimary_idx').on(table.documentId, table.isPrimary),
-    index('DocumentVersion_documentId_createdAt_idx').on(table.documentId, table.createdAt),
+    index('DocumentVersion_documentId_createdAt_idx').on(
+      table.documentId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     index('DocumentVersion_documentId_isPrimary_createdAt_idx').on(
       table.documentId,
       table.isPrimary,
@@ -2449,11 +2452,11 @@ export const view = pgTable(
     index('View_viewerId_idx').on(table.viewerId),
     index('View_groupId_idx').on(table.groupId),
     index('View_teamId_idx').on(table.teamId),
-    index('View_viewedAt_idx').on(table.viewedAt),
+    index('View_viewedAt_idx').on(table.viewedAt.desc().nullsFirst()),
     index('View_viewerId_documentId_idx').on(table.viewerId, table.documentId),
     index('View_viewerEmail_idx').on(table.viewerEmail),
     index('View_documentId_isArchived_idx').on(table.documentId, table.isArchived),
-    index('View_documentId_viewedAt_idx').on(table.documentId, table.viewedAt),
+    index('View_documentId_viewedAt_idx').on(table.documentId, table.viewedAt.desc().nullsFirst()),
     foreignKey({ name: 'View_linkId_fkey', columns: [table.linkId], foreignColumns: [link.id] })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -2634,7 +2637,7 @@ export const chat = pgTable(
     index('Chat_userId_idx').on(table.userId),
     index('Chat_viewerId_idx').on(table.viewerId),
     index('Chat_viewId_idx').on(table.viewId),
-    index('Chat_createdAt_idx').on(table.createdAt),
+    index('Chat_createdAt_idx').on(table.createdAt.desc().nullsFirst()),
     foreignKey({ name: 'Chat_teamId_fkey', columns: [table.teamId], foreignColumns: [team.id] })
       .onDelete('cascade')
       .onUpdate('cascade'),

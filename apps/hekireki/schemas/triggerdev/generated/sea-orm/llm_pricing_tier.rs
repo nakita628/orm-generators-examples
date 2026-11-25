@@ -6,8 +6,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "llm_pricing_tiers")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub model_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = true)]
     pub is_default: bool,
@@ -23,7 +26,8 @@ pub enum Relation {
         belongs_to = "super::llm_model::Entity",
         from = "Column::ModelId",
         to = "super::llm_model::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "llm_pricing_tiers_model_id_fkey"
     )]
     Model,
     #[sea_orm(has_many = "super::llm_price::Entity")]

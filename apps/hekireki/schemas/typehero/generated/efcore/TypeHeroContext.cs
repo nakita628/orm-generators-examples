@@ -86,18 +86,39 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.Type).HasColumnName("type");
-            entity.Property(e => e.Provider).HasColumnName("provider");
-            entity.Property(e => e.ProviderAccountId).HasColumnName("providerAccountId");
-            entity.Property(e => e.RefreshToken).HasColumnName("refresh_token");
-            entity.Property(e => e.AccessToken).HasColumnName("access_token");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.Type)
+                .HasMaxLength(191)
+                .HasColumnName("type");
+            entity.Property(e => e.Provider)
+                .HasMaxLength(191)
+                .HasColumnName("provider");
+            entity.Property(e => e.ProviderAccountId)
+                .HasMaxLength(191)
+                .HasColumnName("providerAccountId");
+            entity.Property(e => e.RefreshToken)
+                .HasMaxLength(191)
+                .HasColumnName("refresh_token");
+            entity.Property(e => e.AccessToken)
+                .HasMaxLength(191)
+                .HasColumnName("access_token");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(e => e.TokenType).HasColumnName("token_type");
-            entity.Property(e => e.Scope).HasColumnName("scope");
-            entity.Property(e => e.IdToken).HasColumnName("id_token");
-            entity.Property(e => e.SessionState).HasColumnName("session_state");
+            entity.Property(e => e.TokenType)
+                .HasMaxLength(191)
+                .HasColumnName("token_type");
+            entity.Property(e => e.Scope)
+                .HasMaxLength(191)
+                .HasColumnName("scope");
+            entity.Property(e => e.IdToken)
+                .HasMaxLength(191)
+                .HasColumnName("id_token");
+            entity.Property(e => e.SessionState)
+                .HasMaxLength(191)
+                .HasColumnName("session_state");
 
             entity.HasOne(d => d.User).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.UserId)
@@ -117,9 +138,14 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.SessionToken).HasColumnName("sessionToken");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.SessionToken)
+                .HasMaxLength(191)
+                .HasColumnName("sessionToken");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -141,6 +167,7 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<UuidV4StringGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.Role1)
                 .HasConversion<RoleTypesConverter>()
@@ -173,8 +200,11 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<UuidV4StringGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Url).HasColumnName("url");
+            entity.Property(e => e.Url)
+                .HasMaxLength(256)
+                .HasColumnName("url");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -197,16 +227,24 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<UuidV4StringGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Email)
+                .HasMaxLength(191)
+                .HasColumnName("email");
             entity.Property(e => e.EmailVerified)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("emailVerified");
-            entity.Property(e => e.Image).HasColumnName("image");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
             entity.Property(e => e.Bio)
                 .ValueGeneratedNever()
+                .HasMaxLength(1000)
                 .HasDefaultValue("")
                 .HasColumnName("bio");
             entity.Property(e => e.Status)
@@ -214,7 +252,9 @@ public partial class TypeHeroContext : DbContext
                 .HasDefaultValue(UserStatus.Active)
                 .HasConversion<UserStatusConverter>()
                 .HasColumnName("status");
-            entity.Property(e => e.BanReason).HasColumnName("banReason");
+            entity.Property(e => e.BanReason)
+                .HasColumnType("mediumtext")
+                .HasColumnName("banReason");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -253,8 +293,12 @@ public partial class TypeHeroContext : DbContext
 
             entity.HasIndex(e => new { e.Identifier, e.Token }, "VerificationToken_identifier_token_key").IsUnique();
 
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Token).HasColumnName("token");
+            entity.Property(e => e.Identifier)
+                .HasMaxLength(191)
+                .HasColumnName("identifier");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -271,6 +315,7 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<UuidV4StringGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
             entity.Property(e => e.Tag1)
                 .HasConversion<TagsConverter>()
@@ -303,12 +348,24 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Difficulty)
                 .HasConversion<DifficultyConverter>()
                 .HasColumnName("difficulty");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Slug).HasColumnName("slug");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.ShortDescription).HasColumnName("shortDescription");
-            entity.Property(e => e.Code).HasColumnName("code");
-            entity.Property(e => e.Tests).HasColumnName("tests");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
+            entity.Property(e => e.Description)
+                .HasColumnType("mediumtext")
+                .HasColumnName("description");
+            entity.Property(e => e.ShortDescription)
+                .HasMaxLength(191)
+                .HasColumnName("shortDescription");
+            entity.Property(e => e.Code)
+                .HasColumnType("mediumtext")
+                .HasColumnName("code");
+            entity.Property(e => e.Tests)
+                .HasColumnType("mediumtext")
+                .HasColumnName("tests");
             entity.Property(e => e.Status)
                 .ValueGeneratedNever()
                 .HasDefaultValue(ChallengeStatus.Pending)
@@ -317,7 +374,9 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Tsconfig)
                 .HasColumnType("json")
                 .HasColumnName("tsconfig");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Challenge)
                 .HasForeignKey(d => d.UserId)
@@ -360,7 +419,9 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.SharedSolutionId, "Vote_sharedSolutionId_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.RootType)
                 .HasConversion<VoteTypeConverter>()
                 .HasColumnName("rootType");
@@ -416,9 +477,15 @@ public partial class TypeHeroContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("isPinned");
-            entity.Property(e => e.Title).HasColumnName("title");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.Title)
+                .HasMaxLength(191)
+                .HasColumnName("title");
+            entity.Property(e => e.Description)
+                .HasColumnType("mediumtext")
+                .HasColumnName("description");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
 
             entity.HasOne(d => d.User).WithMany(p => p.SharedSolution)
@@ -443,7 +510,9 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.ChallengeId, "Submission_challengeId_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Code).HasColumnName("code");
+            entity.Property(e => e.Code)
+                .HasColumnType("mediumtext")
+                .HasColumnName("code");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -451,7 +520,9 @@ public partial class TypeHeroContext : DbContext
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
             entity.Property(e => e.IsSuccessful).HasColumnName("isSuccessful");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Submission)
@@ -478,7 +549,9 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => new { e.UserId, e.ChallengeId }, "Bookmark_userId_challengeId_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
             entity.Property(e => e.CreatedAt)
                 .ValueGeneratedNever()
@@ -541,19 +614,27 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.Id, "Report_id_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Text).HasColumnName("text");
+            entity.Property(e => e.Text)
+                .HasColumnType("mediumtext")
+                .HasColumnName("text");
             entity.Property(e => e.Type)
                 .HasConversion<ReportTypeConverter>()
                 .HasColumnName("type");
             entity.Property(e => e.Status)
                 .HasConversion<ReportStatusConverter>()
                 .HasColumnName("status");
-            entity.Property(e => e.ReporterId).HasColumnName("reporterId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.ReporterId)
+                .HasMaxLength(191)
+                .HasColumnName("reporterId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
             entity.Property(e => e.CommentId).HasColumnName("commentId");
             entity.Property(e => e.SolutionId).HasColumnName("solutionId");
-            entity.Property(e => e.ModeratorId).HasColumnName("moderatorId");
+            entity.Property(e => e.ModeratorId)
+                .HasMaxLength(191)
+                .HasColumnName("moderatorId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -611,13 +692,17 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.UserId, "Comment_userId_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Text).HasColumnName("text");
+            entity.Property(e => e.Text)
+                .HasColumnType("mediumtext")
+                .HasColumnName("text");
             entity.Property(e => e.Visible)
                 .ValueGeneratedNever()
                 .HasDefaultValue(true)
                 .HasColumnName("visible");
             entity.Property(e => e.ParentId).HasColumnName("parentId");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.RootType)
                 .ValueGeneratedNever()
                 .HasDefaultValue(CommentRoot.Challenge)
@@ -667,9 +752,14 @@ public partial class TypeHeroContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<UuidV4StringGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.Url).HasColumnName("url");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.Url)
+                .HasMaxLength(256)
+                .HasColumnName("url");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -724,9 +814,15 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.Slug, "Track_slug_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Slug).HasColumnName("slug");
-            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Slug)
+                .HasMaxLength(191)
+                .HasColumnName("slug");
+            entity.Property(e => e.Description)
+                .HasColumnType("mediumtext")
+                .HasColumnName("description");
             entity.Property(e => e.Visible)
                 .ValueGeneratedNever()
                 .HasDefaultValue(true)
@@ -766,8 +862,12 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.UserId, "BetaTokens_userId_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Token).HasColumnName("token");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.BetaTokens)
                 .HasForeignKey(d => d.UserId)
@@ -786,9 +886,13 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.UserId, "Donation_userId_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.Amount).HasColumnName("amount");
-            entity.Property(e => e.StripeCheckoutSessionId).HasColumnName("stripeCheckoutSessionId");
+            entity.Property(e => e.StripeCheckoutSessionId)
+                .HasMaxLength(191)
+                .HasColumnName("stripeCheckoutSessionId");
             entity.Property(e => e.CreatedAt)
                 .ValueGeneratedNever()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -836,12 +940,22 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Type)
                 .HasConversion<NotificationTypeConverter>()
                 .HasColumnName("type");
-            entity.Property(e => e.ToUserId).HasColumnName("toUserId");
-            entity.Property(e => e.FromUserId).HasColumnName("fromUserId");
+            entity.Property(e => e.ToUserId)
+                .HasMaxLength(191)
+                .HasColumnName("toUserId");
+            entity.Property(e => e.FromUserId)
+                .HasMaxLength(191)
+                .HasColumnName("fromUserId");
             entity.Property(e => e.CommentId).HasColumnName("commentId");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.Blurb).HasColumnName("blurb");
-            entity.Property(e => e.Url).HasColumnName("url");
+            entity.Property(e => e.Content)
+                .HasMaxLength(191)
+                .HasColumnName("content");
+            entity.Property(e => e.Blurb)
+                .HasMaxLength(191)
+                .HasColumnName("blurb");
+            entity.Property(e => e.Url)
+                .HasMaxLength(191)
+                .HasColumnName("url");
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
             entity.Property(e => e.SharedSolutionId).HasColumnName("sharedSolutionId");
 
@@ -884,8 +998,12 @@ public partial class TypeHeroContext : DbContext
             entity.HasIndex(e => e.ShortUrlSlug, "ShortURL_shortUrlSlug_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.OriginalUrl).HasColumnName("originalUrl");
-            entity.Property(e => e.ShortUrlSlug).HasColumnName("shortUrlSlug");
+            entity.Property(e => e.OriginalUrl)
+                .HasColumnType("mediumtext")
+                .HasColumnName("originalUrl");
+            entity.Property(e => e.ShortUrlSlug)
+                .HasMaxLength(191)
+                .HasColumnName("shortUrlSlug");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -900,7 +1018,9 @@ public partial class TypeHeroContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(0)
                 .HasColumnName("clicks");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.ShortUrls)
                 .HasForeignKey(d => d.UserId)

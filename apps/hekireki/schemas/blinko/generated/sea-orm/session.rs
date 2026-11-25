@@ -7,14 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "session")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub sid: String,
     #[sea_orm(column_type = "Text")]
     pub data: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
     pub updated_at: DateTimeWithTimeZone,

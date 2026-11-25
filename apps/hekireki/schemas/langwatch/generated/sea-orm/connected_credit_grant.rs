@@ -11,14 +11,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedCreditGrant")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The `ConnectedBillingAccount` row. A plain column ref, like
     /// `IssuedLicense.replacesId`: relationMode="prisma" carries no foreign keys.
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
     /// The grant at the payment provider. Unique, so a retry records one row.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeCreditGrantId")]
+    #[sea_orm(column_name = "stripeCreditGrantId", column_type = "Text")]
     pub stripe_credit_grant_id: String,
     #[sea_orm(column_name = "amountUsdCents")]
     pub amount_usd_cents: i32,
@@ -26,11 +27,15 @@ pub struct Model {
     /// The term this credit was granted for, and when the provider lets it lapse:
     /// after the last invoice of that term has been finalized, never on the day
     /// the term ends.
-    #[sea_orm(column_name = "termEndsAt")]
+    #[sea_orm(column_name = "termEndsAt", column_type = "custom(\"timestamp(3)\")")]
     pub term_ends_at: DateTime,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

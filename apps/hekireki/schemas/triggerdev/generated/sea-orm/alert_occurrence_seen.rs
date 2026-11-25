@@ -7,14 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AlertOccurrenceSeen")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "alertId")]
+    #[sea_orm(column_name = "alertId", column_type = "Text")]
     pub alert_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "sourceEventId")]
+    #[sea_orm(column_name = "sourceEventId", column_type = "Text")]
     pub source_event_id: String,
     #[sea_orm(column_name = "rowTime", column_type = "TimestampWithTimeZone")]
     pub row_time: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "seenAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "seenAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub seen_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "expiresAt", column_type = "TimestampWithTimeZone")]
     pub expires_at: DateTimeWithTimeZone,

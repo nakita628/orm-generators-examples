@@ -6,10 +6,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DocumentData")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub r#type: DocumentDataType,
+    #[sea_orm(column_type = "Text")]
     pub data: String,
-    #[sea_orm(column_name = "initialData")]
+    #[sea_orm(column_name = "initialData", column_type = "Text")]
     pub initial_data: String,
 }
 

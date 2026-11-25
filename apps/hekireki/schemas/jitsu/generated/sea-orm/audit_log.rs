@@ -7,25 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// @zod.custom(z.coerce.date())
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub timestamp: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
-    #[sea_orm(default_value = "info")]
+    #[sea_orm(column_type = "Text", default_value = "info")]
     pub severity: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: Option<String>,
-    #[sea_orm(column_name = "objectId")]
+    #[sea_orm(column_name = "objectId", column_type = "Text")]
     pub object_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub changes: Option<Json>,
-    #[sea_orm(column_name = "authType")]
+    #[sea_orm(column_name = "authType", column_type = "Text")]
     pub auth_type: Option<String>,
-    #[sea_orm(column_name = "tokenId")]
+    #[sea_orm(column_name = "tokenId", column_type = "Text")]
     pub token_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub ip: Option<String>,
-    #[sea_orm(column_name = "requestHeaders")]
+    #[sea_orm(column_name = "requestHeaders", column_type = "JsonBinary")]
     pub request_headers: Option<Json>,
 }
 

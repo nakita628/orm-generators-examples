@@ -9,23 +9,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AdminRuleMatch")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     pub mode: AdminRuleMode,
     /// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
+    #[sea_orm(column_type = "Text")]
     pub trigger: String,
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: Option<String>,
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: Option<String>,
     /// [AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)
-    #[sea_orm(column_name = "eventSnapshot")]
+    #[sea_orm(column_name = "eventSnapshot", column_type = "JsonBinary")]
     pub event_snapshot: Json,
     /// [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)
-    #[sea_orm(column_name = "actionsRun")]
+    #[sea_orm(column_name = "actionsRun", column_type = "JsonBinary")]
     pub actions_run: Json,
-    #[sea_orm(column_name = "ruleId")]
+    #[sea_orm(column_name = "ruleId", column_type = "Text")]
     pub rule_id: String,
     #[sea_orm(column_name = "actorUserId")]
     pub actor_user_id: Option<i32>,
@@ -37,14 +43,16 @@ pub enum Relation {
         belongs_to = "super::admin_rule::Entity",
         from = "Column::RuleId",
         to = "super::admin_rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AdminRuleMatch_ruleId_fkey"
     )]
     Rule,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ActorUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AdminRuleMatch_actorUserId_fkey"
     )]
     ActorUser,
 }

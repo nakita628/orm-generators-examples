@@ -7,17 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AvailabilityWindow")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     pub weekday: i32,
     #[sea_orm(column_name = "startMinutes")]
     pub start_minutes: i32,
     #[sea_orm(column_name = "endMinutes")]
     pub end_minutes: i32,
-    #[sea_orm(column_name = "availabilityScheduleId")]
+    #[sea_orm(column_name = "availabilityScheduleId", column_type = "Text")]
     pub availability_schedule_id: String,
 }
 
@@ -27,7 +32,8 @@ pub enum Relation {
         belongs_to = "super::availability_schedule::Entity",
         from = "Column::AvailabilityScheduleId",
         to = "super::availability_schedule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AvailabilityWindow_availabilityScheduleId_fkey"
     )]
     AvailabilitySchedule,
 }

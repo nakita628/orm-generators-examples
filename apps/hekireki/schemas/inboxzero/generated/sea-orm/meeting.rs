@@ -8,21 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Meeting")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "calendarEventId")]
+    #[sea_orm(column_name = "calendarEventId", column_type = "Text")]
     pub calendar_event_id: String,
-    #[sea_orm(column_name = "eventTitle")]
+    #[sea_orm(column_name = "eventTitle", column_type = "Text")]
     pub event_title: String,
-    #[sea_orm(column_name = "startTime")]
+    #[sea_orm(column_name = "startTime", column_type = "custom(\"timestamp(3)\")")]
     pub start_time: DateTime,
-    #[sea_orm(column_name = "endTime")]
+    #[sea_orm(column_name = "endTime", column_type = "custom(\"timestamp(3)\")")]
     pub end_time: DateTime,
+    #[sea_orm(column_type = "JsonBinary")]
     pub attendees: Json,
-    #[sea_orm(column_name = "organizerEmail")]
+    #[sea_orm(column_name = "organizerEmail", column_type = "Text")]
     pub organizer_email: Option<String>,
     #[sea_orm(column_name = "joinOverride")]
     pub join_override: Option<bool>,
@@ -30,16 +36,20 @@ pub struct Model {
     pub processing_status: MeetingProcessingStatus,
     #[sea_orm(column_name = "processingAttempts", default_value = 0)]
     pub processing_attempts: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub summary: Option<Json>,
-    #[sea_orm(column_name = "followUpDraftStartedAt")]
+    #[sea_orm(
+        column_name = "followUpDraftStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub follow_up_draft_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "followUpDraftId")]
+    #[sea_orm(column_name = "followUpDraftId", column_type = "Text")]
     pub follow_up_draft_id: Option<String>,
-    #[sea_orm(column_name = "recapSentAt")]
+    #[sea_orm(column_name = "recapSentAt", column_type = "custom(\"timestamp(3)\")")]
     pub recap_sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "recordingId")]
+    #[sea_orm(column_name = "recordingId", column_type = "Text")]
     pub recording_id: Option<String>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -49,14 +59,16 @@ pub enum Relation {
         belongs_to = "super::meeting_recording::Entity",
         from = "Column::RecordingId",
         to = "super::meeting_recording::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Meeting_recordingId_fkey"
     )]
     Recording,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Meeting_emailAccountId_fkey"
     )]
     EmailAccount,
 }

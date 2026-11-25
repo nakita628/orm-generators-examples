@@ -7,25 +7,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "space_webhooks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub url: String,
     /// AES-256-GCM under SECRET_PASSWORD (see @rallly/utils/encryption); the plaintext is shown once at creation
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
     /// Subscribed event names (`poll.closed`, ...); validated by the feature schema, not a DB enum, so the vocabulary grows without migrations
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub events: Vec<String>,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
     /// The payload contract this endpoint was built against (WEBHOOK_VERSION at creation). No default: a writer that forgets it fails instead of recording a stale contract. A breaking payload change branches on this so existing endpoints keep their shape
+    #[sea_orm(column_type = "Text")]
     pub version: String,
     /// Fan-out position in the poll activity log: activities created after this instant are still to be delivered. Starts at creation so a new endpoint never replays history
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub cursor: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_delivered_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_failed_at: Option<DateTime>,
     /// Exhausted deliveries in a row; reset by any success. The dispatcher disables the endpoint once it reaches its cap
     #[sea_orm(default_value = 0)]
     pub consecutive_failures: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -35,7 +52,8 @@ pub enum Relation {
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "space_webhooks_space_id_fkey"
     )]
     Space,
     #[sea_orm(has_many = "super::webhook_delivery::Entity")]

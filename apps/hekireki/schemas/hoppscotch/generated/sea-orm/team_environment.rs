@@ -5,10 +5,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamEnvironment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "teamID")]
+    #[sea_orm(column_name = "teamID", column_type = "Text")]
     pub team_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub variables: Json,
 }
 
@@ -18,7 +21,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamEnvironment_teamID_fkey"
     )]
     Team,
 }

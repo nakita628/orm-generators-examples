@@ -9,11 +9,14 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub website_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
-    pub session_id: Uuid,
-    #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub distinct_id: String,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub session_id: Uuid,
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
 }
 

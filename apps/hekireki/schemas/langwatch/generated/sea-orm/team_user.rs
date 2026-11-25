@@ -8,17 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TeamUser")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
     pub role: TeamUserRole,
-    #[sea_orm(column_name = "assignedRoleId")]
+    #[sea_orm(column_name = "assignedRoleId", column_type = "Text")]
     pub assigned_role_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -27,19 +35,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::custom_role::Entity",
         from = "Column::AssignedRoleId",
-        to = "super::custom_role::Column::Id"
+        to = "super::custom_role::Column::Id",
+        fk_name = "TeamUser_assignedRoleId_fkey"
     )]
     AssignedRole,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "TeamUser_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
-        to = "super::team::Column::Id"
+        to = "super::team::Column::Id",
+        fk_name = "TeamUser_teamId_fkey"
     )]
     Team,
 }

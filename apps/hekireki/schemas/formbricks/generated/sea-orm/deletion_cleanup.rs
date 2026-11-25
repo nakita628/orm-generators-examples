@@ -12,33 +12,52 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DeletionCleanup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     pub kind: DeletionCleanupKind,
     /// Scoping and logs. Not foreign keys: the rows they name are usually gone already.
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
     /// Hub kinds: the organisation's feedback directories, read inside the delete's transaction.
-    #[sea_orm(column_name = "tenantIds")]
+    #[sea_orm(
+        column_name = "tenantIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub tenant_ids: Vec<String>,
     /// `hubResponses`: the deleted responses whose records go. `hubResponseOutcome`: exactly one live response.
-    #[sea_orm(column_name = "responseIds")]
+    #[sea_orm(
+        column_name = "responseIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub response_ids: Vec<String>,
     /// `storageFiles`: the object keys or URLs to delete.
-    #[sea_orm(column_name = "fileKeys")]
+    #[sea_orm(
+        column_name = "fileKeys",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub file_keys: Vec<String>,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     /// Not drained before this, so a late pipeline write can't slip in behind a survey's cleanup.
-    #[sea_orm(column_name = "nextAttemptAt")]
+    #[sea_orm(
+        column_name = "nextAttemptAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub next_attempt_at: DateTime,
     /// The last failure: a short code and message, never record or file content.
-    #[sea_orm(column_name = "lastError")]
+    #[sea_orm(column_name = "lastError", column_type = "Text")]
     pub last_error: Option<String>,
 }
 

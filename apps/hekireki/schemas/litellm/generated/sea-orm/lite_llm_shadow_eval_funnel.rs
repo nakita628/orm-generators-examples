@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ShadowEvalFunnel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub job_id: String,
     #[sea_orm(default_value = 0)]
     pub not_sampled: i32,

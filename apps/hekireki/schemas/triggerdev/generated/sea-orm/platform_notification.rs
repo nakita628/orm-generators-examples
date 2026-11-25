@@ -10,27 +10,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PlatformNotification")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
     /// Admin-facing title for identification in admin tools
+    #[sea_orm(column_type = "Text")]
     pub title: String,
     /// Versioned JSON rendering content (see payload schema in spec)
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
     pub surface: PlatformNotificationSurface,
     pub scope: PlatformNotificationScope,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
     /// When notification becomes active
-    #[sea_orm(column_name = "startsAt")]
+    #[sea_orm(column_name = "startsAt", column_type = "custom(\"timestamp(3)\")")]
     pub starts_at: DateTime,
     /// When notification expires
-    #[sea_orm(column_name = "endsAt")]
+    #[sea_orm(column_name = "endsAt", column_type = "custom(\"timestamp(3)\")")]
     pub ends_at: DateTime,
     /// CLI: auto-expire N days after user first saw it
     #[sea_orm(column_name = "cliMaxDaysAfterFirstSeen")]
@@ -50,11 +53,15 @@ pub struct Model {
     #[sea_orm(column_name = "isDraft", default_value = false)]
     pub is_draft: bool,
     /// Soft delete
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -65,7 +72,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformNotification_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -73,7 +81,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformNotification_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -81,7 +90,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformNotification_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::platform_notification_interaction::Entity")]

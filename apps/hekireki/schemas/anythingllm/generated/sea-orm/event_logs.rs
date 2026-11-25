@@ -9,11 +9,13 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub event: String,
+    #[sea_orm(column_type = "Text")]
     pub metadata: Option<String>,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", default_expr = "Expr::current_timestamp()")]
     pub occurred_at: PrismaDateTime,
 }
 

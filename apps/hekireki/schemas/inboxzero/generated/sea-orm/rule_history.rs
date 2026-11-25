@@ -7,34 +7,46 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RuleHistory")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "ruleId")]
+    #[sea_orm(column_name = "ruleId", column_type = "Text")]
     pub rule_id: String,
     pub version: i32,
-    #[sea_orm(column_name = "triggerType")]
+    #[sea_orm(column_name = "triggerType", column_type = "Text")]
     pub trigger_type: String,
-    #[sea_orm(column_name = "promptText")]
+    #[sea_orm(column_name = "promptText", column_type = "Text")]
     pub prompt_text: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub instructions: Option<String>,
     pub enabled: bool,
     pub automate: bool,
     #[sea_orm(column_name = "runOnThreads")]
     pub run_on_threads: bool,
-    #[sea_orm(column_name = "conditionalOperator")]
+    #[sea_orm(column_name = "conditionalOperator", column_type = "Text")]
     pub conditional_operator: String,
+    #[sea_orm(column_type = "Text")]
     pub from: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub to: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub subject: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub body: Option<String>,
-    #[sea_orm(column_name = "categoryFilterType")]
+    #[sea_orm(column_name = "categoryFilterType", column_type = "Text")]
     pub category_filter_type: Option<String>,
-    #[sea_orm(column_name = "systemType")]
+    #[sea_orm(column_name = "systemType", column_type = "Text")]
     pub system_type: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub actions: Json,
-    #[sea_orm(column_name = "categoryFilters")]
+    #[sea_orm(column_name = "categoryFilters", column_type = "JsonBinary")]
     pub category_filters: Option<Json>,
 }
 
@@ -44,7 +56,8 @@ pub enum Relation {
         belongs_to = "super::rule::Entity",
         from = "Column::RuleId",
         to = "super::rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RuleHistory_ruleId_fkey"
     )]
     Rule,
 }

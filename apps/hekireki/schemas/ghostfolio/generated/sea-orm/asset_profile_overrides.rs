@@ -12,18 +12,20 @@ pub struct Model {
     pub asset_class: Option<AssetClass>,
     #[sea_orm(column_name = "assetSubClass")]
     pub asset_sub_class: Option<AssetSubClass>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub countries: Option<Json>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub holdings: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub sectors: Option<Json>,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "symbolProfileId")]
+    #[sea_orm(column_name = "symbolProfileId", column_type = "Text")]
     pub symbol_profile_id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
 }
 
@@ -33,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::symbol_profile::Entity",
         from = "Column::SymbolProfileId",
         to = "super::symbol_profile::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SymbolProfileOverrides_symbolProfileId_fkey"
     )]
     SymbolProfile,
 }

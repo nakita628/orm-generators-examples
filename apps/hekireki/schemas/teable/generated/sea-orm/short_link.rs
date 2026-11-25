@@ -7,15 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "short_link")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
     #[sea_orm(column_type = "String(StringLen::N(32))")]
     pub code: String,
     #[sea_orm(column_type = "String(StringLen::N(32))")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub resource_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
 }
 

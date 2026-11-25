@@ -5,32 +5,39 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "oauthResource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub identifier: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(column_name = "accessTokenTtl")]
     pub access_token_ttl: Option<i32>,
     #[sea_orm(column_name = "refreshTokenTtl")]
     pub refresh_token_ttl: Option<i32>,
-    #[sea_orm(column_name = "signingAlgorithm")]
+    #[sea_orm(column_name = "signingAlgorithm", column_type = "Text")]
     pub signing_algorithm: Option<String>,
-    #[sea_orm(column_name = "signingKeyId")]
+    #[sea_orm(column_name = "signingKeyId", column_type = "Text")]
     pub signing_key_id: Option<String>,
-    #[sea_orm(column_name = "allowedScopes")]
+    #[sea_orm(
+        column_name = "allowedScopes",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub allowed_scopes: Vec<String>,
-    #[sea_orm(column_name = "customClaims")]
+    #[sea_orm(column_name = "customClaims", column_type = "JsonBinary")]
     pub custom_claims: Option<Json>,
     #[sea_orm(column_name = "dpopBoundAccessTokensRequired", default_value = false)]
     pub dpop_bound_access_tokens_required: Option<bool>,
     #[sea_orm(default_value = false)]
     pub disabled: Option<bool>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: Option<DateTime>,
     #[sea_orm(column_name = "policyVersion", default_value = 1)]
     pub policy_version: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
 }
 

@@ -678,8 +678,12 @@ export const asset = pgTable(
   },
   (table): PgTableExtraConfigValue[] => [
     uniqueIndex('Asset_preferredBarcodeId_key').on(table.preferredBarcodeId),
-    index('Asset_title_description_idx').on(table.title, table.description),
-    index('Asset_sequentialId_trgm_idx').on(table.sequentialId),
+    index('Asset_title_description_idx').using(
+      'gin',
+      table.title.op('gin_trgm_ops'),
+      table.description.op('gin_trgm_ops'),
+    ),
+    index('Asset_sequentialId_trgm_idx').using('gin', table.sequentialId.op('gin_trgm_ops')),
     index('Asset_organizationId_compound_idx').on(
       table.organizationId,
       table.title,
@@ -691,7 +695,7 @@ export const asset = pgTable(
     index('Asset_createdAt_organizationId_idx').on(table.createdAt, table.organizationId),
     index('Asset_organizationId_createdAt_id_idx').on(
       table.organizationId,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
       table.id,
     ),
     index('Asset_valuation_organizationId_idx').on(table.valuation, table.organizationId),
@@ -903,7 +907,7 @@ export const category = pgTable(
   (table) => [
     index('Category_organizationId_idx').on(table.organizationId),
     index('Category_userId_idx').on(table.userId),
-    index('Category_name_trgm_idx').on(table.name),
+    index('Category_name_trgm_idx').using('gin', table.name.op('gin_trgm_ops')),
     foreignKey({ name: 'Category_userId_fkey', columns: [table.userId], foreignColumns: [user.id] })
       .onDelete('restrict')
       .onUpdate('cascade'),
@@ -956,7 +960,7 @@ export const assetModel = pgTable(
   (table) => [
     index('AssetModel_organizationId_name_idx').on(table.organizationId, table.name),
     index('AssetModel_userId_idx').on(table.userId),
-    index('AssetModel_name_trgm_idx').on(table.name),
+    index('AssetModel_name_trgm_idx').using('gin', table.name.op('gin_trgm_ops')),
     foreignKey({
       name: 'AssetModel_defaultCategoryId_fkey',
       columns: [table.defaultCategoryId],
@@ -1088,7 +1092,7 @@ export const tag = pgTable(
   (table) => [
     index('Tag_organizationId_idx').on(table.organizationId),
     index('Tag_userId_idx').on(table.userId),
-    index('Tag_name_trgm_idx').on(table.name),
+    index('Tag_name_trgm_idx').using('gin', table.name.op('gin_trgm_ops')),
     foreignKey({ name: 'Tag_userId_fkey', columns: [table.userId], foreignColumns: [user.id] })
       .onDelete('restrict')
       .onUpdate('cascade'),
@@ -1227,7 +1231,7 @@ export const qr = pgTable(
     index('Qr_userId_idx').on(table.userId),
     index('Qr_organizationId_idx').on(table.organizationId),
     index('Qr_batchId_idx').on(table.batchId),
-    index('Qr_id_trgm_idx').on(table.id),
+    index('Qr_id_trgm_idx').using('gin', table.id.op('gin_trgm_ops')),
     foreignKey({ name: 'Qr_assetId_fkey', columns: [table.assetId], foreignColumns: [asset.id] })
       .onDelete('set null')
       .onUpdate('cascade'),
@@ -1276,7 +1280,7 @@ export const barcode = pgTable(
     index('Barcode_assetId_idx').on(table.assetId),
     index('Barcode_kitId_idx').on(table.kitId),
     index('Barcode_organizationId_idx').on(table.organizationId),
-    index('Barcode_value_trgm_idx').on(table.value),
+    index('Barcode_value_trgm_idx').using('gin', table.value.op('gin_trgm_ops')),
     uniqueIndex('Barcode_organizationId_value_key').on(table.organizationId, table.value),
     foreignKey({
       name: 'Barcode_assetId_fkey',
@@ -1438,9 +1442,9 @@ export const location = pgTable(
     index('Location_organizationId_idx').on(table.organizationId),
     index('Location_userId_idx').on(table.userId),
     index('Location_organizationId_parentId_idx').on(table.organizationId, table.parentId),
-    index('Location_name_trgm_idx').on(table.name),
-    index('Location_description_trgm_idx').on(table.description),
-    index('Location_address_trgm_idx').on(table.address),
+    index('Location_name_trgm_idx').using('gin', table.name.op('gin_trgm_ops')),
+    index('Location_description_trgm_idx').using('gin', table.description.op('gin_trgm_ops')),
+    index('Location_address_trgm_idx').using('gin', table.address.op('gin_trgm_ops')),
     foreignKey({
       name: 'Location_imageId_fkey',
       columns: [table.imageId],
@@ -1501,7 +1505,7 @@ export const teamMember = pgTable(
     deletedAt: timestamp('deletedAt', { precision: 3 }),
   },
   (table) => [
-    index('TeamMember_name_idx').on(table.name),
+    index('TeamMember_name_idx').using('gin', table.name.op('gin_trgm_ops')),
     index('TeamMember_organizationId_idx').on(table.organizationId),
     index('TeamMember_userId_idx').on(table.userId),
     foreignKey({
@@ -2743,7 +2747,11 @@ export const assetReminder = pgTable(
   },
   (table) => [
     index('AssetReminder_assetId_alertDateTime_idx').on(table.assetId, table.alertDateTime),
-    index('AssetReminder_name_message_idx').on(table.name, table.message),
+    index('AssetReminder_name_message_idx').using(
+      'gin',
+      table.name.op('gin_trgm_ops'),
+      table.message.op('gin_trgm_ops'),
+    ),
     index('AssetReminder_organizationId_alertDateTime_assetId_idx').on(
       table.organizationId,
       table.alertDateTime,

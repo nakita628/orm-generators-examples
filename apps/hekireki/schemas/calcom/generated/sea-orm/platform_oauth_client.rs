@@ -7,20 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PlatformOAuthClient")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
     pub permissions: i32,
+    #[sea_orm(column_type = "Text")]
     pub logo: Option<String>,
-    #[sea_orm(column_name = "redirectUris")]
+    #[sea_orm(
+        column_name = "redirectUris",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub redirect_uris: Vec<String>,
     #[sea_orm(column_name = "organizationId")]
     pub organization_id: i32,
-    #[sea_orm(column_name = "bookingRedirectUri")]
+    #[sea_orm(column_name = "bookingRedirectUri", column_type = "Text")]
     pub booking_redirect_uri: Option<String>,
-    #[sea_orm(column_name = "bookingCancelRedirectUri")]
+    #[sea_orm(column_name = "bookingCancelRedirectUri", column_type = "Text")]
     pub booking_cancel_redirect_uri: Option<String>,
-    #[sea_orm(column_name = "bookingRescheduleRedirectUri")]
+    #[sea_orm(column_name = "bookingRescheduleRedirectUri", column_type = "Text")]
     pub booking_reschedule_redirect_uri: Option<String>,
     #[sea_orm(column_name = "areEmailsEnabled", default_value = false)]
     pub are_emails_enabled: bool,
@@ -28,7 +35,11 @@ pub struct Model {
     pub are_default_event_types_enabled: bool,
     #[sea_orm(column_name = "areCalendarEventsEnabled", default_value = true)]
     pub are_calendar_events_enabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -38,7 +49,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::OrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformOAuthClient_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(

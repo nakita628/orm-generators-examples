@@ -8,41 +8,47 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Booking")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "guestName")]
+    #[sea_orm(column_name = "guestName", column_type = "Text")]
     pub guest_name: String,
-    #[sea_orm(column_name = "guestEmail")]
+    #[sea_orm(column_name = "guestEmail", column_type = "Text")]
     pub guest_email: String,
-    #[sea_orm(column_name = "guestNote")]
+    #[sea_orm(column_name = "guestNote", column_type = "Text")]
     pub guest_note: Option<String>,
-    #[sea_orm(column_name = "startTime")]
+    #[sea_orm(column_name = "startTime", column_type = "custom(\"timestamp(3)\")")]
     pub start_time: DateTime,
-    #[sea_orm(column_name = "endTime")]
+    #[sea_orm(column_name = "endTime", column_type = "custom(\"timestamp(3)\")")]
     pub end_time: DateTime,
     #[sea_orm(default_value = "PENDING_PROVIDER_EVENT")]
     pub status: BookingStatus,
+    #[sea_orm(column_type = "Text")]
     pub provider: Option<String>,
-    #[sea_orm(column_name = "providerConnectionId")]
+    #[sea_orm(column_name = "providerConnectionId", column_type = "Text")]
     pub provider_connection_id: Option<String>,
-    #[sea_orm(column_name = "providerCalendarId")]
+    #[sea_orm(column_name = "providerCalendarId", column_type = "Text")]
     pub provider_calendar_id: Option<String>,
-    #[sea_orm(column_name = "providerEventId")]
+    #[sea_orm(column_name = "providerEventId", column_type = "Text")]
     pub provider_event_id: Option<String>,
-    #[sea_orm(column_name = "videoConferenceLink")]
+    #[sea_orm(column_name = "videoConferenceLink", column_type = "Text")]
     pub video_conference_link: Option<String>,
-    #[sea_orm(column_name = "cancelTokenHash")]
+    #[sea_orm(column_name = "cancelTokenHash", column_type = "Text")]
     pub cancel_token_hash: String,
-    #[sea_orm(column_name = "cancellationReason")]
+    #[sea_orm(column_name = "cancellationReason", column_type = "Text")]
     pub cancellation_reason: Option<String>,
-    #[sea_orm(column_name = "idempotencyToken")]
+    #[sea_orm(column_name = "idempotencyToken", column_type = "Text")]
     pub idempotency_token: Option<String>,
-    #[sea_orm(column_name = "bookingLinkId")]
+    #[sea_orm(column_name = "bookingLinkId", column_type = "Text")]
     pub booking_link_id: String,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -52,14 +58,16 @@ pub enum Relation {
         belongs_to = "super::booking_link::Entity",
         from = "Column::BookingLinkId",
         to = "super::booking_link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_bookingLinkId_fkey"
     )]
     BookingLink,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Booking_emailAccountId_fkey"
     )]
     EmailAccount,
 }

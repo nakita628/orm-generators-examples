@@ -8,10 +8,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PermissionGroupAccessControls")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: String,
-    #[sea_orm(column_name = "itemId")]
+    #[sea_orm(column_name = "itemId", column_type = "Text")]
     pub item_id: String,
     #[sea_orm(column_name = "itemType")]
     pub item_type: ItemType,
@@ -21,9 +22,13 @@ pub struct Model {
     pub can_download: bool,
     #[sea_orm(column_name = "canDownloadOriginal", default_value = false)]
     pub can_download_original: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::permission_group::Entity",
         from = "Column::GroupId",
         to = "super::permission_group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PermissionGroupAccessControls_groupId_fkey"
     )]
     Group,
 }

@@ -10,9 +10,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NurturingUncopiedProject")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(
+        column_name = "firstSeenAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub first_seen_at: DateTime,
 }
 

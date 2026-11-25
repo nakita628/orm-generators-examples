@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ScimToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// D08: the SSO connection this token was issued for, and its ENTIRE write
     /// authority — a token minted for one connection can never touch another
@@ -20,7 +21,7 @@ pub struct Model {
     /// organization-wide authority they were sold with; the backfill points
     /// each at its organization's first connection where there is one. Minting
     /// a NEW token without a connection is refused (`scim_connection_required`).
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: Option<String>,
     /// UNIQUE, and that is a tenancy boundary rather than tidiness.
     ///
@@ -33,7 +34,7 @@ pub struct Model {
     /// the planner reached first: one customer's directory provisioning and
     /// deleting another customer's people.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedToken")]
+    #[sea_orm(column_name = "hashedToken", column_type = "Text")]
     pub hashed_token: String,
     /// How `hashedToken` was derived, so the two schemes can coexist while
     /// tokens minted under the old one are still in use.
@@ -42,12 +43,21 @@ pub struct Model {
     /// for a value a person chose — a database dump of those is a wordlist away
     /// from live credentials. `hmac-sha256` is keyed on the deployment's own
     /// secret, so a dump on its own is inert. Every new row is the latter.
-    #[sea_orm(column_name = "hashScheme", default_value = "sha256")]
+    #[sea_orm(
+        column_name = "hashScheme",
+        column_type = "Text",
+        default_value = "sha256"
+    )]
     pub hash_scheme: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
 }
 
@@ -57,7 +67,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ScimToken_organizationId_fkey"
     )]
     Organization,
 }

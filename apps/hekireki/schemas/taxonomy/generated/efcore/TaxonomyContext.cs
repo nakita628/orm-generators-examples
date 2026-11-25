@@ -47,18 +47,39 @@ public partial class TaxonomyContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("userId");
-            entity.Property(e => e.Type).HasColumnName("type");
-            entity.Property(e => e.Provider).HasColumnName("provider");
-            entity.Property(e => e.ProviderAccountId).HasColumnName("providerAccountId");
-            entity.Property(e => e.RefreshToken).HasColumnName("refresh_token");
-            entity.Property(e => e.AccessToken).HasColumnName("access_token");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+            entity.Property(e => e.Type)
+                .HasMaxLength(191)
+                .HasColumnName("type");
+            entity.Property(e => e.Provider)
+                .HasMaxLength(191)
+                .HasColumnName("provider");
+            entity.Property(e => e.ProviderAccountId)
+                .HasMaxLength(191)
+                .HasColumnName("providerAccountId");
+            entity.Property(e => e.RefreshToken)
+                .HasColumnType("text")
+                .HasColumnName("refresh_token");
+            entity.Property(e => e.AccessToken)
+                .HasColumnType("text")
+                .HasColumnName("access_token");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(e => e.TokenType).HasColumnName("token_type");
-            entity.Property(e => e.Scope).HasColumnName("scope");
-            entity.Property(e => e.IdToken).HasColumnName("id_token");
-            entity.Property(e => e.SessionState).HasColumnName("session_state");
+            entity.Property(e => e.TokenType)
+                .HasMaxLength(191)
+                .HasColumnName("token_type");
+            entity.Property(e => e.Scope)
+                .HasMaxLength(191)
+                .HasColumnName("scope");
+            entity.Property(e => e.IdToken)
+                .HasColumnType("text")
+                .HasColumnName("id_token");
+            entity.Property(e => e.SessionState)
+                .HasMaxLength(191)
+                .HasColumnName("session_state");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -88,9 +109,14 @@ public partial class TaxonomyContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.SessionToken).HasColumnName("sessionToken");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.SessionToken)
+                .HasMaxLength(191)
+                .HasColumnName("sessionToken");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -116,14 +142,21 @@ public partial class TaxonomyContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Email)
+                .HasMaxLength(191)
+                .HasColumnName("email");
             entity.Property(e => e.EmailVerified)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("emailVerified");
-            entity.Property(e => e.Image).HasColumnName("image");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
@@ -136,9 +169,15 @@ public partial class TaxonomyContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updated_at");
-            entity.Property(e => e.StripeCustomerId).HasColumnName("stripe_customer_id");
-            entity.Property(e => e.StripeSubscriptionId).HasColumnName("stripe_subscription_id");
-            entity.Property(e => e.StripePriceId).HasColumnName("stripe_price_id");
+            entity.Property(e => e.StripeCustomerId)
+                .HasMaxLength(191)
+                .HasColumnName("stripe_customer_id");
+            entity.Property(e => e.StripeSubscriptionId)
+                .HasMaxLength(191)
+                .HasColumnName("stripe_subscription_id");
+            entity.Property(e => e.StripePriceId)
+                .HasMaxLength(191)
+                .HasColumnName("stripe_price_id");
             entity.Property(e => e.StripeCurrentPeriodEnd)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -153,8 +192,12 @@ public partial class TaxonomyContext : DbContext
 
             entity.HasIndex(e => new { e.Identifier, e.Token }, "verification_tokens_identifier_token_key").IsUnique();
 
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Token).HasColumnName("token");
+            entity.Property(e => e.Identifier)
+                .HasMaxLength(191)
+                .HasColumnName("identifier");
+            entity.Property(e => e.Token)
+                .HasMaxLength(191)
+                .HasColumnName("token");
             entity.Property(e => e.Expires)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
@@ -169,8 +212,11 @@ public partial class TaxonomyContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
+                .HasMaxLength(191)
                 .HasColumnName("id");
-            entity.Property(e => e.Title).HasColumnName("title");
+            entity.Property(e => e.Title)
+                .HasMaxLength(191)
+                .HasColumnName("title");
             entity.Property(e => e.Content)
                 .HasColumnType("json")
                 .HasColumnName("content");
@@ -190,7 +236,9 @@ public partial class TaxonomyContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updated_at");
-            entity.Property(e => e.AuthorId).HasColumnName("authorId");
+            entity.Property(e => e.AuthorId)
+                .HasMaxLength(191)
+                .HasColumnName("authorId");
 
             entity.HasOne(d => d.Author).WithMany(p => p.Post)
                 .HasForeignKey(d => d.AuthorId)

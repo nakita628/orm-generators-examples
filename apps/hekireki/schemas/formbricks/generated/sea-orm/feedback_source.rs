@@ -23,9 +23,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeedbackSource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub r#type: FeedbackSourceType,
     #[sea_orm(default_value = "active")]
@@ -36,11 +43,13 @@ pub struct Model {
     pub import_mode: FeedbackSourceImportMode,
     #[sea_orm(column_name = "elementScope", default_value = "specific")]
     pub element_scope: FeedbackSourceElementScope,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "feedbackDirectoryId")]
+    #[sea_orm(column_name = "feedbackDirectoryId", column_type = "Text")]
     pub feedback_directory_id: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_sync_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
 }
 
@@ -50,21 +59,24 @@ pub enum Relation {
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackSource_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::feedback_directory::Entity",
         from = "Column::FeedbackDirectoryId",
         to = "super::feedback_directory::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackSource_feedbackDirectoryId_fkey"
     )]
     FeedbackDirectory,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedBy",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "FeedbackSource_created_by_fkey"
     )]
     Creator,
     #[sea_orm(
@@ -72,7 +84,8 @@ pub enum Relation {
         from = "(Column::FeedbackDirectoryId, Column::WorkspaceId)",
         to = "(super::feedback_directory_workspace::Column::FeedbackDirectoryId, super::feedback_directory_workspace::Column::WorkspaceId)",
         on_update = "Cascade",
-        on_delete = "NoAction"
+        on_delete = "NoAction",
+        fk_name = "FeedbackSource_feedbackDirectoryId_workspaceId_fkey"
     )]
     FeedbackDirectoryWorkspace,
     #[sea_orm(has_many = "super::feedback_source_formbricks_mapping::Entity")]

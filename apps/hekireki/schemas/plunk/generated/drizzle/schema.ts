@@ -278,7 +278,7 @@ export const contacts = pgTable(
     index('contacts_projectId_idx').on(table.projectId),
     index('contacts_projectId_subscribed_idx').on(table.projectId, table.subscribed),
     index('contacts_snoozedUntil_idx').on(table.snoozedUntil),
-    index('contacts_data_idx').on(table.data),
+    index('contacts_data_idx').using('gin', table.data.op('jsonb_ops')),
     uniqueIndex('contacts_projectId_email_key').on(table.projectId, table.email),
     foreignKey({
       name: 'contacts_projectId_fkey',
@@ -345,7 +345,7 @@ export const segments = pgTable(
   },
   (table) => [
     index('segments_projectId_idx').on(table.projectId),
-    index('segments_condition_idx').on(table.condition),
+    index('segments_condition_idx').using('gin', table.condition.op('jsonb_ops')),
     foreignKey({
       name: 'segments_projectId_fkey',
       columns: [table.projectId],
@@ -439,7 +439,7 @@ export const campaigns = pgTable(
     ),
     index('campaigns_scheduledFor_idx').on(table.scheduledFor),
     index('campaigns_segmentId_idx').on(table.segmentId),
-    index('campaigns_audienceCondition_idx').on(table.audienceCondition),
+    index('campaigns_audienceCondition_idx').using('gin', table.audienceCondition.op('jsonb_ops')),
     foreignKey({
       name: 'campaigns_segmentId_fkey',
       columns: [table.segmentId],
@@ -817,7 +817,7 @@ export const events = pgTable(
     index('events_contactId_name_createdAt_idx').on(table.contactId, table.name, table.createdAt),
     index('events_projectId_name_createdAt_idx').on(table.projectId, table.name, table.createdAt),
     index('events_contactId_createdAt_idx').on(table.contactId, table.createdAt),
-    index('events_data_idx').on(table.data),
+    index('events_data_idx').using('gin', table.data.op('jsonb_ops')),
     foreignKey({
       name: 'events_projectId_fkey',
       columns: [table.projectId],
@@ -958,15 +958,24 @@ export const apiRequests = pgTable(
       .$defaultFn(utcNow),
   },
   (table) => [
-    index('api_requests_projectId_createdAt_idx').on(table.projectId, table.createdAt),
-    index('api_requests_userId_createdAt_idx').on(table.userId, table.createdAt),
-    index('api_requests_statusCode_createdAt_idx').on(table.statusCode, table.createdAt),
-    index('api_requests_path_createdAt_idx').on(table.path, table.createdAt),
-    index('api_requests_createdAt_idx').on(table.createdAt),
+    index('api_requests_projectId_createdAt_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
+    index('api_requests_userId_createdAt_idx').on(
+      table.userId,
+      table.createdAt.desc().nullsFirst(),
+    ),
+    index('api_requests_statusCode_createdAt_idx').on(
+      table.statusCode,
+      table.createdAt.desc().nullsFirst(),
+    ),
+    index('api_requests_path_createdAt_idx').on(table.path, table.createdAt.desc().nullsFirst()),
+    index('api_requests_createdAt_idx').on(table.createdAt.desc().nullsFirst()),
     index('api_requests_projectId_statusCode_createdAt_idx').on(
       table.projectId,
       table.statusCode,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     foreignKey({
       name: 'api_requests_projectId_fkey',

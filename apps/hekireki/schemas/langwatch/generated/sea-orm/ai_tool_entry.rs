@@ -26,30 +26,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AiToolEntry")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// "organization" | "team". String not enum so new scopes ship
     /// without migrations.
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
     /// organizationId or teamId, narrowing what scope this entry applies
     /// to. Always equals organizationId when scope=organization.
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
     /// "coding_assistant" | "model_provider" | "external_tool".
     /// Discriminator drives the per-tile UX shape and validates
     /// the `config` JSON column at the app layer.
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: String,
     /// Stable slug for team-overrides-org resolution (a team-scoped
     /// entry with the same slug as an org-scoped one hides the org
     /// default for users in that team). Server-owned: generated from
     /// displayName + nanoid(6) on create, immutable on update.
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     /// @deprecated Use `iconAsset` instead. Kept for back-compat with
     /// pre-refactor rows; new writes should populate iconAsset.
-    #[sea_orm(column_name = "iconKey")]
+    #[sea_orm(column_name = "iconKey", column_type = "Text")]
     pub icon_key: Option<String>,
     /// Icon source - single column, prefix-discriminated:
     /// "preset:claude_code" / "preset:codex" / ...   (built-in)
@@ -69,17 +73,25 @@ pub struct Model {
     pub enabled: bool,
     /// Per-type config JSON. Validated via zod discriminated union
     /// at the service layer (see AiToolEntryService).
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub config: Json,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -89,7 +101,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AiToolEntry_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::ai_tool_entry_team::Entity")]

@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, Integer, MetaData, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, Integer, MetaData, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -781,7 +781,7 @@ class DocumentVersion(Base):
     __table_args__ = (
         Index("DocumentVersion_documentId_idx", "documentId"),
         Index("DocumentVersion_documentId_isPrimary_idx", "documentId", "isPrimary"),
-        Index("DocumentVersion_documentId_createdAt_idx", "documentId", "createdAt"),
+        Index("DocumentVersion_documentId_createdAt_idx", "documentId", literal_column("\"createdAt\"").desc()),
         Index("DocumentVersion_documentId_isPrimary_createdAt_idx", "documentId", "isPrimary", "createdAt"),
         Index("DocumentVersion_versionNumber_documentId_key", "versionNumber", "documentId", unique=True),
     )
@@ -1517,11 +1517,11 @@ class View(Base):
         Index("View_viewerId_idx", "viewerId"),
         Index("View_groupId_idx", "groupId"),
         Index("View_teamId_idx", "teamId"),
-        Index("View_viewedAt_idx", "viewedAt"),
+        Index("View_viewedAt_idx", literal_column("\"viewedAt\"").desc()),
         Index("View_viewerId_documentId_idx", "viewerId", "documentId"),
         Index("View_viewerEmail_idx", "viewerEmail"),
         Index("View_documentId_isArchived_idx", "documentId", "isArchived"),
-        Index("View_documentId_viewedAt_idx", "documentId", "viewedAt"),
+        Index("View_documentId_viewedAt_idx", "documentId", literal_column("\"viewedAt\"").desc()),
     )
 
     link: Mapped["Link"] = relationship(back_populates="views")
@@ -1652,7 +1652,7 @@ class Chat(Base):
         Index("Chat_userId_idx", "userId"),
         Index("Chat_viewerId_idx", "viewerId"),
         Index("Chat_viewId_idx", "viewId"),
-        Index("Chat_createdAt_idx", "createdAt"),
+        Index("Chat_createdAt_idx", literal_column("\"createdAt\"").desc()),
     )
 
     team: Mapped["Team"] = relationship(back_populates="chats")

@@ -10,31 +10,40 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
     pub difficulty: Difficulty,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub slug: String,
     /// this is the description to describe the challenge on description panel
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub description: String,
     /// this is a short blue thats shown on the explore card
-    #[sea_orm(column_name = "shortDescription")]
+    #[sea_orm(
+        column_name = "shortDescription",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub short_description: String,
     /// Starter code for the challenge
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub code: String,
     /// Test cases that need to be passed in order have the submission be accepted.
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub tests: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: ChallengeStatus,
     pub tsconfig: Option<Json>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
 }
 
@@ -43,7 +52,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Challenge_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::vote::Entity")]

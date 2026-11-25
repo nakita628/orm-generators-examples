@@ -13,9 +13,12 @@ pub struct Model {
     pub stale_after_ms: i32,
     #[sea_orm(column_name = "nextSyncAt")]
     pub next_sync_at: PrismaDateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastSyncedAt")]
+    #[sea_orm(
+        column_name = "lastSyncedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_synced_at: PrismaDateTime,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "workspaceDocId")]
@@ -28,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::workspace_documents::Entity",
         from = "Column::WorkspaceDocId",
         to = "super::workspace_documents::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "document_sync_queues_workspaceDocId_fkey"
     )]
     WorkspaceDoc,
     #[sea_orm(has_many = "super::document_sync_executions::Entity")]

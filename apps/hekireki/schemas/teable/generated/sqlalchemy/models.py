@@ -607,7 +607,7 @@ class ComputedUpdateRunHistory(Base):
         Index("computed_update_run_history_run_id_idx", "run_id"),
         Index("computed_update_run_history_base_id_completed_at_idx", "base_id", "completed_at"),
         Index("computed_update_run_history_completed_at_idx", "completed_at"),
-        Index("computed_update_run_history_origin_run_ids_gin", "origin_run_ids"),
+        Index("computed_update_run_history_origin_run_ids_gin", "origin_run_ids", postgresql_using="gin"),
     )
 
 class ComputedUpdatePauseScope(Base):

@@ -7,25 +7,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IncomingWebhook")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub secret: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub source: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub actions: Option<String>,
     #[sea_orm(column_name = "consecutiveFailures", default_value = 0)]
     pub consecutive_failures: i32,
-    #[sea_orm(column_name = "lastFailedAt")]
+    #[sea_orm(column_name = "lastFailedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_failed_at: Option<DateTime>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -35,7 +44,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "IncomingWebhook_teamId_fkey"
     )]
     Team,
 }

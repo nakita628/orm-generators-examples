@@ -7,20 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "domain_event_delivery")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub event_id: String,
+    #[sea_orm(column_type = "Text")]
     pub consumer_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     #[sea_orm(default_value = 12)]
     pub max_attempts: i32,
+    #[sea_orm(column_type = "Text")]
     pub lease_token: Option<String>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_type = "custom(\"timestamptz(3)\")")]
     pub lease_expires_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub next_attempt_at: DateTimeWithTimeZone,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

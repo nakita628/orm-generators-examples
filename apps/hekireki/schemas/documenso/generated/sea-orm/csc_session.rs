@@ -12,29 +12,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CscSession")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// Denormalised envelope id for ergonomic lookups. No FK relation — cleanup
     /// flows through the Recipient cascade.
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: String,
     /// Pinned at prep time; stable across overlay re-renders so the captured
     /// signedAttrs digest matches the bytes the TSP signs.
-    #[sea_orm(column_name = "signingTime")]
+    #[sea_orm(column_name = "signingTime", column_type = "custom(\"timestamp(3)\")")]
     pub signing_time: DateTime,
     /// Contract between prep and sign: an array of
     /// `{ envelopeItemId, documentDataId, hashB64, ordinal }` per envelope item.
     /// `documentDataId` pins the immutable bytes that produced the captured
     /// digest so sign-time can re-derive the same hash against the same content.
     /// [CscSessionItems] @zod.custom.use(ZCscSessionItemsSchema)
-    #[sea_orm(column_name = "itemsJson")]
+    #[sea_orm(column_name = "itemsJson", column_type = "JsonBinary")]
     pub items_json: Json,
     /// Populated by the credential-scope OAuth callback. Both nullable at row
     /// creation; set together when the SAD is exchanged.
     #[sea_orm(column_name = "encryptedSad")]
     pub encrypted_sad: Option<Vec<u8>>,
-    #[sea_orm(column_name = "sadExpiresAt")]
+    #[sea_orm(column_name = "sadExpiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub sad_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "recipientId")]
@@ -47,7 +52,8 @@ pub enum Relation {
         belongs_to = "super::recipient::Entity",
         from = "Column::RecipientId",
         to = "super::recipient::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CscSession_recipientId_fkey"
     )]
     Recipient,
 }

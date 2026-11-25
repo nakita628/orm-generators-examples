@@ -9,25 +9,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RoleBinding")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
-    #[sea_orm(column_name = "apiKeyId")]
+    #[sea_orm(column_name = "apiKeyId", column_type = "Text")]
     pub api_key_id: Option<String>,
     pub role: TeamUserRole,
-    #[sea_orm(column_name = "customRoleId")]
+    #[sea_orm(column_name = "customRoleId", column_type = "Text")]
     pub custom_role_id: Option<String>,
     #[sea_orm(column_name = "scopeType")]
     pub scope_type: RoleBindingScopeType,
-    #[sea_orm(column_name = "scopeId")]
+    #[sea_orm(column_name = "scopeId", column_type = "Text")]
     pub scope_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -37,34 +46,39 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RoleBinding_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RoleBinding_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::group::Entity",
         from = "Column::GroupId",
         to = "super::group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RoleBinding_groupId_fkey"
     )]
     Group,
     #[sea_orm(
         belongs_to = "super::api_key::Entity",
         from = "Column::ApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "RoleBinding_apiKeyId_fkey"
     )]
     ApiKey,
     #[sea_orm(
         belongs_to = "super::custom_role::Entity",
         from = "Column::CustomRoleId",
-        to = "super::custom_role::Column::Id"
+        to = "super::custom_role::Column::Id",
+        fk_name = "RoleBinding_customRoleId_fkey"
     )]
     CustomRole,
 }

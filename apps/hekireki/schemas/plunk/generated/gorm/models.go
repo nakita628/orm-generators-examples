@@ -57,9 +57,9 @@ type Project struct {
 	DisabledReason                *string          `gorm:"column:disabledReason" json:"disabledReason"`
 	Customer                      *string          `gorm:"column:customer;uniqueIndex:projects_customer_key" json:"customer"`
 	Subscription                  *string          `gorm:"column:subscription;uniqueIndex:projects_subscription_key" json:"subscription"`
-	CardVerification              *string          `gorm:"column:cardVerification;index:projects_cardVerification_cardVerificationAt_idx" json:"cardVerification"`
+	CardVerification              *string          `gorm:"column:cardVerification;index:projects_cardVerification_cardVerificationAt_idx,priority:1" json:"cardVerification"`
 	CardVerificationIntent        *string          `gorm:"column:cardVerificationIntent" json:"cardVerificationIntent"`
-	CardVerificationAt            *DateTime        `gorm:"column:cardVerificationAt;index:projects_cardVerification_cardVerificationAt_idx;type:timestamp(3)" json:"cardVerificationAt"`
+	CardVerificationAt            *DateTime        `gorm:"column:cardVerificationAt;index:projects_cardVerification_cardVerificationAt_idx,priority:2;type:timestamp(3)" json:"cardVerificationAt"`
 	CardVerificationSession       *string          `gorm:"column:cardVerificationSession" json:"cardVerificationSession"`
 	CardVerificationPaymentMethod *string          `gorm:"column:cardVerificationPaymentMethod" json:"cardVerificationPaymentMethod"`
 	CardVerificationFingerprint   *string          `gorm:"column:cardVerificationFingerprint" json:"cardVerificationFingerprint"`
@@ -147,10 +147,10 @@ func (*Membership) BeforeUpdate(tx *gorm.DB) error {
 
 type Domain struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	Domain     string         `gorm:"column:domain;uniqueIndex:domains_projectId_domain_key;not null" json:"domain"`
-	Verified   bool           `gorm:"column:verified;index:domains_projectId_verified_idx;default:false;not null" json:"verified"`
+	Domain     string         `gorm:"column:domain;uniqueIndex:domains_projectId_domain_key,priority:2;not null" json:"domain"`
+	Verified   bool           `gorm:"column:verified;index:domains_projectId_verified_idx,priority:2;default:false;not null" json:"verified"`
 	DkimTokens datatypes.JSON `gorm:"column:dkimTokens" json:"dkimTokens"`
-	ProjectID  string         `gorm:"column:projectId;uniqueIndex:domains_projectId_domain_key;index:domains_projectId_idx;index:domains_projectId_verified_idx;not null" json:"projectId"`
+	ProjectID  string         `gorm:"column:projectId;uniqueIndex:domains_projectId_domain_key,priority:1;index:domains_projectId_idx;index:domains_projectId_verified_idx,priority:1;not null" json:"projectId"`
 	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project    *Project       `gorm:"belongsTo"`
@@ -184,9 +184,9 @@ func (*Domain) BeforeUpdate(tx *gorm.DB) error {
 
 type Contact struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	Email      string         `gorm:"column:email;uniqueIndex:contacts_projectId_email_key;not null" json:"email"`
-	Data       datatypes.JSON `gorm:"column:data;index:contacts_data_idx" json:"data"`
-	Subscribed *bool          `gorm:"column:subscribed;index:contacts_projectId_subscribed_idx;default:true;not null" json:"subscribed"`
+	Email      string         `gorm:"column:email;uniqueIndex:contacts_projectId_email_key,priority:2;not null" json:"email"`
+	Data       datatypes.JSON `gorm:"column:data;index:contacts_data_idx,type:gin,expression:\"data\" jsonb_ops" json:"data"`
+	Subscribed *bool          `gorm:"column:subscribed;index:contacts_projectId_subscribed_idx,priority:2;default:true;not null" json:"subscribed"`
 	// When set, `subscribed = false` is temporary rather than permanent: the snooze
 	// sweep resubscribes the contact once this passes. Suppression itself is still
 	// carried entirely by `subscribed`, so every send path filters snoozed contacts
@@ -195,7 +195,7 @@ type Contact struct {
 	// Cleared by every other write to `subscribed` — including the bounce and
 	// complaint paths, so a suppressed address can never be woken back up.
 	SnoozedUntil       *DateTime           `gorm:"column:snoozedUntil;index:contacts_snoozedUntil_idx;type:timestamp(3)" json:"snoozedUntil"`
-	ProjectID          string              `gorm:"column:projectId;uniqueIndex:contacts_projectId_email_key;index:contacts_projectId_idx;index:contacts_projectId_subscribed_idx;not null" json:"projectId"`
+	ProjectID          string              `gorm:"column:projectId;uniqueIndex:contacts_projectId_email_key,priority:1;index:contacts_projectId_idx;index:contacts_projectId_subscribed_idx,priority:1;not null" json:"projectId"`
 	CreatedAt          DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt          DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project            *Project            `gorm:"belongsTo"`
@@ -241,8 +241,8 @@ type Template struct {
 	From          string         `gorm:"column:from;not null" json:"from"`
 	FromName      *string        `gorm:"column:fromName" json:"fromName"`
 	ReplyTo       *string        `gorm:"column:replyTo" json:"replyTo"`
-	Type          string         `gorm:"column:type;index:templates_projectId_type_idx;default:'MARKETING';not null" json:"type"`
-	ProjectID     string         `gorm:"column:projectId;index:templates_projectId_idx;index:templates_projectId_type_idx;not null" json:"projectId"`
+	Type          string         `gorm:"column:type;index:templates_projectId_type_idx,priority:2;default:'MARKETING';not null" json:"type"`
+	ProjectID     string         `gorm:"column:projectId;index:templates_projectId_idx;index:templates_projectId_type_idx,priority:1;not null" json:"projectId"`
 	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project       *Project       `gorm:"belongsTo"`
@@ -281,7 +281,7 @@ type Segment struct {
 	Name            string              `gorm:"column:name;not null" json:"name"`
 	Description     *string             `gorm:"column:description" json:"description"`
 	Type            string              `gorm:"column:type;default:'DYNAMIC';not null" json:"type"`
-	Condition       datatypes.JSON      `gorm:"column:condition;index:segments_condition_idx" json:"condition"`
+	Condition       datatypes.JSON      `gorm:"column:condition;index:segments_condition_idx,type:gin,expression:\"condition\" jsonb_ops" json:"condition"`
 	TrackMembership bool                `gorm:"column:trackMembership;default:false;not null" json:"trackMembership"`
 	MemberCount     int                 `gorm:"column:memberCount;size:32;default:0;not null" json:"memberCount"`
 	ProjectID       string              `gorm:"column:projectId;index:segments_projectId_idx;not null" json:"projectId"`
@@ -319,10 +319,10 @@ func (*Segment) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type SegmentMembership struct {
-	ContactID string    `gorm:"column:contactId;primaryKey;index:segment_memberships_contactId_exitedAt_idx" json:"contactId"`
-	SegmentID string    `gorm:"column:segmentId;primaryKey;index:segment_memberships_segmentId_exitedAt_idx" json:"segmentId"`
+	ContactID string    `gorm:"column:contactId;primaryKey;index:segment_memberships_contactId_exitedAt_idx,priority:1" json:"contactId"`
+	SegmentID string    `gorm:"column:segmentId;primaryKey;index:segment_memberships_segmentId_exitedAt_idx,priority:1" json:"segmentId"`
 	EnteredAt DateTime  `gorm:"column:enteredAt;index:segment_memberships_enteredAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"enteredAt"`
-	ExitedAt  *DateTime `gorm:"column:exitedAt;index:segment_memberships_segmentId_exitedAt_idx;index:segment_memberships_contactId_exitedAt_idx;type:timestamp(3)" json:"exitedAt"`
+	ExitedAt  *DateTime `gorm:"column:exitedAt;index:segment_memberships_segmentId_exitedAt_idx,priority:2;index:segment_memberships_contactId_exitedAt_idx,priority:2;type:timestamp(3)" json:"exitedAt"`
 	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Contact   *Contact  `gorm:"belongsTo"`
@@ -359,7 +359,7 @@ type Campaign struct {
 	ID                string         `gorm:"column:id;primaryKey" json:"id"`
 	Name              string         `gorm:"column:name;not null" json:"name"`
 	Description       *string        `gorm:"column:description" json:"description"`
-	Status            string         `gorm:"column:status;index:campaigns_projectId_status_idx;default:'DRAFT';not null" json:"status"`
+	Status            string         `gorm:"column:status;index:campaigns_projectId_status_idx,priority:2;default:'DRAFT';not null" json:"status"`
 	Subject           string         `gorm:"column:subject;not null" json:"subject"`
 	Body              string         `gorm:"column:body;type:text;not null" json:"body"`
 	From              string         `gorm:"column:from;not null" json:"from"`
@@ -367,7 +367,7 @@ type Campaign struct {
 	ReplyTo           *string        `gorm:"column:replyTo" json:"replyTo"`
 	Type              string         `gorm:"column:type;default:'MARKETING';not null" json:"type"`
 	AudienceType      string         `gorm:"column:audienceType;default:'ALL';not null" json:"audienceType"`
-	AudienceCondition datatypes.JSON `gorm:"column:audienceCondition;index:campaigns_audienceCondition_idx" json:"audienceCondition"`
+	AudienceCondition datatypes.JSON `gorm:"column:audienceCondition;index:campaigns_audienceCondition_idx,type:gin,expression:\"audienceCondition\" jsonb_ops" json:"audienceCondition"`
 	SegmentID         *string        `gorm:"column:segmentId;index:campaigns_segmentId_idx" json:"segmentId"`
 	ScheduledFor      *DateTime      `gorm:"column:scheduledFor;index:campaigns_scheduledFor_idx;type:timestamp(3)" json:"scheduledFor"`
 	TotalRecipients   int            `gorm:"column:totalRecipients;size:32;default:0;not null" json:"totalRecipients"`
@@ -378,10 +378,10 @@ type Campaign struct {
 	BouncedCount      int            `gorm:"column:bouncedCount;size:32;default:0;not null" json:"bouncedCount"`
 	ComplainedCount   int            `gorm:"column:complainedCount;size:32;default:0;not null" json:"complainedCount"`
 	UnsubscribedCount int            `gorm:"column:unsubscribedCount;size:32;default:0;not null" json:"unsubscribedCount"`
-	Archived          bool           `gorm:"column:archived;index:campaigns_projectId_archived_createdAt_idx;default:false;not null" json:"archived"`
-	ProjectID         string         `gorm:"column:projectId;index:campaigns_projectId_status_idx;index:campaigns_projectId_archived_createdAt_idx;not null" json:"projectId"`
+	Archived          bool           `gorm:"column:archived;index:campaigns_projectId_archived_createdAt_idx,priority:2;default:false;not null" json:"archived"`
+	ProjectID         string         `gorm:"column:projectId;index:campaigns_projectId_status_idx,priority:1;index:campaigns_projectId_archived_createdAt_idx,priority:1;not null" json:"projectId"`
 	SentAt            *DateTime      `gorm:"column:sentAt;type:timestamp(3)" json:"sentAt"`
-	CreatedAt         DateTime       `gorm:"column:createdAt;index:campaigns_projectId_archived_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;index:campaigns_projectId_archived_createdAt_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Segment           *Segment       `gorm:"belongsTo"`
 	Project           *Project       `gorm:"belongsTo"`
@@ -418,13 +418,13 @@ type Workflow struct {
 	ID                    string              `gorm:"column:id;primaryKey" json:"id"`
 	Name                  string              `gorm:"column:name;not null" json:"name"`
 	Description           *string             `gorm:"column:description" json:"description"`
-	Enabled               bool                `gorm:"column:enabled;index:workflows_projectId_enabled_idx;default:false;not null" json:"enabled"`
+	Enabled               bool                `gorm:"column:enabled;index:workflows_projectId_enabled_idx,priority:2;default:false;not null" json:"enabled"`
 	TriggerType           string              `gorm:"column:triggerType;not null" json:"triggerType"`
 	TriggerConfig         datatypes.JSON      `gorm:"column:triggerConfig" json:"triggerConfig"`
 	AllowReentry          bool                `gorm:"column:allowReentry;default:false;not null" json:"allowReentry"`
 	ThrottleWindowSeconds *int                `gorm:"column:throttleWindowSeconds;size:32" json:"throttleWindowSeconds"`
 	ThrottleKey           *string             `gorm:"column:throttleKey" json:"throttleKey"`
-	ProjectID             string              `gorm:"column:projectId;index:workflows_projectId_idx;index:workflows_projectId_enabled_idx;not null" json:"projectId"`
+	ProjectID             string              `gorm:"column:projectId;index:workflows_projectId_idx;index:workflows_projectId_enabled_idx,priority:1;not null" json:"projectId"`
 	CreatedAt             DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt             DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Project               *Project            `gorm:"belongsTo"`
@@ -543,10 +543,10 @@ func (*WorkflowTransition) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowExecution struct {
 	ID             string                  `gorm:"column:id;primaryKey" json:"id"`
-	WorkflowID     string                  `gorm:"column:workflowId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_workflowId_status_idx;not null" json:"workflowId"`
-	ContactID      string                  `gorm:"column:contactId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_contactId_status_idx;not null" json:"contactId"`
-	Status         string                  `gorm:"column:status;index:workflow_executions_workflowId_status_idx;index:workflow_executions_contactId_status_idx;index:workflow_executions_status_currentStepId_idx;default:'RUNNING';not null" json:"status"`
-	CurrentStepID  *string                 `gorm:"column:currentStepId;index:workflow_executions_status_currentStepId_idx" json:"currentStepId"`
+	WorkflowID     string                  `gorm:"column:workflowId;index:workflow_executions_workflowId_contactId_idx,priority:1;index:workflow_executions_workflowId_status_idx,priority:1;not null" json:"workflowId"`
+	ContactID      string                  `gorm:"column:contactId;index:workflow_executions_workflowId_contactId_idx,priority:2;index:workflow_executions_contactId_status_idx,priority:1;not null" json:"contactId"`
+	Status         string                  `gorm:"column:status;index:workflow_executions_workflowId_status_idx,priority:2;index:workflow_executions_contactId_status_idx,priority:2;index:workflow_executions_status_currentStepId_idx,priority:1;default:'RUNNING';not null" json:"status"`
+	CurrentStepID  *string                 `gorm:"column:currentStepId;index:workflow_executions_status_currentStepId_idx,priority:2" json:"currentStepId"`
 	ExitReason     *string                 `gorm:"column:exitReason" json:"exitReason"`
 	Context        datatypes.JSON          `gorm:"column:context" json:"context"`
 	StartedAt      DateTime                `gorm:"column:startedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
@@ -591,10 +591,10 @@ func (*WorkflowExecution) BeforeUpdate(tx *gorm.DB) error {
 
 type WorkflowStepExecution struct {
 	ID           string             `gorm:"column:id;primaryKey" json:"id"`
-	ExecutionID  string             `gorm:"column:executionId;index:workflow_step_executions_executionId_status_idx;not null" json:"executionId"`
+	ExecutionID  string             `gorm:"column:executionId;index:workflow_step_executions_executionId_status_idx,priority:1;not null" json:"executionId"`
 	StepID       string             `gorm:"column:stepId;index:workflow_step_executions_stepId_idx;not null" json:"stepId"`
-	Status       string             `gorm:"column:status;index:workflow_step_executions_executionId_status_idx;index:workflow_step_executions_status_scheduledFor_idx;default:'PENDING';not null" json:"status"`
-	ScheduledFor *DateTime          `gorm:"column:scheduledFor;index:workflow_step_executions_status_scheduledFor_idx;index:workflow_step_executions_scheduledFor_idx;type:timestamp(3)" json:"scheduledFor"`
+	Status       string             `gorm:"column:status;index:workflow_step_executions_executionId_status_idx,priority:2;index:workflow_step_executions_status_scheduledFor_idx,priority:1;default:'PENDING';not null" json:"status"`
+	ScheduledFor *DateTime          `gorm:"column:scheduledFor;index:workflow_step_executions_status_scheduledFor_idx,priority:2;index:workflow_step_executions_scheduledFor_idx;type:timestamp(3)" json:"scheduledFor"`
 	ExecuteAfter *DateTime          `gorm:"column:executeAfter;type:timestamp(3)" json:"executeAfter"`
 	Output       datatypes.JSON     `gorm:"column:output" json:"output"`
 	Error        *string            `gorm:"column:error" json:"error"`
@@ -635,7 +635,7 @@ func (*WorkflowStepExecution) BeforeUpdate(tx *gorm.DB) error {
 
 type Email struct {
 	ID                      string         `gorm:"column:id;primaryKey" json:"id"`
-	ContactID               string         `gorm:"column:contactId;index:emails_projectId_contactId_idx;index:emails_contactId_idx;index:emails_contactId_openedAt_idx;index:emails_contactId_clickedAt_idx;index:emails_contactId_bouncedAt_idx;index:emails_contactId_complainedAt_idx;not null" json:"contactId"`
+	ContactID               string         `gorm:"column:contactId;index:emails_projectId_contactId_idx,priority:2;index:emails_contactId_idx;index:emails_contactId_openedAt_idx,priority:1;index:emails_contactId_clickedAt_idx,priority:1;index:emails_contactId_bouncedAt_idx,priority:1;index:emails_contactId_complainedAt_idx,priority:1;not null" json:"contactId"`
 	ToName                  *string        `gorm:"column:toName" json:"toName"`
 	Subject                 string         `gorm:"column:subject;not null" json:"subject"`
 	Body                    string         `gorm:"column:body;not null" json:"body"`
@@ -645,12 +645,12 @@ type Email struct {
 	Headers                 datatypes.JSON `gorm:"column:headers" json:"headers"`
 	Attachments             datatypes.JSON `gorm:"column:attachments" json:"attachments"`
 	MessageID               *string        `gorm:"column:messageId;uniqueIndex:emails_messageId_key" json:"messageId"`
-	SourceType              string         `gorm:"column:sourceType;index:emails_projectId_sourceType_createdAt_idx;not null" json:"sourceType"`
+	SourceType              string         `gorm:"column:sourceType;index:emails_projectId_sourceType_createdAt_idx,priority:2;not null" json:"sourceType"`
 	TemplateID              *string        `gorm:"column:templateId" json:"templateId"`
-	CampaignID              *string        `gorm:"column:campaignId;index:emails_campaignId_idx;index:emails_campaignId_status_idx" json:"campaignId"`
+	CampaignID              *string        `gorm:"column:campaignId;index:emails_campaignId_idx;index:emails_campaignId_status_idx,priority:1" json:"campaignId"`
 	WorkflowExecutionID     *string        `gorm:"column:workflowExecutionId;index:emails_workflowExecutionId_idx" json:"workflowExecutionId"`
 	WorkflowStepExecutionID *string        `gorm:"column:workflowStepExecutionId;index:emails_workflowStepExecutionId_idx" json:"workflowStepExecutionId"`
-	Status                  string         `gorm:"column:status;index:emails_campaignId_status_idx;index:emails_status_idx;default:'PENDING';not null" json:"status"`
+	Status                  string         `gorm:"column:status;index:emails_campaignId_status_idx,priority:2;index:emails_status_idx;default:'PENDING';not null" json:"status"`
 	// When a transactional email sent with `delivery.at` is due. Only meaningful while the
 	// status is SCHEDULED; the delayed queue job is the timer and the scheduled-email sweep
 	// re-queues any row still SCHEDULED past this time. The partial index on SCHEDULED rows
@@ -658,10 +658,10 @@ type Email struct {
 	ScheduledFor *DateTime `gorm:"column:scheduledFor;type:timestamp(3)" json:"scheduledFor"`
 	SentAt       *DateTime `gorm:"column:sentAt;type:timestamp(3)" json:"sentAt"`
 	DeliveredAt  *DateTime `gorm:"column:deliveredAt;type:timestamp(3)" json:"deliveredAt"`
-	OpenedAt     *DateTime `gorm:"column:openedAt;index:emails_contactId_openedAt_idx;type:timestamp(3)" json:"openedAt"`
-	ClickedAt    *DateTime `gorm:"column:clickedAt;index:emails_contactId_clickedAt_idx;type:timestamp(3)" json:"clickedAt"`
-	BouncedAt    *DateTime `gorm:"column:bouncedAt;index:emails_contactId_bouncedAt_idx;type:timestamp(3)" json:"bouncedAt"`
-	ComplainedAt *DateTime `gorm:"column:complainedAt;index:emails_contactId_complainedAt_idx;type:timestamp(3)" json:"complainedAt"`
+	OpenedAt     *DateTime `gorm:"column:openedAt;index:emails_contactId_openedAt_idx,priority:2;type:timestamp(3)" json:"openedAt"`
+	ClickedAt    *DateTime `gorm:"column:clickedAt;index:emails_contactId_clickedAt_idx,priority:2;type:timestamp(3)" json:"clickedAt"`
+	BouncedAt    *DateTime `gorm:"column:bouncedAt;index:emails_contactId_bouncedAt_idx,priority:2;type:timestamp(3)" json:"bouncedAt"`
+	ComplainedAt *DateTime `gorm:"column:complainedAt;index:emails_contactId_complainedAt_idx,priority:2;type:timestamp(3)" json:"complainedAt"`
 	// When the recipient opted out from this email (unsubscribe or snooze). Only set for
 	// opt-outs attributed to a campaign email and counted in `Campaign.unsubscribedCount`,
 	// in the same transaction, so the stamped rows are the list behind that figure. Indexed
@@ -679,8 +679,8 @@ type Email struct {
 	// activity feed shows the bounce, the contact is still suppressed.
 	Simulated             bool                   `gorm:"column:simulated;default:false;not null" json:"simulated"`
 	Error                 *string                `gorm:"column:error" json:"error"`
-	ProjectID             string                 `gorm:"column:projectId;index:emails_projectId_contactId_idx;index:emails_projectId_sourceType_createdAt_idx;not null" json:"projectId"`
-	CreatedAt             DateTime               `gorm:"column:createdAt;index:emails_createdAt_idx;index:emails_projectId_sourceType_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	ProjectID             string                 `gorm:"column:projectId;index:emails_projectId_contactId_idx,priority:1;index:emails_projectId_sourceType_createdAt_idx,priority:1;not null" json:"projectId"`
+	CreatedAt             DateTime               `gorm:"column:createdAt;index:emails_createdAt_idx;index:emails_projectId_sourceType_createdAt_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt             DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Contact               *Contact               `gorm:"belongsTo"`
 	Template              *Template              `gorm:"belongsTo"`
@@ -719,12 +719,12 @@ func (*Email) BeforeUpdate(tx *gorm.DB) error {
 
 type Event struct {
 	ID        string         `gorm:"column:id;primaryKey" json:"id"`
-	Name      string         `gorm:"column:name;index:events_projectId_name_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;not null" json:"name"`
-	Data      datatypes.JSON `gorm:"column:data;index:events_data_idx" json:"data"`
-	ProjectID string         `gorm:"column:projectId;index:events_projectId_name_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;not null" json:"projectId"`
-	ContactID *string        `gorm:"column:contactId;index:events_contactId_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_contactId_createdAt_idx" json:"contactId"`
+	Name      string         `gorm:"column:name;index:events_projectId_name_idx,priority:2;index:events_projectId_contactId_name_createdAt_idx,priority:3;index:events_contactId_name_createdAt_idx,priority:2;index:events_projectId_name_createdAt_idx,priority:2;not null" json:"name"`
+	Data      datatypes.JSON `gorm:"column:data;index:events_data_idx,type:gin,expression:\"data\" jsonb_ops" json:"data"`
+	ProjectID string         `gorm:"column:projectId;index:events_projectId_name_idx,priority:1;index:events_projectId_contactId_name_createdAt_idx,priority:1;index:events_projectId_name_createdAt_idx,priority:1;not null" json:"projectId"`
+	ContactID *string        `gorm:"column:contactId;index:events_contactId_idx;index:events_projectId_contactId_name_createdAt_idx,priority:2;index:events_contactId_name_createdAt_idx,priority:1;index:events_contactId_createdAt_idx,priority:1" json:"contactId"`
 	EmailID   *string        `gorm:"column:emailId;index:events_emailId_idx" json:"emailId"`
-	CreatedAt DateTime       `gorm:"column:createdAt;index:events_createdAt_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;index:events_contactId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime       `gorm:"column:createdAt;index:events_createdAt_idx;index:events_projectId_contactId_name_createdAt_idx,priority:4;index:events_contactId_name_createdAt_idx,priority:3;index:events_projectId_name_createdAt_idx,priority:3;index:events_contactId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Project   *Project       `gorm:"belongsTo"`
 	Contact   *Contact       `gorm:"belongsTo"`
 	Email     *Email         `gorm:"belongsTo"`
@@ -747,8 +747,8 @@ func (m *Event) BeforeCreate(tx *gorm.DB) error {
 
 type IdempotencyKey struct {
 	ID         string   `gorm:"column:id;primaryKey" json:"id"`
-	Key        string   `gorm:"column:key;uniqueIndex:idempotency_keys_projectId_key_key;not null" json:"key"`
-	ProjectID  string   `gorm:"column:projectId;uniqueIndex:idempotency_keys_projectId_key_key;not null" json:"projectId"`
+	Key        string   `gorm:"column:key;uniqueIndex:idempotency_keys_projectId_key_key,priority:2;not null" json:"key"`
+	ProjectID  string   `gorm:"column:projectId;uniqueIndex:idempotency_keys_projectId_key_key,priority:1;not null" json:"projectId"`
 	Method     string   `gorm:"column:method;not null" json:"method"`
 	Path       string   `gorm:"column:path;not null" json:"path"`
 	StatusCode *int     `gorm:"column:statusCode;size:32" json:"statusCode"`
@@ -781,9 +781,9 @@ func (m *IdempotencyKey) BeforeCreate(tx *gorm.DB) error {
 // and released when the email never gets there (cancelled, or failed before sending).
 type ThrottleClaim struct {
 	ID            string    `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID     string    `gorm:"column:projectId;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"projectId"`
-	Key           string    `gorm:"column:key;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"key"`
-	RecipientKey  string    `gorm:"column:recipientKey;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"recipientKey"`
+	ProjectID     string    `gorm:"column:projectId;uniqueIndex:throttle_claims_projectId_key_recipientKey_key,priority:1;not null" json:"projectId"`
+	Key           string    `gorm:"column:key;uniqueIndex:throttle_claims_projectId_key_recipientKey_key,priority:2;not null" json:"key"`
+	RecipientKey  string    `gorm:"column:recipientKey;uniqueIndex:throttle_claims_projectId_key_recipientKey_key,priority:3;not null" json:"recipientKey"`
 	ContactID     *string   `gorm:"column:contactId;index:throttle_claims_contactId_idx" json:"contactId"`
 	EmailID       *string   `gorm:"column:emailId;index:throttle_claims_emailId_idx" json:"emailId"`
 	WorkflowID    *string   `gorm:"column:workflowId;index:throttle_claims_workflowId_idx" json:"workflowId"`
@@ -825,11 +825,11 @@ func (*ThrottleClaim) BeforeUpdate(tx *gorm.DB) error {
 type APIRequest struct {
 	ID           string   `gorm:"column:id;primaryKey" json:"id"`
 	Method       string   `gorm:"column:method;not null" json:"method"`
-	Path         string   `gorm:"column:path;index:api_requests_path_createdAt_idx;not null" json:"path"`
-	StatusCode   int      `gorm:"column:statusCode;index:api_requests_statusCode_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;size:32;not null" json:"statusCode"`
+	Path         string   `gorm:"column:path;index:api_requests_path_createdAt_idx,priority:1;not null" json:"path"`
+	StatusCode   int      `gorm:"column:statusCode;index:api_requests_statusCode_createdAt_idx,priority:1;index:api_requests_projectId_statusCode_createdAt_idx,priority:2;size:32;not null" json:"statusCode"`
 	Duration     int      `gorm:"column:duration;size:32;not null" json:"duration"`
-	ProjectID    *string  `gorm:"column:projectId;index:api_requests_projectId_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx" json:"projectId"`
-	UserID       *string  `gorm:"column:userId;index:api_requests_userId_createdAt_idx" json:"userId"`
+	ProjectID    *string  `gorm:"column:projectId;index:api_requests_projectId_createdAt_idx,priority:1;index:api_requests_projectId_statusCode_createdAt_idx,priority:1" json:"projectId"`
+	UserID       *string  `gorm:"column:userId;index:api_requests_userId_createdAt_idx,priority:1" json:"userId"`
 	AuthType     *string  `gorm:"column:authType" json:"authType"`
 	IP           *string  `gorm:"column:ip" json:"ip"`
 	UserAgent    *string  `gorm:"column:userAgent" json:"userAgent"`
@@ -837,7 +837,7 @@ type APIRequest struct {
 	ErrorMessage *string  `gorm:"column:errorMessage" json:"errorMessage"`
 	RequestSize  *int     `gorm:"column:requestSize;size:32" json:"requestSize"`
 	ResponseSize *int     `gorm:"column:responseSize;size:32" json:"responseSize"`
-	CreatedAt    DateTime `gorm:"column:createdAt;index:api_requests_projectId_createdAt_idx;index:api_requests_userId_createdAt_idx;index:api_requests_statusCode_createdAt_idx;index:api_requests_path_createdAt_idx;index:api_requests_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt    DateTime `gorm:"column:createdAt;index:api_requests_projectId_createdAt_idx,priority:2,sort:desc;index:api_requests_userId_createdAt_idx,priority:2,sort:desc;index:api_requests_statusCode_createdAt_idx,priority:2,sort:desc;index:api_requests_path_createdAt_idx,priority:2,sort:desc;index:api_requests_createdAt_idx,sort:desc;index:api_requests_projectId_statusCode_createdAt_idx,priority:3,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Project      *Project `gorm:"belongsTo"`
 }
 

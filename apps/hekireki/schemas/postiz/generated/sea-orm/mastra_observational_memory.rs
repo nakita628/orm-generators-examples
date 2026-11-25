@@ -7,20 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_observational_memory")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "lookupKey")]
+    #[sea_orm(column_name = "lookupKey", column_type = "Text")]
     pub lookup_key: String,
+    #[sea_orm(column_type = "Text")]
     pub scope: String,
-    #[sea_orm(column_name = "resourceId")]
+    #[sea_orm(column_name = "resourceId", column_type = "Text")]
     pub resource_id: Option<String>,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: Option<String>,
-    #[sea_orm(column_name = "activeObservations")]
+    #[sea_orm(column_name = "activeObservations", column_type = "Text")]
     pub active_observations: String,
-    #[sea_orm(column_name = "activeObservationsPendingUpdate")]
+    #[sea_orm(column_name = "activeObservationsPendingUpdate", column_type = "Text")]
     pub active_observations_pending_update: Option<String>,
-    #[sea_orm(column_name = "originType")]
+    #[sea_orm(column_name = "originType", column_type = "Text")]
     pub origin_type: String,
+    #[sea_orm(column_type = "Text")]
     pub config: String,
     #[sea_orm(column_name = "generationCount")]
     pub generation_count: i32,
@@ -38,17 +41,17 @@ pub struct Model {
     pub is_observing: bool,
     #[sea_orm(column_name = "isReflecting")]
     pub is_reflecting: bool,
-    #[sea_orm(column_name = "observedMessageIds")]
+    #[sea_orm(column_name = "observedMessageIds", column_type = "JsonBinary")]
     pub observed_message_ids: Option<Json>,
-    #[sea_orm(column_name = "observedTimezone")]
+    #[sea_orm(column_name = "observedTimezone", column_type = "Text")]
     pub observed_timezone: Option<String>,
-    #[sea_orm(column_name = "bufferedObservations")]
+    #[sea_orm(column_name = "bufferedObservations", column_type = "Text")]
     pub buffered_observations: Option<String>,
     #[sea_orm(column_name = "bufferedObservationTokens")]
     pub buffered_observation_tokens: Option<i32>,
-    #[sea_orm(column_name = "bufferedMessageIds")]
+    #[sea_orm(column_name = "bufferedMessageIds", column_type = "JsonBinary")]
     pub buffered_message_ids: Option<Json>,
-    #[sea_orm(column_name = "bufferedReflection")]
+    #[sea_orm(column_name = "bufferedReflection", column_type = "Text")]
     pub buffered_reflection: Option<String>,
     #[sea_orm(column_name = "bufferedReflectionTokens")]
     pub buffered_reflection_tokens: Option<i32>,
@@ -56,7 +59,7 @@ pub struct Model {
     pub buffered_reflection_input_tokens: Option<i32>,
     #[sea_orm(column_name = "reflectedObservationLineCount")]
     pub reflected_observation_line_count: Option<i32>,
-    #[sea_orm(column_name = "bufferedObservationChunks")]
+    #[sea_orm(column_name = "bufferedObservationChunks", column_type = "JsonBinary")]
     pub buffered_observation_chunks: Option<Json>,
     #[sea_orm(column_name = "isBufferingObservation")]
     pub is_buffering_observation: bool,
@@ -66,26 +69,41 @@ pub struct Model {
     pub last_buffered_at_tokens: i32,
     #[sea_orm(column_name = "lastBufferedAtTime")]
     pub last_buffered_at_time: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastObservedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "lastObservedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_observed_at_z: Option<DateTimeWithTimeZone>,
     #[sea_orm(
         column_name = "lastReflectionAtZ",
-        column_type = "TimestampWithTimeZone"
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
     )]
     pub last_reflection_at_z: Option<DateTimeWithTimeZone>,
     #[sea_orm(
         column_name = "lastBufferedAtTimeZ",
-        column_type = "TimestampWithTimeZone"
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
     )]
     pub last_buffered_at_time_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

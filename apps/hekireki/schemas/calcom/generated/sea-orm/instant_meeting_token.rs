@@ -9,16 +9,22 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires: DateTime,
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -28,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "InstantMeetingToken_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "InstantMeetingToken_bookingId_fkey"
     )]
     Booking,
 }

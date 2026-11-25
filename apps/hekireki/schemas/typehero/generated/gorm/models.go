@@ -19,8 +19,8 @@ type Account struct {
 	ID                string  `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
 	UserID            string  `gorm:"column:userId;index:Account_userId_idx;type:varchar(191);not null" json:"userId"`
 	Type              string  `gorm:"column:type;type:varchar(191);not null" json:"type"`
-	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;type:varchar(191);not null" json:"provider"`
-	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;type:varchar(191);not null" json:"providerAccountId"`
+	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;type:varchar(191);not null" json:"provider"`
+	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;type:varchar(191);not null" json:"providerAccountId"`
 	RefreshToken      *string `gorm:"column:refresh_token;type:varchar(191)" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token;type:varchar(191)" json:"access_token"`
 	ExpiresAt         *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -122,7 +122,7 @@ type User struct {
 	// this is the bio that shows up on the profile page
 	Bio                  string           `gorm:"column:bio;type:varchar(1000);default:'';not null" json:"bio"`
 	Status               string           `gorm:"column:status;default:'ACTIVE';not null" json:"status"`
-	BanReason            *string          `gorm:"column:banReason;type:text" json:"banReason"`
+	BanReason            *string          `gorm:"column:banReason;type:mediumtext" json:"banReason"`
 	CreatedAt            DateTime         `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt            DateTime         `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
 	Accounts             []Account        `gorm:"foreignKey:UserID;constraint:Account_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -175,8 +175,8 @@ func (*User) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;type:varchar(191);not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key;type:varchar(191)" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;type:varchar(191);not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2;type:varchar(191)" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -209,13 +209,13 @@ type Challenge struct {
 	Name       string   `gorm:"column:name;uniqueIndex:Challenge_name_key;type:varchar(191);not null" json:"name"`
 	Slug       string   `gorm:"column:slug;uniqueIndex:Challenge_slug_key;type:varchar(191);not null" json:"slug"`
 	// this is the description to describe the challenge on description panel
-	Description string `gorm:"column:description;type:text;not null" json:"description"`
+	Description string `gorm:"column:description;type:mediumtext;not null" json:"description"`
 	// this is a short blue thats shown on the explore card
 	ShortDescription string `gorm:"column:shortDescription;type:varchar(191);not null" json:"shortDescription"`
 	// Starter code for the challenge
-	Code string `gorm:"column:code;type:text;not null" json:"code"`
+	Code string `gorm:"column:code;type:mediumtext;not null" json:"code"`
 	// Test cases that need to be passed in order have the submission be accepted.
-	Tests          string           `gorm:"column:tests;type:text;not null" json:"tests"`
+	Tests          string           `gorm:"column:tests;type:mediumtext;not null" json:"tests"`
 	Status         string           `gorm:"column:status;default:'PENDING';not null" json:"status"`
 	Tsconfig       datatypes.JSON   `gorm:"column:tsconfig" json:"tsconfig"`
 	UserID         string           `gorm:"column:userId;index:Challenge_userId_idx;type:varchar(191);not null" json:"userId"`
@@ -279,7 +279,7 @@ type SharedSolution struct {
 	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	IsPinned        bool           `gorm:"column:isPinned;default:false;not null" json:"isPinned"`
 	Title           string         `gorm:"column:title;type:varchar(191);not null" json:"title"`
-	Description     string         `gorm:"column:description;type:text;not null" json:"description"`
+	Description     string         `gorm:"column:description;type:mediumtext;not null" json:"description"`
 	UserID          *string        `gorm:"column:userId;index:SharedSolution_userId_idx;type:varchar(191)" json:"userId"`
 	ChallengeID     *int           `gorm:"column:challengeId;index:SharedSolution_challengeId_idx;size:32" json:"challengeId"`
 	User            *User          `gorm:"belongsTo"`
@@ -305,7 +305,7 @@ func (m *SharedSolution) BeforeCreate(tx *gorm.DB) error {
 // Every attempt a user makes to a challenge is stored here
 type Submission struct {
 	ID           int        `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Code         string     `gorm:"column:code;type:text;not null" json:"code"`
+	Code         string     `gorm:"column:code;type:mediumtext;not null" json:"code"`
 	CreatedAt    DateTime   `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	IsSuccessful bool       `gorm:"column:isSuccessful;not null" json:"isSuccessful"`
 	UserID       string     `gorm:"column:userId;index:Submission_userId_idx;type:varchar(191);not null" json:"userId"`
@@ -329,8 +329,8 @@ func (m *Submission) BeforeCreate(tx *gorm.DB) error {
 
 type Bookmark struct {
 	ID          int        `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID      string     `gorm:"column:userId;uniqueIndex:Bookmark_userId_challengeId_key;index:Bookmark_userId_idx;type:varchar(191);not null" json:"userId"`
-	ChallengeID *int       `gorm:"column:challengeId;uniqueIndex:Bookmark_userId_challengeId_key;index:Bookmark_challengeId_idx;size:32" json:"challengeId"`
+	UserID      string     `gorm:"column:userId;uniqueIndex:Bookmark_userId_challengeId_key,priority:1;index:Bookmark_userId_idx;type:varchar(191);not null" json:"userId"`
+	ChallengeID *int       `gorm:"column:challengeId;uniqueIndex:Bookmark_userId_challengeId_key,priority:2;index:Bookmark_challengeId_idx;size:32" json:"challengeId"`
 	CreatedAt   *DateTime  `gorm:"column:createdAt;autoCreateTime:false" json:"createdAt"`
 	User        *User      `gorm:"belongsTo"`
 	Challenge   *Challenge `gorm:"belongsTo"`
@@ -349,7 +349,7 @@ func (m *Bookmark) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ReportIssue struct {
-	ID       int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	ID       int     `gorm:"column:id;primaryKey;autoIncrement;uniqueIndex:ReportIssue_id_key;size:32" json:"id"`
 	ReportID int     `gorm:"column:reportId;index:ReportIssue_reportId_idx;size:32;not null" json:"reportId"`
 	Type     string  `gorm:"column:type;not null" json:"type"`
 	Report   *Report `gorm:"belongsTo"`
@@ -360,8 +360,8 @@ func (ReportIssue) TableName() string {
 }
 
 type Report struct {
-	ID          int             `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Text        string          `gorm:"column:text;type:text;not null" json:"text"`
+	ID          int             `gorm:"column:id;primaryKey;autoIncrement;uniqueIndex:Report_id_key;size:32" json:"id"`
+	Text        string          `gorm:"column:text;type:mediumtext;not null" json:"text"`
 	Type        string          `gorm:"column:type;not null" json:"type"`
 	Status      string          `gorm:"column:status;not null" json:"status"`
 	ReporterID  string          `gorm:"column:reporterId;index:Report_reporterId_idx;type:varchar(191);not null" json:"reporterId"`
@@ -406,7 +406,7 @@ func (*Report) BeforeUpdate(tx *gorm.DB) error {
 
 type Comment struct {
 	ID              int             `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Text            string          `gorm:"column:text;type:text;not null" json:"text"`
+	Text            string          `gorm:"column:text;type:mediumtext;not null" json:"text"`
 	Visible         *bool           `gorm:"column:visible;default:true;not null" json:"visible"`
 	ParentID        *int            `gorm:"column:parentId;index:Comment_parentId_idx;size:32" json:"parentId"`
 	UserID          string          `gorm:"column:userId;index:Comment_userId_idx;type:varchar(191);not null" json:"userId"`
@@ -504,7 +504,7 @@ type Track struct {
 	ID          int    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name        string `gorm:"column:name;uniqueIndex:Track_name_key;type:varchar(191);not null" json:"name"`
 	Slug        string `gorm:"column:slug;uniqueIndex:Track_slug_key;type:varchar(191);not null" json:"slug"`
-	Description string `gorm:"column:description;type:text;not null" json:"description"`
+	Description string `gorm:"column:description;type:mediumtext;not null" json:"description"`
 	// determines if a track can be seen on tracks page
 	Visible *bool `gorm:"column:visible;default:true;not null" json:"visible"`
 	// use this to display coming soon UI
@@ -599,7 +599,7 @@ func (*Notification) BeforeUpdate(tx *gorm.DB) error {
 type ShortURL struct {
 	ID int `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	// the original full url that we want to shorten e.g. https://www.url.com
-	OriginalURL string `gorm:"column:originalUrl;type:text;not null" json:"originalUrl"`
+	OriginalURL string `gorm:"column:originalUrl;type:mediumtext;not null" json:"originalUrl"`
 	// slug for the short url e.g. url.com/[shortUrlSlug]
 	ShortURLSlug string   `gorm:"column:shortUrlSlug;uniqueIndex:ShortURL_shortUrlSlug_key;index:ShortURL_shortUrlSlug_idx;type:varchar(191);not null" json:"shortUrlSlug"`
 	CreatedAt    DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`

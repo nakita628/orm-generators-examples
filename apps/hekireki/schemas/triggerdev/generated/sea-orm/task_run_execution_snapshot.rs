@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunExecutionSnapshot")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// This should always be 2+ (V1 didn't use the run engine or snapshots)
     #[sea_orm(default_value = "V2")]
@@ -24,51 +25,64 @@ pub struct Model {
     #[sea_orm(column_name = "executionStatus")]
     pub execution_status: TaskRunExecutionStatus,
     /// For debugging
+    #[sea_orm(column_type = "Text")]
     pub description: String,
     /// We store invalid snapshots as a record of the run state when we tried to move
     #[sea_orm(column_name = "isValid", default_value = true)]
     pub is_valid: bool,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
     /// The previous snapshot ID
-    #[sea_orm(column_name = "previousSnapshotId")]
+    #[sea_orm(column_name = "previousSnapshotId", column_type = "Text")]
     pub previous_snapshot_id: Option<String>,
     /// Run
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: String,
     #[sea_orm(column_name = "runStatus")]
     pub run_status: TaskRunStatus,
-    #[sea_orm(column_name = "batchId")]
+    #[sea_orm(column_name = "batchId", column_type = "Text")]
     pub batch_id: Option<String>,
     /// This is the current run attempt number. Users can define how many attempts they want for a run.
     #[sea_orm(column_name = "attemptNumber")]
     pub attempt_number: Option<i32>,
     /// Environment
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
     #[sea_orm(column_name = "environmentType")]
     pub environment_type: RuntimeEnvironmentType,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// An array of waitpoint IDs in the correct order, used for batches
-    #[sea_orm(column_name = "completedWaitpointOrder")]
+    #[sea_orm(
+        column_name = "completedWaitpointOrder",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub completed_waitpoint_order: Vec<String>,
     /// Checkpoint
-    #[sea_orm(column_name = "checkpointId")]
+    #[sea_orm(column_name = "checkpointId", column_type = "Text")]
     pub checkpoint_id: Option<String>,
     /// Worker
-    #[sea_orm(column_name = "workerId")]
+    #[sea_orm(column_name = "workerId", column_type = "Text")]
     pub worker_id: Option<String>,
-    #[sea_orm(column_name = "runnerId")]
+    #[sea_orm(column_name = "runnerId", column_type = "Text")]
     pub runner_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastHeartbeatAt")]
+    #[sea_orm(
+        column_name = "lastHeartbeatAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_heartbeat_at: Option<DateTime>,
     /// Metadata used by various systems in the run engine
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
 }
 
@@ -77,13 +91,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::task_run::Entity",
         from = "Column::RunId",
-        to = "super::task_run::Column::Id"
+        to = "super::task_run::Column::Id",
+        fk_name = "TaskRunExecutionSnapshot_runId_fkey"
     )]
     Run,
     #[sea_orm(
         belongs_to = "super::task_run_checkpoint::Entity",
         from = "Column::CheckpointId",
-        to = "super::task_run_checkpoint::Column::Id"
+        to = "super::task_run_checkpoint::Column::Id",
+        fk_name = "TaskRunExecutionSnapshot_checkpointId_fkey"
     )]
     Checkpoint,
 }

@@ -8,40 +8,49 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgreementResponse")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "agreementId")]
+    #[sea_orm(column_name = "agreementId", column_type = "Text")]
     pub agreement_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "viewId")]
+    #[sea_orm(column_name = "viewId", column_type = "Text")]
     pub view_id: Option<String>,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: Option<String>,
-    #[sea_orm(column_name = "signerEmail")]
+    #[sea_orm(column_name = "signerEmail", column_type = "Text")]
     pub signer_email: Option<String>,
-    #[sea_orm(column_name = "signerName")]
+    #[sea_orm(column_name = "signerName", column_type = "Text")]
     pub signer_name: Option<String>,
-    #[sea_orm(column_name = "signingStatus", default_value = "PENDING")]
+    #[sea_orm(
+        column_name = "signingStatus",
+        column_type = "Text",
+        default_value = "PENDING"
+    )]
     pub signing_status: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "signingExternalId")]
+    #[sea_orm(column_name = "signingExternalId", column_type = "Text")]
     pub signing_external_id: Option<String>,
-    #[sea_orm(column_name = "signingEnvelopeId")]
+    #[sea_orm(column_name = "signingEnvelopeId", column_type = "Text")]
     pub signing_envelope_id: Option<String>,
     #[sea_orm(column_name = "signingDocumentId")]
     pub signing_document_id: Option<i32>,
-    #[sea_orm(column_name = "signedAt")]
+    #[sea_orm(column_name = "signedAt", column_type = "custom(\"timestamp(3)\")")]
     pub signed_at: Option<DateTime>,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "signedFileKey")]
+    #[sea_orm(column_name = "signedFileKey", column_type = "Text")]
     pub signed_file_key: Option<String>,
-    #[sea_orm(column_name = "signedFileName")]
+    #[sea_orm(column_name = "signedFileName", column_type = "Text")]
     pub signed_file_name: Option<String>,
     #[sea_orm(column_name = "signedFileStorageType")]
     pub signed_file_storage_type: Option<DocumentStorageType>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -51,14 +60,16 @@ pub enum Relation {
         belongs_to = "super::agreement::Entity",
         from = "Column::AgreementId",
         to = "super::agreement::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AgreementResponse_agreementId_fkey"
     )]
     Agreement,
     #[sea_orm(
         belongs_to = "super::view::Entity",
         from = "Column::ViewId",
         to = "super::view::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AgreementResponse_viewId_fkey"
     )]
     View,
 }

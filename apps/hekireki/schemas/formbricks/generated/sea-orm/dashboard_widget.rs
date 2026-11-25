@@ -15,15 +15,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DashboardWidget")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "dashboardId")]
+    #[sea_orm(column_name = "dashboardId", column_type = "Text")]
     pub dashboard_id: String,
-    #[sea_orm(column_name = "chartId")]
+    #[sea_orm(column_name = "chartId", column_type = "Text")]
     pub chart_id: String,
     /// [WidgetLayout] - Grid layout: { x, y, w, h }
-    #[sea_orm(default_value = "{\"x\":0,\"y\":0,\"w\":4,\"h\":3}")]
+    #[sea_orm(
+        column_type = "JsonBinary",
+        default_value = "{\"x\":0,\"y\":0,\"w\":4,\"h\":3}"
+    )]
     pub layout: Json,
     #[sea_orm(default_value = 0)]
     pub order: i32,
@@ -35,14 +44,16 @@ pub enum Relation {
         belongs_to = "super::dashboard::Entity",
         from = "Column::DashboardId",
         to = "super::dashboard::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DashboardWidget_dashboardId_fkey"
     )]
     Dashboard,
     #[sea_orm(
         belongs_to = "super::chart::Entity",
         from = "Column::ChartId",
         to = "super::chart::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DashboardWidget_chartId_fkey"
     )]
     Chart,
 }

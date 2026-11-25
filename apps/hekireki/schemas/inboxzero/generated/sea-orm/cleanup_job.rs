@@ -8,15 +8,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CleanupJob")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "ARCHIVE")]
     pub action: CleanAction,
     #[sea_orm(column_name = "daysOld", default_value = 7)]
     pub days_old: i32,
+    #[sea_orm(column_type = "Text")]
     pub instructions: Option<String>,
     #[sea_orm(column_name = "skipReply")]
     pub skip_reply: Option<bool>,
@@ -30,7 +36,7 @@ pub struct Model {
     pub skip_attachment: Option<bool>,
     #[sea_orm(column_name = "skipConversation")]
     pub skip_conversation: Option<bool>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -40,7 +46,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CleanupJob_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(has_many = "super::cleanup_thread::Entity")]

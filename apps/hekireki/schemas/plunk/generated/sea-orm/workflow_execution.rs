@@ -8,25 +8,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workflow_executions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "contactId")]
+    #[sea_orm(column_name = "contactId", column_type = "Text")]
     pub contact_id: String,
     #[sea_orm(default_value = "RUNNING")]
     pub status: WorkflowExecutionStatus,
-    #[sea_orm(column_name = "currentStepId")]
+    #[sea_orm(column_name = "currentStepId", column_type = "Text")]
     pub current_step_id: Option<String>,
-    #[sea_orm(column_name = "exitReason")]
+    #[sea_orm(column_name = "exitReason", column_type = "Text")]
     pub exit_reason: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub context: Option<Json>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(
+        column_name = "startedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -36,20 +46,23 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "Column::WorkflowId",
         to = "super::workflow::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workflow_executions_workflowId_fkey"
     )]
     Workflow,
     #[sea_orm(
         belongs_to = "super::contact::Entity",
         from = "Column::ContactId",
         to = "super::contact::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workflow_executions_contactId_fkey"
     )]
     Contact,
     #[sea_orm(
         belongs_to = "super::workflow_step::Entity",
         from = "Column::CurrentStepId",
-        to = "super::workflow_step::Column::Id"
+        to = "super::workflow_step::Column::Id",
+        fk_name = "workflow_executions_currentStepId_fkey"
     )]
     CurrentStep,
     #[sea_orm(has_many = "super::workflow_step_execution::Entity")]

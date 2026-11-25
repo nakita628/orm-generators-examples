@@ -9,17 +9,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "gateway_spend_limits")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub organization_id: String,
     pub scope: GatewaySpendLimitScope,
+    #[sea_orm(column_type = "Text")]
     pub api_key_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
     pub interval: GatewaySpendLimitInterval,
+    #[sea_orm(column_type = "Decimal(Some((65, 30)))")]
     pub limit_usd: Decimal,
     pub alert_thresholds: Vec<i32>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub counting_started_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub owner_user_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -29,28 +44,32 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gateway_spend_limits_organization_id_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::api_key::Entity",
         from = "Column::ApiKeyId",
         to = "super::api_key::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gateway_spend_limits_api_key_id_fkey"
     )]
     ApiKey,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "gateway_spend_limits_user_id_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "gateway_spend_limits_owner_user_id_fkey"
     )]
     OwnerUser,
     #[sea_orm(has_many = "super::gateway_spend_limit_alert::Entity")]

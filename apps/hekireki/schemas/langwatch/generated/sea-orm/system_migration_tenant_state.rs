@@ -7,18 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SystemMigrationTenantState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "migrationName")]
+    #[sea_orm(column_name = "migrationName", column_type = "Text")]
     pub migration_name: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "tenantId")]
+    #[sea_orm(column_name = "tenantId", column_type = "Text")]
     pub tenant_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub report: Option<Json>,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(
+        column_name = "occurredAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

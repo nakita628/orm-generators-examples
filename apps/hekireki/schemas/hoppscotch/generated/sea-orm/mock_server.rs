@@ -8,17 +8,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MockServer")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub subdomain: String,
-    #[sea_orm(column_name = "creatorUid")]
+    #[sea_orm(column_name = "creatorUid", column_type = "Text")]
     pub creator_uid: Option<String>,
-    #[sea_orm(column_name = "collectionID")]
+    #[sea_orm(column_name = "collectionID", column_type = "Text")]
     pub collection_id: String,
     #[sea_orm(column_name = "workspaceType")]
     pub workspace_type: WorkspaceType,
-    #[sea_orm(column_name = "workspaceID")]
+    #[sea_orm(column_name = "workspaceID", column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(column_name = "delayInMs", default_value = 0)]
     pub delay_in_ms: i32,
@@ -28,13 +31,17 @@ pub struct Model {
     pub is_active: bool,
     #[sea_orm(column_name = "hitCount", default_value = 0)]
     pub hit_count: i32,
-    #[sea_orm(column_name = "lastHitAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "lastHitAt", column_type = "custom(\"timestamptz(3)\")")]
     pub last_hit_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedOn", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "deletedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub deleted_at: Option<DateTimeWithTimeZone>,
 }
 
@@ -44,7 +51,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::CreatorUid",
         to = "super::user::Column::Uid",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "MockServer_creatorUid_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::mock_server_log::Entity")]

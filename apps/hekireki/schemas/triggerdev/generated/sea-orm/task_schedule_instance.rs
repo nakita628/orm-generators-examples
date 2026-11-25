@@ -8,26 +8,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskScheduleInstance")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "taskScheduleId")]
+    #[sea_orm(column_name = "taskScheduleId", column_type = "Text")]
     pub task_schedule_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     #[sea_orm(column_name = "schedulePhase")]
     pub schedule_phase: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = true)]
     pub active: bool,
     /// @deprecated stop writing 2026-04-30; engine derives from cron + exactScheduleTime. Drop in follow-up.
-    #[sea_orm(column_name = "lastScheduledTimestamp")]
+    #[sea_orm(
+        column_name = "lastScheduledTimestamp",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_scheduled_timestamp: Option<DateTime>,
     /// @deprecated stop writing 2026-04-30; engine derives from cron + now(). Drop in follow-up.
-    #[sea_orm(column_name = "nextScheduledTimestamp")]
+    #[sea_orm(
+        column_name = "nextScheduledTimestamp",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub next_scheduled_timestamp: Option<DateTime>,
 }
 
@@ -38,7 +49,8 @@ pub enum Relation {
         from = "Column::TaskScheduleId",
         to = "super::task_schedule::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskScheduleInstance_taskScheduleId_fkey"
     )]
     TaskSchedule,
     #[sea_orm(
@@ -46,7 +58,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskScheduleInstance_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -54,7 +67,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskScheduleInstance_projectId_fkey"
     )]
     Project,
 }

@@ -12,23 +12,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PushToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
     pub platform: DevicePlatform,
-    #[sea_orm(column_name = "deviceName")]
+    #[sea_orm(column_name = "deviceName", column_type = "Text")]
     pub device_name: Option<String>,
-    #[sea_orm(column_name = "appVersion")]
+    #[sea_orm(column_name = "appVersion", column_type = "Text")]
     pub app_version: Option<String>,
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(column_name = "lastSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_seen_at: DateTime,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -39,7 +45,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PushToken_userId_fkey"
     )]
     User,
 }

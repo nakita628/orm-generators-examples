@@ -10,28 +10,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SelfHostedNotice")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// `info`, `warning` or `security`.
+    #[sea_orm(column_type = "Text")]
     pub severity: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Text")]
     pub body: String,
     /// An https link to read more; null where the notice names none.
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
     /// The release that fixes what the notice is about; an install on it or newer hides it.
-    #[sea_orm(column_name = "fixedIn")]
+    #[sea_orm(column_name = "fixedIn", column_type = "Text")]
     pub fixed_in: Option<String>,
     /// `draft`, `published` or `withdrawn`. Only a published notice that has not expired is sent.
+    #[sea_orm(column_type = "Text")]
     pub status: String,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "publishedAt")]
+    #[sea_orm(column_name = "publishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub published_at: Option<DateTime>,
     /// The staff member who published it, by user id.
-    #[sea_orm(column_name = "publishedBy")]
+    #[sea_orm(column_name = "publishedBy", column_type = "Text")]
     pub published_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

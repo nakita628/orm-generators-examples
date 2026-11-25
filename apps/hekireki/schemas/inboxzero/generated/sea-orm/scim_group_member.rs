@@ -5,17 +5,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "scimGroupMember")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: String,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: String,
-    #[sea_orm(column_name = "scimUserId")]
+    #[sea_orm(column_name = "scimUserId", column_type = "Text")]
     pub scim_user_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "membershipKey")]
+    #[sea_orm(column_name = "membershipKey", column_type = "Text")]
     pub membership_key: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
 }
 
@@ -25,14 +26,16 @@ pub enum Relation {
         belongs_to = "super::scim_group::Entity",
         from = "Column::GroupId",
         to = "super::scim_group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scimGroupMember_groupId_fkey"
     )]
     ScimGroup,
     #[sea_orm(
         belongs_to = "super::scim_user::Entity",
         from = "Column::ScimUserId",
         to = "super::scim_user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "scimGroupMember_scimUserId_fkey"
     )]
     ScimUser,
 }

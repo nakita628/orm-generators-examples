@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "_PlatformOAuthClientToUser")]
 pub struct Model {
-    #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "A",
+        column_type = "Text"
+    )]
     pub platform_oauth_client_id: String,
     #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
     pub user_id: i32,
@@ -15,13 +20,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::platform_oauth_client::Entity",
         from = "Column::PlatformOauthClientId",
-        to = "super::platform_oauth_client::Column::Id"
+        to = "super::platform_oauth_client::Column::Id",
+        fk_name = "_PlatformOAuthClientToUser_A_fkey"
     )]
     PlatformOAuthClient,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "_PlatformOAuthClientToUser_B_fkey"
     )]
     User,
 }

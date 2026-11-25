@@ -7,19 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Job")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     pub payload: Json,
     pub options: Option<Json>,
-    #[sea_orm(column_name = "scheduledAt")]
+    #[sea_orm(
+        column_name = "scheduledAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub scheduled_at: DateTime,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     #[sea_orm(column_name = "lastError", column_type = "Text")]
     pub last_error: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 

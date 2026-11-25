@@ -7,23 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "cohorts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(default_expr = "Expr::cust(\"gen_random_uuid()\")")]
     pub id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// [IPrismaCohortDefinition]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub definition: Json,
     #[sea_orm(column_name = "isStatic", default_value = false)]
     pub is_static: bool,
     #[sea_orm(column_name = "profileCount", default_value = 0)]
     pub profile_count: i32,
-    #[sea_orm(column_name = "lastComputedAt")]
+    #[sea_orm(
+        column_name = "lastComputedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_computed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -33,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "cohorts_projectId_fkey"
     )]
     Project,
 }

@@ -4,9 +4,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "_RoleToUser")]
 pub struct Model {
-    #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "A",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub role_id: String,
-    #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
+    #[sea_orm(
+        primary_key,
+        auto_increment = false,
+        column_name = "B",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub user_id: String,
 }
 
@@ -15,13 +25,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::role::Entity",
         from = "Column::RoleId",
-        to = "super::role::Column::Id"
+        to = "super::role::Column::Id",
+        fk_name = "_RoleToUser_A_fkey"
     )]
     Role,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "_RoleToUser_B_fkey"
     )]
     User,
 }

@@ -11,22 +11,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ErrorGroupState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: Option<String>,
-    #[sea_orm(column_name = "taskIdentifier")]
+    #[sea_orm(column_name = "taskIdentifier", column_type = "Text")]
     pub task_identifier: String,
-    #[sea_orm(column_name = "errorFingerprint")]
+    #[sea_orm(column_name = "errorFingerprint", column_type = "Text")]
     pub error_fingerprint: String,
     #[sea_orm(default_value = "UNRESOLVED")]
     pub status: ErrorGroupStatus,
     /// *
     /// * Error is ignored until this date
-    #[sea_orm(column_name = "ignoredUntil")]
+    #[sea_orm(column_name = "ignoredUntil", column_type = "custom(\"timestamp(3)\")")]
     pub ignored_until: Option<DateTime>,
     /// *
     /// * Error is ignored until this occurrence rate
@@ -42,31 +43,35 @@ pub struct Model {
     pub ignored_at_occurrence_count: Option<i64>,
     /// *
     /// * Error was ignored at this date
-    #[sea_orm(column_name = "ignoredAt")]
+    #[sea_orm(column_name = "ignoredAt", column_type = "custom(\"timestamp(3)\")")]
     pub ignored_at: Option<DateTime>,
     /// *
     /// * Reason for ignoring the error
-    #[sea_orm(column_name = "ignoredReason")]
+    #[sea_orm(column_name = "ignoredReason", column_type = "Text")]
     pub ignored_reason: Option<String>,
     /// *
     /// * User who ignored the error
-    #[sea_orm(column_name = "ignoredByUserId")]
+    #[sea_orm(column_name = "ignoredByUserId", column_type = "Text")]
     pub ignored_by_user_id: Option<String>,
     /// *
     /// * Error was resolved at this date
-    #[sea_orm(column_name = "resolvedAt")]
+    #[sea_orm(column_name = "resolvedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resolved_at: Option<DateTime>,
     /// *
     /// * Error was resolved in this version
-    #[sea_orm(column_name = "resolvedInVersion")]
+    #[sea_orm(column_name = "resolvedInVersion", column_type = "Text")]
     pub resolved_in_version: Option<String>,
     /// *
     /// * User who resolved the error
-    #[sea_orm(column_name = "resolvedBy")]
+    #[sea_orm(column_name = "resolvedBy", column_type = "Text")]
     pub resolved_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -77,7 +82,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ErrorGroupState_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -85,7 +91,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ErrorGroupState_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -93,7 +100,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ErrorGroupState_environmentId_fkey"
     )]
     Environment,
 }

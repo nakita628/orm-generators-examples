@@ -8,14 +8,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LangyConversationProjection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
     /// Owner; first-writer-wins from the first message's userId.
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: Option<String>,
     /// derived | auto | user — governs auto-title precedence (user is sticky).
     #[sea_orm(column_name = "titleSource")]
@@ -23,34 +25,35 @@ pub struct Model {
     /// Who started the conversation: `interactive` for the person in the panel, `run` for a
     /// module acting for them with nobody at the keyboard. A row folded before the column
     /// existed reads as interactive.
-    #[sea_orm(default_value = "interactive")]
+    #[sea_orm(column_type = "Text", default_value = "interactive")]
     pub origin: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(column_name = "isShared", default_value = false)]
     pub is_shared: bool,
     #[sea_orm(column_name = "sharedAt")]
     pub shared_at: Option<f64>,
-    #[sea_orm(column_name = "sharedById")]
+    #[sea_orm(column_name = "sharedById", column_type = "Text")]
     pub shared_by_id: Option<String>,
     #[sea_orm(column_name = "messageCount", default_value = 0)]
     pub message_count: i32,
     #[sea_orm(column_name = "lastActivityAt")]
     pub last_activity_at: Option<f64>,
     /// The turn in flight, or null when idle (busy guard reads this).
-    #[sea_orm(column_name = "currentTurnId")]
+    #[sea_orm(column_name = "currentTurnId", column_type = "Text")]
     pub current_turn_id: Option<String>,
-    #[sea_orm(column_name = "lastError")]
+    #[sea_orm(column_name = "lastError", column_type = "Text")]
     pub last_error: Option<String>,
     /// The model the latest accepted turn ran on; reopening seeds the picker from it.
-    #[sea_orm(column_name = "lastModel")]
+    #[sea_orm(column_name = "lastModel", column_type = "Text")]
     pub last_model: Option<String>,
     /// ADR-048 shutdown-handoff resume token (opaque, worker-authored).
-    #[sea_orm(column_name = "pendingHandoffToken")]
+    #[sea_orm(column_name = "pendingHandoffToken", column_type = "Text")]
     pub pending_handoff_token: Option<String>,
-    #[sea_orm(column_name = "pendingHandoffTurnId")]
+    #[sea_orm(column_name = "pendingHandoffTurnId", column_type = "Text")]
     pub pending_handoff_turn_id: Option<String>,
     /// Per-conversation HMAC key for worker stream frames; server-side only.
-    #[sea_orm(column_name = "runToken")]
+    #[sea_orm(column_name = "runToken", column_type = "Text")]
     pub run_token: Option<String>,
     #[sea_orm(column_name = "archivedAt")]
     pub archived_at: Option<f64>,
@@ -67,9 +70,9 @@ pub struct Model {
     /// Event-log acceptance time. Together with lastEventId this is the cursor.
     #[sea_orm(column_name = "acceptedAt")]
     pub accepted_at: f64,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
 }
 

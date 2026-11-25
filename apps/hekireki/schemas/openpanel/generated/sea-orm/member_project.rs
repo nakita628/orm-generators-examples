@@ -11,10 +11,14 @@ pub struct Model {
     #[sea_orm(column_name = "memberId")]
     pub member_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     pub level: Option<AccessLevel>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -24,14 +28,16 @@ pub enum Relation {
         belongs_to = "super::member::Entity",
         from = "Column::MemberId",
         to = "super::member::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "member_projects_memberId_fkey"
     )]
     Member,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "member_projects_projectId_fkey"
     )]
     Project,
 }

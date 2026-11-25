@@ -8,19 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditNote")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     #[sea_orm(default_value = "COMMENT")]
     pub r#type: NoteType,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "auditSessionId")]
+    #[sea_orm(column_name = "auditSessionId", column_type = "Text")]
     pub audit_session_id: String,
-    #[sea_orm(column_name = "auditAssetId")]
+    #[sea_orm(column_name = "auditAssetId", column_type = "Text")]
     pub audit_asset_id: Option<String>,
 }
 
@@ -31,7 +37,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditNote_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -39,7 +46,8 @@ pub enum Relation {
         from = "Column::AuditSessionId",
         to = "super::audit_session::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditNote_auditSessionId_fkey"
     )]
     AuditSession,
     #[sea_orm(
@@ -47,7 +55,8 @@ pub enum Relation {
         from = "Column::AuditAssetId",
         to = "super::audit_asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditNote_auditAssetId_fkey"
     )]
     AuditAsset,
 }

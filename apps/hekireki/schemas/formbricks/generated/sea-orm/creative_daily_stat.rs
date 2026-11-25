@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CreativeDailyStat")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "creativeId")]
+    #[sea_orm(column_name = "creativeId", column_type = "Text")]
     pub creative_id: String,
     /// UTC day.
     #[sea_orm(primary_key, auto_increment = false)]
@@ -31,7 +31,8 @@ pub enum Relation {
         belongs_to = "super::creative::Entity",
         from = "Column::CreativeId",
         to = "super::creative::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreativeDailyStat_creativeId_fkey"
     )]
     Creative,
 }

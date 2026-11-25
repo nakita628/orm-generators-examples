@@ -8,10 +8,16 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub date: DateTime,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub rating: String,
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
 }
 
@@ -21,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Feedback_userId_fkey"
     )]
     User,
 }

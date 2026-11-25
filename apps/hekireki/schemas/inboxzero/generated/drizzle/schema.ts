@@ -589,8 +589,9 @@ export const emailAccount = pgTable(
     index('EmailAccount_lastSummaryEmailAt_idx').on(table.lastSummaryEmailAt),
     index('EmailAccount_lastInboxHealthEmailAt_idx').on(table.lastInboxHealthEmailAt),
     index('EmailAccount_watchEmailsSubscriptionId_idx').on(table.watchEmailsSubscriptionId),
-    index('EmailAccount_watchEmailsSubscriptionHistory_idx').on(
-      table.watchEmailsSubscriptionHistory,
+    index('EmailAccount_watchEmailsSubscriptionHistory_idx').using(
+      'gin',
+      table.watchEmailsSubscriptionHistory.op('jsonb_path_ops'),
     ),
     foreignKey({
       name: 'EmailAccount_userId_fkey',
@@ -1592,13 +1593,17 @@ export const executedAction = pgTable(
       table.executionStatus,
       table.createdAt,
     ),
-    index('ExecutedAction_sentMessageIds_idx').on(table.sentMessageIds),
+    index('ExecutedAction_sentMessageIds_idx').using('gin', table.sentMessageIds),
     index('ExecutedAction_messagingChannelId_createdAt_idx').on(
       table.messagingChannelId,
       table.createdAt,
     ),
-    index('ExecutedAction_draftStatus_createdAt_draft_idx').on(table.draftStatus, table.createdAt),
-    index('ExecutedAction_executedRuleId_draft_idx').on(table.executedRuleId),
+    index('ExecutedAction_draftStatus_createdAt_draft_idx')
+      .on(table.draftStatus, table.createdAt)
+      .where(sql`("draftId" IS NOT NULL)`),
+    index('ExecutedAction_executedRuleId_draft_idx')
+      .on(table.executedRuleId)
+      .where(sql`("draftId" IS NOT NULL)`),
     foreignKey({
       name: 'ExecutedAction_executedRuleId_fkey',
       columns: [table.executedRuleId],
@@ -2167,10 +2172,9 @@ export const threadTracker = pgTable(
       table.followUpAppliedAt,
       table.sentAt,
     ),
-    index('ThreadTracker_followUpDraft_cleanup_idx').on(
-      table.emailAccountId,
-      table.followUpDraftCreatedAt,
-    ),
+    index('ThreadTracker_followUpDraft_cleanup_idx')
+      .on(table.emailAccountId, table.followUpDraftCreatedAt)
+      .where(sql`("followUpDraftContent" IS NOT NULL)`),
     uniqueIndex('ThreadTracker_emailAccountId_threadId_messageId_key').on(
       table.emailAccountId,
       table.threadId,
@@ -3070,9 +3074,9 @@ export const contactResearch = pgTable(
   (table) => [
     index('ContactResearch_latest_idx').on(
       table.email,
-      table.researchStartedAt,
-      table.createdAt,
-      table.id,
+      table.researchStartedAt.desc().nullsFirst(),
+      table.createdAt.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
   ],
 )
@@ -4410,8 +4414,12 @@ export const loopsEmailSource = pgTable(
     uniqueIndex('LoopsEmailSource_emailMessageId_key').on(table.emailMessageId),
     index('LoopsEmailSource_loopId_idx').on(table.loopId),
     index('LoopsEmailSource_campaignId_idx').on(table.campaignId),
-    uniqueIndex('LoopsEmailSource_loopId_unversioned_key').on(table.loopId),
-    uniqueIndex('LoopsEmailSource_campaignId_unversioned_key').on(table.campaignId),
+    uniqueIndex('LoopsEmailSource_loopId_unversioned_key')
+      .on(table.loopId)
+      .where(sql`("emailMessageId" IS NULL AND "loopId" IS NOT NULL)`),
+    uniqueIndex('LoopsEmailSource_campaignId_unversioned_key')
+      .on(table.campaignId)
+      .where(sql`("emailMessageId" IS NULL AND "campaignId" IS NOT NULL)`),
   ],
 )
 

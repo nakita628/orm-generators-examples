@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, Date, Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, Uuid, text
+from sqlalchemy import ARRAY, Date, Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, Uuid, literal_column, text
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -507,7 +507,7 @@ class Participant(Base):
 
     __table_args__ = (
         Index("participants_token_key", "token", unique=True),
-        Index("participants_poll_id_idx", "poll_id"),
+        Index("participants_poll_id_idx", "poll_id", postgresql_using="hash"),
         Index("participants_user_id_idx", "user_id"),
     )
 
@@ -558,7 +558,7 @@ class PollActivity(Base):
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("poll_activities_poll_id_created_at_idx", "poll_id", "created_at"),
+        Index("poll_activities_poll_id_created_at_idx", "poll_id", literal_column("\"created_at\"").desc()),
         Index("poll_activities_poll_id_participant_id_idx", "poll_id", "participant_id"),
         Index("poll_activities_poll_id_option_id_idx", "poll_id", "option_id"),
         Index("poll_activities_poll_id_invite_id_idx", "poll_id", "invite_id"),
@@ -577,7 +577,7 @@ class Option(Base):
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("options_poll_id_idx", "poll_id"),
+        Index("options_poll_id_idx", "poll_id", postgresql_using="hash"),
     )
 
     poll: Mapped["Poll"] = relationship(back_populates="options")
@@ -595,9 +595,9 @@ class Vote(Base):
     updated_at: Mapped[Optional[datetime]] = mapped_column(default=utc_now, onupdate=utc_now)
 
     __table_args__ = (
-        Index("votes_poll_id_idx", "poll_id"),
-        Index("votes_participant_id_idx", "participant_id"),
-        Index("votes_option_id_idx", "option_id"),
+        Index("votes_poll_id_idx", "poll_id", postgresql_using="hash"),
+        Index("votes_participant_id_idx", "participant_id", postgresql_using="hash"),
+        Index("votes_option_id_idx", "option_id", postgresql_using="hash"),
     )
 
     participant: Mapped["Participant"] = relationship(back_populates="votes")

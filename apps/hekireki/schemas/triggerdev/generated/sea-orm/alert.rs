@@ -7,25 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Alert")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
-    #[sea_orm(column_name = "capabilityKey")]
+    #[sea_orm(column_name = "capabilityKey", column_type = "Text")]
     pub capability_key: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub params: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub condition: Json,
+    #[sea_orm(column_type = "Text")]
     pub query: Option<String>,
     #[sea_orm(column_name = "expiresAt", column_type = "TimestampWithTimeZone")]
     pub expires_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(default_value = "active")]
+    #[sea_orm(column_type = "Text", default_value = "active")]
     pub lifecycle: String,
-    #[sea_orm(default_value = "clear")]
+    #[sea_orm(column_type = "Text", default_value = "clear")]
     pub attention: String,
-    #[sea_orm(column_name = "observedCondition", default_value = "unknown")]
+    #[sea_orm(
+        column_name = "observedCondition",
+        column_type = "Text",
+        default_value = "unknown"
+    )]
     pub observed_condition: String,
     #[sea_orm(
         column_name = "observedConditionChangedAt",
@@ -34,9 +42,9 @@ pub struct Model {
     pub observed_condition_changed_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_name = "pendingMetSince", column_type = "TimestampWithTimeZone")]
     pub pending_met_since: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "evaluatorState")]
+    #[sea_orm(column_name = "evaluatorState", column_type = "JsonBinary")]
     pub evaluator_state: Option<Json>,
-    #[sea_orm(column_name = "evaluationLeaseId")]
+    #[sea_orm(column_name = "evaluationLeaseId", column_type = "Text")]
     pub evaluation_lease_id: Option<String>,
     #[sea_orm(
         column_name = "evaluationLeaseUntil",
@@ -50,22 +58,31 @@ pub struct Model {
         column_type = "TimestampWithTimeZone"
     )]
     pub next_evaluation_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub notifiers: Json,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: String,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "resolvedAt", column_type = "TimestampWithTimeZone")]
     pub resolved_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "resolvedBy")]
+    #[sea_orm(column_name = "resolvedBy", column_type = "Text")]
     pub resolved_by: Option<String>,
     #[sea_orm(column_name = "stoppedAt", column_type = "TimestampWithTimeZone")]
     pub stopped_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "stoppedBy")]
+    #[sea_orm(column_name = "stoppedBy", column_type = "Text")]
     pub stopped_by: Option<String>,
     #[sea_orm(
         column_name = "lastOccurrenceAt",
@@ -76,7 +93,7 @@ pub struct Model {
     pub occurrences_since_raise: i32,
     #[sea_orm(column_name = "occurrencesTotal", default_value = "0")]
     pub occurrences_total: i64,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
 }
 

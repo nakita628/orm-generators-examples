@@ -10,30 +10,49 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "data_db_connection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = "postgres")]
     pub provider: DataDbProvider,
+    #[sea_orm(column_type = "Text")]
     pub encrypted_url: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub url_fingerprint: String,
+    #[sea_orm(column_type = "Text")]
     pub display_host: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub display_database: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub internal_schema: String,
     #[sea_orm(default_value = "pending")]
     pub status: DataDbConnectionStatus,
+    #[sea_orm(column_type = "Text")]
     pub schema_version: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub capabilities: Option<Json>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_validated_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
     #[sea_orm(default_value = "healthy")]
     pub health_state: DataDbConnectionHealthState,
+    #[sea_orm(column_type = "Text")]
     pub health_reason: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub health_changed_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_health_check_at: Option<DateTime>,
     #[sea_orm(default_value = 0)]
     pub consecutive_health_failures: i32,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 

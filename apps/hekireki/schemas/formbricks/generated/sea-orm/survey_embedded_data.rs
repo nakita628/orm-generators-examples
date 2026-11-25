@@ -21,14 +21,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SurveyEmbeddedData")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "embeddedDataId")]
+    #[sea_orm(column_name = "embeddedDataId", column_type = "Text")]
     pub embedded_data_id: String,
-    #[sea_orm(column_name = "storageKey")]
+    #[sea_orm(column_name = "storageKey", column_type = "Text")]
     pub storage_key: String,
     pub order: i32,
 }
@@ -39,14 +40,16 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "(Column::SurveyId, Column::WorkspaceId)",
         to = "(super::survey::Column::Id, super::survey::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SurveyEmbeddedData_surveyId_workspaceId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::embedded_data::Entity",
         from = "(Column::EmbeddedDataId, Column::WorkspaceId)",
         to = "(super::embedded_data::Column::Id, super::embedded_data::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SurveyEmbeddedData_embeddedDataId_workspaceId_fkey"
     )]
     EmbeddedData,
 }

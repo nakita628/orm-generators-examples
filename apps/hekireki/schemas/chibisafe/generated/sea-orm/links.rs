@@ -10,12 +10,14 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
     #[sea_orm(column_name = "albumId")]
     pub album_id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub identifier: String,
     #[sea_orm(default_value = 0)]
     pub views: i32,
@@ -25,7 +27,7 @@ pub struct Model {
     pub enable_download: bool,
     #[sea_orm(column_name = "expiresAt")]
     pub expires_at: Option<PrismaDateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,

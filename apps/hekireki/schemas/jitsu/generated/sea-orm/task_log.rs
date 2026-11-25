@@ -8,13 +8,21 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub level: String,
+    #[sea_orm(column_type = "Text")]
     pub logger: String,
+    #[sea_orm(column_type = "Text")]
     pub message: String,
+    #[sea_orm(column_type = "Text")]
     pub sync_id: String,
+    #[sea_orm(column_type = "Text")]
     pub task_id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub timestamp: DateTimeWithTimeZone,
 }
 

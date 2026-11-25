@@ -7,12 +7,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "InsightReaderProjection")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "insightId")]
+    #[sea_orm(column_name = "insightId", column_type = "Text")]
     pub insight_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(column_name = "seenAt")]
     pub seen_at: Option<f64>,
@@ -28,9 +29,9 @@ pub struct Model {
     pub occurred_at: f64,
     #[sea_orm(column_name = "acceptedAt")]
     pub accepted_at: f64,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
 }
 

@@ -7,21 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "HostLocation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
     #[sea_orm(column_name = "eventTypeId")]
     pub event_type_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     #[sea_orm(column_name = "credentialId")]
     pub credential_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub link: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub address: Option<String>,
-    #[sea_orm(column_name = "phoneNumber")]
+    #[sea_orm(column_name = "phoneNumber", column_type = "Text")]
     pub phone_number: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -31,14 +39,16 @@ pub enum Relation {
         belongs_to = "super::host::Entity",
         from = "(Column::UserId, Column::EventTypeId)",
         to = "(super::host::Column::UserId, super::host::Column::EventTypeId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "HostLocation_userId_eventTypeId_fkey"
     )]
     Host,
     #[sea_orm(
         belongs_to = "super::credential::Entity",
         from = "Column::CredentialId",
         to = "super::credential::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "HostLocation_credentialId_fkey"
     )]
     Credential,
 }

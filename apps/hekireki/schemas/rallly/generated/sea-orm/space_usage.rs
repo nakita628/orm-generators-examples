@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "space_usage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     pub resource: SpaceUsageResource,
@@ -19,8 +20,11 @@ pub struct Model {
     pub period: Date,
     #[sea_orm(default_value = 0)]
     pub count: i32,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub near_limit_warned_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub at_limit_warned_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -30,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
         to = "super::space::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "space_usage_space_id_fkey"
     )]
     Space,
 }

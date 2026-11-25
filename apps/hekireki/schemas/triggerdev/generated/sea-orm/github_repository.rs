@@ -7,22 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GithubRepository")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "githubId")]
     pub github_id: i64,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "fullName")]
+    #[sea_orm(column_name = "fullName", column_type = "Text")]
     pub full_name: String,
-    #[sea_orm(column_name = "htmlUrl")]
+    #[sea_orm(column_name = "htmlUrl", column_type = "Text")]
     pub html_url: String,
     pub private: bool,
-    #[sea_orm(column_name = "defaultBranch")]
+    #[sea_orm(column_name = "defaultBranch", column_type = "Text")]
     pub default_branch: String,
-    #[sea_orm(column_name = "installationId")]
+    #[sea_orm(column_name = "installationId", column_type = "Text")]
     pub installation_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,7 +39,8 @@ pub enum Relation {
         from = "Column::InstallationId",
         to = "super::github_app_installation::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GithubRepository_installationId_fkey"
     )]
     Installation,
     #[sea_orm(has_many = "super::connected_github_repository::Entity")]

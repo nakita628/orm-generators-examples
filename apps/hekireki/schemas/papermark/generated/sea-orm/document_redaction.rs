@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DocumentRedaction")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "jobId")]
+    #[sea_orm(column_name = "jobId", column_type = "Text")]
     pub job_id: String,
     #[sea_orm(column_name = "pageNumber")]
     pub page_number: i32,
@@ -16,18 +17,25 @@ pub struct Model {
     pub y: f64,
     pub width: f64,
     pub height: f64,
-    #[sea_orm(column_name = "textPreview")]
+    #[sea_orm(column_name = "textPreview", column_type = "Text")]
     pub text_preview: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub category: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub confidence: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
-    #[sea_orm(default_value = "AI")]
+    #[sea_orm(column_type = "Text", default_value = "AI")]
     pub source: String,
-    #[sea_orm(default_value = "PENDING")]
+    #[sea_orm(column_type = "Text", default_value = "PENDING")]
     pub status: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -37,7 +45,8 @@ pub enum Relation {
         belongs_to = "super::document_redaction_job::Entity",
         from = "Column::JobId",
         to = "super::document_redaction_job::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DocumentRedaction_jobId_fkey"
     )]
     Job,
 }

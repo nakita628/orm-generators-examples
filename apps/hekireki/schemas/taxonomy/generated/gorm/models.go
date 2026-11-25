@@ -15,8 +15,8 @@ type Account struct {
 	ID                string   `gorm:"column:id;primaryKey;type:varchar(191)" json:"id"`
 	UserID            string   `gorm:"column:userId;type:varchar(191);not null" json:"userId"`
 	Type              string   `gorm:"column:type;type:varchar(191);not null" json:"type"`
-	Provider          string   `gorm:"column:provider;uniqueIndex:accounts_provider_providerAccountId_key;type:varchar(191);not null" json:"provider"`
-	ProviderAccountID string   `gorm:"column:providerAccountId;uniqueIndex:accounts_provider_providerAccountId_key;type:varchar(191);not null" json:"providerAccountId"`
+	Provider          string   `gorm:"column:provider;uniqueIndex:accounts_provider_providerAccountId_key,priority:1;type:varchar(191);not null" json:"provider"`
+	ProviderAccountID string   `gorm:"column:providerAccountId;uniqueIndex:accounts_provider_providerAccountId_key,priority:2;type:varchar(191);not null" json:"providerAccountId"`
 	RefreshToken      *string  `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken       *string  `gorm:"column:access_token;type:text" json:"access_token"`
 	ExpiresAt         *int     `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -102,8 +102,8 @@ func (m *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 type VerificationToken struct {
-	Identifier string   `gorm:"column:identifier;uniqueIndex:verification_tokens_identifier_token_key;type:varchar(191);not null" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:verification_tokens_token_key;uniqueIndex:verification_tokens_identifier_token_key;type:varchar(191)" json:"token"`
+	Identifier string   `gorm:"column:identifier;uniqueIndex:verification_tokens_identifier_token_key,priority:1;type:varchar(191);not null" json:"identifier"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:verification_tokens_token_key;uniqueIndex:verification_tokens_identifier_token_key,priority:2;type:varchar(191)" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 

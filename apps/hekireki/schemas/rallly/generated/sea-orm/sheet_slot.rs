@@ -7,11 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "sheet_slots")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub sheet_id: String,
+    #[sea_orm(column_type = "Text")]
     pub event_type_id: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start_time: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -21,14 +30,16 @@ pub enum Relation {
         belongs_to = "super::sheet::Entity",
         from = "Column::SheetId",
         to = "super::sheet::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "sheet_slots_sheet_id_fkey"
     )]
     Sheet,
     #[sea_orm(
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "sheet_slots_event_type_id_fkey"
     )]
     EventType,
     #[sea_orm(has_one = "super::scheduled_event::Entity")]

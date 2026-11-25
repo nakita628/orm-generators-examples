@@ -7,22 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Custody")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "teamMemberId")]
+    #[sea_orm(column_name = "teamMemberId", column_type = "Text")]
     pub team_member_id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: String,
-    #[sea_orm(column_name = "kitCustodyId")]
+    #[sea_orm(column_name = "kitCustodyId", column_type = "Text")]
     pub kit_custody_id: Option<String>,
     #[sea_orm(default_value = 1)]
     pub quantity: i32,
-    #[sea_orm(column_name = "locationId")]
+    #[sea_orm(column_name = "locationId", column_type = "Text")]
     pub location_id: Option<String>,
     #[sea_orm(column_name = "sourceUnknown", default_value = false)]
     pub source_unknown: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -31,7 +36,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::team_member::Entity",
         from = "Column::TeamMemberId",
-        to = "super::team_member::Column::Id"
+        to = "super::team_member::Column::Id",
+        fk_name = "Custody_teamMemberId_fkey"
     )]
     Custodian,
     #[sea_orm(
@@ -39,7 +45,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Custody_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
@@ -47,7 +54,8 @@ pub enum Relation {
         from = "Column::KitCustodyId",
         to = "super::kit_custody::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Custody_kitCustodyId_fkey"
     )]
     KitCustody,
     #[sea_orm(
@@ -55,7 +63,8 @@ pub enum Relation {
         from = "Column::LocationId",
         to = "super::location::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Custody_locationId_fkey"
     )]
     Location,
 }

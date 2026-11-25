@@ -22,7 +22,10 @@ pub struct Model {
     pub data_type: i32,
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub distinct_id: Option<String>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
 }
 
@@ -31,13 +34,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::website::Entity",
         from = "Column::WebsiteId",
-        to = "super::website::Column::Id"
+        to = "super::website::Column::Id",
+        fk_name = "session_data_website_id_fkey"
     )]
     Website,
     #[sea_orm(
         belongs_to = "super::session::Entity",
         from = "Column::SessionId",
-        to = "super::session::Column::Id"
+        to = "super::session::Column::Id",
+        fk_name = "session_data_session_id_fkey"
     )]
     Session,
 }

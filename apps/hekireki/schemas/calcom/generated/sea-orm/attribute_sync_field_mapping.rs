@@ -7,17 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AttributeSyncFieldMapping")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "integrationFieldName")]
+    #[sea_orm(column_name = "integrationFieldName", column_type = "Text")]
     pub integration_field_name: String,
-    #[sea_orm(column_name = "attributeId")]
+    #[sea_orm(column_name = "attributeId", column_type = "Text")]
     pub attribute_id: String,
     pub enabled: bool,
-    #[sea_orm(column_name = "integrationAttributeSyncId")]
+    #[sea_orm(column_name = "integrationAttributeSyncId", column_type = "Text")]
     pub integration_attribute_sync_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,14 +32,16 @@ pub enum Relation {
         belongs_to = "super::attribute::Entity",
         from = "Column::AttributeId",
         to = "super::attribute::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttributeSyncFieldMapping_attributeId_fkey"
     )]
     Attribute,
     #[sea_orm(
         belongs_to = "super::integration_attribute_sync::Entity",
         from = "Column::IntegrationAttributeSyncId",
         to = "super::integration_attribute_sync::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttributeSyncFieldMapping_integrationAttributeSyncId_fkey"
     )]
     IntegrationAttributeSync,
 }

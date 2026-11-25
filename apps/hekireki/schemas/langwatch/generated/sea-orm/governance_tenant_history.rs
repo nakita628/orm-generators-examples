@@ -18,15 +18,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GovernanceTenantHistory")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// A hidden governance project id this organization has written rows under.
-    #[sea_orm(column_name = "tenantId")]
+    #[sea_orm(column_name = "tenantId", column_type = "Text")]
     pub tenant_id: String,
-    #[sea_orm(column_name = "firstUsedAt")]
+    #[sea_orm(column_name = "firstUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub first_used_at: DateTime,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: DateTime,
 }
 

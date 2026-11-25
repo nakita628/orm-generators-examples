@@ -7,31 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Link")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub domain: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub key: String,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"longtext\")")]
     pub url: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "shortLink", column_type = "String(StringLen::N(400))")]
     pub short_link: String,
     #[sea_orm(default_value = false)]
     pub archived: bool,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"datetime(3)\")")]
     pub expires_at: Option<DateTime>,
     #[sea_orm(column_name = "expiredUrl", column_type = "Text")]
     pub expired_url: Option<String>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"datetime(3)\")")]
     pub disabled_at: Option<DateTime>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub password: Option<String>,
     #[sea_orm(column_name = "trackConversion", default_value = false)]
     pub track_conversion: bool,
     #[sea_orm(default_value = false)]
     pub proxy: bool,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub title: Option<String>,
     #[sea_orm(column_type = "String(StringLen::N(280))")]
     pub description: Option<String>,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"longtext\")")]
     pub image: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub video: Option<String>,
@@ -47,7 +52,10 @@ pub struct Model {
     pub utm_content: Option<String>,
     #[sea_orm(default_value = false)]
     pub rewrite: bool,
-    #[sea_orm(column_name = "linkRetentionCleanupDisabledAt")]
+    #[sea_orm(
+        column_name = "linkRetentionCleanupDisabledAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub link_retention_cleanup_disabled_at: Option<DateTime>,
     #[sea_orm(column_name = "doIndex", default_value = false)]
     pub do_index: bool,
@@ -58,19 +66,22 @@ pub struct Model {
     pub geo: Option<Json>,
     #[sea_orm(column_name = "testVariants")]
     pub test_variants: Option<Json>,
-    #[sea_orm(column_name = "testStartedAt")]
+    #[sea_orm(column_name = "testStartedAt", column_type = "custom(\"datetime(3)\")")]
     pub test_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "testCompletedAt")]
+    #[sea_orm(
+        column_name = "testCompletedAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub test_completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "String(StringLen::N(191))")]
     pub folder_id: Option<String>,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "String(StringLen::N(191))")]
     pub external_id: Option<String>,
-    #[sea_orm(column_name = "tenantId")]
+    #[sea_orm(column_name = "tenantId", column_type = "String(StringLen::N(191))")]
     pub tenant_id: Option<String>,
     #[sea_orm(column_name = "publicStats", default_value = false)]
     pub public_stats: bool,
@@ -84,15 +95,22 @@ pub struct Model {
     pub sales: i32,
     #[sea_orm(column_name = "saleAmount", default_value = "0")]
     pub sale_amount: i64,
-    #[sea_orm(column_name = "lastClicked")]
+    #[sea_orm(column_name = "lastClicked", column_type = "custom(\"datetime(3)\")")]
     pub last_clicked: Option<DateTime>,
-    #[sea_orm(column_name = "lastLeadAt")]
+    #[sea_orm(column_name = "lastLeadAt", column_type = "custom(\"datetime(3)\")")]
     pub last_lead_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastConversionAt")]
+    #[sea_orm(
+        column_name = "lastConversionAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub last_conversion_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(column_type = "Text")]
     pub comments: Option<String>,
@@ -103,7 +121,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Link_userId_fkey"
     )]
     User,
     #[sea_orm(
@@ -111,7 +130,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Link_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -119,13 +139,15 @@ pub enum Relation {
         from = "Column::FolderId",
         to = "super::folder::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Link_folderId_fkey"
     )]
     Folder,
     #[sea_orm(
         belongs_to = "super::domain::Entity",
         from = "Column::Domain",
-        to = "super::domain::Column::Slug"
+        to = "super::domain::Column::Slug",
+        fk_name = "Link_domain_fkey"
     )]
     ShortDomain,
     #[sea_orm(has_many = "super::link_tag::Entity")]

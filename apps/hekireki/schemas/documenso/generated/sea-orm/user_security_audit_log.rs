@@ -11,12 +11,16 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     pub r#type: UserSecurityAuditLogType,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
 }
 
@@ -26,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserSecurityAuditLog_userId_fkey"
     )]
     User,
 }

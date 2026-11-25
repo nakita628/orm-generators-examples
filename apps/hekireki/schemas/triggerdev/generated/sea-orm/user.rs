@@ -8,34 +8,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     /// Address awaiting confirmation; becomes `email` only after a link sent to it is opened
-    #[sea_orm(column_name = "pendingEmail")]
+    #[sea_orm(column_name = "pendingEmail", column_type = "Text")]
     pub pending_email: Option<String>,
     #[sea_orm(column_name = "authenticationMethod")]
     pub authentication_method: AuthenticationMethod,
-    #[sea_orm(column_name = "authenticationProfile")]
+    #[sea_orm(column_name = "authenticationProfile", column_type = "JsonBinary")]
     pub authentication_profile: Option<Json>,
-    #[sea_orm(column_name = "authenticationExtraParams")]
+    #[sea_orm(column_name = "authenticationExtraParams", column_type = "JsonBinary")]
     pub authentication_extra_params: Option<Json>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "authIdentifier")]
+    #[sea_orm(column_name = "authIdentifier", column_type = "Text")]
     pub auth_identifier: Option<String>,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "avatarUrl")]
+    #[sea_orm(column_name = "avatarUrl", column_type = "Text")]
     pub avatar_url: Option<String>,
     #[sea_orm(default_value = false)]
     pub admin: bool,
     /// Preferences for the dashboard
-    #[sea_orm(column_name = "dashboardPreferences")]
+    #[sea_orm(column_name = "dashboardPreferences", column_type = "JsonBinary")]
     pub dashboard_preferences: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     /// @deprecated
     #[sea_orm(column_name = "isOnCloudWaitlist", default_value = false)]
@@ -50,16 +57,16 @@ pub struct Model {
     pub marketing_emails: bool,
     #[sea_orm(column_name = "confirmedBasicDetails", default_value = false)]
     pub confirmed_basic_details: bool,
-    #[sea_orm(column_name = "referralSource")]
+    #[sea_orm(column_name = "referralSource", column_type = "Text")]
     pub referral_source: Option<String>,
-    #[sea_orm(column_name = "onboardingData")]
+    #[sea_orm(column_name = "onboardingData", column_type = "JsonBinary")]
     pub onboarding_data: Option<Json>,
-    #[sea_orm(column_name = "mfaEnabledAt")]
+    #[sea_orm(column_name = "mfaEnabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub mfa_enabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "mfaSecretReferenceId")]
+    #[sea_orm(column_name = "mfaSecretReferenceId", column_type = "Text")]
     pub mfa_secret_reference_id: Option<String>,
     /// Hash of the last used code to prevent replay attacks
-    #[sea_orm(column_name = "mfaLastUsedCode")]
+    #[sea_orm(column_name = "mfaLastUsedCode", column_type = "Text")]
     pub mfa_last_used_code: Option<String>,
     /// Maximum session lifetime in seconds for this user. Default = 1 year (Gregorian).
     /// May be further restricted by Organization.maxSessionDuration on any of the user's orgs.
@@ -71,9 +78,12 @@ pub struct Model {
     /// treated as "no enforced deadline" (legacy sessions from before this
     /// shipped). Read-on-demand has zero per-request DB cost — the value
     /// piggybacks on the User fetch that requireUser already does.
-    #[sea_orm(column_name = "nextSessionEnd")]
+    #[sea_orm(
+        column_name = "nextSessionEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub next_session_end: Option<DateTime>,
-    #[sea_orm(column_name = "invitationCodeId")]
+    #[sea_orm(column_name = "invitationCodeId", column_type = "Text")]
     pub invitation_code_id: Option<String>,
 }
 
@@ -82,13 +92,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::secret_reference::Entity",
         from = "Column::MfaSecretReferenceId",
-        to = "super::secret_reference::Column::Id"
+        to = "super::secret_reference::Column::Id",
+        fk_name = "User_mfaSecretReferenceId_fkey"
     )]
     MfaSecretReference,
     #[sea_orm(
         belongs_to = "super::invitation_code::Entity",
         from = "Column::InvitationCodeId",
-        to = "super::invitation_code::Column::Id"
+        to = "super::invitation_code::Column::Id",
+        fk_name = "User_invitationCodeId_fkey"
     )]
     InvitationCode,
     #[sea_orm(has_many = "super::org_member::Entity")]

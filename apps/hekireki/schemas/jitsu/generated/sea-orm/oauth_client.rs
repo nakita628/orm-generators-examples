@@ -7,17 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthClient")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "clientSecretHash")]
+    #[sea_orm(column_name = "clientSecretHash", column_type = "Text")]
     pub client_secret_hash: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "redirectUris")]
+    #[sea_orm(
+        column_name = "redirectUris",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub redirect_uris: Vec<String>,
 }
 

@@ -7,14 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TagsPosts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "postId")]
+    #[sea_orm(column_name = "postId", column_type = "Text")]
     pub post_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "tagId")]
+    #[sea_orm(column_name = "tagId", column_type = "Text")]
     pub tag_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -23,13 +27,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::post::Entity",
         from = "Column::PostId",
-        to = "super::post::Column::Id"
+        to = "super::post::Column::Id",
+        fk_name = "TagsPosts_postId_fkey"
     )]
     Post,
     #[sea_orm(
         belongs_to = "super::tags::Entity",
         from = "Column::TagId",
-        to = "super::tags::Column::Id"
+        to = "super::tags::Column::Id",
+        fk_name = "TagsPosts_tagId_fkey"
     )]
     Tag,
 }

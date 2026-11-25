@@ -8,15 +8,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ImpersonationAuditLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub action: ImpersonationAuditLogAction,
-    #[sea_orm(column_name = "adminId")]
+    #[sea_orm(column_name = "adminId", column_type = "Text")]
     pub admin_id: String,
-    #[sea_orm(column_name = "targetId")]
+    #[sea_orm(column_name = "targetId", column_type = "Text")]
     pub target_id: String,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -27,7 +32,8 @@ pub enum Relation {
         from = "Column::AdminId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ImpersonationAuditLog_adminId_fkey"
     )]
     Admin,
     #[sea_orm(
@@ -35,7 +41,8 @@ pub enum Relation {
         from = "Column::TargetId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ImpersonationAuditLog_targetId_fkey"
     )]
     Target,
 }

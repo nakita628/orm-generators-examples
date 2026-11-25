@@ -7,14 +7,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Session")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "sessionToken")]
+    #[sea_orm(column_name = "sessionToken", column_type = "Text")]
     pub session_token: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires: DateTime,
-    #[sea_orm(column_name = "ipAddress")]
+    #[sea_orm(column_name = "ipAddress", column_type = "Text")]
     pub ip_address: Option<String>,
     #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
@@ -22,13 +24,14 @@ pub struct Model {
     /// every session that predates the column and on any mint we could not
     /// attribute - an ordinary value, not an error. Nothing reads it to decide
     /// whether the session is valid, so no session was ended to add it.
-    #[sea_orm(column_name = "identifierId")]
+    #[sea_orm(column_name = "identifierId", column_type = "Text")]
     pub identifier_id: Option<String>,
     /// What the sign-in that minted this session PROVED, as RFC 8176 method
     /// references (D06). Empty on every session minted before the column, and
     /// on any ordinary password sign-in. An organization that requires a second
     /// factor reads this when a member reaches its data; it is never read at
     /// mint and never ends a session.
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub amr: Vec<String>,
     /// Minted while the account had never signed in: the session its sign-up
     /// started, which skips the secure-account offer. False on every later one
@@ -46,6 +49,7 @@ pub struct Model {
     /// request and fail closed when the row does not come back. Dropping it in
     /// the same release that stops reading it signs everybody out for the length
     /// of the rollout. Expand now, contract next release.
+    #[sea_orm(column_type = "JsonBinary")]
     pub impersonating: Option<Json>,
     /// The impersonation claims (D06), aligned with the authz Principal
     /// {actor, subject}. The actor is the operator who really made the request
@@ -56,9 +60,9 @@ pub struct Model {
     ///
     /// NULL on every ordinary session, which is all of them: an impersonation
     /// is a handful of rows at a time and nothing else reads these columns.
-    #[sea_orm(column_name = "actorUserId")]
+    #[sea_orm(column_name = "actorUserId", column_type = "Text")]
     pub actor_user_id: Option<String>,
-    #[sea_orm(column_name = "subjectUserId")]
+    #[sea_orm(column_name = "subjectUserId", column_type = "Text")]
     pub subject_user_id: Option<String>,
     /// Why the operator started it. Required to start one
     /// (specs/features/backoffice-user-impersonation-reason.feature) and kept
@@ -69,7 +73,10 @@ pub struct Model {
     /// When the borrowed access lapses. A session outlives its impersonation
     /// window: past this the claims are ignored and the operator is themselves
     /// again, with nothing ended.
-    #[sea_orm(column_name = "impersonationExpiresAt")]
+    #[sea_orm(
+        column_name = "impersonationExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub impersonation_expires_at: Option<DateTime>,
     /// When this session was last used, for the idle timeout an organization
     /// may set (GAC-10, specs/identity/org-session-lifetime.feature).
@@ -89,11 +96,19 @@ pub struct Model {
     /// active than it was, never less - and it is what lets a window turned on
     /// today end the sessions that have been idle since February instead of
     /// waiting a day for a stamp they have never had.
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(column_name = "lastSeenAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_seen_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -103,7 +118,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Session_userId_fkey"
     )]
     User,
 }

@@ -11,21 +11,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DashboardFavourite")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// A DashboardsV2 board's id (copied boards kept their Dashboard id); null when
     /// the star is a template.
-    #[sea_orm(column_name = "dashboardId")]
+    #[sea_orm(column_name = "dashboardId", column_type = "Text")]
     pub dashboard_id: Option<String>,
     /// The starred From LangWatch template id; null when the star is a board.
-    #[sea_orm(column_name = "templateId")]
+    #[sea_orm(column_name = "templateId", column_type = "Text")]
     pub template_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// The member's drag order among their own stars in the project.
     pub position: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

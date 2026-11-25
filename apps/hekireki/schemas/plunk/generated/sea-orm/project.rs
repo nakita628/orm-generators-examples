@@ -10,31 +10,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "projects")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub public: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
     #[sea_orm(default_value = false)]
     pub disabled: bool,
     #[sea_orm(column_name = "disabledReason")]
     pub disabled_reason: Option<ProjectDisabledReason>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub customer: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub subscription: Option<String>,
     #[sea_orm(column_name = "cardVerification")]
     pub card_verification: Option<CardVerificationStatus>,
-    #[sea_orm(column_name = "cardVerificationIntent")]
+    #[sea_orm(column_name = "cardVerificationIntent", column_type = "Text")]
     pub card_verification_intent: Option<String>,
-    #[sea_orm(column_name = "cardVerificationAt")]
+    #[sea_orm(
+        column_name = "cardVerificationAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub card_verification_at: Option<DateTime>,
-    #[sea_orm(column_name = "cardVerificationSession")]
+    #[sea_orm(column_name = "cardVerificationSession", column_type = "Text")]
     pub card_verification_session: Option<String>,
-    #[sea_orm(column_name = "cardVerificationPaymentMethod")]
+    #[sea_orm(column_name = "cardVerificationPaymentMethod", column_type = "Text")]
     pub card_verification_payment_method: Option<String>,
-    #[sea_orm(column_name = "cardVerificationFingerprint")]
+    #[sea_orm(column_name = "cardVerificationFingerprint", column_type = "Text")]
     pub card_verification_fingerprint: Option<String>,
     #[sea_orm(column_name = "cardVerificationAttempts", default_value = 0)]
     pub card_verification_attempts: i32,
@@ -48,11 +57,15 @@ pub struct Model {
     pub billing_limit_inbound: Option<i32>,
     #[sea_orm(default_value = "ENABLED")]
     pub tracking: TrackingMode,
-    #[sea_orm(default_value = "en")]
+    #[sea_orm(column_type = "Text", default_value = "en")]
     pub language: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

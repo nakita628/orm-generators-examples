@@ -7,23 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Chat")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(column_name = "compactionCount", default_value = 0)]
     pub compaction_count: i32,
     #[sea_orm(column_name = "lastSeenRulesRevision")]
     pub last_seen_rules_revision: Option<i32>,
-    #[sea_orm(column_name = "activeStreamId")]
+    #[sea_orm(column_name = "activeStreamId", column_type = "Text")]
     pub active_stream_id: Option<String>,
-    #[sea_orm(column_name = "activeStreamStartedAt")]
+    #[sea_orm(
+        column_name = "activeStreamStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub active_stream_started_at: Option<DateTime>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -33,7 +42,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Chat_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(has_many = "super::chat_message::Entity")]

@@ -14,6 +14,7 @@ pub struct Model {
     #[sea_orm(default_value = 1)]
     pub snapshot_schema_version: Option<i32>,
     pub latest_full_state_seq: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub latest_full_state_vector_clock: Option<Json>,
     pub latest_state_replacement_seq: Option<i32>,
 }
@@ -24,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "user_sync_state_user_id_fkey"
     )]
     User,
 }

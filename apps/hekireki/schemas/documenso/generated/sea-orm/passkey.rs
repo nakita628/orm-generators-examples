@@ -7,15 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Passkey")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
     /// @zod.custom.use(z.instanceof(Uint8Array))
     #[sea_orm(column_name = "credentialId")]
@@ -24,10 +34,11 @@ pub struct Model {
     #[sea_orm(column_name = "credentialPublicKey")]
     pub credential_public_key: Vec<u8>,
     pub counter: i64,
-    #[sea_orm(column_name = "credentialDeviceType")]
+    #[sea_orm(column_name = "credentialDeviceType", column_type = "Text")]
     pub credential_device_type: String,
     #[sea_orm(column_name = "credentialBackedUp")]
     pub credential_backed_up: bool,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub transports: Vec<String>,
 }
 
@@ -37,7 +48,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Passkey_userId_fkey"
     )]
     User,
 }

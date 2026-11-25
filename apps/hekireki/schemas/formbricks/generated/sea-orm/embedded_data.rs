@@ -27,23 +27,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EmbeddedData")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub key: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     pub source: EmbeddedDataSource,
     #[sea_orm(column_name = "dataType", default_value = "string")]
     pub data_type: EmbeddedDataType,
     /// [EmbeddedDataDefaultValue]
-    #[sea_orm(column_name = "defaultValue")]
+    #[sea_orm(column_name = "defaultValue", column_type = "JsonBinary")]
     pub default_value: Option<Json>,
     #[sea_orm(default_value = false)]
     pub locked: bool,
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: Option<String>,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
 }
 
@@ -53,14 +62,16 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "(Column::SurveyId, Column::WorkspaceId)",
         to = "(super::survey::Column::Id, super::survey::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmbeddedData_surveyId_workspaceId_fkey"
     )]
     Survey,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmbeddedData_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(has_many = "super::survey_embedded_data::Entity")]

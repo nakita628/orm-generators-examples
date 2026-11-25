@@ -9,14 +9,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PasswordResetToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token_hash: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: DateTime,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -26,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PasswordResetToken_userId_fkey"
     )]
     User,
 }

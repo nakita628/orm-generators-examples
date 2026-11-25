@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, Column, Date, Dialect, Enum, ForeignKey, Index, Integer, MetaData, PrimaryKeyConstraint, String, Table, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, Column, Date, Dialect, Enum, ForeignKey, Index, Integer, MetaData, PrimaryKeyConstraint, String, Table, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -309,13 +309,13 @@ class Asset(Base):
 
     __table_args__ = (
         Index("Asset_preferredBarcodeId_key", "preferredBarcodeId", unique=True),
-        Index("Asset_title_description_idx", "title", "description"),
-        Index("Asset_sequentialId_trgm_idx", "sequentialId"),
+        Index("Asset_title_description_idx", "title", "description", postgresql_using="gin", postgresql_ops={"title": "gin_trgm_ops", "description": "gin_trgm_ops"}),
+        Index("Asset_sequentialId_trgm_idx", "sequentialId", postgresql_using="gin", postgresql_ops={"sequentialId": "gin_trgm_ops"}),
         Index("Asset_organizationId_compound_idx", "organizationId", "title", "status", "availableToBook"),
         Index("Asset_status_organizationId_idx", "status", "organizationId"),
         Index("Asset_organizationId_archivedAt_idx", "organizationId", "archivedAt"),
         Index("Asset_createdAt_organizationId_idx", "createdAt", "organizationId"),
-        Index("Asset_organizationId_createdAt_id_idx", "organizationId", "createdAt", "id"),
+        Index("Asset_organizationId_createdAt_id_idx", "organizationId", literal_column("\"createdAt\"").desc(), "id"),
         Index("Asset_valuation_organizationId_idx", "value", "organizationId"),
         Index("Asset_categoryId_organizationId_idx", "categoryId", "organizationId"),
         Index("Asset_assetModelId_organizationId_idx", "assetModelId", "organizationId"),
@@ -435,7 +435,7 @@ class Category(Base):
     __table_args__ = (
         Index("Category_organizationId_idx", "organizationId"),
         Index("Category_userId_idx", "userId"),
-        Index("Category_name_trgm_idx", "name"),
+        Index("Category_name_trgm_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
     )
 
     user: Mapped["User"] = relationship(back_populates="categories")
@@ -477,7 +477,7 @@ class AssetModel(Base):
     __table_args__ = (
         Index("AssetModel_organizationId_name_idx", "organizationId", "name"),
         Index("AssetModel_userId_idx", "userId"),
-        Index("AssetModel_name_trgm_idx", "name"),
+        Index("AssetModel_name_trgm_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
     )
 
     default_category: Mapped[Optional["Category"]] = relationship(back_populates="asset_model_defaults")
@@ -570,7 +570,7 @@ class Tag(Base):
     __table_args__ = (
         Index("Tag_organizationId_idx", "organizationId"),
         Index("Tag_userId_idx", "userId"),
-        Index("Tag_name_trgm_idx", "name"),
+        Index("Tag_name_trgm_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
     )
 
     user: Mapped["User"] = relationship(back_populates="tags")
@@ -655,7 +655,7 @@ class Qr(Base):
         Index("Qr_userId_idx", "userId"),
         Index("Qr_organizationId_idx", "organizationId"),
         Index("Qr_batchId_idx", "batchId"),
-        Index("Qr_id_trgm_idx", "id"),
+        Index("Qr_id_trgm_idx", "id", postgresql_using="gin", postgresql_ops={"id": "gin_trgm_ops"}),
     )
 
     asset: Mapped[Optional["Asset"]] = relationship(back_populates="qr_codes")
@@ -682,7 +682,7 @@ class Barcode(Base):
         Index("Barcode_assetId_idx", "assetId"),
         Index("Barcode_kitId_idx", "kitId"),
         Index("Barcode_organizationId_idx", "organizationId"),
-        Index("Barcode_value_trgm_idx", "value"),
+        Index("Barcode_value_trgm_idx", "value", postgresql_using="gin", postgresql_ops={"value": "gin_trgm_ops"}),
         Index("Barcode_organizationId_value_key", "organizationId", "value", unique=True),
     )
 
@@ -787,9 +787,9 @@ class Location(Base):
         Index("Location_organizationId_idx", "organizationId"),
         Index("Location_userId_idx", "userId"),
         Index("Location_organizationId_parentId_idx", "organizationId", "parentId"),
-        Index("Location_name_trgm_idx", "name"),
-        Index("Location_description_trgm_idx", "description"),
-        Index("Location_address_trgm_idx", "address"),
+        Index("Location_name_trgm_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
+        Index("Location_description_trgm_idx", "description", postgresql_using="gin", postgresql_ops={"description": "gin_trgm_ops"}),
+        Index("Location_address_trgm_idx", "address", postgresql_using="gin", postgresql_ops={"address": "gin_trgm_ops"}),
     )
 
     image: Mapped[Optional["Image"]] = relationship(back_populates="location")
@@ -829,7 +829,7 @@ class TeamMember(Base):
     deleted_at: Mapped[Optional[datetime]] = mapped_column("deletedAt")
 
     __table_args__ = (
-        Index("TeamMember_name_idx", "name"),
+        Index("TeamMember_name_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
         Index("TeamMember_organizationId_idx", "organizationId"),
         Index("TeamMember_userId_idx", "userId"),
     )
@@ -1613,7 +1613,7 @@ class AssetReminder(Base):
 
     __table_args__ = (
         Index("AssetReminder_assetId_alertDateTime_idx", "assetId", "alertDateTime"),
-        Index("AssetReminder_name_message_idx", "name", "message"),
+        Index("AssetReminder_name_message_idx", "name", "message", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops", "message": "gin_trgm_ops"}),
         Index("AssetReminder_organizationId_alertDateTime_assetId_idx", "organizationId", "alertDateTime", "assetId"),
         Index("AssetReminder_alertDateTime_activeSchedulerReference_idx", "alertDateTime", "activeSchedulerReference"),
         Index("AssetReminder_createdById_idx", "createdById"),

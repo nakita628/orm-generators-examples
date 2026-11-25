@@ -8,28 +8,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationAccessToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// User-provided name for the token
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// Used to differentiate between user-generated and system-generated tokens
     #[sea_orm(default_value = "USER")]
     pub r#type: OrganizationAccessTokenType,
     /// This is used to find the token in the database
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "hashedToken")]
+    #[sea_orm(column_name = "hashedToken", column_type = "Text")]
     pub hashed_token: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Optional expiration date for the token
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "revokedAt")]
+    #[sea_orm(column_name = "revokedAt", column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastAccessedAt")]
+    #[sea_orm(
+        column_name = "lastAccessedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_accessed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -38,7 +47,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "OrganizationAccessToken_organizationId_fkey"
     )]
     Organization,
 }

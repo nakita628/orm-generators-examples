@@ -9,37 +9,48 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunAttempt")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = 0)]
     pub number: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
-    #[sea_orm(column_name = "taskRunId")]
+    #[sea_orm(column_name = "taskRunId", column_type = "Text")]
     pub task_run_id: String,
-    #[sea_orm(column_name = "backgroundWorkerId")]
+    #[sea_orm(column_name = "backgroundWorkerId", column_type = "Text")]
     pub background_worker_id: String,
-    #[sea_orm(column_name = "backgroundWorkerTaskId")]
+    #[sea_orm(column_name = "backgroundWorkerTaskId", column_type = "Text")]
     pub background_worker_task_id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
-    #[sea_orm(column_name = "queueId")]
+    #[sea_orm(column_name = "queueId", column_type = "Text")]
     pub queue_id: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: TaskRunAttemptStatus,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
     #[sea_orm(column_name = "usageDurationMs", default_value = 0)]
     pub usage_duration_ms: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub error: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub output: Option<String>,
-    #[sea_orm(column_name = "outputType", default_value = "application/json")]
+    #[sea_orm(
+        column_name = "outputType",
+        column_type = "Text",
+        default_value = "application/json"
+    )]
     pub output_type: String,
 }
 
@@ -50,7 +61,8 @@ pub enum Relation {
         from = "Column::TaskRunId",
         to = "super::task_run::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunAttempt_taskRunId_fkey"
     )]
     TaskRun,
     #[sea_orm(
@@ -58,7 +70,8 @@ pub enum Relation {
         from = "Column::BackgroundWorkerId",
         to = "super::background_worker::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunAttempt_backgroundWorkerId_fkey"
     )]
     BackgroundWorker,
     #[sea_orm(
@@ -66,7 +79,8 @@ pub enum Relation {
         from = "Column::BackgroundWorkerTaskId",
         to = "super::background_worker_task::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunAttempt_backgroundWorkerTaskId_fkey"
     )]
     BackgroundWorkerTask,
     #[sea_orm(
@@ -74,7 +88,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunAttempt_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(
@@ -82,7 +97,8 @@ pub enum Relation {
         from = "Column::QueueId",
         to = "super::task_queue::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskRunAttempt_queueId_fkey"
     )]
     Queue,
     #[sea_orm(has_many = "super::task_run_dependency::Entity")]

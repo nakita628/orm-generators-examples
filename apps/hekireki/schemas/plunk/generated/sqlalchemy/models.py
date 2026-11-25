@@ -1,4 +1,4 @@
-from sqlalchemy import Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, text
+from sqlalchemy import Dialect, Enum, ForeignKey, Index, MetaData, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -149,7 +149,7 @@ class Contact(Base):
         Index("contacts_projectId_idx", "projectId"),
         Index("contacts_projectId_subscribed_idx", "projectId", "subscribed"),
         Index("contacts_snoozedUntil_idx", "snoozedUntil"),
-        Index("contacts_data_idx", "data"),
+        Index("contacts_data_idx", "data", postgresql_using="gin", postgresql_ops={"data": "jsonb_ops"}),
         Index("contacts_projectId_email_key", "projectId", "email", unique=True),
     )
 
@@ -201,7 +201,7 @@ class Segment(Base):
 
     __table_args__ = (
         Index("segments_projectId_idx", "projectId"),
-        Index("segments_condition_idx", "condition"),
+        Index("segments_condition_idx", "condition", postgresql_using="gin", postgresql_ops={"condition": "jsonb_ops"}),
     )
 
     project: Mapped["Project"] = relationship(back_populates="segments")
@@ -263,7 +263,7 @@ class Campaign(Base):
         Index("campaigns_projectId_archived_createdAt_idx", "projectId", "archived", "createdAt"),
         Index("campaigns_scheduledFor_idx", "scheduledFor"),
         Index("campaigns_segmentId_idx", "segmentId"),
-        Index("campaigns_audienceCondition_idx", "audienceCondition"),
+        Index("campaigns_audienceCondition_idx", "audienceCondition", postgresql_using="gin", postgresql_ops={"audienceCondition": "jsonb_ops"}),
     )
 
     segment: Mapped[Optional["Segment"]] = relationship(back_populates="campaigns")
@@ -495,7 +495,7 @@ class Event(Base):
         Index("events_contactId_name_createdAt_idx", "contactId", "name", "createdAt"),
         Index("events_projectId_name_createdAt_idx", "projectId", "name", "createdAt"),
         Index("events_contactId_createdAt_idx", "contactId", "createdAt"),
-        Index("events_data_idx", "data"),
+        Index("events_data_idx", "data", postgresql_using="gin", postgresql_ops={"data": "jsonb_ops"}),
     )
 
     project: Mapped["Project"] = relationship(back_populates="events")
@@ -577,12 +577,12 @@ class ApiRequest(Base):
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("api_requests_projectId_createdAt_idx", "projectId", "createdAt"),
-        Index("api_requests_userId_createdAt_idx", "userId", "createdAt"),
-        Index("api_requests_statusCode_createdAt_idx", "statusCode", "createdAt"),
-        Index("api_requests_path_createdAt_idx", "path", "createdAt"),
-        Index("api_requests_createdAt_idx", "createdAt"),
-        Index("api_requests_projectId_statusCode_createdAt_idx", "projectId", "statusCode", "createdAt"),
+        Index("api_requests_projectId_createdAt_idx", "projectId", literal_column("\"createdAt\"").desc()),
+        Index("api_requests_userId_createdAt_idx", "userId", literal_column("\"createdAt\"").desc()),
+        Index("api_requests_statusCode_createdAt_idx", "statusCode", literal_column("\"createdAt\"").desc()),
+        Index("api_requests_path_createdAt_idx", "path", literal_column("\"createdAt\"").desc()),
+        Index("api_requests_createdAt_idx", literal_column("\"createdAt\"").desc()),
+        Index("api_requests_projectId_statusCode_createdAt_idx", "projectId", "statusCode", literal_column("\"createdAt\"").desc()),
     )
 
     project: Mapped[Optional["Project"]] = relationship(back_populates="api_requests")

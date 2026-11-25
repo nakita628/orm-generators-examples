@@ -10,14 +10,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DashboardWidget")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// The DashboardsV2 board it sits on; null while unplaced.
-    #[sea_orm(column_name = "dashboardId")]
+    #[sea_orm(column_name = "dashboardId", column_type = "Text")]
     pub dashboard_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// The widget's srcdoc definition.
+    #[sea_orm(column_type = "JsonBinary")]
     pub definition: Json,
     #[sea_orm(column_name = "gridColumn", default_value = 0)]
     pub grid_column: i32,
@@ -27,9 +30,17 @@ pub struct Model {
     pub col_span: i32,
     #[sea_orm(column_name = "rowSpan", default_value = 1)]
     pub row_span: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

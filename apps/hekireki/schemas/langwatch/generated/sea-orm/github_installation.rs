@@ -18,36 +18,46 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GithubInstallation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// GitHub installation id (numeric; stored as string). Globally unique.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "installationId")]
+    #[sea_orm(column_name = "installationId", column_type = "Text")]
     pub installation_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The GitHub account (organization or user) the App is installed on.
-    #[sea_orm(column_name = "accountLogin")]
+    #[sea_orm(column_name = "accountLogin", column_type = "Text")]
     pub account_login: String,
     /// "Organization" or "User".
-    #[sea_orm(column_name = "accountType")]
+    #[sea_orm(column_name = "accountType", column_type = "Text")]
     pub account_type: String,
     /// GitHub numeric account id (stable across renames).
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
     /// "all" or "selected" — whether the App can see every repo on the account
     /// or only a chosen subset.
-    #[sea_orm(column_name = "repositorySelection")]
+    #[sea_orm(column_name = "repositorySelection", column_type = "Text")]
     pub repository_selection: String,
     /// Cached repository list [{ id, fullName }] when repositorySelection =
     /// "selected". Null when "all" (the full set is resolved live at mint time).
+    #[sea_orm(column_type = "JsonBinary")]
     pub repositories: Option<Json>,
     /// Set when GitHub suspends the installation; cleared on unsuspend. A
     /// suspended installation cannot mint tokens.
-    #[sea_orm(column_name = "suspendedAt")]
+    #[sea_orm(column_name = "suspendedAt", column_type = "custom(\"timestamp(3)\")")]
     pub suspended_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -57,7 +67,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GithubInstallation_organizationId_fkey"
     )]
     Organization,
 }

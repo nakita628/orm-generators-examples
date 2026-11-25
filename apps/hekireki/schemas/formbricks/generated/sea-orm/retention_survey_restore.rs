@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionSurveyRestore")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "surveyId")]
+    #[sea_orm(column_name = "surveyId", column_type = "Text")]
     pub survey_id: String,
-    #[sea_orm(column_name = "restoredAt")]
+    #[sea_orm(column_name = "restoredAt", column_type = "custom(\"timestamp(3)\")")]
     pub restored_at: DateTime,
 }
 
@@ -20,7 +20,8 @@ pub enum Relation {
         belongs_to = "super::survey::Entity",
         from = "Column::SurveyId",
         to = "super::survey::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionSurveyRestore_surveyId_fkey"
     )]
     Survey,
 }

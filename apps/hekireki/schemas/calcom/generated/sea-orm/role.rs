@@ -8,15 +8,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Role")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub color: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "CUSTOM")]
     pub r#type: RoleType,
@@ -28,7 +36,8 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Role_teamId_fkey"
     )]
     Team,
     #[sea_orm(has_many = "super::role_permission::Entity")]

@@ -10,49 +10,61 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Post")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = "QUEUE")]
     pub state: State,
-    #[sea_orm(column_name = "publishDate")]
+    #[sea_orm(column_name = "publishDate", column_type = "custom(\"timestamp(3)\")")]
     pub publish_date: DateTime,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     #[sea_orm(default_value = 0)]
     pub delay: i32,
+    #[sea_orm(column_type = "Text")]
     pub group: String,
-    #[sea_orm(column_name = "batchId")]
+    #[sea_orm(column_name = "batchId", column_type = "Text")]
     pub batch_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub title: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "parentPostId")]
+    #[sea_orm(column_name = "parentPostId", column_type = "Text")]
     pub parent_post_id: Option<String>,
-    #[sea_orm(column_name = "releaseId")]
+    #[sea_orm(column_name = "releaseId", column_type = "Text")]
     pub release_id: Option<String>,
-    #[sea_orm(column_name = "releaseURL")]
+    #[sea_orm(column_name = "releaseURL", column_type = "Text")]
     pub release_url: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub settings: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
-    #[sea_orm(column_name = "submittedForOrderId")]
+    #[sea_orm(column_name = "submittedForOrderId", column_type = "Text")]
     pub submitted_for_order_id: Option<String>,
-    #[sea_orm(column_name = "submittedForOrganizationId")]
+    #[sea_orm(column_name = "submittedForOrganizationId", column_type = "Text")]
     pub submitted_for_organization_id: Option<String>,
     #[sea_orm(column_name = "approvedSubmitForOrder", default_value = "NO")]
     pub approved_submit_for_order: APPROVED_SUBMIT_FOR_ORDER,
     #[sea_orm(column_name = "creationMethod", default_value = "UNKNOWN")]
     pub creation_method: CreationMethod,
-    #[sea_orm(column_name = "lastMessageId")]
+    #[sea_orm(column_name = "lastMessageId", column_type = "Text")]
     pub last_message_id: Option<String>,
     #[sea_orm(column_name = "intervalInDays")]
     pub interval_in_days: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -61,37 +73,43 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
-        to = "super::integration::Column::Id"
+        to = "super::integration::Column::Id",
+        fk_name = "Post_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::messages::Entity",
         from = "Column::LastMessageId",
-        to = "super::messages::Column::Id"
+        to = "super::messages::Column::Id",
+        fk_name = "Post_lastMessageId_fkey"
     )]
     LastMessage,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Post_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::post::Entity",
         from = "Column::ParentPostId",
-        to = "super::post::Column::Id"
+        to = "super::post::Column::Id",
+        fk_name = "Post_parentPostId_fkey"
     )]
     ParentPost,
     #[sea_orm(
         belongs_to = "super::orders::Entity",
         from = "Column::SubmittedForOrderId",
-        to = "super::orders::Column::Id"
+        to = "super::orders::Column::Id",
+        fk_name = "Post_submittedForOrderId_fkey"
     )]
     SubmittedForOrder,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::SubmittedForOrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Post_submittedForOrganizationId_fkey"
     )]
     SubmittedForOrganization,
     #[sea_orm(has_many = "super::comments::Entity")]

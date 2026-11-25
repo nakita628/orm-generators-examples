@@ -8,30 +8,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "McpIntegration")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "registeredServerUrl")]
+    #[sea_orm(column_name = "registeredServerUrl", column_type = "Text")]
     pub registered_server_url: Option<String>,
-    #[sea_orm(column_name = "registeredAuthorizationUrl")]
+    #[sea_orm(column_name = "registeredAuthorizationUrl", column_type = "Text")]
     pub registered_authorization_url: Option<String>,
-    #[sea_orm(column_name = "registeredTokenUrl")]
+    #[sea_orm(column_name = "registeredTokenUrl", column_type = "Text")]
     pub registered_token_url: Option<String>,
-    #[sea_orm(column_name = "oauthClientId")]
+    #[sea_orm(column_name = "oauthClientId", column_type = "Text")]
     pub oauth_client_id: Option<String>,
-    #[sea_orm(column_name = "oauthClientSecret")]
+    #[sea_orm(column_name = "oauthClientSecret", column_type = "Text")]
     pub oauth_client_secret: Option<String>,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
-    #[sea_orm(column_name = "serverUrl")]
+    #[sea_orm(column_name = "serverUrl", column_type = "Text")]
     pub server_url: Option<String>,
     #[sea_orm(column_name = "authType")]
     pub auth_type: Option<McpAuthType>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: Option<String>,
 }
 
@@ -41,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "McpIntegration_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(has_many = "super::mcp_connection::Entity")]

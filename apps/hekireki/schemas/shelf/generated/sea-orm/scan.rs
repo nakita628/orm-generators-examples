@@ -9,34 +9,42 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Scan")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub latitude: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub longitude: Option<String>,
-    #[sea_orm(column_name = "userAgent")]
+    #[sea_orm(column_name = "userAgent", column_type = "Text")]
     pub user_agent: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "qrId")]
+    #[sea_orm(column_name = "qrId", column_type = "Text")]
     pub qr_id: Option<String>,
-    #[sea_orm(column_name = "rawQrId")]
+    #[sea_orm(column_name = "rawQrId", column_type = "Text")]
     pub raw_qr_id: Option<String>,
     #[sea_orm(column_name = "codeType", default_value = "QR")]
     pub code_type: ScanCodeType,
+    #[sea_orm(column_type = "Text")]
     pub code: Option<String>,
-    #[sea_orm(column_name = "barcodeId")]
+    #[sea_orm(column_name = "barcodeId", column_type = "Text")]
     pub barcode_id: Option<String>,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: Option<String>,
-    #[sea_orm(column_name = "kitId")]
+    #[sea_orm(column_name = "kitId", column_type = "Text")]
     pub kit_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub source: Option<ScanSource>,
     #[sea_orm(column_name = "manuallyGenerated", default_value = false)]
     pub manually_generated: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -46,42 +54,48 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Scan_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::qr::Entity",
         from = "Column::QrId",
         to = "super::qr::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Scan_qrId_fkey"
     )]
     Qr,
     #[sea_orm(
         belongs_to = "super::barcode::Entity",
         from = "Column::BarcodeId",
         to = "super::barcode::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Scan_barcodeId_fkey"
     )]
     Barcode,
     #[sea_orm(
         belongs_to = "super::asset::Entity",
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Scan_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
         belongs_to = "super::kit::Entity",
         from = "Column::KitId",
         to = "super::kit::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Scan_kitId_fkey"
     )]
     Kit,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Scan_organizationId_fkey"
     )]
     Organization,
 }

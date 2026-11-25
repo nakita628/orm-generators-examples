@@ -9,42 +9,64 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Project")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub slug: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub logo: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "inviteCode")]
+    #[sea_orm(column_name = "inviteCode", column_type = "String(StringLen::N(191))")]
     pub invite_code: Option<String>,
-    #[sea_orm(default_value = "free")]
+    #[sea_orm(column_type = "String(StringLen::N(191))", default_value = "free")]
     pub plan: String,
     #[sea_orm(column_name = "planTier", default_value = 1)]
     pub plan_tier: i32,
     #[sea_orm(column_name = "planPeriod")]
     pub plan_period: Option<PlanPeriod>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeId")]
+    #[sea_orm(column_name = "stripeId", column_type = "String(StringLen::N(191))")]
     pub stripe_id: Option<String>,
     #[sea_orm(column_name = "billingCycleStart")]
     pub billing_cycle_start: i32,
-    #[sea_orm(column_name = "billingCycleEndsAt")]
+    #[sea_orm(
+        column_name = "billingCycleEndsAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub billing_cycle_ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "trialEndsAt")]
+    #[sea_orm(column_name = "trialEndsAt", column_type = "custom(\"datetime(3)\")")]
     pub trial_ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "subscriptionCanceledAt")]
+    #[sea_orm(
+        column_name = "subscriptionCanceledAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub subscription_canceled_at: Option<DateTime>,
-    #[sea_orm(column_name = "paymentFailedAt")]
+    #[sea_orm(
+        column_name = "paymentFailedAt",
+        column_type = "custom(\"datetime(3)\")"
+    )]
     pub payment_failed_at: Option<DateTime>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "invoicePrefix")]
+    #[sea_orm(
+        column_name = "invoicePrefix",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub invoice_prefix: Option<String>,
-    #[sea_orm(column_name = "stripeConnectId")]
+    #[sea_orm(
+        column_name = "stripeConnectId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub stripe_connect_id: Option<String>,
     #[sea_orm(column_name = "stripeConnectMode")]
     pub stripe_connect_mode: Option<StripeConnectMode>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "shopifyStoreId")]
+    #[sea_orm(
+        column_name = "shopifyStoreId",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub shopify_store_id: Option<String>,
     #[sea_orm(column_name = "totalLinks", default_value = 0)]
     pub total_links: i32,
@@ -78,7 +100,10 @@ pub struct Model {
     #[sea_orm(column_name = "allowedHostnames")]
     pub allowed_hostnames: Option<Json>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "publishableKey")]
+    #[sea_orm(
+        column_name = "publishableKey",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub publishable_key: Option<String>,
     #[sea_orm(column_name = "conversionEnabled", default_value = false)]
     pub conversion_enabled: bool,
@@ -87,17 +112,28 @@ pub struct Model {
     #[sea_orm(column_name = "dotLinkClaimed", default_value = false)]
     pub dot_link_claimed: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "ssoEmailDomain")]
+    #[sea_orm(
+        column_name = "ssoEmailDomain",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub sso_email_domain: Option<String>,
-    #[sea_orm(column_name = "ssoEnforcedAt")]
+    #[sea_orm(column_name = "ssoEnforcedAt", column_type = "custom(\"datetime(3)\")")]
     pub sso_enforced_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "usageLastChecked")]
+    #[sea_orm(
+        column_name = "usageLastChecked",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub usage_last_checked: DateTime,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"datetime(3)\")")]
     pub disabled_at: Option<DateTime>,
 }
 

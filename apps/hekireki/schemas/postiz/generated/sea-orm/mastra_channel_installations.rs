@@ -7,25 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_channel_installations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub platform: String,
-    #[sea_orm(column_name = "agentId")]
+    #[sea_orm(column_name = "agentId", column_type = "Text")]
     pub agent_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "webhookId")]
+    #[sea_orm(column_name = "webhookId", column_type = "Text")]
     pub webhook_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
-    #[sea_orm(column_name = "configHash")]
+    #[sea_orm(column_name = "configHash", column_type = "Text")]
     pub config_hash: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
 }
 

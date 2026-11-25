@@ -7,10 +7,12 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub slug: String,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub description: String,
     /// determines if a track can be seen on tracks page
     #[sea_orm(default_value = true)]

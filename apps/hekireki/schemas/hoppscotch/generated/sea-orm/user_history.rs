@@ -8,17 +8,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserHistory")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userUid")]
+    #[sea_orm(column_name = "userUid", column_type = "Text")]
     pub user_uid: String,
     #[sea_orm(column_name = "reqType")]
     pub req_type: ReqType,
+    #[sea_orm(column_type = "JsonBinary")]
     pub request: Json,
-    #[sea_orm(column_name = "responseMetadata")]
+    #[sea_orm(column_name = "responseMetadata", column_type = "JsonBinary")]
     pub response_metadata: Json,
     #[sea_orm(column_name = "isStarred")]
     pub is_starred: bool,
-    #[sea_orm(column_name = "executedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "executedOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub executed_on: DateTimeWithTimeZone,
 }
 
@@ -28,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserUid",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserHistory_userUid_fkey"
     )]
     User,
 }

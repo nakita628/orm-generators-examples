@@ -11,29 +11,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AssetModel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// Public URL (bucket `files`) of the model's cover image. Rendered by any
     /// asset of this model that has no image of its own. Public — and therefore
     /// never-expiring and cacheable — like Location.imageUrl; see
     /// resolveAssetImage() for the cascade.
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
     /// Public URL of the 108px thumbnail generated alongside `image`. Used at
     /// list sizes so inheriting assets never render the full-size original.
-    #[sea_orm(column_name = "thumbnailImage")]
+    #[sea_orm(column_name = "thumbnailImage", column_type = "Text")]
     pub thumbnail_image: Option<String>,
-    #[sea_orm(column_name = "defaultCategoryId")]
+    #[sea_orm(column_name = "defaultCategoryId", column_type = "Text")]
     pub default_category_id: Option<String>,
     #[sea_orm(column_name = "defaultValuation")]
     pub default_valuation: Option<f64>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -42,7 +50,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::category::Entity",
         from = "Column::DefaultCategoryId",
-        to = "super::category::Column::Id"
+        to = "super::category::Column::Id",
+        fk_name = "AssetModel_defaultCategoryId_fkey"
     )]
     DefaultCategory,
     #[sea_orm(
@@ -50,7 +59,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetModel_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -58,7 +68,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetModel_userId_fkey"
     )]
     CreatedBy,
     #[sea_orm(has_many = "super::asset_model_custom_field_default::Entity")]

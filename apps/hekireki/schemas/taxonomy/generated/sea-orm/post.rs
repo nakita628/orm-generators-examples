@@ -7,14 +7,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "posts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub title: String,
     pub content: Option<Json>,
     #[sea_orm(default_value = false)]
     pub published: bool,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "String(StringLen::N(191))")]
     pub author_id: String,
 }
 
@@ -23,7 +33,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::AuthorId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "posts_authorId_fkey"
     )]
     Author,
 }

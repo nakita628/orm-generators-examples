@@ -12,10 +12,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ResponseQuotaLink")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "responseId")]
+    #[sea_orm(column_name = "responseId", column_type = "Text")]
     pub response_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "quotaId")]
+    #[sea_orm(column_name = "quotaId", column_type = "Text")]
     pub quota_id: String,
     pub status: ResponseQuotaLinkStatus,
 }
@@ -26,14 +26,16 @@ pub enum Relation {
         belongs_to = "super::response::Entity",
         from = "Column::ResponseId",
         to = "super::response::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ResponseQuotaLink_responseId_fkey"
     )]
     Response,
     #[sea_orm(
         belongs_to = "super::survey_quota::Entity",
         from = "Column::QuotaId",
         to = "super::survey_quota::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ResponseQuotaLink_quotaId_fkey"
     )]
     Quota,
 }

@@ -8,16 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DocumentVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "versionNumber")]
     pub version_number: i32,
-    #[sea_orm(column_name = "documentId")]
+    #[sea_orm(column_name = "documentId", column_type = "Text")]
     pub document_id: String,
+    #[sea_orm(column_type = "Text")]
     pub file: String,
-    #[sea_orm(column_name = "originalFile")]
+    #[sea_orm(column_name = "originalFile", column_type = "Text")]
     pub original_file: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub r#type: Option<String>,
-    #[sea_orm(column_name = "contentType")]
+    #[sea_orm(column_name = "contentType", column_type = "Text")]
     pub content_type: Option<String>,
     #[sea_orm(column_name = "fileSize")]
     pub file_size: Option<i64>,
@@ -29,16 +32,20 @@ pub struct Model {
     pub is_primary: bool,
     #[sea_orm(column_name = "isVertical", default_value = false)]
     pub is_vertical: bool,
-    #[sea_orm(column_name = "fileId")]
+    #[sea_orm(column_name = "fileId", column_type = "Text")]
     pub file_id: Option<String>,
-    #[sea_orm(column_name = "vectorStoreFileId")]
+    #[sea_orm(column_name = "vectorStoreFileId", column_type = "Text")]
     pub vector_store_file_id: Option<String>,
     #[sea_orm(column_name = "hasPages", default_value = false)]
     pub has_pages: bool,
     pub length: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -48,7 +55,8 @@ pub enum Relation {
         belongs_to = "super::document::Entity",
         from = "Column::DocumentId",
         to = "super::document::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DocumentVersion_documentId_fkey"
     )]
     Document,
     #[sea_orm(has_many = "super::document_page::Entity")]

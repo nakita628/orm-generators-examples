@@ -8,24 +8,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EmailDomain")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = "PENDING")]
     pub status: EmailDomainStatus,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub selector: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
-    #[sea_orm(column_name = "publicKey")]
+    #[sea_orm(column_name = "publicKey", column_type = "Text")]
     pub public_key: String,
-    #[sea_orm(column_name = "privateKey")]
+    #[sea_orm(column_name = "privateKey", column_type = "Text")]
     pub private_key: String,
-    #[sea_orm(column_name = "lastVerifiedAt")]
+    #[sea_orm(
+        column_name = "lastVerifiedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_verified_at: Option<DateTime>,
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: String,
 }
 
@@ -35,7 +45,8 @@ pub enum Relation {
         belongs_to = "super::organisation::Entity",
         from = "Column::OrganisationId",
         to = "super::organisation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmailDomain_organisationId_fkey"
     )]
     Organisation,
     #[sea_orm(has_many = "super::organisation_email::Entity")]

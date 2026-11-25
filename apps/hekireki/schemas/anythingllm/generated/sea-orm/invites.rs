@@ -10,18 +10,22 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub code: String,
-    #[sea_orm(default_value = "pending")]
+    #[sea_orm(column_type = "Text", default_value = "pending")]
     pub status: String,
     #[sea_orm(column_name = "claimedBy")]
     pub claimed_by: Option<i32>,
-    #[sea_orm(column_name = "workspaceIds")]
+    #[sea_orm(column_name = "workspaceIds", column_type = "Text")]
     pub workspace_ids: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "createdBy")]
     pub created_by: i32,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 

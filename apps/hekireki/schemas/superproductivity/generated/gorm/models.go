@@ -115,20 +115,20 @@ func (m *PendingPasskeyRegistration) BeforeCreate(tx *gorm.DB) error {
 
 type Operation struct {
 	ID                  string             `gorm:"column:id;primaryKey" json:"id"`
-	UserID              int                `gorm:"column:user_id;uniqueIndex:operations_user_id_server_seq_key;index:operations_user_id_entity_type_entity_id_server_seq_idx;index:operations_user_id_received_at_server_seq_idx;size:32;not null" json:"user_id"`
+	UserID              int                `gorm:"column:user_id;uniqueIndex:operations_user_id_server_seq_key,priority:1;index:operations_user_id_entity_type_entity_id_server_seq_idx,priority:1;index:operations_user_id_received_at_server_seq_idx,priority:1;size:32;not null" json:"user_id"`
 	ClientID            string             `gorm:"column:client_id;not null" json:"client_id"`
-	ServerSeq           int                `gorm:"column:server_seq;uniqueIndex:operations_user_id_server_seq_key;index:operations_user_id_entity_type_entity_id_server_seq_idx;index:operations_user_id_received_at_server_seq_idx;size:32;not null" json:"server_seq"`
+	ServerSeq           int                `gorm:"column:server_seq;uniqueIndex:operations_user_id_server_seq_key,priority:2;index:operations_user_id_entity_type_entity_id_server_seq_idx,priority:4;index:operations_user_id_received_at_server_seq_idx,priority:3;size:32;not null" json:"server_seq"`
 	ActionType          string             `gorm:"column:action_type;not null" json:"action_type"`
 	OpType              string             `gorm:"column:op_type;not null" json:"op_type"`
-	EntityType          string             `gorm:"column:entity_type;index:operations_user_id_entity_type_entity_id_server_seq_idx;not null" json:"entity_type"`
-	EntityID            *string            `gorm:"column:entity_id;index:operations_user_id_entity_type_entity_id_server_seq_idx" json:"entity_id"`
-	EntityIds           ScalarList[string] `gorm:"column:entity_ids;index:operations_entity_ids_gin;type:text[]" json:"entity_ids"`
+	EntityType          string             `gorm:"column:entity_type;index:operations_user_id_entity_type_entity_id_server_seq_idx,priority:2;not null" json:"entity_type"`
+	EntityID            *string            `gorm:"column:entity_id;index:operations_user_id_entity_type_entity_id_server_seq_idx,priority:3" json:"entity_id"`
+	EntityIds           ScalarList[string] `gorm:"column:entity_ids;index:operations_entity_ids_gin,type:gin;type:text[]" json:"entity_ids"`
 	Payload             datatypes.JSON     `gorm:"column:payload;not null" json:"payload"`
 	PayloadBytes        int64              `gorm:"column:payload_bytes;default:0;not null" json:"payload_bytes"`
 	VectorClock         datatypes.JSON     `gorm:"column:vector_clock;not null" json:"vector_clock"`
 	SchemaVersion       int                `gorm:"column:schema_version;size:32;not null" json:"schema_version"`
 	ClientTimestamp     int64              `gorm:"column:client_timestamp;not null" json:"client_timestamp"`
-	ReceivedAt          int64              `gorm:"column:received_at;index:operations_user_id_received_at_server_seq_idx;not null" json:"received_at"`
+	ReceivedAt          int64              `gorm:"column:received_at;index:operations_user_id_received_at_server_seq_idx,priority:2;not null" json:"received_at"`
 	IsPayloadEncrypted  bool               `gorm:"column:is_payload_encrypted;default:false;not null" json:"is_payload_encrypted"`
 	SyncImportReason    *string            `gorm:"column:sync_import_reason" json:"sync_import_reason"`
 	RepairBaseServerSeq *int               `gorm:"column:repair_base_server_seq;size:32" json:"repair_base_server_seq"`
@@ -157,8 +157,8 @@ func (UserSyncState) TableName() string {
 }
 
 type SyncDevice struct {
-	ClientID   string  `gorm:"column:client_id;primaryKey" json:"client_id"`
 	UserID     int     `gorm:"column:user_id;primaryKey;size:32" json:"user_id"`
+	ClientID   string  `gorm:"column:client_id;primaryKey" json:"client_id"`
 	DeviceName *string `gorm:"column:device_name" json:"device_name"`
 	UserAgent  *string `gorm:"column:user_agent" json:"user_agent"`
 	// Bare semver the client last reported on download (`18.22.0`), NULL until
@@ -219,12 +219,12 @@ func (CaptureGrant) TableName() string {
 // outlive a grant that is revoked without discarding them.
 type CaptureItem struct {
 	ID         string `gorm:"column:id;primaryKey" json:"id"`
-	UserID     int    `gorm:"column:user_id;index:capture_items_user_id_created_at_idx;size:32;not null" json:"user_id"`
+	UserID     int    `gorm:"column:user_id;index:capture_items_user_id_created_at_idx,priority:1;size:32;not null" json:"user_id"`
 	GrantID    string `gorm:"column:grant_id;index:capture_items_grant_id_idx;not null" json:"grant_id"`
 	Ciphertext string `gorm:"column:ciphertext;not null" json:"ciphertext"`
 	// Task id the claiming device must use; replaced when another device takes over.
 	TaskID        string  `gorm:"column:task_id;not null" json:"task_id"`
-	CreatedAt     int64   `gorm:"column:created_at;index:capture_items_user_id_created_at_idx;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt     int64   `gorm:"column:created_at;index:capture_items_user_id_created_at_idx,priority:2;autoCreateTime:false;not null" json:"created_at"`
 	LeaseDeviceID *string `gorm:"column:lease_device_id" json:"lease_device_id"`
 	LeaseUntil    *int64  `gorm:"column:lease_until" json:"lease_until"`
 	User          *User   `gorm:"belongsTo"`

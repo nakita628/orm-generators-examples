@@ -26,25 +26,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ScimRequestLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Null when the refusal resolved an organization and stopped before the
     /// connection — a lapsed plan is answered off the token alone.
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub method: String,
     /// The SCIM resource asked for ("Users", "Users/:id", "Groups"), never the
     /// raw path: a path carries ids and query strings, and this is read by
     /// people rather than matched by machines.
+    #[sea_orm(column_type = "Text")]
     pub resource: String,
     pub status: i32,
     /// A stable slug, only on a refusal, so a reader branches on this and never
     /// on the sentence beside it.
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
     /// Our own short sentence, customer-safe.
+    #[sea_orm(column_type = "Text")]
     pub detail: Option<String>,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(
+        column_name = "occurredAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub occurred_at: DateTime,
 }
 
@@ -54,7 +63,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ScimRequestLog_organizationId_fkey"
     )]
     Organization,
 }

@@ -8,9 +8,12 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrgMemberInvite")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(default_value = "MEMBER")]
     pub role: OrgMemberRole,
@@ -23,15 +26,19 @@ pub struct Model {
     /// a separate schema (Drizzle, not Prisma) so we can't model the FK
     /// here. Validation happens at write time (action) and read time
     /// (acceptInvite).
-    #[sea_orm(column_name = "rbacRoleId")]
+    #[sea_orm(column_name = "rbacRoleId", column_type = "Text")]
     pub rbac_role_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "inviterId")]
+    #[sea_orm(column_name = "inviterId", column_type = "Text")]
     pub inviter_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -42,7 +49,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrgMemberInvite_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -50,7 +58,8 @@ pub enum Relation {
         from = "Column::InviterId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrgMemberInvite_inviterId_fkey"
     )]
     Inviter,
 }

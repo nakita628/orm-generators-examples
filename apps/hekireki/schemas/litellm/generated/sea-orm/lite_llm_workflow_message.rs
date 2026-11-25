@@ -7,12 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_WorkflowMessage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub message_id: String,
+    #[sea_orm(column_type = "Text")]
     pub run_id: String,
+    #[sea_orm(column_type = "Text")]
     pub role: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     pub sequence_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub session_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -21,7 +30,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_workflow_run::Entity",
         from = "Column::RunId",
-        to = "super::lite_llm_workflow_run::Column::RunId"
+        to = "super::lite_llm_workflow_run::Column::RunId",
+        fk_name = "LiteLLM_WorkflowMessage_run_id_fkey"
     )]
     Run,
 }

@@ -10,14 +10,18 @@ pub struct Model {
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "featureId")]
+    #[sea_orm(column_name = "featureId", column_type = "Text")]
     pub feature_id: String,
     pub enabled: bool,
-    #[sea_orm(column_name = "assignedAt")]
+    #[sea_orm(
+        column_name = "assignedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub assigned_at: DateTime,
-    #[sea_orm(column_name = "assignedBy")]
+    #[sea_orm(column_name = "assignedBy", column_type = "Text")]
     pub assigned_by: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,14 +31,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamFeatures_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::feature::Entity",
         from = "Column::FeatureId",
         to = "super::feature::Column::Slug",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TeamFeatures_featureId_fkey"
     )]
     Feature,
 }

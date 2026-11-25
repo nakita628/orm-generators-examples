@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CreditBalance")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "teamId")]
@@ -15,9 +16,15 @@ pub struct Model {
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "additionalCredits", default_value = 0)]
     pub additional_credits: i32,
-    #[sea_orm(column_name = "limitReachedAt")]
+    #[sea_orm(
+        column_name = "limitReachedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub limit_reached_at: Option<DateTime>,
-    #[sea_orm(column_name = "warningSentAt")]
+    #[sea_orm(
+        column_name = "warningSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub warning_sent_at: Option<DateTime>,
 }
 
@@ -27,14 +34,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreditBalance_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreditBalance_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::credit_expense_log::Entity")]

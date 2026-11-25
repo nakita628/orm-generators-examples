@@ -7,25 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationProjectIntegration")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationIntegrationId")]
+    #[sea_orm(column_name = "organizationIntegrationId", column_type = "Text")]
     pub organization_integration_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// Identifier for webhooks, for example Vercel's projectId
-    #[sea_orm(column_name = "externalEntityId")]
+    #[sea_orm(column_name = "externalEntityId", column_type = "Text")]
     pub external_entity_id: String,
     /// Save useful data like config or external entity name
-    #[sea_orm(column_name = "integrationData")]
+    #[sea_orm(column_name = "integrationData", column_type = "JsonBinary")]
     pub integration_data: Json,
     /// UserId who installed the integration
-    #[sea_orm(column_name = "installedBy")]
+    #[sea_orm(column_name = "installedBy", column_type = "Text")]
     pub installed_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -36,7 +41,8 @@ pub enum Relation {
         from = "Column::OrganizationIntegrationId",
         to = "super::organization_integration::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganizationProjectIntegration_organizationIntegrationId_fkey"
     )]
     OrganizationIntegration,
     #[sea_orm(
@@ -44,7 +50,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganizationProjectIntegration_projectId_fkey"
     )]
     Project,
 }

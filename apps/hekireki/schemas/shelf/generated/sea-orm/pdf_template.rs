@@ -12,14 +12,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PdfTemplate")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = "BOOKING")]
     pub kind: PdfTemplateKind,
     /// The layout's switches. Read through `parseBookingTemplateConfig`,
     /// which fills any key a stored row lacks from the Checklist template's
     /// values.
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub config: Json,
     /// The template the PDF dialog offers first. One per workspace and kind,
     /// enforced by a partial unique index in raw SQL (migration
@@ -28,11 +30,15 @@ pub struct Model {
     /// migration.
     #[sea_orm(column_name = "isDefault", default_value = false)]
     pub is_default: bool,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -43,7 +49,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PdfTemplate_organizationId_fkey"
     )]
     Organization,
 }

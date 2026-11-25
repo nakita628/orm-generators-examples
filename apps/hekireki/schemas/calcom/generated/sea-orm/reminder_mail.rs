@@ -15,7 +15,11 @@ pub struct Model {
     pub reminder_type: ReminderType,
     #[sea_orm(column_name = "elapsedMinutes")]
     pub elapsed_minutes: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

@@ -9,13 +9,17 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub code: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
     #[sea_orm(column_name = "isSuccessful")]
     pub is_successful: bool,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     #[sea_orm(column_name = "challengeId")]
     pub challenge_id: i32,
@@ -26,13 +30,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Submission_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "Submission_challengeId_fkey"
     )]
     Challenge,
     #[sea_orm(has_many = "super::vote::Entity")]

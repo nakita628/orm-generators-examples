@@ -9,38 +9,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "View")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: String,
-    #[sea_orm(column_name = "documentId")]
+    #[sea_orm(column_name = "documentId", column_type = "Text")]
     pub document_id: Option<String>,
-    #[sea_orm(column_name = "dataroomId")]
+    #[sea_orm(column_name = "dataroomId", column_type = "Text")]
     pub dataroom_id: Option<String>,
-    #[sea_orm(column_name = "dataroomViewId")]
+    #[sea_orm(column_name = "dataroomViewId", column_type = "Text")]
     pub dataroom_view_id: Option<String>,
-    #[sea_orm(column_name = "viewerEmail")]
+    #[sea_orm(column_name = "viewerEmail", column_type = "Text")]
     pub viewer_email: Option<String>,
-    #[sea_orm(column_name = "viewerName")]
+    #[sea_orm(column_name = "viewerName", column_type = "Text")]
     pub viewer_name: Option<String>,
     #[sea_orm(default_value = false)]
     pub verified: bool,
-    #[sea_orm(column_name = "viewedAt")]
+    #[sea_orm(
+        column_name = "viewedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub viewed_at: DateTime,
-    #[sea_orm(column_name = "downloadedAt")]
+    #[sea_orm(column_name = "downloadedAt", column_type = "custom(\"timestamp(3)\")")]
     pub downloaded_at: Option<DateTime>,
     #[sea_orm(column_name = "downloadType")]
     pub download_type: Option<DownloadType>,
-    #[sea_orm(column_name = "downloadMetadata")]
+    #[sea_orm(column_name = "downloadMetadata", column_type = "JsonBinary")]
     pub download_metadata: Option<Json>,
     #[sea_orm(column_name = "viewType", default_value = "DOCUMENT_VIEW")]
     pub view_type: ViewType,
-    #[sea_orm(column_name = "viewerId")]
+    #[sea_orm(column_name = "viewerId", column_type = "Text")]
     pub viewer_id: Option<String>,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
     #[sea_orm(column_name = "isArchived", default_value = false)]
     pub is_archived: bool,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: Option<String>,
 }
 
@@ -50,42 +55,48 @@ pub enum Relation {
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "View_linkId_fkey"
     )]
     Link,
     #[sea_orm(
         belongs_to = "super::document::Entity",
         from = "Column::DocumentId",
         to = "super::document::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "View_documentId_fkey"
     )]
     Document,
     #[sea_orm(
         belongs_to = "super::dataroom::Entity",
         from = "Column::DataroomId",
         to = "super::dataroom::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "View_dataroomId_fkey"
     )]
     Dataroom,
     #[sea_orm(
         belongs_to = "super::viewer::Entity",
         from = "Column::ViewerId",
         to = "super::viewer::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "View_viewerId_fkey"
     )]
     Viewer,
     #[sea_orm(
         belongs_to = "super::viewer_group::Entity",
         from = "Column::GroupId",
         to = "super::viewer_group::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "View_groupId_fkey"
     )]
     Group,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "View_teamId_fkey"
     )]
     Team,
     #[sea_orm(has_many = "super::reaction::Entity")]

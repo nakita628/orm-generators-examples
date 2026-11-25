@@ -6,33 +6,53 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "Account")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
-    #[sea_orm(default_value = "oidc")]
+    #[sea_orm(column_type = "Text", default_value = "oidc")]
     pub r#type: String,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: String,
     #[sea_orm(column_type = "Text")]
     pub refresh_token: Option<String>,
-    #[sea_orm(column_name = "refreshTokenExpiresAt")]
+    #[sea_orm(
+        column_name = "refreshTokenExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub refresh_token_expires_at: Option<DateTime>,
     #[sea_orm(column_type = "Text")]
     pub access_token: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "disconnectedAt")]
+    #[sea_orm(
+        column_name = "disconnectedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub disconnected_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub token_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub scope: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub id_token: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub session_state: Option<String>,
 }
 
@@ -42,7 +62,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Account_userId_fkey"
     )]
     User,
     #[sea_orm(has_one = "super::email_account::Entity")]

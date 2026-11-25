@@ -8,22 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Document")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub file: String,
-    #[sea_orm(column_name = "originalFile")]
+    #[sea_orm(column_name = "originalFile", column_type = "Text")]
     pub original_file: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub r#type: Option<String>,
-    #[sea_orm(column_name = "contentType")]
+    #[sea_orm(column_name = "contentType", column_type = "Text")]
     pub content_type: Option<String>,
     #[sea_orm(column_name = "storageType", default_value = "VERCEL_BLOB")]
     pub storage_type: DocumentStorageType,
     #[sea_orm(column_name = "numPages")]
     pub num_pages: Option<i32>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "ownerId")]
+    #[sea_orm(column_name = "ownerId", column_type = "Text")]
     pub owner_id: Option<String>,
     #[sea_orm(column_name = "assistantEnabled", default_value = false)]
     pub assistant_enabled: bool,
@@ -35,11 +40,15 @@ pub struct Model {
     pub download_only: bool,
     #[sea_orm(column_name = "hiddenInAllDocuments", default_value = false)]
     pub hidden_in_all_documents: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "Text")]
     pub folder_id: Option<String>,
     #[sea_orm(column_name = "isExternalUpload", default_value = false)]
     pub is_external_upload: bool,
@@ -51,21 +60,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Document_ownerId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Document_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::folder::Entity",
         from = "Column::FolderId",
         to = "super::folder::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Document_folderId_fkey"
     )]
     Folder,
     #[sea_orm(has_many = "super::link::Entity")]

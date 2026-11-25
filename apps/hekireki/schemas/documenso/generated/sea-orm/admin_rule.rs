@@ -9,24 +9,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AdminRule")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     pub mode: AdminRuleMode,
     /// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
+    #[sea_orm(column_type = "Text")]
     pub trigger: String,
     /// [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)
+    #[sea_orm(column_type = "JsonBinary")]
     pub definition: Json,
     pub priority: i32,
     #[sea_orm(column_name = "stopOnMatch")]
     pub stop_on_match: bool,
     /// Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
     /// organisation
-    #[sea_orm(column_name = "exemptOrganisationIds")]
+    #[sea_orm(
+        column_name = "exemptOrganisationIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub exempt_organisation_ids: Vec<String>,
 }
 

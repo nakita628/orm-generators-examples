@@ -7,11 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "options")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "custom(\"timestamp(0)\")")]
     pub start_time: DateTime,
     #[sea_orm(column_name = "duration_minutes", default_value = 0)]
     pub duration: i32,
+    #[sea_orm(column_type = "Text")]
     pub poll_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -21,7 +28,8 @@ pub enum Relation {
         belongs_to = "super::poll::Entity",
         from = "Column::PollId",
         to = "super::poll::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "options_poll_id_fkey"
     )]
     Poll,
     #[sea_orm(has_many = "super::vote::Entity")]

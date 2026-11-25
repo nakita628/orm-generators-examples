@@ -8,21 +8,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "webhook_deliveries")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub webhook_id: String,
     /// Soft reference to the PollActivity row this delivery was fanned out from; with webhookId it makes fan-out idempotent
+    #[sea_orm(column_type = "Text")]
     pub activity_id: String,
+    #[sea_orm(column_type = "Text")]
     pub event_type: String,
     /// Frozen at fan-out: retries resend exactly what the first attempt sent
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
     #[sea_orm(default_value = "pending")]
     pub status: WebhookDeliveryStatus,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub next_attempt_at: DateTime,
     pub last_response_status: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub last_error: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::space_webhook::Entity",
         from = "Column::WebhookId",
         to = "super::space_webhook::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "webhook_deliveries_webhook_id_fkey"
     )]
     Webhook,
 }

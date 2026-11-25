@@ -8,10 +8,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NurturingProjectTraceDay")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// UTC `YYYY-MM-DD` of the root spans' append time.
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub day: String,
     #[sea_orm(column_name = "traceCount", default_value = 0)]
     pub trace_count: i32,
@@ -19,10 +20,13 @@ pub struct Model {
     #[sea_orm(column_name = "errorCount", default_value = 0)]
     pub error_count: i32,
     /// Append time of the newest root span.
-    #[sea_orm(column_name = "lastTraceAt")]
+    #[sea_orm(column_name = "lastTraceAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_trace_at: Option<DateTime>,
     /// Append time of the newest trace_failed.
-    #[sea_orm(column_name = "lastFailedTraceAt")]
+    #[sea_orm(
+        column_name = "lastFailedTraceAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_failed_trace_at: Option<DateTime>,
 }
 

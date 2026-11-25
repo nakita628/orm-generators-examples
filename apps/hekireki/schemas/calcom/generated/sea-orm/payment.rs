@@ -8,19 +8,22 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uid: String,
-    #[sea_orm(column_name = "appId")]
+    #[sea_orm(column_name = "appId", column_type = "Text")]
     pub app_id: Option<String>,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: i32,
     pub amount: i32,
     pub fee: i32,
+    #[sea_orm(column_type = "Text")]
     pub currency: String,
     pub success: bool,
     pub refunded: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: String,
     #[sea_orm(column_name = "paymentOption", default_value = "ON_BOOKING")]
     pub payment_option: Option<PaymentOption>,
@@ -32,14 +35,16 @@ pub enum Relation {
         belongs_to = "super::app::Entity",
         from = "Column::AppId",
         to = "super::app::Column::Slug",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Payment_appId_fkey"
     )]
     App,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Payment_bookingId_fkey"
     )]
     Booking,
 }

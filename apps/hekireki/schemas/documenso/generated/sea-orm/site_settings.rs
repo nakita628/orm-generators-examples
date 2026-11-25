@@ -7,13 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SiteSettings")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = false)]
     pub enabled: bool,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
     #[sea_orm(column_name = "lastModifiedByUserId")]
     pub last_modified_by_user_id: Option<i32>,
-    #[sea_orm(column_name = "lastModifiedAt")]
+    #[sea_orm(
+        column_name = "lastModifiedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_modified_at: DateTime,
 }
 
@@ -23,7 +29,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::LastModifiedByUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "SiteSettings_lastModifiedByUserId_fkey"
     )]
     LastModifiedByUser,
 }

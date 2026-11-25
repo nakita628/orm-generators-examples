@@ -1971,9 +1971,9 @@ public partial class InboxZeroContext : DbContext
 
             entity.HasIndex(e => new { e.MessagingChannelId, e.CreatedAt }, "ExecutedAction_messagingChannelId_createdAt_idx");
 
-            entity.HasIndex(e => new { e.DraftStatus, e.CreatedAt }, "ExecutedAction_draftStatus_createdAt_draft_idx");
+            entity.HasIndex(e => new { e.DraftStatus, e.CreatedAt }, "ExecutedAction_draftStatus_createdAt_draft_idx").HasFilter("(\"draftId\" IS NOT NULL)");
 
-            entity.HasIndex(e => e.ExecutedRuleId, "ExecutedAction_executedRuleId_draft_idx");
+            entity.HasIndex(e => e.ExecutedRuleId, "ExecutedAction_executedRuleId_draft_idx").HasFilter("(\"draftId\" IS NOT NULL)");
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
@@ -2708,7 +2708,7 @@ public partial class InboxZeroContext : DbContext
 
             entity.HasIndex(e => new { e.EmailAccountId, e.Type, e.Resolved, e.FollowUpAppliedAt, e.SentAt }, "ThreadTracker_emailAccountId_type_resolved_followUpAppliedA_idx");
 
-            entity.HasIndex(e => new { e.EmailAccountId, e.FollowUpDraftCreatedAt }, "ThreadTracker_followUpDraft_cleanup_idx");
+            entity.HasIndex(e => new { e.EmailAccountId, e.FollowUpDraftCreatedAt }, "ThreadTracker_followUpDraft_cleanup_idx").HasFilter("(\"followUpDraftContent\" IS NOT NULL)");
 
             entity.HasIndex(e => new { e.EmailAccountId, e.ThreadId, e.MessageId }, "ThreadTracker_emailAccountId_threadId_messageId_key").IsUnique();
 
@@ -5504,9 +5504,13 @@ public partial class InboxZeroContext : DbContext
 
             entity.HasIndex(e => e.CampaignId, "LoopsEmailSource_campaignId_idx");
 
-            entity.HasIndex(e => e.LoopId, "LoopsEmailSource_loopId_unversioned_key").IsUnique();
+            entity.HasIndex(e => e.LoopId, "LoopsEmailSource_loopId_unversioned_key")
+                .IsUnique()
+                .HasFilter("(\"emailMessageId\" IS NULL AND \"loopId\" IS NOT NULL)");
 
-            entity.HasIndex(e => e.CampaignId, "LoopsEmailSource_campaignId_unversioned_key").IsUnique();
+            entity.HasIndex(e => e.CampaignId, "LoopsEmailSource_campaignId_unversioned_key")
+                .IsUnique()
+                .HasFilter("(\"emailMessageId\" IS NULL AND \"campaignId\" IS NOT NULL)");
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()

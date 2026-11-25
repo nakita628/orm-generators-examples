@@ -8,39 +8,64 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     pub rollover_max_budget: Option<f64>,
     pub rollover_credit: Option<f64>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub budget_limits: Option<Json>,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_alias: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub sso_user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub organization_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub object_permission_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
     pub password_reset_required: Option<bool>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_breach_check_at: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub teams: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub user_role: Option<String>,
     pub max_budget: Option<f64>,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
+    #[sea_orm(column_type = "Text")]
     pub user_email: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub models: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Json,
     pub max_parallel_requests: Option<i32>,
     pub tpm_limit: Option<i64>,
     pub rpm_limit: Option<i64>,
+    #[sea_orm(column_type = "Text")]
     pub budget_duration: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub budget_reset_at: Option<DateTime>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub allowed_cache_controls: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub policies: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub model_spend: Json,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub model_max_budget: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: Option<DateTime>,
 }
 
@@ -49,13 +74,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::lite_llm_organization_table::Entity",
         from = "Column::OrganizationId",
-        to = "super::lite_llm_organization_table::Column::OrganizationId"
+        to = "super::lite_llm_organization_table::Column::OrganizationId",
+        fk_name = "LiteLLM_UserTable_organization_id_fkey"
     )]
     LitellmOrganizationTable,
     #[sea_orm(
         belongs_to = "super::lite_llm_object_permission_table::Entity",
         from = "Column::ObjectPermissionId",
-        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId"
+        to = "super::lite_llm_object_permission_table::Column::ObjectPermissionId",
+        fk_name = "LiteLLM_UserTable_object_permission_id_fkey"
     )]
     ObjectPermission,
     #[sea_orm(has_many = "super::lite_llm_verified_subject::Entity")]

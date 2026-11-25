@@ -8,6 +8,7 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub subscription: String,
 }
 
@@ -17,7 +18,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "NotificationsSubscriptions_userId_fkey"
     )]
     User,
 }

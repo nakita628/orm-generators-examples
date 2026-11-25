@@ -7,10 +7,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "record_removal_tombstone")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub record_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
 }
 

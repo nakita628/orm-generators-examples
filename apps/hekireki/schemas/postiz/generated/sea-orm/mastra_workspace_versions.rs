@@ -7,30 +7,43 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_workspace_versions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(column_name = "versionNumber")]
     pub version_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub filesystem: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub sandbox: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub mounts: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub search: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub skills: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub tools: Option<Json>,
     #[sea_orm(column_name = "autoSync")]
     pub auto_sync: Option<bool>,
     #[sea_orm(column_name = "operationTimeout")]
     pub operation_timeout: Option<i32>,
-    #[sea_orm(column_name = "changedFields")]
+    #[sea_orm(column_name = "changedFields", column_type = "JsonBinary")]
     pub changed_fields: Option<Json>,
-    #[sea_orm(column_name = "changeMessage")]
+    #[sea_orm(column_name = "changeMessage", column_type = "Text")]
     pub change_message: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

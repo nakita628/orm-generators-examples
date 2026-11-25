@@ -4,14 +4,15 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "VerificationToken")]
 pub struct Model {
-    #[sea_orm(column_name = "deviceIdentifier")]
+    #[sea_orm(column_name = "deviceIdentifier", column_type = "Text")]
     pub device_identifier: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
-    #[sea_orm(column_name = "userUid")]
+    #[sea_orm(column_name = "userUid", column_type = "Text")]
     pub user_uid: String,
-    #[sea_orm(column_name = "expiresOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "expiresOn", column_type = "custom(\"timestamptz(3)\")")]
     pub expires_on: DateTimeWithTimeZone,
 }
 
@@ -21,7 +22,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserUid",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "VerificationToken_userUid_fkey"
     )]
     User,
 }

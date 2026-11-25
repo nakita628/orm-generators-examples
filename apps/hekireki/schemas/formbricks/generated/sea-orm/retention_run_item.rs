@@ -11,20 +11,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RetentionRunItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: String,
     #[sea_orm(column_name = "targetType")]
     pub target_type: RetentionTargetType,
-    #[sea_orm(column_name = "targetId")]
+    #[sea_orm(column_name = "targetId", column_type = "Text")]
     pub target_id: String,
-    #[sea_orm(column_name = "targetName")]
+    #[sea_orm(column_name = "targetName", column_type = "Text")]
     pub target_name: Option<String>,
     pub action: RetentionRunItemAction,
     /// 1, except for grouped response deletions, where it is the number of responses deleted.
     #[sea_orm(default_value = 1)]
     pub count: i32,
     /// Who was emailed, for `notified` rows.
+    #[sea_orm(column_type = "Text")]
     pub recipient: Option<String>,
     #[sea_orm(column_name = "skipReason")]
     pub skip_reason: Option<RetentionSkipReason>,
@@ -36,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::retention_run::Entity",
         from = "Column::RunId",
         to = "super::retention_run::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "RetentionRunItem_runId_fkey"
     )]
     Run,
 }

@@ -8,21 +8,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationUser")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     pub role: OrganizationUserRole,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
     /// Department assignment for spend attribution (the people lens).
     /// Single-valued, org-scoped, accounting-only (never gates access).
     /// Plain column ref (relationMode="prisma"); the service validates the
     /// id belongs to this org. See departments.feature.
-    #[sea_orm(column_name = "departmentId")]
+    #[sea_orm(column_name = "departmentId", column_type = "Text")]
     pub department_id: Option<String>,
     /// Set when an admin disables this membership to stay within the licensed
     /// seat count. The person loses access to this organization only, keeps
@@ -30,24 +38,34 @@ pub struct Model {
     /// Reversible: re-enabling restores access if a seat is available.
     /// Seat counting excludes disabled memberships. See
     /// seat-reconciliation.feature.
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
     /// Stable grant intent for an unfinished automatic SSO admission.
     /// Cleared after the authoritative grant is observed; never inferred from missing access.
-    #[sea_orm(column_name = "pendingSsoGrantId")]
+    #[sea_orm(column_name = "pendingSsoGrantId", column_type = "Text")]
     pub pending_sso_grant_id: Option<String>,
     /// A new generation for each membership lifetime. Stamped USER grant facts
     /// must match the current active membership before they can be projected;
     /// removing and rejoining therefore cannot revive a delayed old attach.
-    #[sea_orm(column_name = "membershipStamp")]
+    #[sea_orm(
+        column_name = "membershipStamp",
+        column_type = "Text",
+        default_expr = "Expr::cust(\"gen_random_uuid()::text\")"
+    )]
     pub membership_stamp: String,
     /// When this membership started holding the full seat it holds now; null means createdAt.
     /// Anchors the 30-day seat hold (specs/licensing/seat-rotation.feature).
-    #[sea_orm(column_name = "fullSeatSince")]
+    #[sea_orm(
+        column_name = "fullSeatSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub full_seat_since: Option<DateTime>,
     /// Set when admission wrote this membership disabled because no seat was free: the person
     /// is waiting for one. Cleared when the membership is enabled.
-    #[sea_orm(column_name = "seatPendingSince")]
+    #[sea_orm(
+        column_name = "seatPendingSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub seat_pending_since: Option<DateTime>,
 }
 
@@ -56,13 +74,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "OrganizationUser_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "OrganizationUser_organizationId_fkey"
     )]
     Organization,
 }

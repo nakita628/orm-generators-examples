@@ -7,20 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkerGroupToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "tokenHash")]
+    #[sea_orm(column_name = "tokenHash", column_type = "Text")]
     pub token_hash: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "previousTokenHash")]
+    #[sea_orm(column_name = "previousTokenHash", column_type = "Text")]
     pub previous_token_hash: Option<String>,
-    #[sea_orm(column_name = "previousTokenValidUntil")]
+    #[sea_orm(
+        column_name = "previousTokenValidUntil",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub previous_token_valid_until: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "workerGroupId")]
+    #[sea_orm(column_name = "workerGroupId", column_type = "Text")]
     pub worker_group_id: Option<String>,
 }
 
@@ -31,7 +39,8 @@ pub enum Relation {
         from = "Column::WorkerGroupId",
         to = "super::worker_instance_group::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerGroupToken_workerGroupId_fkey"
     )]
     ChildOf,
     #[sea_orm(

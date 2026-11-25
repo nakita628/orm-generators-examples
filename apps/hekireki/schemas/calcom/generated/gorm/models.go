@@ -85,8 +85,8 @@ func (*HostGroup) BeforeUpdate(tx *gorm.DB) error {
 
 type HostLocation struct {
 	ID           string      `gorm:"column:id;primaryKey" json:"id"`
-	UserID       int         `gorm:"column:userId;uniqueIndex:HostLocation_userId_eventTypeId_key;size:32;not null" json:"userId"`
-	EventTypeID  int         `gorm:"column:eventTypeId;uniqueIndex:HostLocation_userId_eventTypeId_key;index:HostLocation_eventTypeId_idx;size:32;not null" json:"eventTypeId"`
+	UserID       int         `gorm:"column:userId;uniqueIndex:HostLocation_userId_eventTypeId_key,priority:1;size:32;not null" json:"userId"`
+	EventTypeID  int         `gorm:"column:eventTypeId;uniqueIndex:HostLocation_userId_eventTypeId_key,priority:2;index:HostLocation_eventTypeId_idx;size:32;not null" json:"eventTypeId"`
 	Type         string      `gorm:"column:type;not null" json:"type"`
 	CredentialID *int        `gorm:"column:credentialId;index:HostLocation_credentialId_idx;size:32" json:"credentialId"`
 	Link         *string     `gorm:"column:link" json:"link"`
@@ -164,8 +164,8 @@ func (*CalVideoSettings) BeforeUpdate(tx *gorm.DB) error {
 
 type VideoCallGuest struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	BookingUID string    `gorm:"column:bookingUid;uniqueIndex:VideoCallGuest_bookingUid_email_key;index:VideoCallGuest_bookingUid_idx;not null" json:"bookingUid"`
-	Email      string    `gorm:"column:email;uniqueIndex:VideoCallGuest_bookingUid_email_key;index:VideoCallGuest_email_idx;not null" json:"email"`
+	BookingUID string    `gorm:"column:bookingUid;uniqueIndex:VideoCallGuest_bookingUid_email_key,priority:1;index:VideoCallGuest_bookingUid_idx;not null" json:"bookingUid"`
+	Email      string    `gorm:"column:email;uniqueIndex:VideoCallGuest_bookingUid_email_key,priority:2;index:VideoCallGuest_email_idx;not null" json:"email"`
 	Name       string    `gorm:"column:name;not null" json:"name"`
 	JoinedAt   *DateTime `gorm:"column:joinedAt;type:timestamp(3)" json:"joinedAt"`
 	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -203,7 +203,7 @@ type EventType struct {
 	// @zod.string.min(1)
 	Title string `gorm:"column:title;not null" json:"title"`
 	// @zod.import(["import { eventTypeSlug } from '../../zod-utils'"]).custom.use(eventTypeSlug)
-	Slug              string  `gorm:"column:slug;uniqueIndex:EventType_userId_slug_key;uniqueIndex:EventType_teamId_slug_key;not null" json:"slug"`
+	Slug              string  `gorm:"column:slug;uniqueIndex:EventType_userId_slug_key,priority:2;uniqueIndex:EventType_teamId_slug_key,priority:2;not null" json:"slug"`
 	Description       *string `gorm:"column:description" json:"description"`
 	InterfaceLanguage *string `gorm:"column:interfaceLanguage" json:"interfaceLanguage"`
 	Position          int     `gorm:"column:position;size:32;default:0;not null" json:"position"`
@@ -213,12 +213,12 @@ type EventType struct {
 	Length                         int     `gorm:"column:length;size:32;not null" json:"length"`
 	OffsetStart                    int     `gorm:"column:offsetStart;size:32;default:0;not null" json:"offsetStart"`
 	Hidden                         bool    `gorm:"column:hidden;default:false;not null" json:"hidden"`
-	UserID                         *int    `gorm:"column:userId;uniqueIndex:EventType_userId_slug_key;uniqueIndex:EventType_userId_parentId_key;index:EventType_userId_idx;size:32" json:"userId"`
+	UserID                         *int    `gorm:"column:userId;uniqueIndex:EventType_userId_slug_key,priority:1;uniqueIndex:EventType_userId_parentId_key,priority:1;index:EventType_userId_idx;size:32" json:"userId"`
 	ProfileID                      *int    `gorm:"column:profileId;index:EventType_profileId_idx;size:32" json:"profileId"`
-	TeamID                         *int    `gorm:"column:teamId;uniqueIndex:EventType_teamId_slug_key;index:EventType_teamId_idx;index:EventType_parentId_teamId_idx;size:32" json:"teamId"`
+	TeamID                         *int    `gorm:"column:teamId;uniqueIndex:EventType_teamId_slug_key,priority:1;index:EventType_teamId_idx;index:EventType_parentId_teamId_idx,priority:2;size:32" json:"teamId"`
 	UseEventLevelSelectedCalendars bool    `gorm:"column:useEventLevelSelectedCalendars;default:false;not null" json:"useEventLevelSelectedCalendars"`
 	EventName                      *string `gorm:"column:eventName" json:"eventName"`
-	ParentID                       *int    `gorm:"column:parentId;uniqueIndex:EventType_userId_parentId_key;index:EventType_parentId_idx;index:EventType_parentId_teamId_idx;size:32" json:"parentId"`
+	ParentID                       *int    `gorm:"column:parentId;uniqueIndex:EventType_userId_parentId_key,priority:2;index:EventType_parentId_idx;index:EventType_parentId_teamId_idx,priority:1;size:32" json:"parentId"`
 	// @zod.import(["import { eventTypeBookingFields } from '../../zod-utils'"]).custom.use(eventTypeBookingFields)
 	BookingFields datatypes.JSON `gorm:"column:bookingFields" json:"bookingFields"`
 	TimeZone      *string        `gorm:"column:timeZone" json:"timeZone"`
@@ -352,14 +352,14 @@ type Credential struct {
 	Type                      string                     `gorm:"column:type;not null" json:"type"`
 	Key                       datatypes.JSON             `gorm:"column:key;not null" json:"key"`
 	EncryptedKey              *string                    `gorm:"column:encryptedKey" json:"encryptedKey"`
-	UserID                    *int                       `gorm:"column:userId;index:Credential_userId_delegationCredentialId_idx;size:32" json:"userId"`
+	UserID                    *int                       `gorm:"column:userId;index:Credential_userId_delegationCredentialId_idx,priority:1;size:32" json:"userId"`
 	TeamID                    *int                       `gorm:"column:teamId;index:Credential_teamId_idx;size:32" json:"teamId"`
 	AppID                     *string                    `gorm:"column:appId;index:Credential_appId_idx" json:"appId"`
 	SubscriptionID            *string                    `gorm:"column:subscriptionId;index:Credential_subscriptionId_idx" json:"subscriptionId"`
 	PaymentStatus             *string                    `gorm:"column:paymentStatus" json:"paymentStatus"`
 	BillingCycleStart         *int                       `gorm:"column:billingCycleStart;size:32" json:"billingCycleStart"`
 	Invalid                   *bool                      `gorm:"column:invalid;index:Credential_invalid_idx;default:false" json:"invalid"`
-	DelegationCredentialID    *string                    `gorm:"column:delegationCredentialId;index:Credential_userId_delegationCredentialId_idx" json:"delegationCredentialId"`
+	DelegationCredentialID    *string                    `gorm:"column:delegationCredentialId;index:Credential_userId_delegationCredentialId_idx,priority:2" json:"delegationCredentialId"`
 	User                      *User                      `gorm:"belongsTo"`
 	Team                      *Team                      `gorm:"belongsTo"`
 	App                       *App                       `gorm:"foreignKey:AppID;references:Slug;belongsTo"`
@@ -445,11 +445,11 @@ func (TravelSchedule) TableName() string {
 
 type User struct {
 	ID       int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UUID     string  `gorm:"column:uuid;uniqueIndex:users_uuid_key;type:char(36);not null" json:"uuid"`
-	Username *string `gorm:"column:username;uniqueIndex:users_email_username_key;uniqueIndex:users_username_organizationId_key;index:users_username_idx" json:"username"`
+	UUID     string  `gorm:"column:uuid;uniqueIndex:users_uuid_key;type:uuid;not null" json:"uuid"`
+	Username *string `gorm:"column:username;uniqueIndex:users_email_username_key,priority:2;uniqueIndex:users_username_organizationId_key,priority:1;index:users_username_idx" json:"username"`
 	Name     *string `gorm:"column:name" json:"name"`
 	// @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
-	Email                           string    `gorm:"column:email;uniqueIndex:users_email_key;uniqueIndex:users_email_username_key;not null" json:"email"`
+	Email                           string    `gorm:"column:email;uniqueIndex:users_email_key;uniqueIndex:users_email_username_key,priority:1;not null" json:"email"`
 	EmailVerified                   *DateTime `gorm:"column:emailVerified;index:users_emailVerified_idx;type:timestamp(3)" json:"emailVerified"`
 	Bio                             *string   `gorm:"column:bio" json:"bio"`
 	AvatarURL                       *string   `gorm:"column:avatarUrl" json:"avatarUrl"`
@@ -482,7 +482,7 @@ type User struct {
 	Metadata                       datatypes.JSON                `gorm:"column:metadata" json:"metadata"`
 	Verified                       *bool                         `gorm:"column:verified;default:false" json:"verified"`
 	Role                           string                        `gorm:"column:role;default:'USER';not null" json:"role"`
-	OrganizationID                 *int                          `gorm:"column:organizationId;uniqueIndex:users_username_organizationId_key;size:32" json:"organizationId"`
+	OrganizationID                 *int                          `gorm:"column:organizationId;uniqueIndex:users_username_organizationId_key,priority:2;size:32" json:"organizationId"`
 	Locked                         bool                          `gorm:"column:locked;default:false;not null" json:"locked"`
 	MovedToProfileID               *int                          `gorm:"column:movedToProfileId;uniqueIndex:users_movedToProfileId_key;size:32" json:"movedToProfileId"`
 	IsPlatformManaged              bool                          `gorm:"column:isPlatformManaged;default:false;not null" json:"isPlatformManaged"`
@@ -560,8 +560,8 @@ func (m *User) BeforeCreate(tx *gorm.DB) error {
 
 type NotificationsSubscriptions struct {
 	ID           int    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID       int    `gorm:"column:userId;index:NotificationsSubscriptions_userId_subscription_idx;size:32;not null" json:"userId"`
-	Subscription string `gorm:"column:subscription;index:NotificationsSubscriptions_userId_subscription_idx;not null" json:"subscription"`
+	UserID       int    `gorm:"column:userId;index:NotificationsSubscriptions_userId_subscription_idx,priority:1;size:32;not null" json:"userId"`
+	Subscription string `gorm:"column:subscription;index:NotificationsSubscriptions_userId_subscription_idx,priority:2;not null" json:"subscription"`
 	User         *User  `gorm:"belongsTo"`
 }
 
@@ -572,9 +572,9 @@ func (NotificationsSubscriptions) TableName() string {
 type Profile struct {
 	ID             int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	UID            string      `gorm:"column:uid;index:Profile_uid_idx;not null" json:"uid"`
-	UserID         int         `gorm:"column:userId;uniqueIndex:Profile_userId_organizationId_key;index:Profile_userId_idx;size:32;not null" json:"userId"`
-	OrganizationID int         `gorm:"column:organizationId;uniqueIndex:Profile_userId_organizationId_key;uniqueIndex:Profile_username_organizationId_key;index:Profile_organizationId_idx;size:32;not null" json:"organizationId"`
-	Username       string      `gorm:"column:username;uniqueIndex:Profile_username_organizationId_key;not null" json:"username"`
+	UserID         int         `gorm:"column:userId;uniqueIndex:Profile_userId_organizationId_key,priority:1;index:Profile_userId_idx;size:32;not null" json:"userId"`
+	OrganizationID int         `gorm:"column:organizationId;uniqueIndex:Profile_userId_organizationId_key,priority:2;uniqueIndex:Profile_username_organizationId_key,priority:2;index:Profile_organizationId_idx;size:32;not null" json:"organizationId"`
+	Username       string      `gorm:"column:username;uniqueIndex:Profile_username_organizationId_key,priority:1;not null" json:"username"`
 	CreatedAt      DateTime    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime    `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	User           *User       `gorm:"belongsTo"`
@@ -611,7 +611,7 @@ type Team struct {
 	// @zod.string.min(1)
 	Name string `gorm:"column:name;not null" json:"name"`
 	// @zod.string.min(1)
-	Slug                *string  `gorm:"column:slug;uniqueIndex:Team_slug_parentId_key" json:"slug"`
+	Slug                *string  `gorm:"column:slug;uniqueIndex:Team_slug_parentId_key,priority:1" json:"slug"`
 	LogoURL             *string  `gorm:"column:logoUrl" json:"logoUrl"`
 	CalVideoLogo        *string  `gorm:"column:calVideoLogo" json:"calVideoLogo"`
 	AppLogo             *string  `gorm:"column:appLogo" json:"appLogo"`
@@ -630,7 +630,7 @@ type Team struct {
 	BrandColor             *string        `gorm:"column:brandColor" json:"brandColor"`
 	DarkBrandColor         *string        `gorm:"column:darkBrandColor" json:"darkBrandColor"`
 	BannerURL              *string        `gorm:"column:bannerUrl" json:"bannerUrl"`
-	ParentID               *int           `gorm:"column:parentId;uniqueIndex:Team_slug_parentId_key;index:Team_parentId_idx;size:32" json:"parentId"`
+	ParentID               *int           `gorm:"column:parentId;uniqueIndex:Team_slug_parentId_key,priority:2;index:Team_parentId_idx;size:32" json:"parentId"`
 	TimeFormat             *int           `gorm:"column:timeFormat;size:32" json:"timeFormat"`
 	TimeZone               *string        `gorm:"column:timeZone;default:'Europe/London';not null" json:"timeZone"`
 	WeekStart              *string        `gorm:"column:weekStart;default:'Sunday';not null" json:"weekStart"`
@@ -806,8 +806,8 @@ func (OrganizationSettings) TableName() string {
 
 type Membership struct {
 	ID              int               `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	TeamID          int               `gorm:"column:teamId;uniqueIndex:Membership_userId_teamId_key;index:Membership_teamId_idx;size:32;not null" json:"teamId"`
-	UserID          int               `gorm:"column:userId;uniqueIndex:Membership_userId_teamId_key;index:Membership_userId_idx;size:32;not null" json:"userId"`
+	TeamID          int               `gorm:"column:teamId;uniqueIndex:Membership_userId_teamId_key,priority:2;index:Membership_teamId_idx;size:32;not null" json:"teamId"`
+	UserID          int               `gorm:"column:userId;uniqueIndex:Membership_userId_teamId_key,priority:1;index:Membership_userId_idx;size:32;not null" json:"userId"`
 	Accepted        bool              `gorm:"column:accepted;index:Membership_accepted_idx;default:false;not null" json:"accepted"`
 	Role            string            `gorm:"column:role;index:Membership_role_idx;not null" json:"role"`
 	CustomRoleID    *string           `gorm:"column:customRoleId;index:Membership_customRoleId_idx" json:"customRoleId"`
@@ -845,8 +845,8 @@ func (*Membership) BeforeUpdate(tx *gorm.DB) error {
 
 type VerificationToken struct {
 	ID               int             `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Identifier       string          `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"identifier"`
-	Token            string          `gorm:"column:token;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key;index:VerificationToken_token_idx;not null" json:"token"`
+	Identifier       string          `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key,priority:1;not null" json:"identifier"`
+	Token            string          `gorm:"column:token;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_identifier_token_key,priority:2;index:VerificationToken_token_idx;not null" json:"token"`
 	Expires          DateTime        `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
 	ExpiresInDays    *int            `gorm:"column:expiresInDays;size:32" json:"expiresInDays"`
 	CreatedAt        DateTime        `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -941,12 +941,12 @@ func (BookingReference) TableName() string {
 
 type Attendee struct {
 	ID          int          `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Email       string       `gorm:"column:email;index:Attendee_email_idx;index:Attendee_email_bookingId_idx;not null" json:"email"`
+	Email       string       `gorm:"column:email;index:Attendee_email_idx;index:Attendee_email_bookingId_idx,priority:1;not null" json:"email"`
 	Name        string       `gorm:"column:name;not null" json:"name"`
 	TimeZone    string       `gorm:"column:timeZone;not null" json:"timeZone"`
 	PhoneNumber *string      `gorm:"column:phoneNumber" json:"phoneNumber"`
 	Locale      *string      `gorm:"column:locale;default:'en'" json:"locale"`
-	BookingID   *int         `gorm:"column:bookingId;index:Attendee_bookingId_idx;index:Attendee_email_bookingId_idx;size:32" json:"bookingId"`
+	BookingID   *int         `gorm:"column:bookingId;index:Attendee_bookingId_idx;index:Attendee_email_bookingId_idx,priority:2;size:32" json:"bookingId"`
 	NoShow      *bool        `gorm:"column:noShow;default:false" json:"noShow"`
 	Booking     *Booking     `gorm:"belongsTo"`
 	BookingSeat *BookingSeat `gorm:"foreignKey:AttendeeID;constraint:BookingSeat_attendeeId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -960,21 +960,21 @@ type Booking struct {
 	ID             int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	UID            string  `gorm:"column:uid;uniqueIndex:Booking_uid_key;index:Booking_uid_idx;not null" json:"uid"`
 	IdempotencyKey *string `gorm:"column:idempotencyKey;uniqueIndex:Booking_idempotencyKey_key" json:"idempotencyKey"`
-	UserID         *int    `gorm:"column:userId;index:Booking_userId_idx;index:Booking_userId_endTime_idx;index:Booking_userId_status_startTime_idx;index:Booking_userId_createdAt_idx;size:32" json:"userId"`
+	UserID         *int    `gorm:"column:userId;index:Booking_userId_idx;index:Booking_userId_endTime_idx,priority:1;index:Booking_userId_status_startTime_idx,priority:1;index:Booking_userId_createdAt_idx,priority:1;size:32" json:"userId"`
 	// @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
 	UserPrimaryEmail *string        `gorm:"column:userPrimaryEmail" json:"userPrimaryEmail"`
-	EventTypeID      *int           `gorm:"column:eventTypeId;index:Booking_eventTypeId_idx;index:Booking_eventTypeId_status_idx;size:32" json:"eventTypeId"`
+	EventTypeID      *int           `gorm:"column:eventTypeId;index:Booking_eventTypeId_idx;index:Booking_eventTypeId_status_idx,priority:1;size:32" json:"eventTypeId"`
 	Title            string         `gorm:"column:title;not null" json:"title"`
 	Description      *string        `gorm:"column:description" json:"description"`
 	CustomInputs     datatypes.JSON `gorm:"column:customInputs" json:"customInputs"`
 	// @zod.import(["import { bookingResponses } from '../../zod-utils'"]).custom.use(bookingResponses)
 	Responses             datatypes.JSON     `gorm:"column:responses" json:"responses"`
-	StartTime             DateTime           `gorm:"column:startTime;index:Booking_startTime_endTime_status_idx;index:Booking_userId_status_startTime_idx;type:timestamp(3);not null" json:"startTime"`
-	EndTime               DateTime           `gorm:"column:endTime;index:Booking_startTime_endTime_status_idx;index:Booking_userId_endTime_idx;type:timestamp(3);not null" json:"endTime"`
+	StartTime             DateTime           `gorm:"column:startTime;index:Booking_startTime_endTime_status_idx,priority:1;index:Booking_userId_status_startTime_idx,priority:3;type:timestamp(3);not null" json:"startTime"`
+	EndTime               DateTime           `gorm:"column:endTime;index:Booking_startTime_endTime_status_idx,priority:2;index:Booking_userId_endTime_idx,priority:2;type:timestamp(3);not null" json:"endTime"`
 	Location              *string            `gorm:"column:location" json:"location"`
-	CreatedAt             DateTime           `gorm:"column:createdAt;index:Booking_userId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt             DateTime           `gorm:"column:createdAt;index:Booking_userId_createdAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt             *DateTime          `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false" json:"updatedAt"`
-	Status                string             `gorm:"column:status;index:Booking_status_idx;index:Booking_startTime_endTime_status_idx;index:Booking_userId_status_startTime_idx;index:Booking_eventTypeId_status_idx;default:'accepted';not null" json:"status"`
+	Status                string             `gorm:"column:status;index:Booking_status_idx;index:Booking_startTime_endTime_status_idx,priority:3;index:Booking_userId_status_startTime_idx,priority:2;index:Booking_eventTypeId_status_idx,priority:2;default:'accepted';not null" json:"status"`
 	Paid                  bool               `gorm:"column:paid;default:false;not null" json:"paid"`
 	DestinationCalendarID *int               `gorm:"column:destinationCalendarId;index:Booking_destinationCalendarId_idx;size:32" json:"destinationCalendarId"`
 	CancellationReason    *string            `gorm:"column:cancellationReason" json:"cancellationReason"`
@@ -1099,17 +1099,17 @@ func (Availability) TableName() string {
 
 type SelectedCalendar struct {
 	ID                       string                `gorm:"column:id;primaryKey" json:"id"`
-	UserID                   int                   `gorm:"column:userId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key;index:SelectedCalendar_userId_idx;size:32;not null" json:"userId"`
-	Integration              string                `gorm:"column:integration;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key;index:SelectedCalendar_watch_idx;index:SelectedCalendar_unwatch_idx;not null" json:"integration"`
-	ExternalID               string                `gorm:"column:externalId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key;index:SelectedCalendar_externalId_idx;not null" json:"externalId"`
+	UserID                   int                   `gorm:"column:userId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key,priority:1;index:SelectedCalendar_userId_idx;size:32;not null" json:"userId"`
+	Integration              string                `gorm:"column:integration;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key,priority:2;index:SelectedCalendar_watch_idx,priority:1;index:SelectedCalendar_unwatch_idx,priority:1;not null" json:"integration"`
+	ExternalID               string                `gorm:"column:externalId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key,priority:3;index:SelectedCalendar_externalId_idx;not null" json:"externalId"`
 	CredentialID             *int                  `gorm:"column:credentialId;index:SelectedCalendar_credentialId_idx;size:32" json:"credentialId"`
 	CreatedAt                *DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"createdAt"`
 	UpdatedAt                *DateTime             `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false" json:"updatedAt"`
-	GoogleChannelID          *string               `gorm:"column:googleChannelId;uniqueIndex:SelectedCalendar_googleChannelId_eventTypeId_key" json:"googleChannelId"`
+	GoogleChannelID          *string               `gorm:"column:googleChannelId;uniqueIndex:SelectedCalendar_googleChannelId_eventTypeId_key,priority:1" json:"googleChannelId"`
 	GoogleChannelKind        *string               `gorm:"column:googleChannelKind" json:"googleChannelKind"`
 	GoogleChannelResourceID  *string               `gorm:"column:googleChannelResourceId" json:"googleChannelResourceId"`
 	GoogleChannelResourceURI *string               `gorm:"column:googleChannelResourceUri" json:"googleChannelResourceUri"`
-	GoogleChannelExpiration  *string               `gorm:"column:googleChannelExpiration;index:SelectedCalendar_watch_idx;index:SelectedCalendar_unwatch_idx" json:"googleChannelExpiration"`
+	GoogleChannelExpiration  *string               `gorm:"column:googleChannelExpiration;index:SelectedCalendar_watch_idx,priority:2;index:SelectedCalendar_unwatch_idx,priority:2" json:"googleChannelExpiration"`
 	ChannelID                *string               `gorm:"column:channelId;index:SelectedCalendar_channelId_idx" json:"channelId"`
 	ChannelKind              *string               `gorm:"column:channelKind" json:"channelKind"`
 	ChannelResourceID        *string               `gorm:"column:channelResourceId" json:"channelResourceId"`
@@ -1123,12 +1123,12 @@ type SelectedCalendar struct {
 	SyncErrorAt              *DateTime             `gorm:"column:syncErrorAt;type:timestamp(3)" json:"syncErrorAt"`
 	SyncErrorCount           *int                  `gorm:"column:syncErrorCount;size:32;default:0" json:"syncErrorCount"`
 	DelegationCredentialID   *string               `gorm:"column:delegationCredentialId" json:"delegationCredentialId"`
-	Error                    *string               `gorm:"column:error;index:SelectedCalendar_watch_idx;index:SelectedCalendar_unwatch_idx" json:"error"`
+	Error                    *string               `gorm:"column:error;index:SelectedCalendar_watch_idx,priority:3;index:SelectedCalendar_unwatch_idx,priority:3" json:"error"`
 	LastErrorAt              *DateTime             `gorm:"column:lastErrorAt;type:timestamp(3)" json:"lastErrorAt"`
-	WatchAttempts            int                   `gorm:"column:watchAttempts;index:SelectedCalendar_watch_idx;size:32;default:0;not null" json:"watchAttempts"`
-	UnwatchAttempts          int                   `gorm:"column:unwatchAttempts;index:SelectedCalendar_unwatch_idx;size:32;default:0;not null" json:"unwatchAttempts"`
-	MaxAttempts              *int                  `gorm:"column:maxAttempts;index:SelectedCalendar_watch_idx;index:SelectedCalendar_unwatch_idx;size:32;default:3;not null" json:"maxAttempts"`
-	EventTypeID              *int                  `gorm:"column:eventTypeId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key;uniqueIndex:SelectedCalendar_googleChannelId_eventTypeId_key;index:SelectedCalendar_eventTypeId_idx;size:32" json:"eventTypeId"`
+	WatchAttempts            int                   `gorm:"column:watchAttempts;index:SelectedCalendar_watch_idx,priority:4;size:32;default:0;not null" json:"watchAttempts"`
+	UnwatchAttempts          int                   `gorm:"column:unwatchAttempts;index:SelectedCalendar_unwatch_idx,priority:4;size:32;default:0;not null" json:"unwatchAttempts"`
+	MaxAttempts              *int                  `gorm:"column:maxAttempts;index:SelectedCalendar_watch_idx,priority:5;index:SelectedCalendar_unwatch_idx,priority:5;size:32;default:3;not null" json:"maxAttempts"`
+	EventTypeID              *int                  `gorm:"column:eventTypeId;uniqueIndex:SelectedCalendar_userId_integration_externalId_eventTypeId_key,priority:4;uniqueIndex:SelectedCalendar_googleChannelId_eventTypeId_key,priority:2;index:SelectedCalendar_eventTypeId_idx;size:32" json:"eventTypeId"`
 	User                     *User                 `gorm:"belongsTo"`
 	Credential               *Credential           `gorm:"belongsTo"`
 	DelegationCredential     *DelegationCredential `gorm:"belongsTo"`
@@ -1254,13 +1254,13 @@ func (Payment) TableName() string {
 }
 
 type Webhook struct {
-	ID                    string  `gorm:"column:id;primaryKey" json:"id"`
-	UserID                *int    `gorm:"column:userId;uniqueIndex:Webhook_userId_subscriberUrl_key;size:32" json:"userId"`
+	ID                    string  `gorm:"column:id;primaryKey;uniqueIndex:Webhook_id_key" json:"id"`
+	UserID                *int    `gorm:"column:userId;uniqueIndex:Webhook_userId_subscriberUrl_key,priority:1;size:32" json:"userId"`
 	TeamID                *int    `gorm:"column:teamId;size:32" json:"teamId"`
 	EventTypeID           *int    `gorm:"column:eventTypeId;size:32" json:"eventTypeId"`
-	PlatformOAuthClientID *string `gorm:"column:platformOAuthClientId;uniqueIndex:Webhook_platformOAuthClientId_subscriberUrl_key" json:"platformOAuthClientId"`
+	PlatformOAuthClientID *string `gorm:"column:platformOAuthClientId;uniqueIndex:Webhook_platformOAuthClientId_subscriberUrl_key,priority:1" json:"platformOAuthClientId"`
 	// @zod.string.url()
-	SubscriberURL       string                     `gorm:"column:subscriberUrl;uniqueIndex:Webhook_userId_subscriberUrl_key;uniqueIndex:Webhook_platformOAuthClientId_subscriberUrl_key;not null" json:"subscriberUrl"`
+	SubscriberURL       string                     `gorm:"column:subscriberUrl;uniqueIndex:Webhook_userId_subscriberUrl_key,priority:2;uniqueIndex:Webhook_platformOAuthClientId_subscriberUrl_key,priority:2;not null" json:"subscriberUrl"`
 	PayloadTemplate     *string                    `gorm:"column:payloadTemplate" json:"payloadTemplate"`
 	CreatedAt           DateTime                   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Active              *bool                      `gorm:"column:active;index:Webhook_active_idx;default:true;not null" json:"active"`
@@ -1292,7 +1292,7 @@ func (m *Webhook) BeforeCreate(tx *gorm.DB) error {
 }
 
 type APIKey struct {
-	ID         string      `gorm:"column:id;primaryKey" json:"id"`
+	ID         string      `gorm:"column:id;primaryKey;uniqueIndex:ApiKey_id_key" json:"id"`
 	UserID     int         `gorm:"column:userId;index:ApiKey_userId_idx;size:32;not null" json:"userId"`
 	TeamID     *int        `gorm:"column:teamId;size:32" json:"teamId"`
 	Note       *string     `gorm:"column:note" json:"note"`
@@ -1378,8 +1378,8 @@ type Account struct {
 	ID                string  `gorm:"column:id;primaryKey" json:"id"`
 	UserID            int     `gorm:"column:userId;index:Account_userId_idx;size:32;not null" json:"userId"`
 	Type              string  `gorm:"column:type;index:Account_type_idx;not null" json:"type"`
-	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"provider"`
-	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;not null" json:"providerAccountId"`
+	Provider          string  `gorm:"column:provider;uniqueIndex:Account_provider_providerAccountId_key,priority:1;not null" json:"provider"`
+	ProviderAccountID string  `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key,priority:2;not null" json:"providerAccountId"`
 	ProviderEmail     *string `gorm:"column:providerEmail" json:"providerEmail"`
 	RefreshToken      *string `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token;type:text" json:"access_token"`
@@ -1422,7 +1422,7 @@ func (m *Session) BeforeCreate(_ *gorm.DB) error {
 }
 
 type App struct {
-	Slug        string             `gorm:"column:slug;primaryKey" json:"slug"`
+	Slug        string             `gorm:"column:slug;primaryKey;uniqueIndex:App_slug_key" json:"slug"`
 	DirName     string             `gorm:"column:dirName;uniqueIndex:App_dirName_key;not null" json:"dirName"`
 	Keys        datatypes.JSON     `gorm:"column:keys" json:"keys"`
 	Categories  ScalarList[string] `gorm:"column:categories;type:text[]" json:"categories"`
@@ -1564,7 +1564,7 @@ func (VerifiedEmail) TableName() string {
 }
 
 type Feature struct {
-	Slug        string         `gorm:"column:slug;primaryKey" json:"slug"`
+	Slug        string         `gorm:"column:slug;primaryKey;uniqueIndex:Feature_slug_key" json:"slug"`
 	Enabled     bool           `gorm:"column:enabled;index:Feature_enabled_idx;default:false;not null" json:"enabled"`
 	Description *string        `gorm:"column:description" json:"description"`
 	Type        *string        `gorm:"column:type;default:'RELEASE'" json:"type"`
@@ -1601,8 +1601,8 @@ func (*Feature) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type UserFeatures struct {
-	UserID     int      `gorm:"column:userId;primaryKey;index:UserFeatures_userId_featureId_idx;size:32" json:"userId"`
-	FeatureID  string   `gorm:"column:featureId;primaryKey;index:UserFeatures_userId_featureId_idx" json:"featureId"`
+	UserID     int      `gorm:"column:userId;primaryKey;index:UserFeatures_userId_featureId_idx,priority:1;size:32" json:"userId"`
+	FeatureID  string   `gorm:"column:featureId;primaryKey;index:UserFeatures_userId_featureId_idx,priority:2" json:"featureId"`
 	Enabled    bool     `gorm:"column:enabled;not null" json:"enabled"`
 	AssignedAt DateTime `gorm:"column:assignedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"assignedAt"`
 	AssignedBy string   `gorm:"column:assignedBy;not null" json:"assignedBy"`
@@ -1635,8 +1635,8 @@ func (*UserFeatures) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TeamFeatures struct {
-	TeamID     int      `gorm:"column:teamId;primaryKey;index:TeamFeatures_teamId_featureId_idx;size:32" json:"teamId"`
-	FeatureID  string   `gorm:"column:featureId;primaryKey;index:TeamFeatures_teamId_featureId_idx" json:"featureId"`
+	TeamID     int      `gorm:"column:teamId;primaryKey;index:TeamFeatures_teamId_featureId_idx,priority:1;size:32" json:"teamId"`
+	FeatureID  string   `gorm:"column:featureId;primaryKey;index:TeamFeatures_teamId_featureId_idx,priority:2" json:"featureId"`
 	Enabled    bool     `gorm:"column:enabled;not null" json:"enabled"`
 	AssignedAt DateTime `gorm:"column:assignedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"assignedAt"`
 	AssignedBy string   `gorm:"column:assignedBy;not null" json:"assignedBy"`
@@ -1671,10 +1671,10 @@ func (*TeamFeatures) BeforeUpdate(tx *gorm.DB) error {
 type SelectedSlots struct {
 	ID               int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	EventTypeID      int      `gorm:"column:eventTypeId;size:32;not null" json:"eventTypeId"`
-	UserID           int      `gorm:"column:userId;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key;size:32;not null" json:"userId"`
-	SlotUtcStartDate DateTime `gorm:"column:slotUtcStartDate;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key;type:timestamp(3);not null" json:"slotUtcStartDate"`
-	SlotUtcEndDate   DateTime `gorm:"column:slotUtcEndDate;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key;type:timestamp(3);not null" json:"slotUtcEndDate"`
-	UID              string   `gorm:"column:uid;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key;not null" json:"uid"`
+	UserID           int      `gorm:"column:userId;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key,priority:1;size:32;not null" json:"userId"`
+	SlotUtcStartDate DateTime `gorm:"column:slotUtcStartDate;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key,priority:2;type:timestamp(3);not null" json:"slotUtcStartDate"`
+	SlotUtcEndDate   DateTime `gorm:"column:slotUtcEndDate;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key,priority:3;type:timestamp(3);not null" json:"slotUtcEndDate"`
+	UID              string   `gorm:"column:uid;uniqueIndex:SelectedSlots_userId_slotUtcStartDate_slotUtcEndDate_uid_key,priority:4;not null" json:"uid"`
 	ReleaseAt        DateTime `gorm:"column:releaseAt;type:timestamp(3);not null" json:"releaseAt"`
 	IsSeat           bool     `gorm:"column:isSeat;default:false;not null" json:"isSeat"`
 }
@@ -1684,7 +1684,7 @@ func (SelectedSlots) TableName() string {
 }
 
 type OAuthClient struct {
-	ClientID        string       `gorm:"column:clientId;primaryKey" json:"clientId"`
+	ClientID        string       `gorm:"column:clientId;primaryKey;uniqueIndex:OAuthClient_clientId_key" json:"clientId"`
 	RedirectURI     string       `gorm:"column:redirectUri;not null" json:"redirectUri"`
 	ClientSecret    *string      `gorm:"column:clientSecret" json:"clientSecret"`
 	ClientType      string       `gorm:"column:clientType;default:'confidential';not null" json:"clientType"`
@@ -1733,21 +1733,21 @@ func (AccessCode) TableName() string {
 }
 
 type BookingDenormalized struct {
-	ID             int       `gorm:"column:id;primaryKey;size:32" json:"id"`
+	ID             int       `gorm:"column:id;primaryKey;uniqueIndex:BookingDenormalized_id_key;size:32" json:"id"`
 	UID            string    `gorm:"column:uid;not null" json:"uid"`
 	EventTypeID    *int      `gorm:"column:eventTypeId;index:BookingDenormalized_eventTypeId_idx;size:32" json:"eventTypeId"`
 	Title          string    `gorm:"column:title;not null" json:"title"`
 	Description    *string   `gorm:"column:description" json:"description"`
-	StartTime      DateTime  `gorm:"column:startTime;index:BookingDenormalized_startTime_idx;index:BookingDenormalized_startTime_endTime_idx;type:timestamp(3);not null" json:"startTime"`
-	EndTime        DateTime  `gorm:"column:endTime;index:BookingDenormalized_endTime_idx;index:BookingDenormalized_startTime_endTime_idx;type:timestamp(3);not null" json:"endTime"`
+	StartTime      DateTime  `gorm:"column:startTime;index:BookingDenormalized_startTime_idx;index:BookingDenormalized_startTime_endTime_idx,priority:1;type:timestamp(3);not null" json:"startTime"`
+	EndTime        DateTime  `gorm:"column:endTime;index:BookingDenormalized_endTime_idx;index:BookingDenormalized_startTime_endTime_idx,priority:2;type:timestamp(3);not null" json:"endTime"`
 	CreatedAt      DateTime  `gorm:"column:createdAt;index:BookingDenormalized_createdAt_idx;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      *DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false" json:"updatedAt"`
 	Location       *string   `gorm:"column:location" json:"location"`
 	Paid           bool      `gorm:"column:paid;not null" json:"paid"`
 	Status         string    `gorm:"column:status;index:BookingDenormalized_status_idx;not null" json:"status"`
 	Rescheduled    *bool     `gorm:"column:rescheduled" json:"rescheduled"`
-	UserID         *int      `gorm:"column:userId;index:BookingDenormalized_userId_idx;index:BookingDenormalized_userId_isTeamBooking_idx;size:32" json:"userId"`
-	TeamID         *int      `gorm:"column:teamId;index:BookingDenormalized_teamId_idx;index:BookingDenormalized_teamId_isTeamBooking_idx;size:32" json:"teamId"`
+	UserID         *int      `gorm:"column:userId;index:BookingDenormalized_userId_idx;index:BookingDenormalized_userId_isTeamBooking_idx,priority:1;size:32" json:"userId"`
+	TeamID         *int      `gorm:"column:teamId;index:BookingDenormalized_teamId_idx;index:BookingDenormalized_teamId_isTeamBooking_idx,priority:1;size:32" json:"teamId"`
 	EventLength    *int      `gorm:"column:eventLength;size:32" json:"eventLength"`
 	EventParentID  *int      `gorm:"column:eventParentId;index:BookingDenormalized_eventParentId_idx;size:32" json:"eventParentId"`
 	UserEmail      *string   `gorm:"column:userEmail" json:"userEmail"`
@@ -1756,7 +1756,7 @@ type BookingDenormalized struct {
 	RatingFeedback *string   `gorm:"column:ratingFeedback" json:"ratingFeedback"`
 	Rating         *int      `gorm:"column:rating;size:32" json:"rating"`
 	NoShowHost     *bool     `gorm:"column:noShowHost" json:"noShowHost"`
-	IsTeamBooking  bool      `gorm:"column:isTeamBooking;index:BookingDenormalized_teamId_isTeamBooking_idx;index:BookingDenormalized_userId_isTeamBooking_idx;not null" json:"isTeamBooking"`
+	IsTeamBooking  bool      `gorm:"column:isTeamBooking;index:BookingDenormalized_teamId_isTeamBooking_idx,priority:2;index:BookingDenormalized_userId_isTeamBooking_idx,priority:2;not null" json:"isTeamBooking"`
 }
 
 func (BookingDenormalized) TableName() string {
@@ -1765,12 +1765,12 @@ func (BookingDenormalized) TableName() string {
 
 type CalendarCache struct {
 	ID           *string        `gorm:"column:id" json:"id"`
-	Key          string         `gorm:"column:key;primaryKey;uniqueIndex:CalendarCache_credentialId_key_key;index:CalendarCache_userId_key_idx" json:"key"`
+	CredentialID int            `gorm:"column:credentialId;primaryKey;uniqueIndex:CalendarCache_credentialId_key_key,priority:1;size:32" json:"credentialId"`
+	Key          string         `gorm:"column:key;primaryKey;uniqueIndex:CalendarCache_credentialId_key_key,priority:2;index:CalendarCache_userId_key_idx,priority:2" json:"key"`
 	Value        datatypes.JSON `gorm:"column:value;not null" json:"value"`
 	ExpiresAt    DateTime       `gorm:"column:expiresAt;type:timestamp(3);not null" json:"expiresAt"`
 	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
-	CredentialID int            `gorm:"column:credentialId;primaryKey;uniqueIndex:CalendarCache_credentialId_key_key;size:32" json:"credentialId"`
-	UserID       *int           `gorm:"column:userId;index:CalendarCache_userId_key_idx;size:32" json:"userId"`
+	UserID       *int           `gorm:"column:userId;index:CalendarCache_userId_key_idx,priority:1;size:32" json:"userId"`
 	Credential   *Credential    `gorm:"belongsTo"`
 }
 
@@ -1800,9 +1800,9 @@ func (*CalendarCache) BeforeUpdate(tx *gorm.DB) error {
 
 type TempOrgRedirect struct {
 	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	From      string   `gorm:"column:from;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key;not null" json:"from"`
-	FromOrgID int      `gorm:"column:fromOrgId;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key;size:32;not null" json:"fromOrgId"`
-	Type      string   `gorm:"column:type;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key;not null" json:"type"`
+	From      string   `gorm:"column:from;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key,priority:1;not null" json:"from"`
+	FromOrgID int      `gorm:"column:fromOrgId;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key,priority:3;size:32;not null" json:"fromOrgId"`
+	Type      string   `gorm:"column:type;uniqueIndex:TempOrgRedirect_from_type_fromOrgId_key,priority:2;not null" json:"type"`
 	ToURL     string   `gorm:"column:toUrl;not null" json:"toUrl"`
 	Enabled   *bool    `gorm:"column:enabled;default:true;not null" json:"enabled"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -1833,11 +1833,11 @@ func (*TempOrgRedirect) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Avatar struct {
-	TeamID    int    `gorm:"column:teamId;uniqueIndex:avatars_teamId_userId_isBanner_key;size:32;default:0;not null" json:"teamId"`
-	UserID    int    `gorm:"column:userId;uniqueIndex:avatars_teamId_userId_isBanner_key;size:32;default:0;not null" json:"userId"`
+	TeamID    int    `gorm:"column:teamId;uniqueIndex:avatars_teamId_userId_isBanner_key,priority:1;size:32;default:0;not null" json:"teamId"`
+	UserID    int    `gorm:"column:userId;uniqueIndex:avatars_teamId_userId_isBanner_key,priority:2;size:32;default:0;not null" json:"userId"`
 	Data      string `gorm:"column:data;not null" json:"data"`
 	ObjectKey string `gorm:"column:objectKey;primaryKey;uniqueIndex:avatars_objectKey_key" json:"objectKey"`
-	IsBanner  bool   `gorm:"column:isBanner;uniqueIndex:avatars_teamId_userId_isBanner_key;default:false;not null" json:"isBanner"`
+	IsBanner  bool   `gorm:"column:isBanner;uniqueIndex:avatars_teamId_userId_isBanner_key,priority:3;default:false;not null" json:"isBanner"`
 }
 
 func (Avatar) TableName() string {
@@ -1847,8 +1847,8 @@ func (Avatar) TableName() string {
 type OutOfOfficeEntry struct {
 	ID               int                `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	UUID             string             `gorm:"column:uuid;uniqueIndex:OutOfOfficeEntry_uuid_key;index:OutOfOfficeEntry_uuid_idx;not null" json:"uuid"`
-	Start            DateTime           `gorm:"column:start;index:OutOfOfficeEntry_start_end_idx;type:timestamp(3);not null" json:"start"`
-	End              DateTime           `gorm:"column:end;index:OutOfOfficeEntry_start_end_idx;type:timestamp(3);not null" json:"end"`
+	Start            DateTime           `gorm:"column:start;index:OutOfOfficeEntry_start_end_idx,priority:1;type:timestamp(3);not null" json:"start"`
+	End              DateTime           `gorm:"column:end;index:OutOfOfficeEntry_start_end_idx,priority:2;type:timestamp(3);not null" json:"end"`
 	Notes            *string            `gorm:"column:notes" json:"notes"`
 	ShowNotePublicly bool               `gorm:"column:showNotePublicly;default:false;not null" json:"showNotePublicly"`
 	UserID           int                `gorm:"column:userId;index:OutOfOfficeEntry_userId_idx;size:32;not null" json:"userId"`
@@ -1933,12 +1933,12 @@ func (*UserHolidaySettings) BeforeUpdate(tx *gorm.DB) error {
 
 type HolidayCache struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
-	CountryCode string   `gorm:"column:countryCode;uniqueIndex:HolidayCache_countryCode_eventId_key;index:HolidayCache_countryCode_year_idx;index:HolidayCache_countryCode_date_idx;not null" json:"countryCode"`
+	CountryCode string   `gorm:"column:countryCode;uniqueIndex:HolidayCache_countryCode_eventId_key,priority:1;index:HolidayCache_countryCode_year_idx,priority:1;index:HolidayCache_countryCode_date_idx,priority:1;not null" json:"countryCode"`
 	CalendarID  string   `gorm:"column:calendarId;not null" json:"calendarId"`
-	EventID     string   `gorm:"column:eventId;uniqueIndex:HolidayCache_countryCode_eventId_key;not null" json:"eventId"`
+	EventID     string   `gorm:"column:eventId;uniqueIndex:HolidayCache_countryCode_eventId_key,priority:2;not null" json:"eventId"`
 	Name        string   `gorm:"column:name;not null" json:"name"`
-	Date        DateTime `gorm:"column:date;index:HolidayCache_countryCode_date_idx;type:timestamp(3);not null" json:"date"`
-	Year        int      `gorm:"column:year;index:HolidayCache_countryCode_year_idx;size:32;not null" json:"year"`
+	Date        DateTime `gorm:"column:date;index:HolidayCache_countryCode_date_idx,priority:2;type:timestamp(3);not null" json:"date"`
+	Year        int      `gorm:"column:year;index:HolidayCache_countryCode_year_idx,priority:2;size:32;not null" json:"year"`
 	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
@@ -2010,8 +2010,8 @@ func (m *PlatformOAuthClient) BeforeCreate(tx *gorm.DB) error {
 
 type PlatformAuthorizationToken struct {
 	ID                    string               `gorm:"column:id;primaryKey" json:"id"`
-	PlatformOAuthClientID string               `gorm:"column:platformOAuthClientId;uniqueIndex:PlatformAuthorizationToken_userId_platformOAuthClientId_key;not null" json:"platformOAuthClientId"`
-	UserID                int                  `gorm:"column:userId;uniqueIndex:PlatformAuthorizationToken_userId_platformOAuthClientId_key;size:32;not null" json:"userId"`
+	PlatformOAuthClientID string               `gorm:"column:platformOAuthClientId;uniqueIndex:PlatformAuthorizationToken_userId_platformOAuthClientId_key,priority:2;not null" json:"platformOAuthClientId"`
+	UserID                int                  `gorm:"column:userId;uniqueIndex:PlatformAuthorizationToken_userId_platformOAuthClientId_key,priority:1;size:32;not null" json:"userId"`
 	CreatedAt             DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Owner                 *User                `gorm:"foreignKey:UserID;belongsTo"`
 	Client                *PlatformOAuthClient `gorm:"foreignKey:PlatformOAuthClientID;belongsTo"`
@@ -2096,9 +2096,9 @@ func (DSyncData) TableName() string {
 type DSyncTeamGroupMapping struct {
 	ID             int        `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	OrganizationID int        `gorm:"column:organizationId;size:32;not null" json:"organizationId"`
-	TeamID         int        `gorm:"column:teamId;uniqueIndex:DSyncTeamGroupMapping_teamId_groupName_key;size:32;not null" json:"teamId"`
+	TeamID         int        `gorm:"column:teamId;uniqueIndex:DSyncTeamGroupMapping_teamId_groupName_key,priority:1;size:32;not null" json:"teamId"`
 	DirectoryID    string     `gorm:"column:directoryId;not null" json:"directoryId"`
-	GroupName      string     `gorm:"column:groupName;uniqueIndex:DSyncTeamGroupMapping_teamId_groupName_key;not null" json:"groupName"`
+	GroupName      string     `gorm:"column:groupName;uniqueIndex:DSyncTeamGroupMapping_teamId_groupName_key,priority:2;not null" json:"groupName"`
 	Team           *Team      `gorm:"belongsTo"`
 	Directory      *DSyncData `gorm:"foreignKey:DirectoryID;references:DirectoryID;belongsTo"`
 }
@@ -2109,9 +2109,9 @@ func (DSyncTeamGroupMapping) TableName() string {
 
 type SecondaryEmail struct {
 	ID                 int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID             int                 `gorm:"column:userId;uniqueIndex:SecondaryEmail_userId_email_key;index:SecondaryEmail_userId_idx;size:32;not null" json:"userId"`
-	Email              string              `gorm:"column:email;uniqueIndex:SecondaryEmail_email_key;uniqueIndex:SecondaryEmail_userId_email_key;index:SecondaryEmail_email_emailVerified_idx;not null" json:"email"`
-	EmailVerified      *DateTime           `gorm:"column:emailVerified;index:SecondaryEmail_email_emailVerified_idx;type:timestamp(3)" json:"emailVerified"`
+	UserID             int                 `gorm:"column:userId;uniqueIndex:SecondaryEmail_userId_email_key,priority:1;index:SecondaryEmail_userId_idx;size:32;not null" json:"userId"`
+	Email              string              `gorm:"column:email;uniqueIndex:SecondaryEmail_email_key;uniqueIndex:SecondaryEmail_userId_email_key,priority:2;index:SecondaryEmail_email_emailVerified_idx,priority:1;not null" json:"email"`
+	EmailVerified      *DateTime           `gorm:"column:emailVerified;index:SecondaryEmail_email_emailVerified_idx,priority:2;type:timestamp(3)" json:"emailVerified"`
 	User               *User               `gorm:"belongsTo"`
 	VerificationTokens []VerificationToken `gorm:"foreignKey:SecondaryEmailID;constraint:VerificationToken_secondaryEmailId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	EventTypes         []EventType         `gorm:"foreignKey:SecondaryEmailID;constraint:EventType_secondaryEmailId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2122,18 +2122,18 @@ func (SecondaryEmail) TableName() string {
 }
 
 type Task struct {
-	ID                  string    `gorm:"column:id;primaryKey" json:"id"`
+	ID                  string    `gorm:"column:id;primaryKey;uniqueIndex:Task_id_key" json:"id"`
 	CreatedAt           DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt           DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	ScheduledAt         DateTime  `gorm:"column:scheduledAt;index:Task_scheduledAt_succeededAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"scheduledAt"`
-	SucceededAt         *DateTime `gorm:"column:succeededAt;index:Task_succeededAt_idx;index:Task_scheduledAt_succeededAt_idx;type:timestamp(3)" json:"succeededAt"`
-	Type                string    `gorm:"column:type;uniqueIndex:Task_referenceUid_type_key;not null" json:"type"`
+	ScheduledAt         DateTime  `gorm:"column:scheduledAt;index:Task_scheduledAt_succeededAt_idx,priority:1;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"scheduledAt"`
+	SucceededAt         *DateTime `gorm:"column:succeededAt;index:Task_succeededAt_idx;index:Task_scheduledAt_succeededAt_idx,priority:2;type:timestamp(3)" json:"succeededAt"`
+	Type                string    `gorm:"column:type;uniqueIndex:Task_referenceUid_type_key,priority:2;not null" json:"type"`
 	Payload             string    `gorm:"column:payload;not null" json:"payload"`
 	Attempts            int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	MaxAttempts         *int      `gorm:"column:maxAttempts;size:32;default:3;not null" json:"maxAttempts"`
 	LastError           *string   `gorm:"column:lastError" json:"lastError"`
 	LastFailedAttemptAt *DateTime `gorm:"column:lastFailedAttemptAt;type:timestamp(3)" json:"lastFailedAttemptAt"`
-	ReferenceUID        *string   `gorm:"column:referenceUid;uniqueIndex:Task_referenceUid_type_key" json:"referenceUid"`
+	ReferenceUID        *string   `gorm:"column:referenceUid;uniqueIndex:Task_referenceUid_type_key,priority:1" json:"referenceUid"`
 }
 
 func (Task) TableName() string {
@@ -2166,8 +2166,8 @@ func (*Task) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ManagedOrganization struct {
-	ManagedOrganizationID int      `gorm:"column:managedOrganizationId;primaryKey;uniqueIndex:ManagedOrganization_managedOrganizationId_key;uniqueIndex:ManagedOrganization_managerOrganizationId_managedOrganizati_key;size:32" json:"managedOrganizationId"`
-	ManagerOrganizationID int      `gorm:"column:managerOrganizationId;uniqueIndex:ManagedOrganization_managerOrganizationId_managedOrganizati_key;index:ManagedOrganization_managerOrganizationId_idx;size:32;not null" json:"managerOrganizationId"`
+	ManagedOrganizationID int      `gorm:"column:managedOrganizationId;primaryKey;uniqueIndex:ManagedOrganization_managedOrganizationId_key;uniqueIndex:ManagedOrganization_managerOrganizationId_managedOrganizati_key,priority:2;size:32" json:"managedOrganizationId"`
+	ManagerOrganizationID int      `gorm:"column:managerOrganizationId;uniqueIndex:ManagedOrganization_managerOrganizationId_managedOrganizati_key,priority:1;index:ManagedOrganization_managerOrganizationId_idx;size:32;not null" json:"managerOrganizationId"`
 	CreatedAt             DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	ManagedOrganization   *Team    `gorm:"foreignKey:ManagedOrganizationID;belongsTo"`
 	ManagerOrganization   *Team    `gorm:"foreignKey:ManagerOrganizationID;belongsTo"`
@@ -2186,7 +2186,7 @@ func (m *ManagedOrganization) BeforeCreate(tx *gorm.DB) error {
 }
 
 type PlatformBilling struct {
-	ID                int               `gorm:"column:id;primaryKey;size:32" json:"id"`
+	ID                int               `gorm:"column:id;primaryKey;uniqueIndex:PlatformBilling_id_key;size:32" json:"id"`
 	CustomerID        string            `gorm:"column:customerId;not null" json:"customerId"`
 	SubscriptionID    *string           `gorm:"column:subscriptionId" json:"subscriptionId"`
 	PriceID           *string           `gorm:"column:priceId" json:"priceId"`
@@ -2228,10 +2228,10 @@ func (m *AttributeOption) BeforeCreate(_ *gorm.DB) error {
 
 type Attribute struct {
 	ID                         string                      `gorm:"column:id;primaryKey" json:"id"`
-	TeamID                     int                         `gorm:"column:teamId;uniqueIndex:Attribute_teamId_slug_key;index:Attribute_teamId_idx;size:32;not null" json:"teamId"`
+	TeamID                     int                         `gorm:"column:teamId;uniqueIndex:Attribute_teamId_slug_key,priority:1;index:Attribute_teamId_idx;size:32;not null" json:"teamId"`
 	Type                       string                      `gorm:"column:type;not null" json:"type"`
 	Name                       string                      `gorm:"column:name;not null" json:"name"`
-	Slug                       string                      `gorm:"column:slug;uniqueIndex:Attribute_teamId_slug_key;not null" json:"slug"`
+	Slug                       string                      `gorm:"column:slug;uniqueIndex:Attribute_teamId_slug_key,priority:2;not null" json:"slug"`
 	Enabled                    *bool                       `gorm:"column:enabled;default:true;not null" json:"enabled"`
 	UsersCanEditRelation       bool                        `gorm:"column:usersCanEditRelation;default:false;not null" json:"usersCanEditRelation"`
 	CreatedAt                  DateTime                    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -2271,8 +2271,8 @@ func (*Attribute) BeforeUpdate(tx *gorm.DB) error {
 
 type AttributeToUser struct {
 	ID                string           `gorm:"column:id;primaryKey" json:"id"`
-	MemberID          int              `gorm:"column:memberId;uniqueIndex:AttributeToUser_memberId_attributeOptionId_key;size:32;not null" json:"memberId"`
-	AttributeOptionID string           `gorm:"column:attributeOptionId;uniqueIndex:AttributeToUser_memberId_attributeOptionId_key;not null" json:"attributeOptionId"`
+	MemberID          int              `gorm:"column:memberId;uniqueIndex:AttributeToUser_memberId_attributeOptionId_key,priority:1;size:32;not null" json:"memberId"`
+	AttributeOptionID string           `gorm:"column:attributeOptionId;uniqueIndex:AttributeToUser_memberId_attributeOptionId_key,priority:2;not null" json:"attributeOptionId"`
 	Weight            *int             `gorm:"column:weight;size:32" json:"weight"`
 	CreatedAt         DateTime         `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	CreatedByID       *int             `gorm:"column:createdById;size:32" json:"createdById"`
@@ -2315,7 +2315,7 @@ func (*AttributeToUser) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AssignmentReason struct {
-	ID           int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	ID           int      `gorm:"column:id;primaryKey;autoIncrement;uniqueIndex:AssignmentReason_id_key;size:32" json:"id"`
 	CreatedAt    DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	BookingID    int      `gorm:"column:bookingId;index:AssignmentReason_bookingId_idx;size:32;not null" json:"bookingId"`
 	ReasonEnum   string   `gorm:"column:reasonEnum;not null" json:"reasonEnum"`
@@ -2343,8 +2343,8 @@ type DelegationCredential struct {
 	Enabled             bool                  `gorm:"column:enabled;index:DelegationCredential_enabled_idx;default:false;not null" json:"enabled"`
 	LastEnabledAt       *DateTime             `gorm:"column:lastEnabledAt;type:timestamp(3)" json:"lastEnabledAt"`
 	LastDisabledAt      *DateTime             `gorm:"column:lastDisabledAt;type:timestamp(3)" json:"lastDisabledAt"`
-	OrganizationID      int                   `gorm:"column:organizationId;uniqueIndex:DelegationCredential_organizationId_domain_key;size:32;not null" json:"organizationId"`
-	Domain              string                `gorm:"column:domain;uniqueIndex:DelegationCredential_organizationId_domain_key;not null" json:"domain"`
+	OrganizationID      int                   `gorm:"column:organizationId;uniqueIndex:DelegationCredential_organizationId_domain_key,priority:1;size:32;not null" json:"organizationId"`
+	Domain              string                `gorm:"column:domain;uniqueIndex:DelegationCredential_organizationId_domain_key,priority:2;not null" json:"domain"`
 	CreatedAt           DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt           DateTime              `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	WorkspacePlatform   *WorkspacePlatform    `gorm:"belongsTo"`
@@ -2421,10 +2421,10 @@ func (*WorkspacePlatform) BeforeUpdate(tx *gorm.DB) error {
 
 type EventTypeTranslation struct {
 	UID            string     `gorm:"column:uid;primaryKey" json:"uid"`
-	EventTypeID    int        `gorm:"column:eventTypeId;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx;size:32;not null" json:"eventTypeId"`
-	Field          string     `gorm:"column:field;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx;not null" json:"field"`
+	EventTypeID    int        `gorm:"column:eventTypeId;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key,priority:1;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx,priority:1;size:32;not null" json:"eventTypeId"`
+	Field          string     `gorm:"column:field;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key,priority:2;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx,priority:2;not null" json:"field"`
 	SourceLocale   string     `gorm:"column:sourceLocale;not null" json:"sourceLocale"`
-	TargetLocale   string     `gorm:"column:targetLocale;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx;not null" json:"targetLocale"`
+	TargetLocale   string     `gorm:"column:targetLocale;uniqueIndex:EventTypeTranslation_eventTypeId_field_targetLocale_key,priority:3;index:EventTypeTranslation_eventTypeId_field_targetLocale_idx,priority:3;not null" json:"targetLocale"`
 	TranslatedText string     `gorm:"column:translatedText;type:text;not null" json:"translatedText"`
 	CreatedAt      DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	CreatedBy      int        `gorm:"column:createdBy;size:32;not null" json:"createdBy"`
@@ -2462,13 +2462,13 @@ func (*EventTypeTranslation) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Watchlist struct {
-	ID                   string           `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Type                 string           `gorm:"column:type;uniqueIndex:Watchlist_type_value_organizationId_key;index:Watchlist_isGlobal_action_organizationId_type_value_idx;not null" json:"type"`
-	Value                string           `gorm:"column:value;uniqueIndex:Watchlist_type_value_organizationId_key;index:Watchlist_isGlobal_action_organizationId_type_value_idx;not null" json:"value"`
+	ID                   string           `gorm:"column:id;primaryKey;type:uuid" json:"id"`
+	Type                 string           `gorm:"column:type;uniqueIndex:Watchlist_type_value_organizationId_key,priority:1;index:Watchlist_isGlobal_action_organizationId_type_value_idx,priority:4;not null" json:"type"`
+	Value                string           `gorm:"column:value;uniqueIndex:Watchlist_type_value_organizationId_key,priority:2;index:Watchlist_isGlobal_action_organizationId_type_value_idx,priority:5;not null" json:"value"`
 	Description          *string          `gorm:"column:description" json:"description"`
-	IsGlobal             bool             `gorm:"column:isGlobal;index:Watchlist_isGlobal_action_organizationId_type_value_idx;default:false;not null" json:"isGlobal"`
-	OrganizationID       *int             `gorm:"column:organizationId;uniqueIndex:Watchlist_type_value_organizationId_key;index:Watchlist_isGlobal_action_organizationId_type_value_idx;size:32" json:"organizationId"`
-	Action               string           `gorm:"column:action;index:Watchlist_isGlobal_action_organizationId_type_value_idx;default:'REPORT';not null" json:"action"`
+	IsGlobal             bool             `gorm:"column:isGlobal;index:Watchlist_isGlobal_action_organizationId_type_value_idx,priority:1;default:false;not null" json:"isGlobal"`
+	OrganizationID       *int             `gorm:"column:organizationId;uniqueIndex:Watchlist_type_value_organizationId_key,priority:3;index:Watchlist_isGlobal_action_organizationId_type_value_idx,priority:3;size:32" json:"organizationId"`
+	Action               string           `gorm:"column:action;index:Watchlist_isGlobal_action_organizationId_type_value_idx,priority:2;default:'REPORT';not null" json:"action"`
 	Source               string           `gorm:"column:source;default:'MANUAL';not null" json:"source"`
 	LastUpdatedAt        DateTime         `gorm:"column:lastUpdatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"lastUpdatedAt"`
 	BookingReports       []BookingReport  `gorm:"foreignKey:WatchlistID;constraint:BookingReport_watchlistId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
@@ -2492,14 +2492,14 @@ func (m *Watchlist) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WatchlistAudit struct {
-	ID              string     `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID              string     `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	Type            string     `gorm:"column:type;not null" json:"type"`
 	Value           string     `gorm:"column:value;not null" json:"value"`
 	Description     *string    `gorm:"column:description" json:"description"`
 	Action          string     `gorm:"column:action;default:'REPORT';not null" json:"action"`
-	ChangedAt       DateTime   `gorm:"column:changedAt;index:WatchlistAudit_watchlistId_changedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"changedAt"`
+	ChangedAt       DateTime   `gorm:"column:changedAt;index:WatchlistAudit_watchlistId_changedAt_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"changedAt"`
 	ChangedByUserID *int       `gorm:"column:changedByUserId;size:32" json:"changedByUserId"`
-	WatchlistID     *string    `gorm:"column:watchlistId;index:WatchlistAudit_watchlistId_changedAt_idx;type:char(36)" json:"watchlistId"`
+	WatchlistID     *string    `gorm:"column:watchlistId;index:WatchlistAudit_watchlistId_changedAt_idx,priority:1;type:uuid" json:"watchlistId"`
 	Watchlist       *Watchlist `gorm:"belongsTo"`
 }
 
@@ -2519,8 +2519,8 @@ func (m *WatchlistAudit) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WatchlistEventAudit struct {
-	ID          string   `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	WatchlistID string   `gorm:"column:watchlistId;type:char(36);not null" json:"watchlistId"`
+	ID          string   `gorm:"column:id;primaryKey;type:uuid" json:"id"`
+	WatchlistID string   `gorm:"column:watchlistId;type:uuid;not null" json:"watchlistId"`
 	EventTypeID int      `gorm:"column:eventTypeId;size:32;not null" json:"eventTypeId"`
 	ActionTaken string   `gorm:"column:actionTaken;not null" json:"actionTaken"`
 	Timestamp   DateTime `gorm:"column:timestamp;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"timestamp"`
@@ -2542,7 +2542,7 @@ func (m *WatchlistEventAudit) BeforeCreate(tx *gorm.DB) error {
 }
 
 type BookingReport struct {
-	ID                string     `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID                string     `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	BookingUID        string     `gorm:"column:bookingUid;uniqueIndex:BookingReport_bookingUid_key;not null" json:"bookingUid"`
 	BookerEmail       string     `gorm:"column:bookerEmail;index:BookingReport_bookerEmail_idx;not null" json:"bookerEmail"`
 	ReportedByID      *int       `gorm:"column:reportedById;index:BookingReport_reportedById_idx;size:32" json:"reportedById"`
@@ -2554,8 +2554,8 @@ type BookingReport struct {
 	UpdatedAt         DateTime   `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Status            string     `gorm:"column:status;default:'PENDING';not null" json:"status"`
 	SystemStatus      string     `gorm:"column:systemStatus;index:BookingReport_systemStatus_idx;default:'PENDING';not null" json:"systemStatus"`
-	WatchlistID       *string    `gorm:"column:watchlistId;index:BookingReport_watchlistId_idx;type:char(36)" json:"watchlistId"`
-	GlobalWatchlistID *string    `gorm:"column:globalWatchlistId;index:BookingReport_globalWatchlistId_idx;type:char(36)" json:"globalWatchlistId"`
+	WatchlistID       *string    `gorm:"column:watchlistId;index:BookingReport_watchlistId_idx;type:uuid" json:"watchlistId"`
+	GlobalWatchlistID *string    `gorm:"column:globalWatchlistId;index:BookingReport_globalWatchlistId_idx;type:uuid" json:"globalWatchlistId"`
 	Booking           *Booking   `gorm:"references:UID;belongsTo"`
 	ReportedBy        *User      `gorm:"foreignKey:ReportedByID;belongsTo"`
 	Organization      *Team      `gorm:"foreignKey:OrganizationID;belongsTo"`
@@ -2590,16 +2590,16 @@ func (*BookingReport) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WrongAssignmentReport struct {
-	ID              string    `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID              string    `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	BookingUID      string    `gorm:"column:bookingUid;uniqueIndex:WrongAssignmentReport_bookingUid_key;not null" json:"bookingUid"`
 	ReportedByID    *int      `gorm:"column:reportedById;index:WrongAssignmentReport_reportedById_idx;size:32" json:"reportedById"`
 	CorrectAssignee *string   `gorm:"column:correctAssignee" json:"correctAssignee"`
 	AdditionalNotes string    `gorm:"column:additionalNotes;not null" json:"additionalNotes"`
-	TeamID          *int      `gorm:"column:teamId;index:WrongAssignmentReport_teamId_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx;size:32" json:"teamId"`
-	Status          string    `gorm:"column:status;index:WrongAssignmentReport_status_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx;default:'PENDING';not null" json:"status"`
+	TeamID          *int      `gorm:"column:teamId;index:WrongAssignmentReport_teamId_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx,priority:1;size:32" json:"teamId"`
+	Status          string    `gorm:"column:status;index:WrongAssignmentReport_status_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx,priority:2;default:'PENDING';not null" json:"status"`
 	ReviewedByID    *int      `gorm:"column:reviewedById;index:WrongAssignmentReport_reviewedById_idx;size:32" json:"reviewedById"`
 	ReviewedAt      *DateTime `gorm:"column:reviewedAt;type:timestamp(3)" json:"reviewedAt"`
-	CreatedAt       DateTime  `gorm:"column:createdAt;index:WrongAssignmentReport_createdAt_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt       DateTime  `gorm:"column:createdAt;index:WrongAssignmentReport_createdAt_idx;index:WrongAssignmentReport_teamId_status_createdAt_idx,priority:3;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt       DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Booking         *Booking  `gorm:"references:UID;belongsTo"`
 	ReportedBy      *User     `gorm:"foreignKey:ReportedByID;belongsTo"`
@@ -2692,9 +2692,9 @@ func (*OrganizationOnboarding) BeforeUpdate(tx *gorm.DB) error {
 
 type InternalNotePreset struct {
 	ID                  int                   `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	Name                string                `gorm:"column:name;uniqueIndex:InternalNotePreset_teamId_name_key;not null" json:"name"`
+	Name                string                `gorm:"column:name;uniqueIndex:InternalNotePreset_teamId_name_key,priority:2;not null" json:"name"`
 	CancellationReason  *string               `gorm:"column:cancellationReason" json:"cancellationReason"`
-	TeamID              int                   `gorm:"column:teamId;uniqueIndex:InternalNotePreset_teamId_name_key;index:InternalNotePreset_teamId_idx;size:32;not null" json:"teamId"`
+	TeamID              int                   `gorm:"column:teamId;uniqueIndex:InternalNotePreset_teamId_name_key,priority:1;index:InternalNotePreset_teamId_idx;size:32;not null" json:"teamId"`
 	CreatedAt           DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Team                *Team                 `gorm:"belongsTo"`
 	BookingInternalNote []BookingInternalNote `gorm:"foreignKey:NotePresetID;constraint:BookingInternalNote_notePresetId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2715,8 +2715,8 @@ func (m *InternalNotePreset) BeforeCreate(tx *gorm.DB) error {
 type FilterSegment struct {
 	ID               int                           `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name             string                        `gorm:"column:name;not null" json:"name"`
-	TableIdentifier  string                        `gorm:"column:tableIdentifier;index:FilterSegment_scope_userId_tableIdentifier_idx;index:FilterSegment_scope_teamId_tableIdentifier_idx;not null" json:"tableIdentifier"`
-	Scope            string                        `gorm:"column:scope;index:FilterSegment_scope_userId_tableIdentifier_idx;index:FilterSegment_scope_teamId_tableIdentifier_idx;not null" json:"scope"`
+	TableIdentifier  string                        `gorm:"column:tableIdentifier;index:FilterSegment_scope_userId_tableIdentifier_idx,priority:3;index:FilterSegment_scope_teamId_tableIdentifier_idx,priority:3;not null" json:"tableIdentifier"`
+	Scope            string                        `gorm:"column:scope;index:FilterSegment_scope_userId_tableIdentifier_idx,priority:1;index:FilterSegment_scope_teamId_tableIdentifier_idx,priority:1;not null" json:"scope"`
 	ActiveFilters    datatypes.JSON                `gorm:"column:activeFilters" json:"activeFilters"`
 	Sorting          datatypes.JSON                `gorm:"column:sorting" json:"sorting"`
 	ColumnVisibility datatypes.JSON                `gorm:"column:columnVisibility" json:"columnVisibility"`
@@ -2725,8 +2725,8 @@ type FilterSegment struct {
 	SearchTerm       *string                       `gorm:"column:searchTerm;type:text" json:"searchTerm"`
 	CreatedAt        DateTime                      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime                      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	UserID           int                           `gorm:"column:userId;index:FilterSegment_scope_userId_tableIdentifier_idx;size:32;not null" json:"userId"`
-	TeamID           *int                          `gorm:"column:teamId;index:FilterSegment_scope_teamId_tableIdentifier_idx;size:32" json:"teamId"`
+	UserID           int                           `gorm:"column:userId;index:FilterSegment_scope_userId_tableIdentifier_idx,priority:2;size:32;not null" json:"userId"`
+	TeamID           *int                          `gorm:"column:teamId;index:FilterSegment_scope_teamId_tableIdentifier_idx,priority:2;size:32" json:"teamId"`
 	User             *User                         `gorm:"belongsTo"`
 	Team             *Team                         `gorm:"belongsTo"`
 	UserPreferences  []UserFilterSegmentPreference `gorm:"foreignKey:SegmentID;constraint:UserFilterSegmentPreference_segmentId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -2757,8 +2757,8 @@ func (*FilterSegment) BeforeUpdate(tx *gorm.DB) error {
 
 type UserFilterSegmentPreference struct {
 	ID              int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	UserID          int            `gorm:"column:userId;uniqueIndex:UserFilterSegmentPreference_userId_tableIdentifier_key;index:UserFilterSegmentPreference_userId_idx;size:32;not null" json:"userId"`
-	TableIdentifier string         `gorm:"column:tableIdentifier;uniqueIndex:UserFilterSegmentPreference_userId_tableIdentifier_key;not null" json:"tableIdentifier"`
+	UserID          int            `gorm:"column:userId;uniqueIndex:UserFilterSegmentPreference_userId_tableIdentifier_key,priority:1;index:UserFilterSegmentPreference_userId_idx;size:32;not null" json:"userId"`
+	TableIdentifier string         `gorm:"column:tableIdentifier;uniqueIndex:UserFilterSegmentPreference_userId_tableIdentifier_key,priority:2;not null" json:"tableIdentifier"`
 	SegmentID       *int           `gorm:"column:segmentId;index:UserFilterSegmentPreference_segmentId_idx;size:32" json:"segmentId"`
 	SystemSegmentID *string        `gorm:"column:systemSegmentId" json:"systemSegmentId"`
 	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -2792,9 +2792,9 @@ func (*UserFilterSegmentPreference) BeforeUpdate(tx *gorm.DB) error {
 
 type BookingInternalNote struct {
 	ID           int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
-	NotePresetID *int                `gorm:"column:notePresetId;uniqueIndex:BookingInternalNote_bookingId_notePresetId_key;size:32" json:"notePresetId"`
+	NotePresetID *int                `gorm:"column:notePresetId;uniqueIndex:BookingInternalNote_bookingId_notePresetId_key,priority:2;size:32" json:"notePresetId"`
 	Text         *string             `gorm:"column:text" json:"text"`
-	BookingID    int                 `gorm:"column:bookingId;uniqueIndex:BookingInternalNote_bookingId_notePresetId_key;index:BookingInternalNote_bookingId_idx;size:32;not null" json:"bookingId"`
+	BookingID    int                 `gorm:"column:bookingId;uniqueIndex:BookingInternalNote_bookingId_notePresetId_key,priority:1;index:BookingInternalNote_bookingId_idx;size:32;not null" json:"bookingId"`
 	CreatedByID  int                 `gorm:"column:createdById;size:32;not null" json:"createdById"`
 	CreatedAt    DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	NotePreset   *InternalNotePreset `gorm:"foreignKey:NotePresetID;belongsTo"`
@@ -2816,10 +2816,10 @@ func (m *BookingInternalNote) BeforeCreate(tx *gorm.DB) error {
 
 type Role struct {
 	ID          string           `gorm:"column:id;primaryKey" json:"id"`
-	Name        string           `gorm:"column:name;uniqueIndex:Role_name_teamId_key;not null" json:"name"`
+	Name        string           `gorm:"column:name;uniqueIndex:Role_name_teamId_key,priority:1;not null" json:"name"`
 	Color       *string          `gorm:"column:color" json:"color"`
 	Description *string          `gorm:"column:description" json:"description"`
-	TeamID      *int             `gorm:"column:teamId;uniqueIndex:Role_name_teamId_key;index:Role_teamId_idx;size:32" json:"teamId"`
+	TeamID      *int             `gorm:"column:teamId;uniqueIndex:Role_name_teamId_key,priority:2;index:Role_teamId_idx;size:32" json:"teamId"`
 	CreatedAt   DateTime         `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime         `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Type        string           `gorm:"column:type;default:'CUSTOM';not null" json:"type"`
@@ -2856,9 +2856,9 @@ func (*Role) BeforeUpdate(tx *gorm.DB) error {
 
 type RolePermission struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	RoleID    string   `gorm:"column:roleId;uniqueIndex:RolePermission_roleId_resource_action_key;index:RolePermission_roleId_idx;not null" json:"roleId"`
-	Resource  string   `gorm:"column:resource;uniqueIndex:RolePermission_roleId_resource_action_key;not null" json:"resource"`
-	Action    string   `gorm:"column:action;uniqueIndex:RolePermission_roleId_resource_action_key;index:RolePermission_action_idx;not null" json:"action"`
+	RoleID    string   `gorm:"column:roleId;uniqueIndex:RolePermission_roleId_resource_action_key,priority:1;index:RolePermission_roleId_idx;not null" json:"roleId"`
+	Resource  string   `gorm:"column:resource;uniqueIndex:RolePermission_roleId_resource_action_key,priority:2;not null" json:"resource"`
+	Action    string   `gorm:"column:action;uniqueIndex:RolePermission_roleId_resource_action_key,priority:3;index:RolePermission_action_idx;not null" json:"action"`
 	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Role      *Role    `gorm:"belongsTo"`
 }
@@ -2879,9 +2879,9 @@ func (m *RolePermission) BeforeCreate(tx *gorm.DB) error {
 }
 
 type AuditActor struct {
-	ID            string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID            string         `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	Type          string         `gorm:"column:type;not null" json:"type"`
-	UserUUID      *string        `gorm:"column:userUuid;uniqueIndex:AuditActor_userUuid_key;index:AuditActor_userUuid_idx;type:char(36)" json:"userUuid"`
+	UserUUID      *string        `gorm:"column:userUuid;uniqueIndex:AuditActor_userUuid_key;index:AuditActor_userUuid_idx;type:uuid" json:"userUuid"`
 	AttendeeID    *int           `gorm:"column:attendeeId;uniqueIndex:AuditActor_attendeeId_key;index:AuditActor_attendeeId_idx;size:32" json:"attendeeId"`
 	CredentialID  *int           `gorm:"column:credentialId;uniqueIndex:AuditActor_credentialId_key;index:AuditActor_credentialId_idx;size:32" json:"credentialId"`
 	Email         *string        `gorm:"column:email;uniqueIndex:AuditActor_email_key;index:AuditActor_email_idx" json:"email"`
@@ -2907,9 +2907,9 @@ func (m *AuditActor) BeforeCreate(tx *gorm.DB) error {
 }
 
 type BookingAudit struct {
-	ID          string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID          string         `gorm:"column:id;primaryKey;type:uuid" json:"id"`
 	BookingUID  string         `gorm:"column:bookingUid;index:BookingAudit_bookingUid_idx;not null" json:"bookingUid"`
-	ActorID     string         `gorm:"column:actorId;index:BookingAudit_actorId_idx;type:char(36);not null" json:"actorId"`
+	ActorID     string         `gorm:"column:actorId;index:BookingAudit_actorId_idx;type:uuid;not null" json:"actorId"`
 	Type        string         `gorm:"column:type;not null" json:"type"`
 	Action      string         `gorm:"column:action;not null" json:"action"`
 	Timestamp   DateTime       `gorm:"column:timestamp;index:BookingAudit_timestamp_idx;type:timestamp(3);not null" json:"timestamp"`
@@ -3136,15 +3136,15 @@ func (*OrganizationBilling) BeforeUpdate(tx *gorm.DB) error {
 
 type SeatChangeLog struct {
 	ID                     string               `gorm:"column:id;primaryKey" json:"id"`
-	TeamID                 int                  `gorm:"column:teamId;uniqueIndex:SeatChangeLog_teamId_operationId_key;index:SeatChangeLog_teamId_monthKey_idx;index:SeatChangeLog_teamId_processedInProrationId_idx;size:32;not null" json:"teamId"`
+	TeamID                 int                  `gorm:"column:teamId;uniqueIndex:SeatChangeLog_teamId_operationId_key,priority:1;index:SeatChangeLog_teamId_monthKey_idx,priority:1;index:SeatChangeLog_teamId_processedInProrationId_idx,priority:1;size:32;not null" json:"teamId"`
 	ChangeType             string               `gorm:"column:changeType;not null" json:"changeType"`
 	SeatCount              int                  `gorm:"column:seatCount;size:32;not null" json:"seatCount"`
 	UserID                 *int                 `gorm:"column:userId;size:32" json:"userId"`
 	TriggeredBy            *int                 `gorm:"column:triggeredBy;size:32" json:"triggeredBy"`
 	ChangeDate             DateTime             `gorm:"column:changeDate;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"changeDate"`
-	MonthKey               string               `gorm:"column:monthKey;index:SeatChangeLog_teamId_monthKey_idx;index:SeatChangeLog_monthKey_idx;not null" json:"monthKey"`
-	OperationID            *string              `gorm:"column:operationId;uniqueIndex:SeatChangeLog_teamId_operationId_key" json:"operationId"`
-	ProcessedInProrationID *string              `gorm:"column:processedInProrationId;index:SeatChangeLog_teamId_processedInProrationId_idx" json:"processedInProrationId"`
+	MonthKey               string               `gorm:"column:monthKey;index:SeatChangeLog_teamId_monthKey_idx,priority:2;index:SeatChangeLog_monthKey_idx;not null" json:"monthKey"`
+	OperationID            *string              `gorm:"column:operationId;uniqueIndex:SeatChangeLog_teamId_operationId_key,priority:2" json:"operationId"`
+	ProcessedInProrationID *string              `gorm:"column:processedInProrationId;index:SeatChangeLog_teamId_processedInProrationId_idx,priority:2" json:"processedInProrationId"`
 	Metadata               datatypes.JSON       `gorm:"column:metadata" json:"metadata"`
 	CreatedAt              DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	TeamBillingID          *string              `gorm:"column:teamBillingId" json:"teamBillingId"`
@@ -3175,8 +3175,8 @@ func (m *SeatChangeLog) BeforeCreate(tx *gorm.DB) error {
 
 type MonthlyProration struct {
 	ID                    string               `gorm:"column:id;primaryKey" json:"id"`
-	TeamID                int                  `gorm:"column:teamId;uniqueIndex:MonthlyProration_teamId_monthKey_key;index:MonthlyProration_teamId_idx;size:32;not null" json:"teamId"`
-	MonthKey              string               `gorm:"column:monthKey;uniqueIndex:MonthlyProration_teamId_monthKey_key;index:MonthlyProration_monthKey_status_idx;not null" json:"monthKey"`
+	TeamID                int                  `gorm:"column:teamId;uniqueIndex:MonthlyProration_teamId_monthKey_key,priority:1;index:MonthlyProration_teamId_idx;size:32;not null" json:"teamId"`
+	MonthKey              string               `gorm:"column:monthKey;uniqueIndex:MonthlyProration_teamId_monthKey_key,priority:2;index:MonthlyProration_monthKey_status_idx,priority:1;not null" json:"monthKey"`
 	PeriodStart           DateTime             `gorm:"column:periodStart;type:timestamp(3);not null" json:"periodStart"`
 	PeriodEnd             DateTime             `gorm:"column:periodEnd;type:timestamp(3);not null" json:"periodEnd"`
 	SeatsAtStart          int                  `gorm:"column:seatsAtStart;size:32;not null" json:"seatsAtStart"`
@@ -3195,7 +3195,7 @@ type MonthlyProration struct {
 	InvoiceItemID         *string              `gorm:"column:invoiceItemId" json:"invoiceItemId"`
 	InvoiceID             *string              `gorm:"column:invoiceId" json:"invoiceId"`
 	InvoiceURL            *string              `gorm:"column:invoiceUrl" json:"invoiceUrl"`
-	Status                string               `gorm:"column:status;index:MonthlyProration_monthKey_status_idx;index:MonthlyProration_status_idx;default:'PENDING';not null" json:"status"`
+	Status                string               `gorm:"column:status;index:MonthlyProration_monthKey_status_idx,priority:2;index:MonthlyProration_status_idx;default:'PENDING';not null" json:"status"`
 	ChargedAt             *DateTime            `gorm:"column:chargedAt;type:timestamp(3)" json:"chargedAt"`
 	FailedAt              *DateTime            `gorm:"column:failedAt;type:timestamp(3)" json:"failedAt"`
 	FailureReason         *string              `gorm:"column:failureReason" json:"failureReason"`
@@ -3239,19 +3239,19 @@ func (*MonthlyProration) BeforeUpdate(tx *gorm.DB) error {
 
 type CalendarCacheEvent struct {
 	ID                 string            `gorm:"column:id;primaryKey" json:"id"`
-	SelectedCalendarID string            `gorm:"column:selectedCalendarId;uniqueIndex:CalendarCacheEvent_selectedCalendarId_externalId_key;index:CalendarCacheEvent_selectedCalendarId_iCalUID_idx;not null" json:"selectedCalendarId"`
-	ExternalID         string            `gorm:"column:externalId;uniqueIndex:CalendarCacheEvent_selectedCalendarId_externalId_key;not null" json:"externalId"`
+	SelectedCalendarID string            `gorm:"column:selectedCalendarId;uniqueIndex:CalendarCacheEvent_selectedCalendarId_externalId_key,priority:1;index:CalendarCacheEvent_selectedCalendarId_iCalUID_idx,priority:1;not null" json:"selectedCalendarId"`
+	ExternalID         string            `gorm:"column:externalId;uniqueIndex:CalendarCacheEvent_selectedCalendarId_externalId_key,priority:2;not null" json:"externalId"`
 	ExternalEtag       string            `gorm:"column:externalEtag;not null" json:"externalEtag"`
-	ICalUID            *string           `gorm:"column:iCalUID;index:CalendarCacheEvent_selectedCalendarId_iCalUID_idx" json:"iCalUID"`
+	ICalUID            *string           `gorm:"column:iCalUID;index:CalendarCacheEvent_selectedCalendarId_iCalUID_idx,priority:2" json:"iCalUID"`
 	ICalSequence       int               `gorm:"column:iCalSequence;size:32;default:0;not null" json:"iCalSequence"`
 	Summary            *string           `gorm:"column:summary" json:"summary"`
 	Description        *string           `gorm:"column:description" json:"description"`
 	Location           *string           `gorm:"column:location" json:"location"`
-	Start              DateTime          `gorm:"column:start;index:CalendarCacheEvent_start_end_status_idx;type:timestamp(3);not null" json:"start"`
-	End                DateTime          `gorm:"column:end;index:CalendarCacheEvent_start_end_status_idx;type:timestamp(3);not null" json:"end"`
+	Start              DateTime          `gorm:"column:start;index:CalendarCacheEvent_start_end_status_idx,priority:1;type:timestamp(3);not null" json:"start"`
+	End                DateTime          `gorm:"column:end;index:CalendarCacheEvent_start_end_status_idx,priority:2;type:timestamp(3);not null" json:"end"`
 	IsAllDay           bool              `gorm:"column:isAllDay;default:false;not null" json:"isAllDay"`
 	TimeZone           *string           `gorm:"column:timeZone" json:"timeZone"`
-	Status             string            `gorm:"column:status;index:CalendarCacheEvent_start_end_status_idx;default:'confirmed';not null" json:"status"`
+	Status             string            `gorm:"column:status;index:CalendarCacheEvent_start_end_status_idx,priority:3;default:'confirmed';not null" json:"status"`
 	RecurringEventID   *string           `gorm:"column:recurringEventId" json:"recurringEventId"`
 	OriginalStartTime  *DateTime         `gorm:"column:originalStartTime;type:timestamp(3)" json:"originalStartTime"`
 	CreatedAt          DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -3366,9 +3366,9 @@ func (*AttributeSyncRule) BeforeUpdate(tx *gorm.DB) error {
 type AttributeSyncFieldMapping struct {
 	ID                         string                    `gorm:"column:id;primaryKey" json:"id"`
 	IntegrationFieldName       string                    `gorm:"column:integrationFieldName;not null" json:"integrationFieldName"`
-	AttributeID                string                    `gorm:"column:attributeId;uniqueIndex:AttributeSyncFieldMapping_integrationAttributeSyncId_attrib_key;not null" json:"attributeId"`
+	AttributeID                string                    `gorm:"column:attributeId;uniqueIndex:AttributeSyncFieldMapping_integrationAttributeSyncId_attrib_key,priority:2;not null" json:"attributeId"`
 	Enabled                    bool                      `gorm:"column:enabled;not null" json:"enabled"`
-	IntegrationAttributeSyncID string                    `gorm:"column:integrationAttributeSyncId;uniqueIndex:AttributeSyncFieldMapping_integrationAttributeSyncId_attrib_key;index:AttributeSyncFieldMapping_integrationAttributeSyncId_idx;not null" json:"integrationAttributeSyncId"`
+	IntegrationAttributeSyncID string                    `gorm:"column:integrationAttributeSyncId;uniqueIndex:AttributeSyncFieldMapping_integrationAttributeSyncId_attrib_key,priority:1;index:AttributeSyncFieldMapping_integrationAttributeSyncId_idx;not null" json:"integrationAttributeSyncId"`
 	CreatedAt                  DateTime                  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt                  DateTime                  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Attribute                  *Attribute                `gorm:"belongsTo"`

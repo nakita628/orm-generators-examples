@@ -606,7 +606,7 @@ export const link = mysqlTable(
       table.projectId,
       table.folderId,
       table.archived,
-      table.createdAt,
+      sql`${table.createdAt} DESC`,
     ),
     index('Link_domain_createdAt_idx').on(table.domain, table.createdAt),
     index('Link_folderId_idx').on(table.folderId),

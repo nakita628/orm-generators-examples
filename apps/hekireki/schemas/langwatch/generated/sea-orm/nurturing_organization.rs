@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "NurturingOrganization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "adminUserId")]
+    #[sea_orm(column_name = "adminUserId", column_type = "Text")]
     pub admin_user_id: Option<String>,
     #[sea_orm(default_value = false)]
     pub seeded: bool,
@@ -19,23 +19,35 @@ pub struct Model {
     pub evaluation_count: i32,
     #[sea_orm(column_name = "simulationRunCount", default_value = 0)]
     pub simulation_run_count: i32,
-    #[sea_orm(column_name = "codingFirstSessionAt")]
+    #[sea_orm(
+        column_name = "codingFirstSessionAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub coding_first_session_at: Option<DateTime>,
-    #[sea_orm(column_name = "codingAgentTypes")]
+    #[sea_orm(
+        column_name = "codingAgentTypes",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub coding_agent_types: Vec<String>,
     #[sea_orm(column_name = "codingActiveDays", default_value = 0)]
     pub coding_active_days: i32,
-    #[sea_orm(column_name = "codingLastActiveDay")]
+    #[sea_orm(column_name = "codingLastActiveDay", column_type = "Text")]
     pub coding_last_active_day: Option<String>,
-    #[sea_orm(column_name = "codingTerminalTypes")]
+    #[sea_orm(
+        column_name = "codingTerminalTypes",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub coding_terminal_types: Vec<String>,
-    #[sea_orm(column_name = "codingRepositoryKeys")]
+    #[sea_orm(
+        column_name = "codingRepositoryKeys",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub coding_repository_keys: Vec<String>,
     #[sea_orm(column_name = "codingFirstDays")]
     pub coding_first_days: Vec<i32>,
-    #[sea_orm(column_name = "lastTraceAt")]
+    #[sea_orm(column_name = "lastTraceAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_trace_at: Option<DateTime>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

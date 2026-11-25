@@ -11,21 +11,26 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     /// The aggregate: identity's connection id.
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The connection as the reducer folded it (SsoConnectionState + LastEventOccurredAt).
+    #[sea_orm(column_type = "JsonBinary")]
     pub folded: Json,
     /// The event ids of the last delivery folded in, so a redelivery folds once.
-    #[sea_orm(column_name = "appliedEventIds")]
+    #[sea_orm(
+        column_name = "appliedEventIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub applied_event_ids: Vec<String>,
     /// A row of another version reads as undecodable and is re-folded from the log.
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
     /// Event-derived, so a replayed row equals the row it rebuilds.
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", column_type = "custom(\"timestamp(3)\")")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

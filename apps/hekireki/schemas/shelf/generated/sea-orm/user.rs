@@ -11,25 +11,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: String,
-    #[sea_orm(column_name = "firstName")]
+    #[sea_orm(column_name = "firstName", column_type = "Text")]
     pub first_name: Option<String>,
-    #[sea_orm(column_name = "lastName")]
+    #[sea_orm(column_name = "lastName", column_type = "Text")]
     pub last_name: Option<String>,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
-    #[sea_orm(column_name = "profilePicture")]
+    #[sea_orm(column_name = "profilePicture", column_type = "Text")]
     pub profile_picture: Option<String>,
     #[sea_orm(column_name = "usedFreeTrial", default_value = false)]
     pub used_free_trial: bool,
     #[sea_orm(default_value = false)]
     pub onboarded: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "customerId")]
+    #[sea_orm(column_name = "customerId", column_type = "Text")]
     pub customer_id: Option<String>,
     #[sea_orm(default_value = false)]
     pub sso: bool,
@@ -41,15 +44,22 @@ pub struct Model {
     pub has_unpaid_invoice: bool,
     #[sea_orm(column_name = "warnForNoPaymentMethod", default_value = false)]
     pub warn_for_no_payment_method: bool,
-    #[sea_orm(column_name = "lastSelectedOrganizationId")]
+    #[sea_orm(column_name = "lastSelectedOrganizationId", column_type = "Text")]
     pub last_selected_organization_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastMobileActiveAt")]
+    #[sea_orm(
+        column_name = "lastMobileActiveAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_mobile_active_at: Option<DateTime>,
     #[sea_orm(column_name = "dateFormat")]
     pub date_format: Option<DateFormatPreference>,
@@ -57,11 +67,11 @@ pub struct Model {
     pub time_format: Option<TimeFormatPreference>,
     #[sea_orm(column_name = "weekStart")]
     pub week_start: Option<WeekStartPreference>,
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: Option<String>,
     #[sea_orm(column_name = "tierId", default_value = "free")]
     pub tier_id: TierId,
-    #[sea_orm(column_name = "referralSource")]
+    #[sea_orm(column_name = "referralSource", column_type = "Text")]
     pub referral_source: Option<String>,
 }
 
@@ -71,13 +81,15 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::LastSelectedOrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "User_lastSelectedOrganizationId_fkey"
     )]
     LastSelectedOrganization,
     #[sea_orm(
         belongs_to = "super::tier::Entity",
         from = "Column::TierId",
-        to = "super::tier::Column::Id"
+        to = "super::tier::Column::Id",
+        fk_name = "User_tierId_fkey"
     )]
     Tier,
     #[sea_orm(has_many = "super::asset::Entity")]

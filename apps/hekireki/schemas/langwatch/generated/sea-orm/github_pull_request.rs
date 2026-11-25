@@ -16,52 +16,71 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GithubPullRequest")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The GitHub host the repository lives on, e.g. "github.com".
-    #[sea_orm(column_name = "repositoryHost")]
+    #[sea_orm(column_name = "repositoryHost", column_type = "Text")]
     pub repository_host: String,
     /// "owner/repo", stored LOWERCASED so a lookup matches whatever casing the
     /// session reported.
-    #[sea_orm(column_name = "repositoryFullName")]
+    #[sea_orm(column_name = "repositoryFullName", column_type = "Text")]
     pub repository_full_name: String,
     /// The branch the pull request was opened from.
-    #[sea_orm(column_name = "headBranch")]
+    #[sea_orm(column_name = "headBranch", column_type = "Text")]
     pub head_branch: String,
     #[sea_orm(column_name = "prNumber")]
     pub pr_number: i32,
-    #[sea_orm(column_name = "htmlUrl")]
+    #[sea_orm(column_name = "htmlUrl", column_type = "Text")]
     pub html_url: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
     /// GitHub's own state string: "open" or "closed".
+    #[sea_orm(column_type = "Text")]
     pub state: String,
     #[sea_orm(column_name = "isDraft", default_value = false)]
     pub is_draft: bool,
-    #[sea_orm(column_name = "authorLogin")]
+    #[sea_orm(column_name = "authorLogin", column_type = "Text")]
     pub author_login: Option<String>,
-    #[sea_orm(column_name = "prCreatedAt")]
+    #[sea_orm(column_name = "prCreatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub pr_created_at: DateTime,
-    #[sea_orm(column_name = "prClosedAt")]
+    #[sea_orm(column_name = "prClosedAt", column_type = "custom(\"timestamp(3)\")")]
     pub pr_closed_at: Option<DateTime>,
-    #[sea_orm(column_name = "prMergedAt")]
+    #[sea_orm(column_name = "prMergedAt", column_type = "custom(\"timestamp(3)\")")]
     pub pr_merged_at: Option<DateTime>,
     /// GitHub's own `updated_at` for the snapshot this row holds, and the
     /// freshness guard on every write to it: a snapshot older than the stored one
     /// is skipped. GitHub may deliver webhooks out of order, and without the
     /// guard a late `opened` lands after `closed` and reopens a merged pull
     /// request. NULL means the row predates the column, so any write is accepted.
-    #[sea_orm(column_name = "prUpdatedAt")]
+    #[sea_orm(column_name = "prUpdatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub pr_updated_at: Option<DateTime>,
     /// When this row was first mapped to its branch.
-    #[sea_orm(column_name = "mappedAt")]
+    #[sea_orm(
+        column_name = "mappedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub mapped_at: DateTime,
     /// When the snapshot columns were last refreshed from GitHub.
-    #[sea_orm(column_name = "lastCheckedAt")]
+    #[sea_orm(
+        column_name = "lastCheckedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_checked_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -71,7 +90,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GithubPullRequest_organizationId_fkey"
     )]
     Organization,
 }

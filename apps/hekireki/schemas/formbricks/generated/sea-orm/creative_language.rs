@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CreativeLanguage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "languageId")]
+    #[sea_orm(column_name = "languageId", column_type = "Text")]
     pub language_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "creativeId")]
+    #[sea_orm(column_name = "creativeId", column_type = "Text")]
     pub creative_id: String,
     #[sea_orm(default_value = false)]
     pub default: bool,
@@ -23,14 +23,16 @@ pub enum Relation {
         belongs_to = "super::language::Entity",
         from = "Column::LanguageId",
         to = "super::language::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreativeLanguage_languageId_fkey"
     )]
     Language,
     #[sea_orm(
         belongs_to = "super::creative::Entity",
         from = "Column::CreativeId",
         to = "super::creative::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreativeLanguage_creativeId_fkey"
     )]
     Creative,
 }

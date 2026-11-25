@@ -9,29 +9,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DataroomFaqItem")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: Option<String>,
-    #[sea_orm(column_name = "editedQuestion")]
+    #[sea_orm(column_name = "editedQuestion", column_type = "Text")]
     pub edited_question: String,
-    #[sea_orm(column_name = "originalQuestion")]
+    #[sea_orm(column_name = "originalQuestion", column_type = "Text")]
     pub original_question: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub answer: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "dataroomId")]
+    #[sea_orm(column_name = "dataroomId", column_type = "Text")]
     pub dataroom_id: String,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: Option<String>,
-    #[sea_orm(column_name = "dataroomDocumentId")]
+    #[sea_orm(column_name = "dataroomDocumentId", column_type = "Text")]
     pub dataroom_document_id: Option<String>,
-    #[sea_orm(column_name = "sourceConversationId")]
+    #[sea_orm(column_name = "sourceConversationId", column_type = "Text")]
     pub source_conversation_id: Option<String>,
-    #[sea_orm(column_name = "questionMessageId")]
+    #[sea_orm(column_name = "questionMessageId", column_type = "Text")]
     pub question_message_id: Option<String>,
-    #[sea_orm(column_name = "answerMessageId")]
+    #[sea_orm(column_name = "answerMessageId", column_type = "Text")]
     pub answer_message_id: Option<String>,
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: String,
-    #[sea_orm(column_name = "publishedByUserId")]
+    #[sea_orm(column_name = "publishedByUserId", column_type = "Text")]
     pub published_by_user_id: String,
     #[sea_orm(column_name = "visibilityMode", default_value = "PUBLIC_DATAROOM")]
     pub visibility_mode: FaqVisibility,
@@ -41,14 +45,19 @@ pub struct Model {
     pub is_anonymized: bool,
     #[sea_orm(column_name = "viewCount", default_value = 0)]
     pub view_count: i32,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
     #[sea_orm(column_name = "documentPageNumber")]
     pub document_page_number: Option<i32>,
     #[sea_orm(column_name = "documentVersionNumber")]
     pub document_version_number: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -58,56 +67,64 @@ pub enum Relation {
         belongs_to = "super::dataroom::Entity",
         from = "Column::DataroomId",
         to = "super::dataroom::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DataroomFaqItem_dataroomId_fkey"
     )]
     Dataroom,
     #[sea_orm(
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomFaqItem_linkId_fkey"
     )]
     Link,
     #[sea_orm(
         belongs_to = "super::dataroom_document::Entity",
         from = "Column::DataroomDocumentId",
         to = "super::dataroom_document::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomFaqItem_dataroomDocumentId_fkey"
     )]
     DataroomDocument,
     #[sea_orm(
         belongs_to = "super::conversation::Entity",
         from = "Column::SourceConversationId",
         to = "super::conversation::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomFaqItem_sourceConversationId_fkey"
     )]
     SourceConversation,
     #[sea_orm(
         belongs_to = "super::message::Entity",
         from = "Column::QuestionMessageId",
         to = "super::message::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomFaqItem_questionMessageId_fkey"
     )]
     QuestionMessage,
     #[sea_orm(
         belongs_to = "super::message::Entity",
         from = "Column::AnswerMessageId",
         to = "super::message::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomFaqItem_answerMessageId_fkey"
     )]
     AnswerMessage,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DataroomFaqItem_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::PublishedByUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DataroomFaqItem_publishedByUserId_fkey"
     )]
     PublishedByUser,
 }

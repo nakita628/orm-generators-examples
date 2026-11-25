@@ -8,25 +8,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MetricsDashboard")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub description: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "ownerId")]
+    #[sea_orm(column_name = "ownerId", column_type = "Text")]
     pub owner_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     /// JSON that defines the config, queries, layout and config of all widgets.
     /// There will be a version field for the format.
+    #[sea_orm(column_type = "Text")]
     pub layout: String,
 }
 
@@ -37,7 +44,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MetricsDashboard_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -45,7 +53,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MetricsDashboard_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -53,7 +62,8 @@ pub enum Relation {
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "MetricsDashboard_ownerId_fkey"
     )]
     Owner,
 }

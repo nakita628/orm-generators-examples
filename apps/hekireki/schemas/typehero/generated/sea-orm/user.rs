@@ -8,23 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub email: String,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(column_name = "emailVerified", column_type = "custom(\"datetime(3)\")")]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub image: Option<String>,
     /// this is the bio that shows up on the profile page
     #[sea_orm(column_type = "String(StringLen::N(1000))", default_value = "")]
     pub bio: String,
     #[sea_orm(default_value = "ACTIVE")]
     pub status: UserStatus,
-    #[sea_orm(column_name = "banReason", column_type = "Text")]
+    #[sea_orm(column_name = "banReason", column_type = "custom(\"mediumtext\")")]
     pub ban_reason: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 

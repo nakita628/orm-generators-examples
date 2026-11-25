@@ -7,27 +7,47 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_PolicyTable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub policy_id: String,
+    #[sea_orm(column_type = "Text")]
     pub policy_name: String,
     #[sea_orm(default_value = 1)]
     pub version_number: i32,
-    #[sea_orm(default_value = "production")]
+    #[sea_orm(column_type = "Text", default_value = "production")]
     pub version_status: String,
+    #[sea_orm(column_type = "Text")]
     pub parent_version_id: Option<String>,
     #[sea_orm(default_value = true)]
     pub is_latest: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub published_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub production_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub inherit: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub guardrails_add: Vec<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub guardrails_remove: Vec<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub condition: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub pipeline: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub updated_by: Option<String>,
 }
 

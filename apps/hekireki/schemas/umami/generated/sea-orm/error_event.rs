@@ -16,7 +16,10 @@ pub struct Model {
     pub visit_id: Uuid,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub created_at: DateTimeWithTimeZone,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub received_at: DateTimeWithTimeZone,
     #[sea_orm(column_type = "String(StringLen::N(200))")]
     pub name: String,
@@ -24,7 +27,9 @@ pub struct Model {
     pub message: String,
     #[sea_orm(column_type = "Text")]
     pub stack: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub frames: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub tags: Json,
     pub handled: bool,
     #[sea_orm(column_type = "String(StringLen::N(500))")]

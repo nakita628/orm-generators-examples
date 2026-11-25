@@ -7,25 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LoopsEmailSource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "emailMessageId")]
+    #[sea_orm(column_name = "emailMessageId", column_type = "Text")]
     pub email_message_id: Option<String>,
-    #[sea_orm(column_name = "loopId")]
+    #[sea_orm(column_name = "loopId", column_type = "Text")]
     pub loop_id: Option<String>,
-    #[sea_orm(column_name = "loopName")]
+    #[sea_orm(column_name = "loopName", column_type = "Text")]
     pub loop_name: Option<String>,
-    #[sea_orm(column_name = "campaignId")]
+    #[sea_orm(column_name = "campaignId", column_type = "Text")]
     pub campaign_id: Option<String>,
-    #[sea_orm(column_name = "campaignName")]
+    #[sea_orm(column_name = "campaignName", column_type = "Text")]
     pub campaign_name: Option<String>,
-    #[sea_orm(column_name = "sourceType")]
+    #[sea_orm(column_name = "sourceType", column_type = "Text")]
     pub source_type: Option<String>,
-    #[sea_orm(column_name = "eventTime")]
+    #[sea_orm(column_name = "eventTime", column_type = "custom(\"timestamp(3)\")")]
     pub event_time: Option<DateTime>,
 }
 

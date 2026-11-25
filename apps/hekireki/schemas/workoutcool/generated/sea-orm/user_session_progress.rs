@@ -7,17 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "user_session_progress")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "enrollmentId")]
+    #[sea_orm(column_name = "enrollmentId", column_type = "Text")]
     pub enrollment_id: String,
-    #[sea_orm(column_name = "sessionId")]
+    #[sea_orm(column_name = "sessionId", column_type = "Text")]
     pub session_id: String,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(
+        column_name = "startedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "completedAt")]
+    #[sea_orm(column_name = "completedAt", column_type = "custom(\"timestamp(3)\")")]
     pub completed_at: Option<DateTime>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "workoutSessionId")]
+    #[sea_orm(column_name = "workoutSessionId", column_type = "Text")]
     pub workout_session_id: Option<String>,
 }
 
@@ -27,19 +32,22 @@ pub enum Relation {
         belongs_to = "super::user_program_enrollment::Entity",
         from = "Column::EnrollmentId",
         to = "super::user_program_enrollment::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "user_session_progress_enrollmentId_fkey"
     )]
     Enrollment,
     #[sea_orm(
         belongs_to = "super::program_session::Entity",
         from = "Column::SessionId",
-        to = "super::program_session::Column::Id"
+        to = "super::program_session::Column::Id",
+        fk_name = "user_session_progress_sessionId_fkey"
     )]
     Session,
     #[sea_orm(
         belongs_to = "super::workout_session::Entity",
         from = "Column::WorkoutSessionId",
-        to = "super::workout_session::Column::Id"
+        to = "super::workout_session::Column::Id",
+        fk_name = "user_session_progress_workoutSessionId_fkey"
     )]
     WorkoutSession,
 }

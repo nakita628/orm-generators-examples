@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SeatChangeLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "teamId")]
     pub team_id: i32,
@@ -19,20 +20,29 @@ pub struct Model {
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "triggeredBy")]
     pub triggered_by: Option<i32>,
-    #[sea_orm(column_name = "changeDate")]
+    #[sea_orm(
+        column_name = "changeDate",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub change_date: DateTime,
-    #[sea_orm(column_name = "monthKey")]
+    #[sea_orm(column_name = "monthKey", column_type = "Text")]
     pub month_key: String,
-    #[sea_orm(column_name = "operationId")]
+    #[sea_orm(column_name = "operationId", column_type = "Text")]
     pub operation_id: Option<String>,
-    #[sea_orm(column_name = "processedInProrationId")]
+    #[sea_orm(column_name = "processedInProrationId", column_type = "Text")]
     pub processed_in_proration_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "teamBillingId")]
+    #[sea_orm(column_name = "teamBillingId", column_type = "Text")]
     pub team_billing_id: Option<String>,
-    #[sea_orm(column_name = "organizationBillingId")]
+    #[sea_orm(column_name = "organizationBillingId", column_type = "Text")]
     pub organization_billing_id: Option<String>,
 }
 
@@ -42,25 +52,29 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SeatChangeLog_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::monthly_proration::Entity",
         from = "Column::ProcessedInProrationId",
-        to = "super::monthly_proration::Column::Id"
+        to = "super::monthly_proration::Column::Id",
+        fk_name = "SeatChangeLog_processedInProrationId_fkey"
     )]
     Proration,
     #[sea_orm(
         belongs_to = "super::team_billing::Entity",
         from = "Column::TeamBillingId",
-        to = "super::team_billing::Column::Id"
+        to = "super::team_billing::Column::Id",
+        fk_name = "SeatChangeLog_teamBillingId_fkey"
     )]
     TeamBilling,
     #[sea_orm(
         belongs_to = "super::organization_billing::Entity",
         from = "Column::OrganizationBillingId",
-        to = "super::organization_billing::Column::Id"
+        to = "super::organization_billing::Column::Id",
+        fk_name = "SeatChangeLog_organizationBillingId_fkey"
     )]
     OrganizationBilling,
 }

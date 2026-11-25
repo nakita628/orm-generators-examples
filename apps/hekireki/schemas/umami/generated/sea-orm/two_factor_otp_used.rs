@@ -5,8 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "two_factor_otp_used")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub user_id: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub otp: String,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub expires_at: DateTimeWithTimeZone,
@@ -18,7 +20,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "two_factor_otp_used_user_id_fkey"
     )]
     User,
 }

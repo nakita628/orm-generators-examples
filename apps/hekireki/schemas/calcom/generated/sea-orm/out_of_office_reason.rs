@@ -6,8 +6,10 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub emoji: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub reason: String,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
@@ -21,7 +23,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OutOfOfficeReason_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::out_of_office_entry::Entity")]

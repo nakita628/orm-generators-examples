@@ -10,20 +10,23 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     #[sea_orm(column_name = "zippedAt")]
     pub zipped_at: Option<PrismaDateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,
     #[sea_orm(default_value = false)]
     pub nsfw: bool,
-    #[sea_orm(column_name = "sortOrder")]
+    #[sea_orm(column_name = "sortOrder", column_type = "Text")]
     pub sort_order: Option<String>,
 }
 

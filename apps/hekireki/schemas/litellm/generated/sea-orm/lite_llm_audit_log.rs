@@ -7,16 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_AuditLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub changed_by: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub changed_by_api_key: String,
+    #[sea_orm(column_type = "Text")]
     pub action: String,
+    #[sea_orm(column_type = "Text")]
     pub table_name: String,
+    #[sea_orm(column_type = "Text")]
     pub object_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub before_value: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub updated_values: Option<Json>,
 }
 

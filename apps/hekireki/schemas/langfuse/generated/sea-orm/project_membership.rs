@@ -7,13 +7,24 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "project_memberships")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub org_membership_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
     pub role: Role,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -23,21 +34,24 @@ pub enum Relation {
         belongs_to = "super::organization_membership::Entity",
         from = "Column::OrgMembershipId",
         to = "super::organization_membership::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "project_memberships_org_membership_id_fkey"
     )]
     OrganizationMembership,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "project_memberships_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "project_memberships_user_id_fkey"
     )]
     User,
 }

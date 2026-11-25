@@ -9,17 +9,18 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "deviceOs")]
+    #[sea_orm(column_name = "deviceOs", column_type = "Text")]
     pub device_os: String,
-    #[sea_orm(column_name = "deviceName")]
+    #[sea_orm(column_name = "deviceName", column_type = "Text")]
     pub device_name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
     #[sea_orm(default_value = false)]
     pub approved: bool,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -29,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
         to = "super::users::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "desktop_mobile_devices_userId_fkey"
     )]
     User,
 }

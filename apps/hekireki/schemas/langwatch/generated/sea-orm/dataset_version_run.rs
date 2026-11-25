@@ -8,18 +8,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DatasetVersionRun")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "datasetId")]
+    #[sea_orm(column_name = "datasetId", column_type = "Text")]
     pub dataset_id: String,
-    #[sea_orm(column_name = "versionId")]
+    #[sea_orm(column_name = "versionId", column_type = "Text")]
     pub version_id: String,
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: String,
-    #[sea_orm(column_name = "experimentId")]
+    #[sea_orm(column_name = "experimentId", column_type = "Text")]
     pub experiment_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

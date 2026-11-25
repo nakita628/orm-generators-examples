@@ -7,18 +7,34 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "user_totp")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "Text",
+        default_expr = "Expr::cust(\"gen_random_uuid()\")"
+    )]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub secret: String,
-    #[sea_orm(column_name = "recoveryCodes")]
+    #[sea_orm(
+        column_name = "recoveryCodes",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub recovery_codes: Vec<String>,
-    #[sea_orm(column_name = "enabledAt")]
+    #[sea_orm(column_name = "enabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub enabled_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -28,7 +44,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "user_totp_userId_fkey"
     )]
     User,
 }

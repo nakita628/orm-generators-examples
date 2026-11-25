@@ -7,39 +7,69 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OidcProvider")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// @zod.custom(z.coerce.date())
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub issuer: String,
-    #[sea_orm(column_name = "clientId")]
+    #[sea_orm(column_name = "clientId", column_type = "Text")]
     pub client_id: String,
-    #[sea_orm(column_name = "clientSecret")]
+    #[sea_orm(column_name = "clientSecret", column_type = "Text")]
     pub client_secret: String,
-    #[sea_orm(column_name = "authorizationEndpoint")]
+    #[sea_orm(column_name = "authorizationEndpoint", column_type = "Text")]
     pub authorization_endpoint: Option<String>,
-    #[sea_orm(column_name = "tokenEndpoint")]
+    #[sea_orm(column_name = "tokenEndpoint", column_type = "Text")]
     pub token_endpoint: Option<String>,
-    #[sea_orm(column_name = "userinfoEndpoint")]
+    #[sea_orm(column_name = "userinfoEndpoint", column_type = "Text")]
     pub userinfo_endpoint: Option<String>,
-    #[sea_orm(column_name = "jwksUri")]
+    #[sea_orm(column_name = "jwksUri", column_type = "Text")]
     pub jwks_uri: Option<String>,
-    #[sea_orm(column_name = "introspectionEndpoint")]
+    #[sea_orm(column_name = "introspectionEndpoint", column_type = "Text")]
     pub introspection_endpoint: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub scopes: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub audience: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub prompt: Option<String>,
-    #[sea_orm(column_name = "usernameClaim", default_value = "email")]
+    #[sea_orm(
+        column_name = "usernameClaim",
+        column_type = "Text",
+        default_value = "email"
+    )]
     pub username_claim: String,
-    #[sea_orm(column_name = "emailClaim", default_value = "email")]
+    #[sea_orm(
+        column_name = "emailClaim",
+        column_type = "Text",
+        default_value = "email"
+    )]
     pub email_claim: String,
-    #[sea_orm(column_name = "nameClaim", default_value = "name")]
+    #[sea_orm(
+        column_name = "nameClaim",
+        column_type = "Text",
+        default_value = "name"
+    )]
     pub name_claim: String,
-    #[sea_orm(column_name = "groupClaim", default_value = "groups")]
+    #[sea_orm(
+        column_name = "groupClaim",
+        column_type = "Text",
+        default_value = "groups"
+    )]
     pub group_claim: String,
     #[sea_orm(default_value = true)]
     pub enabled: bool,

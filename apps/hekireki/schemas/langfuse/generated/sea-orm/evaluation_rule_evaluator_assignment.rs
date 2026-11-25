@@ -7,12 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "evaluation_rule_evaluator_assignments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub evaluation_rule_id: String,
+    #[sea_orm(column_type = "Text")]
     pub evaluator_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub variable_mapping: Option<Json>,
 }
 
@@ -22,21 +35,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "evaluation_rule_evaluator_assignments_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::evaluation_rule::Entity",
         from = "Column::EvaluationRuleId",
         to = "super::evaluation_rule::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "evaluation_rule_evaluator_assignments_evaluation_rule_id_fkey"
     )]
     EvaluationRule,
     #[sea_orm(
         belongs_to = "super::evaluator::Entity",
         from = "Column::EvaluatorId",
         to = "super::evaluator::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "evaluation_rule_evaluator_assignments_evaluator_id_fkey"
     )]
     Evaluator,
 }

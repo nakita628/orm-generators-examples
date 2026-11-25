@@ -5,12 +5,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Session")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "sessionToken")]
+    #[sea_orm(
+        column_name = "sessionToken",
+        column_type = "String(StringLen::N(191))"
+    )]
     pub session_token: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
+    #[sea_orm(column_type = "custom(\"datetime(3)\")")]
     pub expires: DateTime,
 }
 
@@ -20,7 +25,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Session_userId_fkey"
     )]
     User,
 }

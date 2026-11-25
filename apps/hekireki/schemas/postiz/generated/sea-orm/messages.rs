@@ -8,17 +8,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Messages")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub from: From,
+    #[sea_orm(column_type = "Text")]
     pub content: Option<String>,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: String,
+    #[sea_orm(column_type = "Text")]
     pub special: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -27,7 +34,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::messages_group::Entity",
         from = "Column::GroupId",
-        to = "super::messages_group::Column::Id"
+        to = "super::messages_group::Column::Id",
+        fk_name = "Messages_groupId_fkey"
     )]
     Group,
     #[sea_orm(has_many = "super::post::Entity")]

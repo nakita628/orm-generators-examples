@@ -8,20 +8,25 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "jobName")]
+    #[sea_orm(column_name = "jobName", column_type = "Text")]
     pub job_name: Option<String>,
-    #[sea_orm(column_name = "subscriberUrl")]
+    #[sea_orm(column_name = "subscriberUrl", column_type = "Text")]
     pub subscriber_url: String,
+    #[sea_orm(column_type = "Text")]
     pub payload: String,
-    #[sea_orm(column_name = "startAfter")]
+    #[sea_orm(column_name = "startAfter", column_type = "custom(\"timestamp(3)\")")]
     pub start_after: DateTime,
     #[sea_orm(column_name = "retryCount", default_value = 0)]
     pub retry_count: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTime>,
-    #[sea_orm(column_name = "appId")]
+    #[sea_orm(column_name = "appId", column_type = "Text")]
     pub app_id: Option<String>,
-    #[sea_orm(column_name = "webhookId")]
+    #[sea_orm(column_name = "webhookId", column_type = "Text")]
     pub webhook_id: Option<String>,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: Option<i32>,
@@ -33,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::webhook::Entity",
         from = "Column::WebhookId",
         to = "super::webhook::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WebhookScheduledTriggers_webhookId_fkey"
     )]
     Webhook,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WebhookScheduledTriggers_bookingId_fkey"
     )]
     Booking,
 }

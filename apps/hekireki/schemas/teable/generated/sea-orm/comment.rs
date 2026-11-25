@@ -7,16 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "comment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub record_id: String,
-    #[sea_orm(column_name = "quote_Id")]
+    #[sea_orm(column_name = "quote_Id", column_type = "Text")]
     pub quote_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub content: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub reaction: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 

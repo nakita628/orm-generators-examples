@@ -6,17 +6,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EnvelopeContent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "envelopeId")]
+    #[sea_orm(column_name = "envelopeId", column_type = "Text")]
     pub envelope_id: String,
-    #[sea_orm(column_name = "envelopeItemId")]
+    #[sea_orm(column_name = "envelopeItemId", column_type = "Text")]
     pub envelope_item_id: String,
     /// [EnvelopeContentMeta] @zod.custom.use(ZEnvelopeContentMetaSchema)
-    #[sea_orm(column_name = "contentMeta")]
+    #[sea_orm(column_name = "contentMeta", column_type = "JsonBinary")]
     pub content_meta: Json,
     /// Any number of contents may point at the same data content, e.g. a
     /// document created from a template shares the template's images.
-    #[sea_orm(column_name = "dataContentId")]
+    #[sea_orm(column_name = "dataContentId", column_type = "Text")]
     pub data_content_id: Option<String>,
 }
 
@@ -26,21 +27,24 @@ pub enum Relation {
         belongs_to = "super::envelope_item::Entity",
         from = "Column::EnvelopeItemId",
         to = "super::envelope_item::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvelopeContent_envelopeItemId_fkey"
     )]
     EnvelopeItem,
     #[sea_orm(
         belongs_to = "super::envelope::Entity",
         from = "Column::EnvelopeId",
         to = "super::envelope::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvelopeContent_envelopeId_fkey"
     )]
     Envelope,
     #[sea_orm(
         belongs_to = "super::data_content::Entity",
         from = "Column::DataContentId",
         to = "super::data_content::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "EnvelopeContent_dataContentId_fkey"
     )]
     DataContent,
 }

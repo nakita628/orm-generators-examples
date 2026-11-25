@@ -8,15 +8,19 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created: DateTime,
     #[sea_orm(column_name = "recipientId")]
     pub recipient_id: i32,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "fieldId")]
     pub field_id: i32,
-    #[sea_orm(column_name = "signatureImageAsBase64")]
+    #[sea_orm(column_name = "signatureImageAsBase64", column_type = "Text")]
     pub signature_image_as_base64: Option<String>,
-    #[sea_orm(column_name = "typedSignature")]
+    #[sea_orm(column_name = "typedSignature", column_type = "Text")]
     pub typed_signature: Option<String>,
 }
 
@@ -26,14 +30,16 @@ pub enum Relation {
         belongs_to = "super::recipient::Entity",
         from = "Column::RecipientId",
         to = "super::recipient::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Signature_recipientId_fkey"
     )]
     Recipient,
     #[sea_orm(
         belongs_to = "super::field::Entity",
         from = "Column::FieldId",
         to = "super::field::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Signature_fieldId_fkey"
     )]
     Field,
 }

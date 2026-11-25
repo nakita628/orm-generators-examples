@@ -9,21 +9,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WebhookCall")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub status: WebhookCallStatus,
+    #[sea_orm(column_type = "Text")]
     pub url: String,
     pub event: WebhookTriggerEvents,
-    #[sea_orm(column_name = "requestBody")]
+    #[sea_orm(column_name = "requestBody", column_type = "JsonBinary")]
     pub request_body: Json,
     #[sea_orm(column_name = "responseCode")]
     pub response_code: i32,
-    #[sea_orm(column_name = "responseHeaders")]
+    #[sea_orm(column_name = "responseHeaders", column_type = "JsonBinary")]
     pub response_headers: Option<Json>,
-    #[sea_orm(column_name = "responseBody")]
+    #[sea_orm(column_name = "responseBody", column_type = "JsonBinary")]
     pub response_body: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "webhookId")]
+    #[sea_orm(column_name = "webhookId", column_type = "Text")]
     pub webhook_id: String,
 }
 
@@ -33,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::webhook::Entity",
         from = "Column::WebhookId",
         to = "super::webhook::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WebhookCall_webhookId_fkey"
     )]
     Webhook,
 }

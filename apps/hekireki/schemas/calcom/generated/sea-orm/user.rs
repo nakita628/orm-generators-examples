@@ -14,55 +14,76 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(unique)]
     pub uuid: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub username: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     /// @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(
+        column_name = "emailVerified",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub email_verified: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub bio: Option<String>,
-    #[sea_orm(column_name = "avatarUrl")]
+    #[sea_orm(column_name = "avatarUrl", column_type = "Text")]
     pub avatar_url: Option<String>,
-    #[sea_orm(column_name = "timeZone", default_value = "Europe/London")]
+    #[sea_orm(
+        column_name = "timeZone",
+        column_type = "Text",
+        default_value = "Europe/London"
+    )]
     pub time_zone: String,
-    #[sea_orm(column_name = "weekStart", default_value = "Sunday")]
+    #[sea_orm(
+        column_name = "weekStart",
+        column_type = "Text",
+        default_value = "Sunday"
+    )]
     pub week_start: String,
     #[sea_orm(column_name = "bufferTime", default_value = 0)]
     pub buffer_time: i32,
     #[sea_orm(column_name = "hideBranding", default_value = false)]
     pub hide_branding: bool,
+    #[sea_orm(column_type = "Text")]
     pub theme: Option<String>,
-    #[sea_orm(column_name = "appTheme")]
+    #[sea_orm(column_name = "appTheme", column_type = "Text")]
     pub app_theme: Option<String>,
-    #[sea_orm(column_name = "created")]
+    #[sea_orm(
+        column_name = "created",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_date: DateTime,
-    #[sea_orm(column_name = "trialEndsAt")]
+    #[sea_orm(column_name = "trialEndsAt", column_type = "custom(\"timestamp(3)\")")]
     pub trial_ends_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastActiveAt")]
+    #[sea_orm(column_name = "lastActiveAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_active_at: Option<DateTime>,
     #[sea_orm(column_name = "defaultScheduleId")]
     pub default_schedule_id: Option<i32>,
     #[sea_orm(column_name = "completedOnboarding", default_value = false)]
     pub completed_onboarding: bool,
+    #[sea_orm(column_type = "Text")]
     pub locale: Option<String>,
     #[sea_orm(column_name = "timeFormat", default_value = 12)]
     pub time_format: Option<i32>,
-    #[sea_orm(column_name = "twoFactorSecret")]
+    #[sea_orm(column_name = "twoFactorSecret", column_type = "Text")]
     pub two_factor_secret: Option<String>,
     #[sea_orm(column_name = "twoFactorEnabled", default_value = false)]
     pub two_factor_enabled: bool,
-    #[sea_orm(column_name = "backupCodes")]
+    #[sea_orm(column_name = "backupCodes", column_type = "Text")]
     pub backup_codes: Option<String>,
     #[sea_orm(column_name = "identityProvider", default_value = "CAL")]
     pub identity_provider: IdentityProvider,
-    #[sea_orm(column_name = "identityProviderId")]
+    #[sea_orm(column_name = "identityProviderId", column_type = "Text")]
     pub identity_provider_id: Option<String>,
     #[sea_orm(column_name = "invitedTo")]
     pub invited_to: Option<i32>,
-    #[sea_orm(column_name = "brandColor")]
+    #[sea_orm(column_name = "brandColor", column_type = "Text")]
     pub brand_color: Option<String>,
-    #[sea_orm(column_name = "darkBrandColor")]
+    #[sea_orm(column_name = "darkBrandColor", column_type = "Text")]
     pub dark_brand_color: Option<String>,
     #[sea_orm(column_name = "allowDynamicBooking", default_value = true)]
     pub allow_dynamic_booking: Option<bool>,
@@ -73,6 +94,7 @@ pub struct Model {
     #[sea_orm(column_name = "requiresBookerEmailVerification", default_value = false)]
     pub requires_booker_email_verification: Option<bool>,
     /// @zod.import(["import { userMetadata } from '../../zod-utils'"]).custom.use(userMetadata)
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
     #[sea_orm(default_value = false)]
     pub verified: Option<bool>,
@@ -91,7 +113,7 @@ pub struct Model {
     pub sms_lock_state: SMSLockState,
     #[sea_orm(column_name = "smsLockReviewedByAdmin", default_value = false)]
     pub sms_lock_reviewed_by_admin: bool,
-    #[sea_orm(column_name = "referralLinkId")]
+    #[sea_orm(column_name = "referralLinkId", column_type = "Text")]
     pub referral_link_id: Option<String>,
     #[sea_orm(column_name = "creationSource")]
     pub creation_source: Option<CreationSource>,
@@ -105,14 +127,16 @@ pub enum Relation {
         belongs_to = "super::team::Entity",
         from = "Column::OrganizationId",
         to = "super::team::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "users_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::profile::Entity",
         from = "Column::MovedToProfileId",
         to = "super::profile::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "users_movedToProfileId_fkey"
     )]
     MovedToProfile,
     #[sea_orm(has_many = "super::travel_schedule::Entity")]

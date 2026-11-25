@@ -7,14 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BannedIp")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub ip: String,
-    #[sea_orm(column_name = "responsibleTypebotId")]
+    #[sea_orm(column_name = "responsibleTypebotId", column_type = "Text")]
     pub responsible_typebot_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
 }
 
@@ -24,14 +30,16 @@ pub enum Relation {
         belongs_to = "super::typebot::Entity",
         from = "Column::ResponsibleTypebotId",
         to = "super::typebot::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "BannedIp_responsibleTypebotId_fkey"
     )]
     ResponsibleTypebot,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Restrict"
+        on_delete = "Restrict",
+        fk_name = "BannedIp_userId_fkey"
     )]
     User,
 }

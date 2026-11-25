@@ -10,33 +10,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProjectAlertChannel")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
     /// can be provided and we won't create another with the same key
-    #[sea_orm(column_name = "deduplicationKey")]
+    #[sea_orm(column_name = "deduplicationKey", column_type = "Text")]
     pub deduplication_key: String,
     #[sea_orm(column_name = "userProvidedDeduplicationKey", default_value = false)]
     pub user_provided_deduplication_key: bool,
-    #[sea_orm(column_name = "integrationId")]
+    #[sea_orm(column_name = "integrationId", column_type = "Text")]
     pub integration_id: Option<String>,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
     pub r#type: ProjectAlertChannelType,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub properties: Json,
     #[sea_orm(column_name = "alertTypes")]
     pub alert_types: Vec<ProjectAlertType>,
     #[sea_orm(column_name = "environmentTypes")]
     pub environment_types: Vec<RuntimeEnvironmentType>,
-    #[sea_orm(column_name = "errorAlertConfig")]
+    #[sea_orm(column_name = "errorAlertConfig", column_type = "JsonBinary")]
     pub error_alert_config: Option<Json>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -47,7 +54,8 @@ pub enum Relation {
         from = "Column::IntegrationId",
         to = "super::organization_integration::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "ProjectAlertChannel_integrationId_fkey"
     )]
     Integration,
     #[sea_orm(
@@ -55,7 +63,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlertChannel_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::project_alert::Entity")]

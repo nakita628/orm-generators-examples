@@ -9,9 +9,13 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub start: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub end: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub notes: Option<String>,
     #[sea_orm(column_name = "showNotePublicly", default_value = false)]
     pub show_note_publicly: bool,
@@ -21,9 +25,13 @@ pub struct Model {
     pub to_user_id: Option<i32>,
     #[sea_orm(column_name = "reasonId")]
     pub reason_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,21 +41,24 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OutOfOfficeEntry_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ToUserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OutOfOfficeEntry_toUserId_fkey"
     )]
     ToUser,
     #[sea_orm(
         belongs_to = "super::out_of_office_reason::Entity",
         from = "Column::ReasonId",
         to = "super::out_of_office_reason::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "OutOfOfficeEntry_reasonId_fkey"
     )]
     Reason,
 }

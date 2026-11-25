@@ -7,9 +7,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_SpendLogs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub request_id: String,
+    #[sea_orm(column_type = "Text")]
     pub call_type: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub api_key: String,
     #[sea_orm(default_value = 0)]
     pub spend: f64,
@@ -19,50 +21,71 @@ pub struct Model {
     pub prompt_tokens: i32,
     #[sea_orm(default_value = 0)]
     pub completion_tokens: i32,
-    #[sea_orm(column_name = "startTime")]
+    #[sea_orm(column_name = "startTime", column_type = "custom(\"timestamp(3)\")")]
     pub start_time: DateTime,
-    #[sea_orm(column_name = "endTime")]
+    #[sea_orm(column_name = "endTime", column_type = "custom(\"timestamp(3)\")")]
     pub end_time: DateTime,
     pub request_duration_ms: Option<i32>,
-    #[sea_orm(column_name = "completionStartTime")]
+    #[sea_orm(
+        column_name = "completionStartTime",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub completion_start_time: Option<DateTime>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub model: String,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub model_id: Option<String>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub model_group: Option<String>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub custom_llm_provider: Option<String>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub api_base: Option<String>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub user: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub metadata: Option<Json>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub cache_hit: Option<String>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub cache_key: Option<String>,
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub request_tags: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub team_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub organization_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub end_user: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub requester_ip_address: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub messages: Option<Json>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub response: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub session_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub status: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub mcp_namespaced_tool_name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub billing_agent_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub agent_id: Option<String>,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub proxy_server_request: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub litellm_call_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

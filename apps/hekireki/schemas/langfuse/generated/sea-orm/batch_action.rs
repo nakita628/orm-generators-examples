@@ -7,21 +7,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "batch_actions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub action_type: String,
+    #[sea_orm(column_type = "Text")]
     pub table_name: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub query: Json,
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Option<Json>,
     pub total_count: Option<i32>,
     pub processed_count: Option<i32>,
     pub failed_count: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub log: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub cursor: Option<Json>,
 }
 
@@ -31,7 +50,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "batch_actions_project_id_fkey"
     )]
     Project,
 }

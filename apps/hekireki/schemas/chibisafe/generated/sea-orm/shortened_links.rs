@@ -10,15 +10,18 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub identifier: String,
+    #[sea_orm(column_type = "Text")]
     pub destination: String,
     #[sea_orm(default_value = 0)]
     pub views: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -27,7 +30,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
-        to = "super::users::Column::Id"
+        to = "super::users::Column::Id",
+        fk_name = "shortenedLinks_userId_fkey"
     )]
     User,
 }

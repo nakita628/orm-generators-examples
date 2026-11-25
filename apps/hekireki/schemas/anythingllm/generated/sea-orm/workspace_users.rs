@@ -11,9 +11,12 @@ pub struct Model {
     pub id: i32,
     pub user_id: i32,
     pub workspace_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
 }
 
@@ -24,7 +27,8 @@ pub enum Relation {
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_users_workspace_id_fkey"
     )]
     Workspaces,
     #[sea_orm(
@@ -32,7 +36,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::users::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_users_user_id_fkey"
     )]
     Users,
 }

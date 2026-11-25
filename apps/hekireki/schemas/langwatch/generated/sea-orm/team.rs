@@ -7,17 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Team")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
     #[sea_orm(column_name = "isPersonal", default_value = false)]
     pub is_personal: bool,
@@ -25,7 +36,7 @@ pub struct Model {
     pub owner_user_id: Option<String>,
     /// Department assignment inherited as the default for members and
     /// projects that have none of their own. Accounting-only.
-    #[sea_orm(column_name = "departmentId")]
+    #[sea_orm(column_name = "departmentId", column_type = "Text")]
     pub department_id: Option<String>,
 }
 
@@ -34,13 +45,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Team_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerUserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Team_ownerUserId_fkey"
     )]
     OwnerUser,
     #[sea_orm(has_many = "super::team_user::Entity")]

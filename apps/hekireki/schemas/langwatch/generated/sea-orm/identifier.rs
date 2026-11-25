@@ -7,35 +7,49 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Identifier")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
+    #[sea_orm(column_type = "Text")]
     pub value: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub domain: Option<String>,
-    #[sea_orm(column_name = "identifierHash")]
+    #[sea_orm(column_name = "identifierHash", column_type = "Text")]
     pub identifier_hash: Option<String>,
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: Option<String>,
-    #[sea_orm(column_name = "providerId")]
+    #[sea_orm(column_name = "providerId", column_type = "Text")]
     pub provider_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub issuer: Option<String>,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub state: String,
-    #[sea_orm(column_name = "connectionId")]
+    #[sea_orm(column_name = "connectionId", column_type = "Text")]
     pub connection_id: Option<String>,
-    #[sea_orm(column_name = "verifiedAt")]
+    #[sea_orm(column_name = "verifiedAt", column_type = "custom(\"timestamp(3)\")")]
     pub verified_at: Option<DateTime>,
-    #[sea_orm(column_name = "attachedAt")]
+    #[sea_orm(column_name = "attachedAt", column_type = "custom(\"timestamp(3)\")")]
     pub attached_at: DateTime,
-    #[sea_orm(column_name = "detachedAt")]
+    #[sea_orm(column_name = "detachedAt", column_type = "custom(\"timestamp(3)\")")]
     pub detached_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastUsedAt")]
+    #[sea_orm(column_name = "lastUsedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

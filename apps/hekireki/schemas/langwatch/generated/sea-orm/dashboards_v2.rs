@@ -11,30 +11,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DashboardsV2")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The project that owns the board; only there can it be edited.
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     /// Free text under the board's name; null until a member writes one.
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// The member who created it; null for boards that predate authorship.
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
     /// Who sees it. Only the author changes it; a board with no author stays PROJECT.
     #[sea_orm(default_value = "PROJECT")]
     pub scope: DashboardScope,
     /// The owning project's organization, stamped when the board is first set to
     /// ORGANIZATION; null before.
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
     /// Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
     /// 2026-10-28); dropped in a later migration, once no serving release reads it.
-    #[sea_orm(column_name = "excludedOrigins")]
+    #[sea_orm(column_name = "excludedOrigins", column_type = "JsonBinary")]
     pub excluded_origins: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

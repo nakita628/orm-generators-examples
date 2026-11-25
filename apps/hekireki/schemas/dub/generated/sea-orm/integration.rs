@@ -7,19 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Integration")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub slug: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub description: Option<String>,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"longtext\")")]
     pub readme: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub developer: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub website: String,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub logo: Option<String>,
     pub screenshots: Option<Json>,
     #[sea_orm(default_value = false)]
@@ -28,12 +35,17 @@ pub struct Model {
     pub install_url: Option<String>,
     #[sea_orm(column_name = "guideUrl", column_type = "Text")]
     pub guide_url: Option<String>,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub category: Option<String>,
     #[sea_orm(column_name = "comingSoon", default_value = false)]
     pub coming_soon: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -43,14 +55,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "Integration_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Integration_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::installed_integration::Entity")]

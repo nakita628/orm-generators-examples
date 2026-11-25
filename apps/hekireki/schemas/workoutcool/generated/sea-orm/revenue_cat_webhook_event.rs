@@ -7,21 +7,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "revenuecat_webhook_events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "eventType")]
+    #[sea_orm(column_name = "eventType", column_type = "Text")]
     pub event_type: String,
-    #[sea_orm(column_name = "eventTimestamp")]
+    #[sea_orm(
+        column_name = "eventTimestamp",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub event_timestamp: DateTime,
-    #[sea_orm(column_name = "appUserId")]
+    #[sea_orm(column_name = "appUserId", column_type = "Text")]
     pub app_user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub environment: String,
-    #[sea_orm(column_name = "productId")]
+    #[sea_orm(column_name = "productId", column_type = "Text")]
     pub product_id: Option<String>,
-    #[sea_orm(column_name = "transactionId")]
+    #[sea_orm(column_name = "transactionId", column_type = "Text")]
     pub transaction_id: Option<String>,
-    #[sea_orm(column_name = "originalTransactionId")]
+    #[sea_orm(column_name = "originalTransactionId", column_type = "Text")]
     pub original_transaction_id: Option<String>,
-    #[sea_orm(column_name = "entitlementIds")]
+    #[sea_orm(column_name = "entitlementIds", column_type = "Text")]
     pub entitlement_ids: Option<String>,
     #[sea_orm(default_value = false)]
     pub processed: bool,
@@ -29,11 +34,15 @@ pub struct Model {
     pub processing_error: Option<String>,
     #[sea_orm(column_name = "retryCount", default_value = 0)]
     pub retry_count: i32,
-    #[sea_orm(column_name = "rawEventData")]
+    #[sea_orm(column_name = "rawEventData", column_type = "JsonBinary")]
     pub raw_event_data: Json,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

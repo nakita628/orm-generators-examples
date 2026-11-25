@@ -8,20 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "base")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub space_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     pub order: f64,
+    #[sea_orm(column_type = "Text")]
     pub icon: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub schema_pass: Option<String>,
     #[sea_orm(default_value = false)]
     pub v2_enabled: bool,
     #[sea_orm(default_value = "ready")]
     pub provision_state: ProvisionState,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub deleted_time: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
 }
 
@@ -30,7 +43,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::space::Entity",
         from = "Column::SpaceId",
-        to = "super::space::Column::Id"
+        to = "super::space::Column::Id",
+        fk_name = "base_space_id_fkey"
     )]
     Space,
     #[sea_orm(has_many = "super::table_meta::Entity")]

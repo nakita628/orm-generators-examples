@@ -5,22 +5,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProfileBuilderState")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "profileBuilderId")]
+    #[sea_orm(column_name = "profileBuilderId", column_type = "Text")]
     pub profile_builder_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "profileBuilderVersion")]
     pub profile_builder_version: i32,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "instanceIndex")]
-    pub instance_index: i32,
-    #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "totalInstances")]
     pub total_instances: i32,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_name = "instanceIndex")]
+    pub instance_index: i32,
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastTimestamp")]
+    #[sea_orm(
+        column_name = "lastTimestamp",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_timestamp: Option<DateTime>,
     #[sea_orm(column_name = "processedUsers")]
     pub processed_users: i32,

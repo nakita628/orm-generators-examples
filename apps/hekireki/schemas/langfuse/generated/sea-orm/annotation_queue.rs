@@ -7,13 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "annotation_queues")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub score_config_ids: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub session_view_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -23,14 +37,16 @@ pub enum Relation {
         belongs_to = "super::session_view::Entity",
         from = "(Column::ProjectId, Column::SessionViewId)",
         to = "(super::session_view::Column::ProjectId, super::session_view::Column::Id)",
-        on_delete = "NoAction"
+        on_delete = "NoAction",
+        fk_name = "annotation_queues_project_id_session_view_id_fkey"
     )]
     SessionView,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "annotation_queues_project_id_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::annotation_queue_item::Entity")]

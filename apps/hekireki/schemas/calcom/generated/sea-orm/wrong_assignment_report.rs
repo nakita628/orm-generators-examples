@@ -10,13 +10,13 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "bookingUid")]
+    #[sea_orm(column_name = "bookingUid", column_type = "Text")]
     pub booking_uid: String,
     #[sea_orm(column_name = "reportedById")]
     pub reported_by_id: Option<i32>,
-    #[sea_orm(column_name = "correctAssignee")]
+    #[sea_orm(column_name = "correctAssignee", column_type = "Text")]
     pub correct_assignee: Option<String>,
-    #[sea_orm(column_name = "additionalNotes")]
+    #[sea_orm(column_name = "additionalNotes", column_type = "Text")]
     pub additional_notes: String,
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
@@ -24,11 +24,15 @@ pub struct Model {
     pub status: WrongAssignmentReportStatus,
     #[sea_orm(column_name = "reviewedById")]
     pub reviewed_by_id: Option<i32>,
-    #[sea_orm(column_name = "reviewedAt")]
+    #[sea_orm(column_name = "reviewedAt", column_type = "custom(\"timestamp(3)\")")]
     pub reviewed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -38,28 +42,32 @@ pub enum Relation {
         belongs_to = "super::booking::Entity",
         from = "Column::BookingUid",
         to = "super::booking::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WrongAssignmentReport_bookingUid_fkey"
     )]
     Booking,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ReportedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WrongAssignmentReport_reportedById_fkey"
     )]
     ReportedBy,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WrongAssignmentReport_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::ReviewedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WrongAssignmentReport_reviewedById_fkey"
     )]
     ReviewedBy,
 }

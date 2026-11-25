@@ -7,30 +7,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Annotation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "traceId")]
+    #[sea_orm(column_name = "traceId", column_type = "Text")]
     pub trace_id: String,
+    #[sea_orm(column_type = "Text")]
     pub comment: Option<String>,
     #[sea_orm(column_name = "isThumbsUp")]
     pub is_thumbs_up: Option<bool>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "scoreOptions")]
+    #[sea_orm(column_name = "scoreOptions", column_type = "JsonBinary")]
     pub score_options: Option<Json>,
-    #[sea_orm(column_name = "expectedOutput")]
+    #[sea_orm(column_name = "expectedOutput", column_type = "Text")]
     pub expected_output: Option<String>,
-    #[sea_orm(column_name = "anchorKind")]
+    #[sea_orm(column_name = "anchorKind", column_type = "Text")]
     pub anchor_kind: Option<String>,
-    #[sea_orm(column_name = "anchorId")]
+    #[sea_orm(column_name = "anchorId", column_type = "Text")]
     pub anchor_id: Option<String>,
-    #[sea_orm(column_name = "anchorPath")]
+    #[sea_orm(column_name = "anchorPath", column_type = "Text")]
     pub anchor_path: Option<String>,
 }
 
@@ -39,13 +50,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
-        to = "super::project::Column::Id"
+        to = "super::project::Column::Id",
+        fk_name = "Annotation_projectId_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Annotation_userId_fkey"
     )]
     User,
 }

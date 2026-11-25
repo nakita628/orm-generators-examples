@@ -8,19 +8,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskIdentifier")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "runtimeEnvironmentId")]
+    #[sea_orm(column_name = "runtimeEnvironmentId", column_type = "Text")]
     pub runtime_environment_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(column_name = "currentTriggerSource", default_value = "STANDARD")]
     pub current_trigger_source: TaskTriggerSource,
-    #[sea_orm(column_name = "currentWorkerId")]
+    #[sea_orm(column_name = "currentWorkerId", column_type = "Text")]
     pub current_worker_id: Option<String>,
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(
+        column_name = "firstSeenAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub first_seen_at: DateTime,
-    #[sea_orm(column_name = "lastSeenAt")]
+    #[sea_orm(
+        column_name = "lastSeenAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_seen_at: DateTime,
     #[sea_orm(column_name = "isInLatestDeployment", default_value = true)]
     pub is_in_latest_deployment: bool,
@@ -33,7 +43,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskIdentifier_runtimeEnvironmentId_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(
@@ -41,7 +52,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskIdentifier_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -49,7 +61,8 @@ pub enum Relation {
         from = "Column::CurrentWorkerId",
         to = "super::background_worker::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "TaskIdentifier_currentWorkerId_fkey"
     )]
     CurrentWorker,
 }

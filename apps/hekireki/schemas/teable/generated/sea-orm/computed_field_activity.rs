@@ -8,9 +8,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "computed_field_activity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub field_id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(default_value = 0)]
     pub active_task_count: i32,
@@ -24,12 +28,21 @@ pub struct Model {
     pub estimated_dirty_records: i64,
     #[sea_orm(default_value = false)]
     pub has_all_target_records: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub queued_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_completed_at: Option<DateTime>,
     pub last_duration_ms: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub last_error: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub extensions: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

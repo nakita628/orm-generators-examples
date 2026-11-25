@@ -13,25 +13,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConsumptionLog")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: String,
     pub category: ConsumptionCategory,
     pub quantity: i32,
+    #[sea_orm(column_type = "Text")]
     pub note: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "bookingId")]
+    #[sea_orm(column_name = "bookingId", column_type = "Text")]
     pub booking_id: Option<String>,
-    #[sea_orm(column_name = "custodianId")]
+    #[sea_orm(column_name = "custodianId", column_type = "Text")]
     pub custodian_id: Option<String>,
-    #[sea_orm(column_name = "bookingAssetId")]
+    #[sea_orm(column_name = "bookingAssetId", column_type = "Text")]
     pub booking_asset_id: Option<String>,
-    #[sea_orm(column_name = "locationId")]
+    #[sea_orm(column_name = "locationId", column_type = "Text")]
     pub location_id: Option<String>,
     #[sea_orm(column_name = "stockChange")]
     pub stock_change: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -42,25 +48,29 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConsumptionLog_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "ConsumptionLog_userId_fkey"
     )]
     PerformedBy,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
-        to = "super::booking::Column::Id"
+        to = "super::booking::Column::Id",
+        fk_name = "ConsumptionLog_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
         belongs_to = "super::team_member::Entity",
         from = "Column::CustodianId",
-        to = "super::team_member::Column::Id"
+        to = "super::team_member::Column::Id",
+        fk_name = "ConsumptionLog_custodianId_fkey"
     )]
     Custodian,
     #[sea_orm(
@@ -68,7 +78,8 @@ pub enum Relation {
         from = "Column::LocationId",
         to = "super::location::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "ConsumptionLog_locationId_fkey"
     )]
     Location,
 }

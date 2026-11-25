@@ -9,16 +9,20 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
+    #[sea_orm(column_type = "Text")]
     pub response: String,
+    #[sea_orm(column_type = "Text")]
     pub session_id: String,
     #[sea_orm(default_value = true)]
     pub include: bool,
+    #[sea_orm(column_type = "Text")]
     pub connection_information: Option<String>,
     pub embed_id: i32,
     #[sea_orm(column_name = "usersId")]
     pub users_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 
@@ -28,13 +32,15 @@ pub enum Relation {
         belongs_to = "super::embed_configs::Entity",
         from = "Column::EmbedId",
         to = "super::embed_configs::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "embed_chats_embed_id_fkey"
     )]
     EmbedConfig,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UsersId",
-        to = "super::users::Column::Id"
+        to = "super::users::Column::Id",
+        fk_name = "embed_chats_usersId_fkey"
     )]
     Users,
 }

@@ -13,18 +13,26 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(unique)]
     pub uuid: Uuid,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "emailVerified")]
+    #[sea_orm(
+        column_name = "emailVerified",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub email_verified: Option<DateTime>,
-    #[sea_orm(column_name = "unverifiedNewEmail")]
+    #[sea_orm(column_name = "unverifiedNewEmail", column_type = "Text")]
     pub unverified_new_email: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
-    #[sea_orm(default_value = "en")]
+    #[sea_orm(column_type = "Text", default_value = "en")]
     pub locale: String,
     #[sea_orm(column_name = "parentSubscriptionId")]
     pub parent_subscription_id: Option<i32>,
@@ -34,21 +42,40 @@ pub struct Model {
     pub links_route_to: LinksRouteTo,
     #[sea_orm(column_name = "aiTaggingMethod", default_value = "DISABLED")]
     pub ai_tagging_method: AiTaggingMethod,
-    #[sea_orm(column_name = "aiPredefinedTags")]
+    #[sea_orm(
+        column_name = "aiPredefinedTags",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub ai_predefined_tags: Vec<String>,
     #[sea_orm(column_name = "aiTagExistingLinks", default_value = false)]
     pub ai_tag_existing_links: bool,
     #[sea_orm(default_value = "dark")]
     pub theme: Theme,
-    #[sea_orm(column_name = "dismissedAnnouncementId")]
+    #[sea_orm(column_name = "dismissedAnnouncementId", column_type = "Text")]
     pub dismissed_announcement_id: Option<String>,
-    #[sea_orm(column_name = "readableFontFamily", default_value = "sans-serif")]
+    #[sea_orm(
+        column_name = "readableFontFamily",
+        column_type = "Text",
+        default_value = "sans-serif"
+    )]
     pub readable_font_family: Option<String>,
-    #[sea_orm(column_name = "readableFontSize", default_value = "20px")]
+    #[sea_orm(
+        column_name = "readableFontSize",
+        column_type = "Text",
+        default_value = "20px"
+    )]
     pub readable_font_size: Option<String>,
-    #[sea_orm(column_name = "readableLineHeight", default_value = "1.8")]
+    #[sea_orm(
+        column_name = "readableLineHeight",
+        column_type = "Text",
+        default_value = "1.8"
+    )]
     pub readable_line_height: Option<String>,
-    #[sea_orm(column_name = "readableLineWidth", default_value = "normal")]
+    #[sea_orm(
+        column_name = "readableLineWidth",
+        column_type = "Text",
+        default_value = "normal"
+    )]
     pub readable_line_width: Option<String>,
     #[sea_orm(column_name = "preventDuplicateLinks", default_value = false)]
     pub prevent_duplicate_links: bool,
@@ -62,9 +89,9 @@ pub struct Model {
     pub archive_as_readable: bool,
     #[sea_orm(column_name = "archiveAsWaybackMachine", default_value = false)]
     pub archive_as_wayback_machine: bool,
-    #[sea_orm(column_name = "referredBy")]
+    #[sea_orm(column_name = "referredBy", column_type = "Text")]
     pub referred_by: Option<String>,
-    #[sea_orm(column_name = "lastPickedAt")]
+    #[sea_orm(column_name = "lastPickedAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_picked_at: Option<DateTime>,
     #[sea_orm(column_name = "acceptPromotionalEmails", default_value = false)]
     pub accept_promotional_emails: bool,
@@ -76,11 +103,22 @@ pub struct Model {
     pub session_version: i32,
     #[sea_orm(column_name = "passwordRetries", default_value = 0)]
     pub password_retries: i32,
-    #[sea_orm(column_name = "passwordRetryAt")]
+    #[sea_orm(
+        column_name = "passwordRetryAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub password_retry_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -89,7 +127,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::subscription::Entity",
         from = "Column::ParentSubscriptionId",
-        to = "super::subscription::Column::Id"
+        to = "super::subscription::Column::Id",
+        fk_name = "User_parentSubscriptionId_fkey"
     )]
     ParentSubscription,
     #[sea_orm(has_many = "super::account::Entity")]

@@ -8,21 +8,31 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Newsletter")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     pub status: Option<NewsletterStatus>,
     #[sea_orm(column_name = "patternAnalyzed", default_value = false)]
     pub pattern_analyzed: bool,
-    #[sea_orm(column_name = "lastAnalyzedAt")]
+    #[sea_orm(
+        column_name = "lastAnalyzedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_analyzed_at: Option<DateTime>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
-    #[sea_orm(column_name = "categoryId")]
+    #[sea_orm(column_name = "categoryId", column_type = "Text")]
     pub category_id: Option<String>,
 }
 
@@ -32,13 +42,15 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Newsletter_emailAccountId_fkey"
     )]
     EmailAccount,
     #[sea_orm(
         belongs_to = "super::category::Entity",
         from = "Column::CategoryId",
-        to = "super::category::Column::Id"
+        to = "super::category::Column::Id",
+        fk_name = "Newsletter_categoryId_fkey"
     )]
     Category,
 }

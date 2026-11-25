@@ -8,14 +8,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "projects")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(
+        column_type = "Text",
+        default_expr = "Expr::cust(\"gen_random_uuid()\")"
+    )]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "eventsCount", default_value = 0)]
     pub events_count: i32,
     pub types: Vec<ProjectType>,
+    #[sea_orm(column_type = "Text")]
     pub domain: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub cors: Vec<String>,
     #[sea_orm(column_name = "crossDomain", default_value = false)]
     pub cross_domain: bool,
@@ -24,19 +31,33 @@ pub struct Model {
     #[sea_orm(column_name = "aiStoreContent", default_value = true)]
     pub ai_store_content: bool,
     /// [IPrismaProjectFilters]
-    #[sea_orm(default_value = "[]")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "[]")]
     pub filters: Json,
-    #[sea_orm(column_name = "firstEventAt")]
+    #[sea_orm(column_name = "firstEventAt", column_type = "custom(\"timestamp(3)\")")]
     pub first_event_at: Option<DateTime>,
-    #[sea_orm(column_name = "noDataNotifiedAt")]
+    #[sea_orm(
+        column_name = "noDataNotifiedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub no_data_notified_at: Option<DateTime>,
-    #[sea_orm(column_name = "dataStoppedNotifiedAt")]
+    #[sea_orm(
+        column_name = "dataStoppedNotifiedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub data_stopped_notified_at: Option<DateTime>,
-    #[sea_orm(column_name = "deleteAt")]
+    #[sea_orm(column_name = "deleteAt", column_type = "custom(\"timestamp(3)\")")]
     pub delete_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -46,7 +67,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "projects_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::client::Entity")]

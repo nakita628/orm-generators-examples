@@ -564,7 +564,7 @@ export const roleAssignments = pgTable(
     index('role_assignments_principal_id_idx').on(table.principalId),
     index('role_assignments_user_id_idx').on(table.userId),
     index('role_assignments_api_key_id_idx').on(table.apiKeyId),
-    index('role_assignments_tags_idx').on(table.tags),
+    index('role_assignments_tags_idx').using('gin', table.tags.op('array_ops')),
     uniqueIndex('role_assignments_owner_id_principal_id_role_id_key').on(
       table.ownerId,
       table.principalId,
@@ -1235,7 +1235,10 @@ export const traceSessions = pgTable(
   },
   (table) => [
     primaryKey({ name: 'trace_sessions_pkey', columns: [table.id, table.projectId] }),
-    index('trace_sessions_project_id_created_at_idx').on(table.projectId, table.createdAt),
+    index('trace_sessions_project_id_created_at_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     foreignKey({
       name: 'trace_sessions_project_id_fkey',
       columns: [table.projectId],
@@ -1551,9 +1554,9 @@ export const datasetItems = pgTable(
       table.id,
       table.validFrom,
     ),
-    index('dataset_items_source_trace_id_idx').on(table.sourceTraceId),
-    index('dataset_items_source_observation_id_idx').on(table.sourceObservationId),
-    index('dataset_items_dataset_id_idx').on(table.datasetId),
+    index('dataset_items_source_trace_id_idx').using('hash', table.sourceTraceId),
+    index('dataset_items_source_observation_id_idx').using('hash', table.sourceObservationId),
+    index('dataset_items_dataset_id_idx').using('hash', table.datasetId),
     index('dataset_items_created_at_idx').on(table.createdAt),
     index('dataset_items_updated_at_idx').on(table.updatedAt),
     foreignKey({
@@ -1589,7 +1592,7 @@ export const datasetRuns = pgTable(
   },
   (table) => [
     primaryKey({ name: 'dataset_runs_pkey', columns: [table.id, table.projectId] }),
-    index('dataset_runs_dataset_id_idx').on(table.datasetId),
+    index('dataset_runs_dataset_id_idx').using('hash', table.datasetId),
     index('dataset_runs_created_at_idx').on(table.createdAt),
     index('dataset_runs_updated_at_idx').on(table.updatedAt),
     uniqueIndex('dataset_runs_dataset_id_project_id_name_key').on(
@@ -1769,7 +1772,7 @@ export const prompts = pgTable(
     index('prompts_project_id_id_idx').on(table.projectId, table.id),
     index('prompts_created_at_idx').on(table.createdAt),
     index('prompts_updated_at_idx').on(table.updatedAt),
-    index('prompts_tags_idx').on(table.tags),
+    index('prompts_tags_idx').using('gin', table.tags.op('array_ops')),
     uniqueIndex('prompts_project_id_name_version_key').on(
       table.projectId,
       table.name,
@@ -1884,8 +1887,8 @@ export const skills = pgTable(
   (table) => [
     index('skills_created_at_idx').on(table.createdAt),
     index('skills_updated_at_idx').on(table.updatedAt),
-    index('skills_tags_idx').on(table.tags),
-    index('skills_labels_idx').on(table.labels),
+    index('skills_tags_idx').using('gin', table.tags.op('array_ops')),
+    index('skills_labels_idx').using('gin', table.labels.op('array_ops')),
     uniqueIndex('skills_project_id_name_version_key').on(
       table.projectId,
       table.name,
@@ -2236,7 +2239,10 @@ export const evaluators = pgTable(
     blockMessage: text('block_message'),
   },
   (table) => [
-    index('evaluators_project_id_created_at_idx').on(table.projectId, table.createdAt),
+    index('evaluators_project_id_created_at_idx').on(
+      table.projectId,
+      table.createdAt.desc().nullsFirst(),
+    ),
     foreignKey({
       name: 'evaluators_project_id_fkey',
       columns: [table.projectId],
@@ -2375,7 +2381,10 @@ export const evaluationRules = pgTable(
     timeScope: text('time_scope').array().default(['NEW']),
   },
   (table) => [
-    index('evaluation_rules_project_id_updated_at_idx').on(table.projectId, table.updatedAt),
+    index('evaluation_rules_project_id_updated_at_idx').on(
+      table.projectId,
+      table.updatedAt.desc().nullsFirst(),
+    ),
     foreignKey({
       name: 'evaluation_rules_project_id_fkey',
       columns: [table.projectId],
@@ -3930,9 +3939,9 @@ export const topicClusteringRuns = pgTable(
       table.projectId,
       table.facetId,
       table.status,
-      table.facetVersion,
-      table.createdAt,
-      table.id,
+      table.facetVersion.desc().nullsFirst(),
+      table.createdAt.desc().nullsFirst(),
+      table.id.desc().nullsFirst(),
     ),
     index('topic_clustering_runs_rule_serving_map_idx').on(
       table.projectId,

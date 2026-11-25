@@ -7,26 +7,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AttachmentDocument")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "attachmentSourceId")]
+    #[sea_orm(column_name = "attachmentSourceId", column_type = "Text")]
     pub attachment_source_id: String,
-    #[sea_orm(column_name = "fileId")]
+    #[sea_orm(column_name = "fileId", column_type = "Text")]
     pub file_id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "mimeType")]
+    #[sea_orm(column_name = "mimeType", column_type = "Text")]
     pub mime_type: String,
-    #[sea_orm(column_name = "modifiedAt")]
+    #[sea_orm(column_name = "modifiedAt", column_type = "custom(\"timestamp(3)\")")]
     pub modified_at: Option<DateTime>,
     #[sea_orm(column_type = "Text")]
     pub summary: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub content: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "indexedAt")]
+    #[sea_orm(column_name = "indexedAt", column_type = "custom(\"timestamp(3)\")")]
     pub indexed_at: Option<DateTime>,
     #[sea_orm(column_type = "Text")]
     pub error: Option<String>,
@@ -38,7 +45,8 @@ pub enum Relation {
         belongs_to = "super::attachment_source::Entity",
         from = "Column::AttachmentSourceId",
         to = "super::attachment_source::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AttachmentDocument_attachmentSourceId_fkey"
     )]
     AttachmentSource,
 }

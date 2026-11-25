@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -15,8 +16,6 @@ class TwoFactor extends Model
     protected $table = 'two_factor';
 
     protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -38,6 +37,20 @@ class TwoFactor extends Model
         'failedVerificationCount' => 'integer',
         'lockedUntil' => 'datetime',
     ];
+
+    protected function insertAndSetId(Builder $query, $attributes)
+    {
+        $base = $query->getQuery();
+        $base->applyBeforeQueryCallbacks();
+        $connection = $base->getConnection();
+        $connection->recordsHaveBeenModified();
+        $keyName = $this->getKeyName();
+        $row = $connection->selectFromWriteConnection(
+            $base->getGrammar()->compileInsertGetId($base, $attributes, $keyName),
+            $base->cleanBindings($attributes),
+        )[0];
+        $this->setAttribute($keyName, is_object($row) ? $row->{$keyName} : $row[$keyName]);
+    }
 
     public function user(): BelongsTo
     {

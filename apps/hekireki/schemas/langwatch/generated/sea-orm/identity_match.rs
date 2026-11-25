@@ -14,28 +14,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IdentityMatch")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// The provider-side identity this link is about.
-    #[sea_orm(column_name = "discoveredPersonId")]
+    #[sea_orm(column_name = "discoveredPersonId", column_type = "Text")]
     pub discovered_person_id: String,
     /// The platform user. Nullable, and blanked by erasure (ADR-128 §9 step 2) -
     /// the row and its dates remain, so the history of the link is not rewritten
     /// by the erasure either.
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
     /// directory_id | verified_email | human_confirmed. Exact verified-email
     /// equality is the primary evidence; a directory id corroborates but never
     /// stands alone (ADR-128 §12).
-    #[sea_orm(column_name = "evidenceKind")]
+    #[sea_orm(column_name = "evidenceKind", column_type = "Text")]
     pub evidence_kind: String,
-    #[sea_orm(column_name = "validFrom")]
+    #[sea_orm(column_name = "validFrom", column_type = "custom(\"timestamp(3)\")")]
     pub valid_from: DateTime,
     /// Null means the link is open. Offboarding and corrections close it.
-    #[sea_orm(column_name = "validTo")]
+    #[sea_orm(column_name = "validTo", column_type = "custom(\"timestamp(3)\")")]
     pub valid_to: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

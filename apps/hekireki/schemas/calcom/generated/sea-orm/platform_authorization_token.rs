@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PlatformAuthorizationToken")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "platformOAuthClientId")]
+    #[sea_orm(column_name = "platformOAuthClientId", column_type = "Text")]
     pub platform_oauth_client_id: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -22,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformAuthorizationToken_userId_fkey"
     )]
     Owner,
     #[sea_orm(
         belongs_to = "super::platform_oauth_client::Entity",
         from = "Column::PlatformOauthClientId",
         to = "super::platform_oauth_client::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformAuthorizationToken_platformOAuthClientId_fkey"
     )]
     Client,
 }

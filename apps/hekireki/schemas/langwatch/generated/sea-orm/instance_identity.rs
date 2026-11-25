@@ -20,20 +20,25 @@ pub struct Model {
     /// Fixed, so this table holds one row. A second insert loses the race on the
     /// primary key and re-reads the winner's id.
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// A random UUID. Carries nothing about the customer.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "instanceId")]
+    #[sea_orm(column_name = "instanceId", column_type = "Text")]
     pub instance_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     /// When the usage report last reached LangWatch, and why the last attempt
     /// did not. Both are what the checkup page reads to say whether reporting
     /// works, which nothing recorded before: the sender logged success as soon
     /// as `fetch` resolved and never looked at the response.
-    #[sea_orm(column_name = "lastReportAt")]
+    #[sea_orm(column_name = "lastReportAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_report_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastReportError")]
+    #[sea_orm(column_name = "lastReportError", column_type = "Text")]
     pub last_report_error: Option<String>,
     /// The optional category of the usage report, switched off from the checkup
     /// page. With it off the report still says which release runs and how many

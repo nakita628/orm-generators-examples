@@ -8,20 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskRunTemplate")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "taskSlug")]
+    #[sea_orm(column_name = "taskSlug", column_type = "Text")]
     pub task_slug: String,
     #[sea_orm(column_name = "triggerSource")]
     pub trigger_source: TaskTriggerSource,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
+    #[sea_orm(column_type = "Text")]
     pub payload: Option<String>,
-    #[sea_orm(column_name = "payloadType", default_value = "application/json")]
+    #[sea_orm(
+        column_name = "payloadType",
+        column_type = "Text",
+        default_value = "application/json"
+    )]
     pub payload_type: String,
+    #[sea_orm(column_type = "Text")]
     pub metadata: Option<String>,
-    #[sea_orm(column_name = "metadataType", default_value = "application/json")]
+    #[sea_orm(
+        column_name = "metadataType",
+        column_type = "Text",
+        default_value = "application/json"
+    )]
     pub metadata_type: String,
+    #[sea_orm(column_type = "Text")]
     pub queue: Option<String>,
-    #[sea_orm(column_name = "concurrencyKey")]
+    #[sea_orm(column_name = "concurrencyKey", column_type = "Text")]
     pub concurrency_key: Option<String>,
     #[sea_orm(column_name = "ttlSeconds")]
     pub ttl_seconds: Option<i32>,
@@ -29,16 +42,21 @@ pub struct Model {
     pub max_attempts: Option<i32>,
     #[sea_orm(column_name = "maxDurationSeconds")]
     pub max_duration_seconds: Option<i32>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub tags: Vec<String>,
-    #[sea_orm(column_name = "machinePreset")]
+    #[sea_orm(column_name = "machinePreset", column_type = "Text")]
     pub machine_preset: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -9,40 +9,49 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
-    #[sea_orm(column_name = "vectorTag")]
+    #[sea_orm(column_name = "vectorTag", column_type = "Text")]
     pub vector_tag: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "openAiTemp")]
     pub open_ai_temp: Option<f64>,
     #[sea_orm(column_name = "openAiHistory", default_value = 20)]
     pub open_ai_history: i32,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
-    #[sea_orm(column_name = "openAiPrompt")]
+    #[sea_orm(column_name = "openAiPrompt", column_type = "Text")]
     pub open_ai_prompt: Option<String>,
     #[sea_orm(column_name = "similarityThreshold", default_value = 0.25)]
     pub similarity_threshold: Option<f64>,
-    #[sea_orm(column_name = "chatProvider")]
+    #[sea_orm(column_name = "chatProvider", column_type = "Text")]
     pub chat_provider: Option<String>,
-    #[sea_orm(column_name = "chatModel")]
+    #[sea_orm(column_name = "chatModel", column_type = "Text")]
     pub chat_model: Option<String>,
     #[sea_orm(column_name = "topN", default_value = 4)]
     pub top_n: Option<i32>,
-    #[sea_orm(column_name = "chatMode", default_value = "chat")]
+    #[sea_orm(column_name = "chatMode", column_type = "Text", default_value = "chat")]
     pub chat_mode: Option<String>,
-    #[sea_orm(column_name = "pfpFilename")]
+    #[sea_orm(column_name = "pfpFilename", column_type = "Text")]
     pub pfp_filename: Option<String>,
-    #[sea_orm(column_name = "agentProvider")]
+    #[sea_orm(column_name = "agentProvider", column_type = "Text")]
     pub agent_provider: Option<String>,
-    #[sea_orm(column_name = "agentModel")]
+    #[sea_orm(column_name = "agentModel", column_type = "Text")]
     pub agent_model: Option<String>,
-    #[sea_orm(column_name = "queryRefusalResponse")]
+    #[sea_orm(column_name = "queryRefusalResponse", column_type = "Text")]
     pub query_refusal_response: Option<String>,
-    #[sea_orm(column_name = "vectorSearchMode", default_value = "default")]
+    #[sea_orm(
+        column_name = "vectorSearchMode",
+        column_type = "Text",
+        default_value = "default"
+    )]
     pub vector_search_mode: Option<String>,
     pub router_id: Option<i32>,
 }

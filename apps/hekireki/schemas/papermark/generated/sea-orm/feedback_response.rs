@@ -7,16 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FeedbackResponse")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "feedbackId")]
+    #[sea_orm(column_name = "feedbackId", column_type = "Text")]
     pub feedback_id: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub data: Json,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "viewId")]
+    #[sea_orm(column_name = "viewId", column_type = "Text")]
     pub view_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -26,14 +32,16 @@ pub enum Relation {
         belongs_to = "super::feedback::Entity",
         from = "Column::FeedbackId",
         to = "super::feedback::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackResponse_feedbackId_fkey"
     )]
     Feedback,
     #[sea_orm(
         belongs_to = "super::view::Entity",
         from = "Column::ViewId",
         to = "super::view::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FeedbackResponse_viewId_fkey"
     )]
     View,
 }

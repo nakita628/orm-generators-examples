@@ -17,7 +17,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::report::Entity",
         from = "Column::ReportId",
-        to = "super::report::Column::Id"
+        to = "super::report::Column::Id",
+        fk_name = "ReportIssue_reportId_fkey"
     )]
     Report,
 }

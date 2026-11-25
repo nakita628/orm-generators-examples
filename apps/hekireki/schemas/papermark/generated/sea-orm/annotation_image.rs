@@ -7,15 +7,22 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AnnotationImage")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub filename: String,
+    #[sea_orm(column_type = "Text")]
     pub url: String,
     pub size: Option<i32>,
-    #[sea_orm(column_name = "mimeType")]
+    #[sea_orm(column_name = "mimeType", column_type = "Text")]
     pub mime_type: Option<String>,
-    #[sea_orm(column_name = "annotationId")]
+    #[sea_orm(column_name = "annotationId", column_type = "Text")]
     pub annotation_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,7 +32,8 @@ pub enum Relation {
         belongs_to = "super::document_annotation::Entity",
         from = "Column::AnnotationId",
         to = "super::document_annotation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AnnotationImage_annotationId_fkey"
     )]
     Annotation,
 }

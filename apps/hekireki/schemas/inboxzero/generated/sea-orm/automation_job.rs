@@ -7,24 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AutomationJob")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
     #[sea_orm(column_type = "Text")]
     pub prompt: Option<String>,
-    #[sea_orm(column_name = "cronExpression")]
+    #[sea_orm(column_name = "cronExpression", column_type = "Text")]
     pub cron_expression: String,
-    #[sea_orm(column_name = "nextRunAt")]
+    #[sea_orm(column_name = "nextRunAt", column_type = "custom(\"timestamp(3)\")")]
     pub next_run_at: DateTime,
-    #[sea_orm(column_name = "messagingChannelId")]
+    #[sea_orm(column_name = "messagingChannelId", column_type = "Text")]
     pub messaging_channel_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -34,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::messaging_channel::Entity",
         from = "(Column::MessagingChannelId, Column::EmailAccountId)",
         to = "(super::messaging_channel::Column::Id, super::messaging_channel::Column::EmailAccountId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AutomationJob_messagingChannelId_emailAccountId_fkey"
     )]
     MessagingChannel,
     #[sea_orm(has_many = "super::automation_job_run::Entity")]

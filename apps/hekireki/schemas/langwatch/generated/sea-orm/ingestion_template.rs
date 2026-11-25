@@ -19,21 +19,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IngestionTemplate")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
     /// Stable slug - unique within (organizationId, slug) scope. Generated
     /// from displayName + nanoid(6) on create for org-authored; canonical
     /// values for platform-published (`claude_code` / `cursor` /
     /// `claude_cowork` / `raw_otlp_advanced`).
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     /// Mirrors the slug for v1 platform-published rows. Kept as a separate
     /// column so a future v2 may publish two templates that share an
     /// upstream sourceType (e.g. claude_code-personal vs claude_code-team)
     /// without a migration. String not enum - extensibility.
-    #[sea_orm(column_name = "sourceType")]
+    #[sea_orm(column_name = "sourceType", column_type = "Text")]
     pub source_type: String,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: String,
     #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
@@ -53,7 +55,7 @@ pub struct Model {
     /// Cursor agentId)
     /// String not enum so v2 shapes (oauth_redirect / s3_bucket) ship
     /// without a migration.
-    #[sea_orm(column_name = "credentialSchema")]
+    #[sea_orm(column_name = "credentialSchema", column_type = "Text")]
     pub credential_schema: Option<String>,
     /// Admin/platform-authored OTTL statements. Applied at receive time
     /// AFTER the receiver re-stamps the binding's authoritative principal
@@ -73,15 +75,23 @@ pub struct Model {
     /// ingestion keys continue to land traces; new installs are blocked.
     #[sea_orm(default_value = true)]
     pub enabled: bool,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
-    #[sea_orm(column_name = "updatedById")]
+    #[sea_orm(column_name = "updatedById", column_type = "Text")]
     pub updated_by_id: Option<String>,
 }
 
@@ -91,7 +101,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "IngestionTemplate_organizationId_fkey"
     )]
     Organization,
 }

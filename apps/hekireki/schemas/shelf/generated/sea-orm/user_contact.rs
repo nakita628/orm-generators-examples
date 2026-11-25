@@ -7,22 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserContact")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub phone: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub street: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub city: Option<String>,
-    #[sea_orm(column_name = "stateProvince")]
+    #[sea_orm(column_name = "stateProvince", column_type = "Text")]
     pub state_province: Option<String>,
-    #[sea_orm(column_name = "zipPostalCode")]
+    #[sea_orm(column_name = "zipPostalCode", column_type = "Text")]
     pub zip_postal_code: Option<String>,
-    #[sea_orm(column_name = "countryRegion")]
+    #[sea_orm(column_name = "countryRegion", column_type = "Text")]
     pub country_region: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,7 +41,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserContact_userId_fkey"
     )]
     User,
 }

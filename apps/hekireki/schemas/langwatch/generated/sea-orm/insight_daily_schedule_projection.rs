@@ -9,45 +9,47 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     /// The schedule id, which is also its aggregate id: one per project, person and board.
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// dashboard | template. A pointer only, never a relation: a run checks the board is there.
-    #[sea_orm(column_name = "boardKind")]
+    #[sea_orm(column_name = "boardKind", column_type = "Text")]
     pub board_kind: String,
-    #[sea_orm(column_name = "boardId")]
+    #[sea_orm(column_name = "boardId", column_type = "Text")]
     pub board_id: String,
-    #[sea_orm(column_name = "boardName")]
+    #[sea_orm(column_name = "boardName", column_type = "Text")]
     pub board_name: String,
     /// on | off | undecided.
-    #[sea_orm(default_value = "undecided")]
+    #[sea_orm(column_type = "Text", default_value = "undecided")]
     pub state: String,
     /// board_deleted | skipped_days | member_removed | project_archived. Why the system turned
     /// it off. NULL while it is on, and when the person turned it off.
-    #[sea_orm(column_name = "offReason")]
+    #[sea_orm(column_name = "offReason", column_type = "Text")]
     pub off_reason: Option<String>,
     pub hour: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub timezone: Option<String>,
     #[sea_orm(column_name = "maxInsights")]
     pub max_insights: Option<i32>,
     /// The last run that recorded an outcome. NULL until one did.
-    #[sea_orm(column_name = "lastRunId")]
+    #[sea_orm(column_name = "lastRunId", column_type = "Text")]
     pub last_run_id: Option<String>,
     #[sea_orm(column_name = "lastRunAt")]
     pub last_run_at: Option<f64>,
     /// filed | nothing | failed | skipped
-    #[sea_orm(column_name = "lastRunOutcome")]
+    #[sea_orm(column_name = "lastRunOutcome", column_type = "Text")]
     pub last_run_outcome: Option<String>,
-    #[sea_orm(column_name = "lastRunReason")]
+    #[sea_orm(column_name = "lastRunReason", column_type = "Text")]
     pub last_run_reason: Option<String>,
     #[sea_orm(column_name = "lastRunFiled")]
     pub last_run_filed: Option<i32>,
     /// How many insights the run found still true and renewed.
     #[sea_orm(column_name = "lastRunRenewed")]
     pub last_run_renewed: Option<i32>,
-    #[sea_orm(column_name = "lastRunConversationId")]
+    #[sea_orm(column_name = "lastRunConversationId", column_type = "Text")]
     pub last_run_conversation_id: Option<String>,
     /// The scheduled days in a row whose run ended skipped, and the slot of the newest counted.
     #[sea_orm(column_name = "consecutiveSkips", default_value = 0)]
@@ -62,9 +64,9 @@ pub struct Model {
     pub occurred_at: f64,
     #[sea_orm(column_name = "acceptedAt")]
     pub accepted_at: f64,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
 }
 

@@ -176,7 +176,7 @@ export const operations = pgTable(
       table.receivedAt,
       table.serverSeq,
     ),
-    index('operations_entity_ids_gin').on(table.entityIds),
+    index('operations_entity_ids_gin').using('gin', table.entityIds),
     uniqueIndex('operations_user_id_server_seq_key').on(table.userId, table.serverSeq),
     foreignKey({
       name: 'operations_user_id_fkey',

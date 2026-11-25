@@ -12,19 +12,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgentStopClaim")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "agentId")]
+    #[sea_orm(column_name = "agentId", column_type = "Text")]
     pub agent_id: String,
-    #[sea_orm(column_name = "stopId")]
+    #[sea_orm(column_name = "stopId", column_type = "Text")]
     pub stop_id: String,
-    #[sea_orm(column_name = "claimedAt")]
+    #[sea_orm(column_name = "claimedAt", column_type = "custom(\"timestamp(3)\")")]
     pub claimed_at: DateTime,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"timestamp(3)\")")]
     pub sent_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub decision: Option<String>,
-    #[sea_orm(column_name = "decisionTakenAt")]
+    #[sea_orm(
+        column_name = "decisionTakenAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub decision_taken_at: Option<DateTime>,
 }
 

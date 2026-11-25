@@ -7,18 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_experiments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "datasetId")]
+    #[sea_orm(column_name = "datasetId", column_type = "Text")]
     pub dataset_id: Option<String>,
     #[sea_orm(column_name = "datasetVersion")]
     pub dataset_version: Option<i32>,
-    #[sea_orm(column_name = "targetType")]
+    #[sea_orm(column_name = "targetType", column_type = "Text")]
     pub target_type: String,
-    #[sea_orm(column_name = "targetId")]
+    #[sea_orm(column_name = "targetId", column_type = "Text")]
     pub target_id: String,
+    #[sea_orm(column_type = "Text")]
     pub status: String,
     #[sea_orm(column_name = "totalItems")]
     pub total_items: i32,
@@ -32,36 +37,53 @@ pub struct Model {
     pub started_at: Option<DateTime>,
     #[sea_orm(column_name = "completedAt")]
     pub completed_at: Option<DateTime>,
-    #[sea_orm(column_name = "agentVersion")]
+    #[sea_orm(column_name = "agentVersion", column_type = "Text")]
     pub agent_version: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "startedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "startedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub started_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "completedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "completedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub completed_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "updatedAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "updatedAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at_z: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub provenance: Option<Json>,
-    #[sea_orm(column_name = "runnerAttestation")]
+    #[sea_orm(column_name = "runnerAttestation", column_type = "JsonBinary")]
     pub runner_attestation: Option<Json>,
-    #[sea_orm(column_name = "experimentSetId")]
+    #[sea_orm(column_name = "experimentSetId", column_type = "Text")]
     pub experiment_set_id: Option<String>,
-    #[sea_orm(column_name = "comparisonId")]
+    #[sea_orm(column_name = "comparisonId", column_type = "Text")]
     pub comparison_id: Option<String>,
-    #[sea_orm(column_name = "variantId")]
+    #[sea_orm(column_name = "variantId", column_type = "Text")]
     pub variant_id: Option<String>,
     #[sea_orm(column_name = "trialIndex")]
     pub trial_index: Option<i32>,
-    #[sea_orm(column_name = "scorerIds")]
+    #[sea_orm(column_name = "scorerIds", column_type = "JsonBinary")]
     pub scorer_ids: Option<Json>,
 }
 

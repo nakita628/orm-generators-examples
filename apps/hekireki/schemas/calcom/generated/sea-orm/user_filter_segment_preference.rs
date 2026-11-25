@@ -10,15 +10,19 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "tableIdentifier")]
+    #[sea_orm(column_name = "tableIdentifier", column_type = "Text")]
     pub table_identifier: String,
     #[sea_orm(column_name = "segmentId")]
     pub segment_id: Option<i32>,
-    #[sea_orm(column_name = "systemSegmentId")]
+    #[sea_orm(column_name = "systemSegmentId", column_type = "Text")]
     pub system_segment_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -28,14 +32,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserFilterSegmentPreference_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::filter_segment::Entity",
         from = "Column::SegmentId",
         to = "super::filter_segment::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserFilterSegmentPreference_segmentId_fkey"
     )]
     Segment,
 }

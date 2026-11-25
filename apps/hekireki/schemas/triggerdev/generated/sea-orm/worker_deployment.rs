@@ -10,89 +10,101 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkerDeployment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "contentHash")]
+    #[sea_orm(column_name = "contentHash", column_type = "Text")]
     pub content_hash: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
-    #[sea_orm(column_name = "shortCode")]
+    #[sea_orm(column_name = "shortCode", column_type = "Text")]
     pub short_code: String,
+    #[sea_orm(column_type = "Text")]
     pub version: String,
+    #[sea_orm(column_type = "Text")]
     pub runtime: Option<String>,
-    #[sea_orm(column_name = "runtimeVersion")]
+    #[sea_orm(column_name = "runtimeVersion", column_type = "Text")]
     pub runtime_version: Option<String>,
     /// CLI version that initiated the deploy, stamped at initialization or worker upload
-    #[sea_orm(column_name = "cliVersion")]
+    #[sea_orm(column_name = "cliVersion", column_type = "Text")]
     pub cli_version: Option<String>,
-    #[sea_orm(column_name = "imageReference")]
+    #[sea_orm(column_name = "imageReference", column_type = "Text")]
     pub image_reference: Option<String>,
-    #[sea_orm(column_name = "imagePlatform", default_value = "linux/amd64")]
+    #[sea_orm(
+        column_name = "imagePlatform",
+        column_type = "Text",
+        default_value = "linux/amd64"
+    )]
     pub image_platform: String,
     /// Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds
-    #[sea_orm(column_name = "templateKey")]
+    #[sea_orm(column_name = "templateKey", column_type = "Text")]
     pub template_key: Option<String>,
     /// Object key of the full index snapshot in the deployment index store. Set only after the upload succeeds.
-    #[sea_orm(column_name = "indexObjectKey")]
+    #[sea_orm(column_name = "indexObjectKey", column_type = "Text")]
     pub index_object_key: Option<String>,
     /// sha256 hex of the snapshot's uncompressed JSON
-    #[sea_orm(column_name = "indexSha256")]
+    #[sea_orm(column_name = "indexSha256", column_type = "Text")]
     pub index_sha256: Option<String>,
     #[sea_orm(column_name = "indexFormatVersion")]
     pub index_format_version: Option<i32>,
-    #[sea_orm(column_name = "externalBuildData")]
+    #[sea_orm(column_name = "externalBuildData", column_type = "JsonBinary")]
     pub external_build_data: Option<Json>,
-    #[sea_orm(column_name = "buildServerMetadata")]
+    #[sea_orm(column_name = "buildServerMetadata", column_type = "JsonBinary")]
     pub build_server_metadata: Option<Json>,
     /// Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an
     /// EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep.
-    #[sea_orm(column_name = "buildEnvVars")]
+    #[sea_orm(column_name = "buildEnvVars", column_type = "JsonBinary")]
     pub build_env_vars: Option<Json>,
     #[sea_orm(default_value = "PENDING")]
     pub status: WorkerDeploymentStatus,
     #[sea_orm(default_value = "V1")]
     pub r#type: WorkerDeploymentType,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "workerId")]
+    #[sea_orm(column_name = "workerId", column_type = "Text")]
     pub worker_id: Option<String>,
-    #[sea_orm(column_name = "triggeredById")]
+    #[sea_orm(column_name = "triggeredById", column_type = "Text")]
     pub triggered_by_id: Option<String>,
-    #[sea_orm(column_name = "triggeredVia")]
+    #[sea_orm(column_name = "triggeredVia", column_type = "Text")]
     pub triggered_via: Option<String>,
-    #[sea_orm(column_name = "commitSHA")]
+    #[sea_orm(column_name = "commitSHA", column_type = "Text")]
     pub commit_sha: Option<String>,
-    #[sea_orm(column_name = "externalId")]
+    #[sea_orm(column_name = "externalId", column_type = "Text")]
     pub external_id: Option<String>,
     /// The kind of credential that started the deployment. Null when unknown.
     #[sea_orm(column_name = "initiatedByCredential")]
     pub initiated_by_credential: Option<DeploymentInitiatedByCredential>,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: Option<DateTime>,
-    #[sea_orm(column_name = "installedAt")]
+    #[sea_orm(column_name = "installedAt", column_type = "custom(\"timestamp(3)\")")]
     pub installed_at: Option<DateTime>,
-    #[sea_orm(column_name = "builtAt")]
+    #[sea_orm(column_name = "builtAt", column_type = "custom(\"timestamp(3)\")")]
     pub built_at: Option<DateTime>,
-    #[sea_orm(column_name = "deployedAt")]
+    #[sea_orm(column_name = "deployedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deployed_at: Option<DateTime>,
-    #[sea_orm(column_name = "failedAt")]
+    #[sea_orm(column_name = "failedAt", column_type = "custom(\"timestamp(3)\")")]
     pub failed_at: Option<DateTime>,
-    #[sea_orm(column_name = "errorData")]
+    #[sea_orm(column_name = "errorData", column_type = "JsonBinary")]
     pub error_data: Option<Json>,
-    #[sea_orm(column_name = "canceledAt")]
+    #[sea_orm(column_name = "canceledAt", column_type = "custom(\"timestamp(3)\")")]
     pub canceled_at: Option<DateTime>,
-    #[sea_orm(column_name = "canceledReason")]
+    #[sea_orm(column_name = "canceledReason", column_type = "Text")]
     pub canceled_reason: Option<String>,
     /// The newer GitHub build that superseded this one while it was still queued
-    #[sea_orm(column_name = "supersededById")]
+    #[sea_orm(column_name = "supersededById", column_type = "Text")]
     pub superseded_by_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub git: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -103,7 +115,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerDeployment_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -111,7 +124,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerDeployment_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -119,7 +133,8 @@ pub enum Relation {
         from = "Column::WorkerId",
         to = "super::background_worker::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkerDeployment_workerId_fkey"
     )]
     Worker,
     #[sea_orm(
@@ -127,7 +142,8 @@ pub enum Relation {
         from = "Column::TriggeredById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "WorkerDeployment_triggeredById_fkey"
     )]
     TriggeredBy,
     #[sea_orm(has_many = "super::worker_deployment_promotion::Entity")]

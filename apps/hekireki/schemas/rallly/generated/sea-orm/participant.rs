@@ -7,18 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "participants")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub note: Option<String>,
     /// Per response edit link: grants edit access to this response without a session. App minted at creation, CSPRNG alphanumeric ≥32 chars (nanoid customAlphabet — url safe with no linkifier edge cases, unlike base64url); never a DB default so a code path that forgets to mint fails loudly. A response created through an emailed invite takes the invite's token. Rows that predate minting were backfilled with gen_random_uuid() hex
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub token: String,
+    #[sea_orm(column_type = "Text")]
     pub user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub poll_id: String,
+    #[sea_orm(column_type = "Text")]
     pub locale: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub time_zone: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: Option<DateTime>,
 }
 
@@ -28,14 +42,16 @@ pub enum Relation {
         belongs_to = "super::poll::Entity",
         from = "Column::PollId",
         to = "super::poll::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "participants_poll_id_fkey"
     )]
     Poll,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "participants_user_id_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::vote::Entity")]

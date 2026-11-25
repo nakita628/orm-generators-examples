@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConversationView")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "conversationId")]
+    #[sea_orm(column_name = "conversationId", column_type = "Text")]
     pub conversation_id: String,
-    #[sea_orm(column_name = "viewId")]
+    #[sea_orm(column_name = "viewId", column_type = "Text")]
     pub view_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -22,14 +27,16 @@ pub enum Relation {
         belongs_to = "super::conversation::Entity",
         from = "Column::ConversationId",
         to = "super::conversation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConversationView_conversationId_fkey"
     )]
     Conversation,
     #[sea_orm(
         belongs_to = "super::view::Entity",
         from = "Column::ViewId",
         to = "super::view::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ConversationView_viewId_fkey"
     )]
     View,
 }

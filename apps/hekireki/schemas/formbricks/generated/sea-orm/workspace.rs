@@ -20,20 +20,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Workspace")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "legacyEnvironmentId")]
+    #[sea_orm(column_name = "legacyEnvironmentId", column_type = "Text")]
     pub legacy_environment_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// [Styling]
-    #[sea_orm(default_value = "{\"allowStyleOverwrite\":true}")]
+    #[sea_orm(
+        column_type = "JsonBinary",
+        default_value = "{\"allowStyleOverwrite\":true}"
+    )]
     pub styling: Json,
     /// [WorkspaceConfig]
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub config: Json,
     #[sea_orm(column_name = "recontactDays", default_value = 7)]
     pub recontact_days: i32,
@@ -48,22 +58,23 @@ pub struct Model {
     #[sea_orm(default_value = "none")]
     pub overlay: SurveyOverlay,
     /// Custom overlay colour (hex, no alpha) and opacity (10-100%). null = the preset for `overlay`.
-    #[sea_orm(column_name = "overlayColor")]
+    #[sea_orm(column_name = "overlayColor", column_type = "Text")]
     pub overlay_color: Option<String>,
     #[sea_orm(column_name = "overlayOpacity")]
     pub overlay_opacity: Option<i32>,
     /// [Logo]
+    #[sea_orm(column_type = "JsonBinary")]
     pub logo: Option<Json>,
     #[sea_orm(column_name = "appSetupCompleted", default_value = false)]
     pub app_setup_completed: bool,
-    #[sea_orm(column_name = "customHeadScripts")]
+    #[sea_orm(column_name = "customHeadScripts", column_type = "Text")]
     pub custom_head_scripts: Option<String>,
     /// [CustomCssStored] Workspace custom CSS (ENG-2949), written only by the shared save service.
-    #[sea_orm(column_name = "customCss")]
+    #[sea_orm(column_name = "customCss", column_type = "JsonBinary")]
     pub custom_css: Option<Json>,
     /// [CustomCssStored] The one recoverable previous workspace CSS revision, source included. Restored by
     /// submitting its source again through the current processor and authorization checks.
-    #[sea_orm(column_name = "customCssPrevious")]
+    #[sea_orm(column_name = "customCssPrevious", column_type = "JsonBinary")]
     pub custom_css_previous: Option<Json>,
 }
 
@@ -73,7 +84,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Workspace_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::language::Entity")]

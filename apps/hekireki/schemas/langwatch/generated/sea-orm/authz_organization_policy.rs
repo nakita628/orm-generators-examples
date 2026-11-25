@@ -8,15 +8,15 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuthzOrganizationPolicy")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(column_name = "braidsOrganizationAdminsOnly", default_value = false)]
     pub braids_organization_admins_only: bool,
     #[sea_orm(column_name = "braidsEnabled", default_value = false)]
     pub braids_enabled: bool,
-    #[sea_orm(column_name = "updatedByUserId")]
+    #[sea_orm(column_name = "updatedByUserId", column_type = "Text")]
     pub updated_by_user_id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

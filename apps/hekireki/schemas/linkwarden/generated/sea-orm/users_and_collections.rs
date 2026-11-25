@@ -18,9 +18,17 @@ pub struct Model {
     pub can_update: bool,
     #[sea_orm(column_name = "canDelete")]
     pub can_delete: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -30,14 +38,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UsersAndCollections_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::collection::Entity",
         from = "Column::CollectionId",
         to = "super::collection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UsersAndCollections_collectionId_fkey"
     )]
     Collection,
 }

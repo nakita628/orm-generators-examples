@@ -7,14 +7,28 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "verified_domains")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub organization_id: String,
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub verification_token: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub verified_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub created_by_user_id: Option<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -24,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "verified_domains_organization_id_fkey"
     )]
     Organization,
 }

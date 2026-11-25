@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Column, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, Numeric, PrimaryKeyConstraint, Table, Text, TypeDecorator, text
+from sqlalchemy import ARRAY, BigInteger, Column, Dialect, Enum, ForeignKey, ForeignKeyConstraint, Index, MetaData, Numeric, PrimaryKeyConstraint, Table, Text, TypeDecorator, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -325,7 +325,7 @@ class OrganizationAccessToken(Base):
 
     __table_args__ = (
         Index("OrganizationAccessToken_hashedToken_key", "hashedToken", unique=True),
-        Index("OrganizationAccessToken_organizationId_type_createdAt_idx", "organizationId", "type", "createdAt"),
+        Index("OrganizationAccessToken_organizationId_type_createdAt_idx", "organizationId", "type", literal_column("\"createdAt\"").desc()),
     )
 
     organization: Mapped["Organization"] = relationship(back_populates="organization_access_tokens")
@@ -577,8 +577,8 @@ class ApiKey(Base):
 
     __table_args__ = (
         Index("api_keys_key_hash_key", "key_hash", unique=True),
-        Index("api_keys_runtime_environment_id_revoked_at_created_at_idx", "runtime_environment_id", "revoked_at", "created_at"),
-        Index("api_keys_env_issued_by_revoked_at_created_at_idx", "runtime_environment_id", "issued_by", "revoked_at", "created_at"),
+        Index("api_keys_runtime_environment_id_revoked_at_created_at_idx", "runtime_environment_id", "revoked_at", literal_column("\"created_at\"").desc()),
+        Index("api_keys_env_issued_by_revoked_at_created_at_idx", "runtime_environment_id", "issued_by", "revoked_at", literal_column("\"created_at\"").desc()),
     )
 
     runtime_environment: Mapped["RuntimeEnvironment"] = relationship(back_populates="api_keys")
@@ -736,7 +736,7 @@ class SecretStore(Base):
 
     __table_args__ = (
         Index("SecretStore_key_key", "key", unique=True),
-        Index("SecretStore_key_idx", "key"),
+        Index("SecretStore_key_idx", "key", postgresql_ops={"key": "text_pattern_ops"}),
     )
 
     __mapper_args__ = {"primary_key": [key]}
@@ -800,7 +800,7 @@ class BackgroundWorker(Base):
     __table_args__ = (
         Index("BackgroundWorker_friendlyId_key", "friendlyId", unique=True),
         Index("BackgroundWorker_runtimeEnvironmentId_idx", "runtimeEnvironmentId"),
-        Index("BackgroundWorker_runtimeEnvironmentId_createdAt_idx", "runtimeEnvironmentId", "createdAt"),
+        Index("BackgroundWorker_runtimeEnvironmentId_createdAt_idx", "runtimeEnvironmentId", literal_column("\"createdAt\"").desc()),
         Index("BackgroundWorker_projectId_runtimeEnvironmentId_version_key", "projectId", "runtimeEnvironmentId", "version", unique=True),
     )
 
@@ -988,7 +988,7 @@ class WebhookEndpoint(Base):
         Index("WebhookEndpoint_friendlyId_key", "friendlyId", unique=True),
         Index("WebhookEndpoint_opaqueId_key", "opaqueId", unique=True),
         Index("WebhookEndpoint_runtimeEnvironmentId_source_idx", "runtimeEnvironmentId", "source"),
-        Index("WebhookEndpoint_projectId_createdAt_idx", "projectId", "createdAt"),
+        Index("WebhookEndpoint_projectId_createdAt_idx", "projectId", literal_column("\"createdAt\"").desc()),
         Index("WebhookEndpoint_runtimeEnvironmentId_declaredId_endpointTen_key", "runtimeEnvironmentId", "declaredId", "endpointTenantId", "endpointExternalRef", unique=True),
     )
 
@@ -1022,7 +1022,7 @@ class WebhookDelivery(Base):
     """Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id."""
 
     __table_args__ = (
-        Index("WebhookDelivery_webhookEndpointId_createdAt_idx", "webhookEndpointId", "createdAt"),
+        Index("WebhookDelivery_webhookEndpointId_createdAt_idx", "webhookEndpointId", literal_column("\"createdAt\"").desc()),
     )
 
 class Alert(Base):
@@ -1083,7 +1083,7 @@ class AlertEvent(Base):
     source_event_id: Mapped[Optional[str]] = mapped_column("sourceEventId")
 
     __table_args__ = (
-        Index("AlertEvent_alertId_at_idx", "alertId", "at"),
+        Index("AlertEvent_alertId_at_idx", "alertId", literal_column("\"at\"").desc()),
     )
 
 class AlertOccurrenceSeen(Base):
@@ -1151,7 +1151,7 @@ class PlaygroundConversation(Base):
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
 
     __table_args__ = (
-        Index("PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx", "runtimeEnvironmentId", "agentSlug", "updatedAt"),
+        Index("PlaygroundConversation_runtimeEnvironmentId_agentSlug_updat_idx", "runtimeEnvironmentId", "agentSlug", literal_column("\"updatedAt\"").desc()),
         Index("PlaygroundConversation_userId_runtimeEnvironmentId_idx", "userId", "runtimeEnvironmentId"),
         Index("PlaygroundConversation_chatId_runtimeEnvironmentId_key", "chatId", "runtimeEnvironmentId", unique=True),
     )
@@ -1398,10 +1398,10 @@ class TaskRun(Base):
         Index("TaskRun_parentTaskRunId_idx", "parentTaskRunId"),
         Index("TaskRun_spanId_idx", "spanId"),
         Index("TaskRun_parentSpanId_idx", "parentSpanId"),
-        Index("TaskRun_runTags_idx", "runTags"),
+        Index("TaskRun_runTags_idx", "runTags", postgresql_using="gin", postgresql_ops={"runTags": "array_ops"}),
         Index("TaskRun_runtimeEnvironmentId_batchId_idx", "runtimeEnvironmentId", "batchId"),
-        Index("TaskRun_runtimeEnvironmentId_createdAt_idx", "runtimeEnvironmentId", "createdAt"),
-        Index("TaskRun_createdAt_idx", "createdAt"),
+        Index("TaskRun_runtimeEnvironmentId_createdAt_idx", "runtimeEnvironmentId", literal_column("\"createdAt\"").desc()),
+        Index("TaskRun_createdAt_idx", "createdAt", postgresql_using="brin"),
         Index("TaskRun_oneTimeUseToken_key", "oneTimeUseToken", unique=True),
         Index("TaskRun_runtimeEnvironmentId_taskIdentifier_idempotencyKey_key", "runtimeEnvironmentId", "taskIdentifier", "idempotencyKey", unique=True),
     )
@@ -1462,7 +1462,7 @@ class TaskRunTemplate(Base):
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
 
     __table_args__ = (
-        Index("TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx", "projectId", "taskSlug", "triggerSource", "createdAt"),
+        Index("TaskRunTemplate_projectId_taskSlug_triggerSource_createdAt_idx", "projectId", "taskSlug", "triggerSource", literal_column("\"createdAt\"").desc()),
     )
 
 class TaskRunExecutionSnapshot(Base):
@@ -1512,7 +1512,7 @@ class TaskRunExecutionSnapshot(Base):
     """Metadata used by various systems in the run engine"""
 
     __table_args__ = (
-        Index("TaskRunExecutionSnapshot_runId_isValid_createdAt_idx", "runId", "isValid", "createdAt"),
+        Index("TaskRunExecutionSnapshot_runId_isValid_createdAt_idx", "runId", "isValid", literal_column("\"createdAt\"").desc()),
     )
 
     run: Mapped["TaskRun"] = relationship(back_populates="execution_snapshots")
@@ -1591,9 +1591,9 @@ class Waitpoint(Base):
         Index("Waitpoint_friendlyId_key", "friendlyId", unique=True),
         Index("Waitpoint_completedByTaskRunId_key", "completedByTaskRunId", unique=True),
         Index("Waitpoint_completedByBatchId_idx", "completedByBatchId"),
-        Index("Waitpoint_environmentId_type_createdAt_idx", "environmentId", "type", "createdAt"),
+        Index("Waitpoint_environmentId_type_createdAt_idx", "environmentId", "type", literal_column("\"createdAt\"").desc()),
         Index("Waitpoint_environmentId_type_status_idx", "environmentId", "type", "status"),
-        Index("Waitpoint_environmentId_type_id_idx", "environmentId", "type", "id"),
+        Index("Waitpoint_environmentId_type_id_idx", "environmentId", "type", literal_column("\"id\"").desc()),
         Index("Waitpoint_environmentId_idempotencyKey_key", "environmentId", "idempotencyKey", unique=True),
     )
 
@@ -2048,8 +2048,8 @@ class BatchTaskRun(Base):
         Index("BatchTaskRun_friendlyId_key", "friendlyId", unique=True),
         Index("BatchTaskRun_checkpointEventId_key", "checkpointEventId", unique=True),
         Index("BatchTaskRun_dependentTaskAttemptId_idx", "dependentTaskAttemptId"),
-        Index("BatchTaskRun_runtimeEnvironmentId_id_idx", "runtimeEnvironmentId", "id"),
-        Index("BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx", "runtimeEnvironmentId", "createdAt", "id"),
+        Index("BatchTaskRun_runtimeEnvironmentId_id_idx", "runtimeEnvironmentId", literal_column("\"id\"").desc()),
+        Index("BatchTaskRun_runtimeEnvironmentId_createdAt_id_idx", "runtimeEnvironmentId", literal_column("\"createdAt\"").desc(), literal_column("\"id\"").desc()),
         Index("BatchTaskRun_oneTimeUseToken_key", "oneTimeUseToken", unique=True),
         Index("BatchTaskRun_runtimeEnvironmentId_idempotencyKey_key", "runtimeEnvironmentId", "idempotencyKey", unique=True),
     )
@@ -2160,7 +2160,7 @@ class EnvironmentVariableValue(Base):
     __table_args__ = (
         Index("EnvironmentVariableValue_environmentId_idx", "environmentId"),
         Index("EnvironmentVariableValue_valueReferenceId_idx", "valueReferenceId"),
-        Index("EnvironmentVariableValue_environmentId_updatedAt_variableId_idx", "environmentId", "updatedAt", "variableId"),
+        Index("EnvironmentVariableValue_environmentId_updatedAt_variableId_idx", "environmentId", literal_column("\"updatedAt\"").desc(), "variableId"),
         Index("EnvironmentVariableValue_variableId_environmentId_key", "variableId", "environmentId", unique=True),
     )
 
@@ -2378,7 +2378,7 @@ class TaskSchedule(Base):
     __table_args__ = (
         Index("TaskSchedule_friendlyId_key", "friendlyId", unique=True),
         Index("TaskSchedule_projectId_idx", "projectId"),
-        Index("TaskSchedule_projectId_createdAt_idx", "projectId", "createdAt"),
+        Index("TaskSchedule_projectId_createdAt_idx", "projectId", literal_column("\"createdAt\"").desc()),
         Index("TaskSchedule_projectId_deduplicationKey_key", "projectId", "deduplicationKey", unique=True),
     )
 
@@ -2589,7 +2589,7 @@ class BulkActionGroup(Base):
 
     __table_args__ = (
         Index("BulkActionGroup_friendlyId_key", "friendlyId", unique=True),
-        Index("BulkActionGroup_environmentId_createdAt_idx", "environmentId", "createdAt"),
+        Index("BulkActionGroup_environmentId_createdAt_idx", "environmentId", literal_column("\"createdAt\"").desc()),
         Index("BulkActionGroup_environmentId_type_dedupeKey_idx", "environmentId", "type", "dedupeKey"),
         Index("BulkActionGroup_environmentId_status_type_idx", "environmentId", "status", "type"),
     )
@@ -2899,7 +2899,7 @@ class CustomerQuery(Base):
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
     __table_args__ = (
-        Index("CustomerQuery_organizationId_createdAt_idx", "organizationId", "createdAt"),
+        Index("CustomerQuery_organizationId_createdAt_idx", "organizationId", literal_column("\"createdAt\"").desc()),
         Index("CustomerQuery_createdAt_idx", "createdAt"),
     )
 
@@ -2952,7 +2952,7 @@ class MetricsDashboard(Base):
 
     __table_args__ = (
         Index("MetricsDashboard_friendlyId_key", "friendlyId", unique=True),
-        Index("MetricsDashboard_projectId_createdAt_idx", "projectId", "createdAt"),
+        Index("MetricsDashboard_projectId_createdAt_idx", "projectId", literal_column("\"createdAt\"").desc()),
     )
 
     organization: Mapped["Organization"] = relationship(back_populates="metrics_dashboards")

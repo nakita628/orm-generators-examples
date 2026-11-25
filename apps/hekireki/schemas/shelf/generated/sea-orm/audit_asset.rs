@@ -8,19 +8,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditAsset")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "auditSessionId")]
+    #[sea_orm(column_name = "auditSessionId", column_type = "Text")]
     pub audit_session_id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: String,
     #[sea_orm(default_value = true)]
     pub expected: bool,
     #[sea_orm(default_value = "PENDING")]
     pub status: AuditAssetStatus,
-    #[sea_orm(column_name = "scannedById")]
+    #[sea_orm(column_name = "scannedById", column_type = "Text")]
     pub scanned_by_id: Option<String>,
-    #[sea_orm(column_name = "scannedAt")]
+    #[sea_orm(column_name = "scannedAt", column_type = "custom(\"timestamp(3)\")")]
     pub scanned_at: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
     /// Units the audit expects to find, snapshotted when the row is created: the
     /// units in the audit's scope (placed at its locations, held in its kits, or
@@ -41,9 +43,13 @@ pub struct Model {
     /// (migration `20261104120000_add_audit_asset_quantities`).
     #[sea_orm(column_name = "foundQuantity")]
     pub found_quantity: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -54,7 +60,8 @@ pub enum Relation {
         from = "Column::AuditSessionId",
         to = "super::audit_session::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditAsset_auditSessionId_fkey"
     )]
     AuditSession,
     #[sea_orm(
@@ -62,7 +69,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuditAsset_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
@@ -70,7 +78,8 @@ pub enum Relation {
         from = "Column::ScannedById",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "AuditAsset_scannedById_fkey"
     )]
     ScannedBy,
     #[sea_orm(has_many = "super::audit_scan::Entity")]

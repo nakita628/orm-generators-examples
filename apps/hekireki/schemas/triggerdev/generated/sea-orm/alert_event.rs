@@ -8,18 +8,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AlertEvent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "alertId")]
+    #[sea_orm(column_name = "alertId", column_type = "Text")]
     pub alert_id: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub at: DateTimeWithTimeZone,
-    #[sea_orm(default_value = "{}")]
+    #[sea_orm(column_type = "JsonBinary", default_value = "{}")]
     pub facts: Json,
-    #[sea_orm(column_name = "actorId")]
+    #[sea_orm(column_name = "actorId", column_type = "Text")]
     pub actor_id: Option<String>,
-    #[sea_orm(column_name = "sourceEventId")]
+    #[sea_orm(column_name = "sourceEventId", column_type = "Text")]
     pub source_event_id: Option<String>,
 }
 

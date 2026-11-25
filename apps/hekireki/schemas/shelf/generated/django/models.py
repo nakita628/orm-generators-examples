@@ -766,8 +766,8 @@ class Asset(models.Model):
             models.UniqueConstraint(fields=["organization", "sequential_id"], name="Asset_organizationId_sequentialId_key"),
         ]
         indexes = [
-            GinIndex(fields=["title", "description"]),
-            GinIndex(fields=["sequential_id"], name="Asset_sequentialId_trgm_idx"),
+            GinIndex(fields=["title", "description"], name="Asset_title_description_idx", opclasses=["gin_trgm_ops", "gin_trgm_ops"]),
+            GinIndex(fields=["sequential_id"], name="Asset_sequentialId_trgm_idx", opclasses=["gin_trgm_ops"]),
             models.Index(fields=["organization", "title", "status", "available_to_book"]),
             models.Index(fields=["status", "organization"]),
             models.Index(fields=["organization", "archived_at"]),
@@ -875,7 +875,7 @@ class Category(models.Model):
         indexes = [
             models.Index(fields=["organization"]),
             models.Index(fields=["user"]),
-            GinIndex(fields=["name"], name="Category_name_trgm_idx"),
+            GinIndex(fields=["name"], name="Category_name_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -912,7 +912,7 @@ class AssetModel(models.Model):
         indexes = [
             models.Index(fields=["organization", "name"]),
             models.Index(fields=["created_by"]),
-            GinIndex(fields=["name"], name="AssetModel_name_trgm_idx"),
+            GinIndex(fields=["name"], name="AssetModel_name_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -997,7 +997,7 @@ class Tag(models.Model):
         indexes = [
             models.Index(fields=["organization"]),
             models.Index(fields=["user"]),
-            GinIndex(fields=["name"], name="Tag_name_trgm_idx"),
+            GinIndex(fields=["name"], name="Tag_name_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -1076,7 +1076,7 @@ class Qr(models.Model):
             models.Index(fields=["user"]),
             models.Index(fields=["organization"]),
             models.Index(fields=["batch"]),
-            GinIndex(fields=["id"], name="Qr_id_trgm_idx"),
+            GinIndex(fields=["id"], name="Qr_id_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -1101,7 +1101,7 @@ class Barcode(models.Model):
             models.Index(fields=["asset"]),
             models.Index(fields=["kit"]),
             models.Index(fields=["organization"]),
-            GinIndex(fields=["value"], name="Barcode_value_trgm_idx"),
+            GinIndex(fields=["value"], name="Barcode_value_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -1191,9 +1191,9 @@ class Location(models.Model):
             models.Index(fields=["organization"]),
             models.Index(fields=["user"]),
             models.Index(fields=["organization", "parent"]),
-            GinIndex(fields=["name"], name="Location_name_trgm_idx"),
-            GinIndex(fields=["description"], name="Location_description_trgm_idx"),
-            GinIndex(fields=["address"], name="Location_address_trgm_idx"),
+            GinIndex(fields=["name"], name="Location_name_trgm_idx", opclasses=["gin_trgm_ops"]),
+            GinIndex(fields=["description"], name="Location_description_trgm_idx", opclasses=["gin_trgm_ops"]),
+            GinIndex(fields=["address"], name="Location_address_trgm_idx", opclasses=["gin_trgm_ops"]),
         ]
 
 
@@ -1222,7 +1222,7 @@ class TeamMember(models.Model):
     class Meta:
         db_table = "TeamMember"
         indexes = [
-            GinIndex(fields=["name"]),
+            GinIndex(fields=["name"], name="TeamMember_name_idx", opclasses=["gin_trgm_ops"]),
             models.Index(fields=["organization"]),
             models.Index(fields=["user"]),
         ]
@@ -1912,7 +1912,7 @@ class AssetReminder(models.Model):
         db_table = "AssetReminder"
         indexes = [
             models.Index(fields=["asset", "alert_date_time"]),
-            GinIndex(fields=["name", "message"]),
+            GinIndex(fields=["name", "message"], name="AssetReminder_name_message_idx", opclasses=["gin_trgm_ops", "gin_trgm_ops"]),
             models.Index(fields=["organization", "alert_date_time", "asset"]),
             models.Index(fields=["alert_date_time", "active_scheduler_reference"]),
             models.Index(fields=["created_by"]),

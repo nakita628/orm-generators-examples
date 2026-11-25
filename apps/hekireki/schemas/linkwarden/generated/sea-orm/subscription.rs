@@ -11,31 +11,45 @@ pub struct Model {
     pub id: i32,
     pub active: bool,
     pub provider: SubscriptionProvider,
-    #[sea_orm(column_name = "currentPeriodStart")]
+    #[sea_orm(
+        column_name = "currentPeriodStart",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub current_period_start: DateTime,
-    #[sea_orm(column_name = "currentPeriodEnd")]
+    #[sea_orm(
+        column_name = "currentPeriodEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub current_period_end: DateTime,
     #[sea_orm(default_value = 1)]
     pub quantity: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "storeOriginalTransactionId")]
+    #[sea_orm(column_name = "storeOriginalTransactionId", column_type = "Text")]
     pub store_original_transaction_id: Option<String>,
-    #[sea_orm(column_name = "storeProductId")]
+    #[sea_orm(column_name = "storeProductId", column_type = "Text")]
     pub store_product_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "googlePurchaseToken")]
+    #[sea_orm(column_name = "googlePurchaseToken", column_type = "Text")]
     pub google_purchase_token: Option<String>,
-    #[sea_orm(column_name = "storeMetadata")]
+    #[sea_orm(column_name = "storeMetadata", column_type = "JsonBinary")]
     pub store_metadata: Option<Json>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeSubscriptionId")]
+    #[sea_orm(column_name = "stripeSubscriptionId", column_type = "Text")]
     pub stripe_subscription_id: Option<String>,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -45,7 +59,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Subscription_userId_fkey"
     )]
     User,
     #[sea_orm(

@@ -7,18 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GatewayBudgetBucketBoundary")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "budgetId")]
+    #[sea_orm(column_name = "budgetId", column_type = "Text")]
     pub budget_id: String,
-    #[sea_orm(column_name = "bucketScopeId")]
+    #[sea_orm(column_name = "bucketScopeId", column_type = "Text")]
     pub bucket_scope_id: String,
-    #[sea_orm(column_name = "periodStartedAt")]
+    #[sea_orm(
+        column_name = "periodStartedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub period_started_at: DateTime,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -28,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::gateway_budget::Entity",
         from = "Column::BudgetId",
         to = "super::gateway_budget::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "GatewayBudgetBucketBoundary_budgetId_fkey"
     )]
     Budget,
 }

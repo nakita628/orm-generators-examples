@@ -7,14 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "RateLimit")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub action: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub bucket: DateTime,
     #[sea_orm(default_value = 1)]
     pub count: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

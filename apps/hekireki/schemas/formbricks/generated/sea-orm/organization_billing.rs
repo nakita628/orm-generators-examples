@@ -14,15 +14,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationBilling")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub stripe_customer_id: Option<String>,
     /// [OrganizationBillingPlanLimits]
+    #[sea_orm(column_type = "JsonBinary")]
     pub limits: Json,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub usage_cycle_anchor: Option<DateTime>,
     /// [OrganizationStripeBilling]
+    #[sea_orm(column_type = "JsonBinary")]
     pub stripe: Option<Json>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,7 +42,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganizationBilling_organization_id_fkey"
     )]
     Organization,
 }

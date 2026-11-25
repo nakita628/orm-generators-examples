@@ -7,18 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "reverse_sync_control")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub sync_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub run_id: String,
     #[sea_orm(default_value = "0")]
     pub run_order: i64,
     #[sea_orm(default_value = false)]
     pub detached: bool,
+    #[sea_orm(column_type = "Text")]
     pub revision: String,
+    #[sea_orm(column_type = "Text")]
     pub target_hash: String,
-    #[sea_orm(default_value = "new")]
+    #[sea_orm(column_type = "Text", default_value = "new")]
     pub phase: String,
     pub mode: reverse_sync_mode,
     pub extraction: reverse_sync_extraction,
@@ -33,6 +38,7 @@ pub struct Model {
     pub store: Option<Vec<u8>>,
     pub provider_state: Option<Vec<u8>>,
     pub finish_result: Option<Vec<u8>>,
+    #[sea_orm(column_type = "Text")]
     pub committed_generation: Option<String>,
 }
 

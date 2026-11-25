@@ -5,14 +5,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "InstantEvalJudgeSpend")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "requestId")]
+    #[sea_orm(column_name = "requestId", column_type = "Text")]
     pub request_id: String,
     #[sea_orm(column_name = "spendNanoUsd")]
     pub spend_nano_usd: i64,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
 }
 

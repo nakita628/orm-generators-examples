@@ -7,15 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DashboardFolder")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "parentFolderId")]
+    #[sea_orm(column_name = "parentFolderId", column_type = "Text")]
     pub parent_folder_id: Option<String>,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
 }
 
@@ -24,14 +34,16 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::dashboard_folder::Entity",
         from = "Column::ParentFolderId",
-        to = "super::dashboard_folder::Column::Id"
+        to = "super::dashboard_folder::Column::Id",
+        fk_name = "DashboardFolder_parentFolderId_fkey"
     )]
     ParentFolder,
     #[sea_orm(
         belongs_to = "super::workspace::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspace::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DashboardFolder_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(

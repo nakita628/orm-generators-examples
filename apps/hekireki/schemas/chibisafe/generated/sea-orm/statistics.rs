@@ -11,9 +11,11 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "batchId")]
     pub batch_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub r#type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub data: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
 }
 

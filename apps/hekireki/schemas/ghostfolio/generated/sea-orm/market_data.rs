@@ -8,12 +8,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "MarketData")]
 pub struct Model {
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(column_name = "dataSource")]
     pub data_source: DataSource,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub date: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(column_name = "isCarriedForward", default_value = false)]
     pub is_carried_forward: bool,
@@ -21,6 +27,7 @@ pub struct Model {
     pub market_price: f64,
     #[sea_orm(default_value = "CLOSE")]
     pub state: MarketDataState,
+    #[sea_orm(column_type = "Text")]
     pub symbol: String,
 }
 

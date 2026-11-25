@@ -11,19 +11,26 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WorkflowSecret")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: String,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     /// `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned.
+    #[sea_orm(column_type = "Text")]
     pub value: String,
     /// Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
     /// sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
     /// until it is set again.
-    #[sea_orm(column_name = "boundOrigin")]
+    #[sea_orm(column_name = "boundOrigin", column_type = "Text")]
     pub bound_origin: Option<String>,
 }
 
@@ -33,7 +40,8 @@ pub enum Relation {
         belongs_to = "super::workflow::Entity",
         from = "(Column::WorkflowId, Column::WorkspaceId)",
         to = "(super::workflow::Column::Id, super::workflow::Column::WorkspaceId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WorkflowSecret_workflowId_workspaceId_fkey"
     )]
     Workflow,
 }

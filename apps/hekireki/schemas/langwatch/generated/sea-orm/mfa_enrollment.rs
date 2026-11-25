@@ -24,25 +24,27 @@ pub struct Model {
     /// The user. Also the aggregate id and the tenant - one identity history
     /// per person (ADR-029 §4).
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// The current enrollment, or NULL for somebody who never started one.
-    #[sea_orm(column_name = "enrollmentId")]
+    #[sea_orm(column_name = "enrollmentId", column_type = "Text")]
     pub enrollment_id: Option<String>,
     /// totp. Never sms.
+    #[sea_orm(column_type = "Text")]
     pub method: Option<String>,
     /// NONE | PENDING | ENABLED | EXPIRED | DISABLED
+    #[sea_orm(column_type = "Text")]
     pub state: String,
-    #[sea_orm(column_name = "enrolledAt")]
+    #[sea_orm(column_name = "enrolledAt", column_type = "custom(\"timestamp(3)\")")]
     pub enrolled_at: Option<DateTime>,
-    #[sea_orm(column_name = "confirmedAt")]
+    #[sea_orm(column_name = "confirmedAt", column_type = "custom(\"timestamp(3)\")")]
     pub confirmed_at: Option<DateTime>,
-    #[sea_orm(column_name = "expiredAt")]
+    #[sea_orm(column_name = "expiredAt", column_type = "custom(\"timestamp(3)\")")]
     pub expired_at: Option<DateTime>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
     /// password+totp | org-admin - who ended it, and on whose authority.
-    #[sea_orm(column_name = "disabledVia")]
+    #[sea_orm(column_name = "disabledVia", column_type = "Text")]
     pub disabled_via: Option<String>,
     #[sea_orm(column_name = "backupCodeCount", default_value = 0)]
     pub backup_code_count: i32,
@@ -51,17 +53,25 @@ pub struct Model {
     pub consumed_backup_code_indexes: Vec<i32>,
     #[sea_orm(column_name = "failedCount", default_value = 0)]
     pub failed_count: i32,
-    #[sea_orm(column_name = "occurredAt")]
+    #[sea_orm(column_name = "occurredAt", column_type = "custom(\"timestamp(3)\")")]
     pub occurred_at: DateTime,
-    #[sea_orm(column_name = "lastEventId")]
+    #[sea_orm(column_name = "lastEventId", column_type = "Text")]
     pub last_event_id: String,
-    #[sea_orm(column_name = "acceptedAt")]
+    #[sea_orm(column_name = "acceptedAt", column_type = "custom(\"timestamp(3)\")")]
     pub accepted_at: DateTime,
-    #[sea_orm(column_name = "projectionVersion")]
+    #[sea_orm(column_name = "projectionVersion", column_type = "Text")]
     pub projection_version: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

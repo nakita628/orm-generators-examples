@@ -7,17 +7,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_CustomerBudgetIncreaseRequest")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub request_id: String,
+    #[sea_orm(column_type = "Text")]
     pub customer_member_id: String,
     pub requested_max_budget: f64,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub reason: Option<String>,
-    #[sea_orm(default_value = "pending_review")]
+    #[sea_orm(column_type = "Text", default_value = "pending_review")]
     pub status: String,
+    #[sea_orm(column_type = "Text")]
     pub submitted_by: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub submitted_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub reviewed_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub reviewed_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub review_notes: Option<String>,
 }
 
@@ -27,7 +39,8 @@ pub enum Relation {
         belongs_to = "super::lite_llm_customer_member_table::Entity",
         from = "Column::CustomerMemberId",
         to = "super::lite_llm_customer_member_table::Column::CustomerMemberId",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_CustomerBudgetIncreaseRequest_customer_member_id_fkey"
     )]
     CustomerMember,
 }

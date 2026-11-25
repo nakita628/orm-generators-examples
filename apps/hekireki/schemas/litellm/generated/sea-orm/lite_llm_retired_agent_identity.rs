@@ -6,11 +6,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_RetiredAgentIdentity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub binding_id: String,
+    #[sea_orm(column_type = "Text")]
     pub agent_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
+    #[sea_orm(column_type = "Text")]
     pub issuer: String,
+    #[sea_orm(column_type = "Text")]
     pub tenant_id: String,
+    #[sea_orm(column_type = "Text")]
     pub client_id: String,
 }
 
@@ -20,7 +26,8 @@ pub enum Relation {
         belongs_to = "super::lite_llm_agents_table::Entity",
         from = "Column::AgentId",
         to = "super::lite_llm_agents_table::Column::AgentId",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "LiteLLM_RetiredAgentIdentity_agent_id_fkey"
     )]
     Agent,
 }

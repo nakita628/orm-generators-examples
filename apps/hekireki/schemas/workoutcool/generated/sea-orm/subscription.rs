@@ -9,24 +9,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "subscriptions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "planId")]
+    #[sea_orm(column_name = "planId", column_type = "Text")]
     pub plan_id: String,
-    #[sea_orm(column_name = "revenueCatUserId")]
+    #[sea_orm(column_name = "revenueCatUserId", column_type = "Text")]
     pub revenue_cat_user_id: Option<String>,
     pub status: SubscriptionStatus,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "currentPeriodEnd")]
+    #[sea_orm(
+        column_name = "currentPeriodEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub current_period_end: Option<DateTime>,
-    #[sea_orm(column_name = "cancelledAt")]
+    #[sea_orm(column_name = "cancelledAt", column_type = "custom(\"timestamp(3)\")")]
     pub cancelled_at: Option<DateTime>,
     pub platform: Option<Platform>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -35,13 +43,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "subscriptions_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::subscription_plan::Entity",
         from = "Column::PlanId",
-        to = "super::subscription_plan::Column::Id"
+        to = "super::subscription_plan::Column::Id",
+        fk_name = "subscriptions_planId_fkey"
     )]
     Plan,
 }

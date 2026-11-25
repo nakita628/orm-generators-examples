@@ -8,21 +8,26 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "User")]
 pub struct Model {
-    #[sea_orm(column_name = "accessToken")]
+    #[sea_orm(column_name = "accessToken", column_type = "Text")]
     pub access_token: Option<String>,
-    #[sea_orm(column_name = "authChallenge")]
+    #[sea_orm(column_name = "authChallenge", column_type = "Text")]
     pub auth_challenge: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(default_value = "ANONYMOUS")]
     pub provider: Provider,
     #[sea_orm(default_value = "USER")]
     pub role: Role,
-    #[sea_orm(column_name = "thirdPartyId")]
+    #[sea_orm(column_name = "thirdPartyId", column_type = "Text")]
     pub third_party_id: Option<String>,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

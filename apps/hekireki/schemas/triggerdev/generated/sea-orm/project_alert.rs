@@ -9,28 +9,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ProjectAlert")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "friendlyId")]
+    #[sea_orm(column_name = "friendlyId", column_type = "Text")]
     pub friendly_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
-    #[sea_orm(column_name = "channelId")]
+    #[sea_orm(column_name = "channelId", column_type = "Text")]
     pub channel_id: String,
     #[sea_orm(default_value = "PENDING")]
     pub status: ProjectAlertStatus,
     pub r#type: ProjectAlertType,
-    #[sea_orm(column_name = "taskRunAttemptId")]
+    #[sea_orm(column_name = "taskRunAttemptId", column_type = "Text")]
     pub task_run_attempt_id: Option<String>,
-    #[sea_orm(column_name = "taskRunId")]
+    #[sea_orm(column_name = "taskRunId", column_type = "Text")]
     pub task_run_id: Option<String>,
-    #[sea_orm(column_name = "workerDeploymentId")]
+    #[sea_orm(column_name = "workerDeploymentId", column_type = "Text")]
     pub worker_deployment_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -41,7 +46,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlert_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -49,7 +55,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlert_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -57,7 +64,8 @@ pub enum Relation {
         from = "Column::ChannelId",
         to = "super::project_alert_channel::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlert_channelId_fkey"
     )]
     Channel,
     #[sea_orm(
@@ -65,7 +73,8 @@ pub enum Relation {
         from = "Column::WorkerDeploymentId",
         to = "super::worker_deployment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "ProjectAlert_workerDeploymentId_fkey"
     )]
     WorkerDeployment,
 }

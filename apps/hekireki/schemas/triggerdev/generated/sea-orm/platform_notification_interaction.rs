@@ -8,29 +8,47 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PlatformNotificationInteraction")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "notificationId")]
+    #[sea_orm(column_name = "notificationId", column_type = "Text")]
     pub notification_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     /// Set by beacon/CLI GET on first impression
-    #[sea_orm(column_name = "firstSeenAt")]
+    #[sea_orm(
+        column_name = "firstSeenAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub first_seen_at: DateTime,
     /// Times shown (incremented per beacon/CLI view)
     #[sea_orm(column_name = "showCount", default_value = 1)]
     pub show_count: i32,
     /// User dismissed in webapp
-    #[sea_orm(column_name = "webappDismissedAt")]
+    #[sea_orm(
+        column_name = "webappDismissedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub webapp_dismissed_at: Option<DateTime>,
     /// User clicked a link in webapp
-    #[sea_orm(column_name = "webappClickedAt")]
+    #[sea_orm(
+        column_name = "webappClickedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub webapp_clicked_at: Option<DateTime>,
     /// Auto-dismissed or expired in CLI
-    #[sea_orm(column_name = "cliDismissedAt")]
+    #[sea_orm(
+        column_name = "cliDismissedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub cli_dismissed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -41,7 +59,8 @@ pub enum Relation {
         from = "Column::NotificationId",
         to = "super::platform_notification::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformNotificationInteraction_notificationId_fkey"
     )]
     Notification,
     #[sea_orm(
@@ -49,7 +68,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "PlatformNotificationInteraction_userId_fkey"
     )]
     User,
 }

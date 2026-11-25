@@ -6,25 +6,27 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub key: Json,
-    #[sea_orm(column_name = "encryptedKey")]
+    #[sea_orm(column_name = "encryptedKey", column_type = "Text")]
     pub encrypted_key: Option<String>,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
-    #[sea_orm(column_name = "appId")]
+    #[sea_orm(column_name = "appId", column_type = "Text")]
     pub app_id: Option<String>,
-    #[sea_orm(column_name = "subscriptionId")]
+    #[sea_orm(column_name = "subscriptionId", column_type = "Text")]
     pub subscription_id: Option<String>,
-    #[sea_orm(column_name = "paymentStatus")]
+    #[sea_orm(column_name = "paymentStatus", column_type = "Text")]
     pub payment_status: Option<String>,
     #[sea_orm(column_name = "billingCycleStart")]
     pub billing_cycle_start: Option<i32>,
     #[sea_orm(default_value = false)]
     pub invalid: Option<bool>,
-    #[sea_orm(column_name = "delegationCredentialId")]
+    #[sea_orm(column_name = "delegationCredentialId", column_type = "Text")]
     pub delegation_credential_id: Option<String>,
 }
 
@@ -34,28 +36,32 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Credential_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Credential_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::app::Entity",
         from = "Column::AppId",
         to = "super::app::Column::Slug",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Credential_appId_fkey"
     )]
     App,
     #[sea_orm(
         belongs_to = "super::delegation_credential::Entity",
         from = "Column::DelegationCredentialId",
         to = "super::delegation_credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Credential_delegationCredentialId_fkey"
     )]
     DelegationCredential,
     #[sea_orm(has_many = "super::destination_calendar::Entity")]

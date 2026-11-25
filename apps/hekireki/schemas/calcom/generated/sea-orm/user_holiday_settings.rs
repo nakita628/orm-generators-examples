@@ -11,13 +11,20 @@ pub struct Model {
     #[sea_orm(unique)]
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
-    #[sea_orm(column_name = "countryCode")]
+    #[sea_orm(column_name = "countryCode", column_type = "Text")]
     pub country_code: Option<String>,
-    #[sea_orm(column_name = "disabledIds")]
+    #[sea_orm(
+        column_name = "disabledIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub disabled_ids: Vec<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -27,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserHolidaySettings_userId_fkey"
     )]
     User,
 }

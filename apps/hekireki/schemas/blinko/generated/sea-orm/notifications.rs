@@ -17,7 +17,11 @@ pub struct Model {
     pub is_read: bool,
     #[sea_orm(column_name = "accountId")]
     pub account_id: i32,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
     pub updated_at: DateTimeWithTimeZone,
@@ -28,7 +32,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::accounts::Entity",
         from = "Column::AccountId",
-        to = "super::accounts::Column::Id"
+        to = "super::accounts::Column::Id",
+        fk_name = "notifications_accountId_fkey"
     )]
     Account,
 }

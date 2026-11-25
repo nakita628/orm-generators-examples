@@ -11,10 +11,11 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "workspaceId")]
     pub workspace_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
     #[sea_orm(column_name = "modifiedBy")]
     pub modified_by: Option<i32>,
-    #[sea_orm(column_name = "modifiedAt")]
+    #[sea_orm(column_name = "modifiedAt", default_expr = "Expr::current_timestamp()")]
     pub modified_at: PrismaDateTime,
 }
 
@@ -24,13 +25,15 @@ pub enum Relation {
         belongs_to = "super::workspaces::Entity",
         from = "Column::WorkspaceId",
         to = "super::workspaces::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompt_history_workspaceId_fkey"
     )]
     Workspace,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::ModifiedBy",
-        to = "super::users::Column::Id"
+        to = "super::users::Column::Id",
+        fk_name = "prompt_history_modifiedBy_fkey"
     )]
     User,
 }

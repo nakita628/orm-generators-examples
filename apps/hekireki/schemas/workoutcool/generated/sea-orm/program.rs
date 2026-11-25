@@ -10,34 +10,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "programs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "slugEn")]
+    #[sea_orm(column_name = "slugEn", column_type = "Text")]
     pub slug_en: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "slugEs")]
+    #[sea_orm(column_name = "slugEs", column_type = "Text")]
     pub slug_es: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "slugPt")]
+    #[sea_orm(column_name = "slugPt", column_type = "Text")]
     pub slug_pt: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "slugRu")]
+    #[sea_orm(column_name = "slugRu", column_type = "Text")]
     pub slug_ru: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "slugZhCn")]
+    #[sea_orm(column_name = "slugZhCn", column_type = "Text")]
     pub slug_zh_cn: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
-    #[sea_orm(column_name = "titleEn")]
+    #[sea_orm(column_name = "titleEn", column_type = "Text")]
     pub title_en: String,
-    #[sea_orm(column_name = "titleEs")]
+    #[sea_orm(column_name = "titleEs", column_type = "Text")]
     pub title_es: String,
-    #[sea_orm(column_name = "titlePt")]
+    #[sea_orm(column_name = "titlePt", column_type = "Text")]
     pub title_pt: String,
-    #[sea_orm(column_name = "titleRu")]
+    #[sea_orm(column_name = "titleRu", column_type = "Text")]
     pub title_ru: String,
-    #[sea_orm(column_name = "titleZhCn")]
+    #[sea_orm(column_name = "titleZhCn", column_type = "Text")]
     pub title_zh_cn: String,
     #[sea_orm(column_type = "Text")]
     pub description: String,
@@ -51,7 +54,9 @@ pub struct Model {
     pub description_ru: String,
     #[sea_orm(column_name = "descriptionZhCn", column_type = "Text")]
     pub description_zh_cn: String,
+    #[sea_orm(column_type = "Text")]
     pub category: String,
+    #[sea_orm(column_type = "Text")]
     pub image: String,
     pub level: ProgramLevel,
     pub r#type: ExerciseAttributeValueEnum,
@@ -70,9 +75,13 @@ pub struct Model {
     pub visibility: ProgramVisibility,
     #[sea_orm(column_name = "participantCount", default_value = 0)]
     pub participant_count: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

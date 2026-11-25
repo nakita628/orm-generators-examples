@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     /// The organization, which is also the aggregate id.
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// When the opening snapshot was taken, epoch milliseconds.
     #[sea_orm(column_name = "openedAt")]

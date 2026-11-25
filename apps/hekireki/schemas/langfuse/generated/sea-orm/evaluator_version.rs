@@ -8,23 +8,40 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "evaluator_versions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub evaluator_id: String,
     pub version: i32,
+    #[sea_orm(column_type = "Text")]
     pub created_by_user_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub prompt: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub prompt_messages: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub partner: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub model: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub provider: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub model_params: Option<Json>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub vars: Vec<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub variable_mapping: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub output_definition: Option<Json>,
     #[sea_orm(column_type = "String(StringLen::N(262144))")]
     pub source_code: Option<String>,
     pub source_code_language: Option<EvaluatorSourceCodeLanguage>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub questions: Option<Json>,
 }
 
@@ -34,14 +51,16 @@ pub enum Relation {
         belongs_to = "super::evaluator::Entity",
         from = "Column::EvaluatorId",
         to = "super::evaluator::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "evaluator_versions_evaluator_id_fkey"
     )]
     Evaluator,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedByUserId",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "evaluator_versions_created_by_user_id_fkey"
     )]
     CreatedByUser,
     #[sea_orm(has_many = "super::topic_clustering_run::Entity")]

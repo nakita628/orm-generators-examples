@@ -8,29 +8,52 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Workspace")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub icon: Option<String>,
     #[sea_orm(default_value = "FREE")]
     pub plan: Plan,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeId")]
+    #[sea_orm(column_name = "stripeId", column_type = "Text")]
     pub stripe_id: Option<String>,
     #[sea_orm(column_name = "additionalChatsIndex", default_value = 0)]
     pub additional_chats_index: i32,
     #[sea_orm(column_name = "additionalStorageIndex", default_value = 0)]
     pub additional_storage_index: i32,
-    #[sea_orm(column_name = "chatsLimitFirstEmailSentAt")]
+    #[sea_orm(
+        column_name = "chatsLimitFirstEmailSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub chats_limit_first_email_sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "storageLimitFirstEmailSentAt")]
+    #[sea_orm(
+        column_name = "storageLimitFirstEmailSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub storage_limit_first_email_sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "chatsLimitSecondEmailSentAt")]
+    #[sea_orm(
+        column_name = "chatsLimitSecondEmailSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub chats_limit_second_email_sent_at: Option<DateTime>,
-    #[sea_orm(column_name = "storageLimitSecondEmailSentAt")]
+    #[sea_orm(
+        column_name = "storageLimitSecondEmailSentAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub storage_limit_second_email_sent_at: Option<DateTime>,
     #[sea_orm(column_name = "customChatsLimit")]
     pub custom_chats_limit: Option<i32>,
@@ -48,8 +71,12 @@ pub struct Model {
     pub is_verified: Option<bool>,
     #[sea_orm(column_name = "chatsHardLimit")]
     pub chats_hard_limit: Option<i32>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub settings: Option<Json>,
-    #[sea_orm(column_name = "lastActivityAt")]
+    #[sea_orm(
+        column_name = "lastActivityAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_activity_at: Option<DateTime>,
 }
 

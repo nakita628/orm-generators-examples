@@ -7,15 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "in_app_agent_events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub project_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub conversation_id: String,
+    #[sea_orm(column_type = "Text")]
     pub run_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     pub sequence_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
     #[sea_orm(column_type = "JsonBinary")]
     pub event: Json,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,21 +33,24 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "in_app_agent_events_project_id_fkey"
     )]
     Project,
     #[sea_orm(
         belongs_to = "super::in_app_agent_conversation::Entity",
         from = "(Column::ConversationId, Column::ProjectId)",
         to = "(super::in_app_agent_conversation::Column::Id, super::in_app_agent_conversation::Column::ProjectId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "in_app_agent_events_conversation_id_project_id_fkey"
     )]
     Conversation,
     #[sea_orm(
         belongs_to = "super::in_app_agent_run::Entity",
         from = "(Column::RunId, Column::ProjectId)",
         to = "(super::in_app_agent_run::Column::Id, super::in_app_agent_run::Column::ProjectId)",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "in_app_agent_events_run_id_project_id_fkey"
     )]
     Run,
 }

@@ -7,14 +7,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "jackson_store")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
+    #[sea_orm(column_type = "Text")]
     pub value: String,
+    #[sea_orm(column_type = "Text")]
     pub iv: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub tag: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub namespace: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(0)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "modifiedAt")]
+    #[sea_orm(column_name = "modifiedAt", column_type = "custom(\"timestamp(0)\")")]
     pub modified_at: Option<DateTime>,
 }
 

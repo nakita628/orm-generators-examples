@@ -7,14 +7,16 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Agent")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
     #[sea_orm(column_name = "teamId")]
     pub team_id: Option<i32>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "providerAgentId")]
+    #[sea_orm(column_name = "providerAgentId", column_type = "Text")]
     pub provider_agent_id: String,
     #[sea_orm(column_name = "inboundEventTypeId")]
     pub inbound_event_type_id: Option<i32>,
@@ -22,9 +24,13 @@ pub struct Model {
     pub outbound_event_type_id: Option<i32>,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -34,14 +40,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Agent_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Agent_teamId_fkey"
     )]
     Team,
     #[sea_orm(

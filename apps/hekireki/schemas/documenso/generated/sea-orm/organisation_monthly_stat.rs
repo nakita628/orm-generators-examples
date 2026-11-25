@@ -7,14 +7,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganisationMonthlyStat")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: String,
     /// UTC calendar month in `YYYY-MM` form, e.g. "2026-05".
+    #[sea_orm(column_type = "Text")]
     pub period: String,
     #[sea_orm(column_name = "documentCount", default_value = 0)]
     pub document_count: i32,
@@ -32,7 +38,8 @@ pub enum Relation {
         belongs_to = "super::organisation::Entity",
         from = "Column::OrganisationId",
         to = "super::organisation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganisationMonthlyStat_organisationId_fkey"
     )]
     Organisation,
 }

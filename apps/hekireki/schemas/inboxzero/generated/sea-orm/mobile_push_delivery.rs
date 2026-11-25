@@ -7,12 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MobilePushDelivery")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "deduplicationKey")]
+    #[sea_orm(column_name = "deduplicationKey", column_type = "Text")]
     pub deduplication_key: String,
-    #[sea_orm(column_name = "mobilePushTokenId")]
+    #[sea_orm(column_name = "mobilePushTokenId", column_type = "Text")]
     pub mobile_push_token_id: String,
 }
 
@@ -22,7 +27,8 @@ pub enum Relation {
         belongs_to = "super::mobile_push_token::Entity",
         from = "Column::MobilePushTokenId",
         to = "super::mobile_push_token::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MobilePushDelivery_mobilePushTokenId_fkey"
     )]
     MobilePushToken,
 }

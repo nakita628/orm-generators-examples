@@ -7,10 +7,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ExperimentVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "experimentId")]
+    #[sea_orm(column_name = "experimentId", column_type = "Text")]
     pub experiment_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
     /// The number the version is addressed and displayed by. Numbered rows hold
     /// a gap-free sequence. The rolling autosave row rides on the counter
@@ -25,12 +26,12 @@ pub struct Model {
     pub counter_version: i32,
     #[sea_orm(column_name = "autoSaved", default_value = false)]
     pub auto_saved: bool,
-    #[sea_orm(column_name = "commitMessage")]
+    #[sea_orm(column_name = "commitMessage", column_type = "Text")]
     pub commit_message: Option<String>,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "Text")]
     pub author_id: Option<String>,
     /// Who wrote this version: "user", "langy" or "api".
-    #[sea_orm(column_name = "authorLabel")]
+    #[sea_orm(column_name = "authorLabel", column_type = "Text")]
     pub author_label: String,
     /// The run that wrote this version, when a run wrote it.
     ///
@@ -39,15 +40,28 @@ pub struct Model {
     /// somebody else's write, refuses to save, and asks the reader to reload
     /// over their own unsaved edits. Named here, the page adopts the version and
     /// carries on.
-    #[sea_orm(column_name = "runId")]
+    #[sea_orm(column_name = "runId", column_type = "Text")]
     pub run_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub state: Json,
     /// Schema version of `state`, so a later shape change can be read forward.
-    #[sea_orm(column_name = "schemaVersion", default_value = "1")]
+    #[sea_orm(
+        column_name = "schemaVersion",
+        column_type = "Text",
+        default_value = "1"
+    )]
     pub schema_version: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 

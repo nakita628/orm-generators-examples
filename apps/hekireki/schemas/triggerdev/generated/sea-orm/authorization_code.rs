@@ -8,37 +8,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuthorizationCode")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub code: String,
-    #[sea_orm(column_name = "personalAccessTokenId")]
+    #[sea_orm(column_name = "personalAccessTokenId", column_type = "Text")]
     pub personal_access_token_id: Option<String>,
     /// Client IP of the request that minted the code, compared with the approving browser's IP. Deleted with the code once it expires.
-    #[sea_orm(column_name = "requesterIp")]
+    #[sea_orm(column_name = "requesterIp", column_type = "Text")]
     pub requester_ip: Option<String>,
     /// S256 PKCE challenge from the client that minted the code. Null for codes minted by CLIs that predate it.
-    #[sea_orm(column_name = "codeChallenge")]
+    #[sea_orm(column_name = "codeChallenge", column_type = "Text")]
     pub code_challenge: Option<String>,
     /// Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it.
     #[sea_orm(column_name = "callbackPort")]
     pub callback_port: Option<i32>,
     /// sha256 of the approval code, which only the approving browser ever sees.
-    #[sea_orm(column_name = "approvalCodeHash")]
+    #[sea_orm(column_name = "approvalCodeHash", column_type = "Text")]
     pub approval_code_hash: Option<String>,
-    #[sea_orm(column_name = "oauthClientId")]
+    #[sea_orm(column_name = "oauthClientId", column_type = "Text")]
     pub oauth_client_id: Option<String>,
-    #[sea_orm(column_name = "redirectUri")]
+    #[sea_orm(column_name = "redirectUri", column_type = "Text")]
     pub redirect_uri: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub scope: Vec<String>,
+    #[sea_orm(column_type = "Text")]
     pub resource: Option<String>,
-    #[sea_orm(column_name = "approvedByUserId")]
+    #[sea_orm(column_name = "approvedByUserId", column_type = "Text")]
     pub approved_by_user_id: Option<String>,
     /// The user who started the OAuth authorization. Only they can approve it.
-    #[sea_orm(column_name = "requestedByUserId")]
+    #[sea_orm(column_name = "requestedByUserId", column_type = "Text")]
     pub requested_by_user_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -49,14 +57,16 @@ pub enum Relation {
         from = "Column::PersonalAccessTokenId",
         to = "super::personal_access_token::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuthorizationCode_personalAccessTokenId_fkey"
     )]
     PersonalAccessToken,
     #[sea_orm(
         belongs_to = "super::oauth_client::Entity",
         from = "Column::OauthClientId",
         to = "super::oauth_client::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AuthorizationCode_oauthClientId_fkey"
     )]
     OauthClient,
 }

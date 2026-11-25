@@ -1,4 +1,4 @@
-from sqlalchemy import Dialect, ForeignKey, Index, String, Text, TypeDecorator
+from sqlalchemy import Dialect, ForeignKey, Index, PrimaryKeyConstraint, String, Text, TypeDecorator
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -105,6 +105,7 @@ class Authenticator(Base):
     transports: Mapped[Optional[str]]
 
     __table_args__ = (
+        PrimaryKeyConstraint("userId", "credentialID"),
         Index("Authenticator_credentialID_key", "credentialID", unique=True),
     )
 

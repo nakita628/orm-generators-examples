@@ -7,20 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FunctionsServer")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "Text")]
     pub workspace_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub class: String,
-    #[sea_orm(column_name = "deploymentId")]
+    #[sea_orm(column_name = "deploymentId", column_type = "Text")]
     pub deployment_id: String,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub connections: Vec<String>,
-    #[sea_orm(column_name = "emptyConnections")]
+    #[sea_orm(
+        column_name = "emptyConnections",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub empty_connections: Vec<String>,
-    #[sea_orm(column_name = "profileBuilders")]
+    #[sea_orm(
+        column_name = "profileBuilders",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub profile_builders: Vec<String>,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_at: Option<DateTimeWithTimeZone>,
 }
 

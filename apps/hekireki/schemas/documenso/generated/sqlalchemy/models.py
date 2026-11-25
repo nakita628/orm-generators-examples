@@ -612,8 +612,8 @@ class Recipient(Base):
         Index("Recipient_email_envelopeId_idx", "email", "envelopeId"),
         Index("Recipient_email_signingStatus_envelopeId_role_idx", "email", "signingStatus", "envelopeId", "role"),
         Index("Recipient_nextReminderAt_idx", "nextReminderAt"),
-        Index("Recipient_email_trgm_idx", "email"),
-        Index("Recipient_name_trgm_idx", "name"),
+        Index("Recipient_email_trgm_idx", "email", postgresql_using="gin", postgresql_ops={"email": "gin_trgm_ops"}),
+        Index("Recipient_name_trgm_idx", "name", postgresql_using="gin", postgresql_ops={"name": "gin_trgm_ops"}),
     )
 
     envelope: Mapped["Envelope"] = relationship(back_populates="recipients")

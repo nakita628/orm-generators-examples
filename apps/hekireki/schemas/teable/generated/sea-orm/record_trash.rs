@@ -7,18 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "record_trash")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: String,
+    #[sea_orm(column_type = "Text")]
     pub record_id: String,
+    #[sea_orm(column_type = "Text")]
     pub snapshot: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
-    #[sea_orm(default_value = "deleted")]
+    #[sea_orm(column_type = "Text", default_value = "deleted")]
     pub reason: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub record_created_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub record_created_by: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub record_last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub record_last_modified_by: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub operation_id: Option<String>,
 }
 

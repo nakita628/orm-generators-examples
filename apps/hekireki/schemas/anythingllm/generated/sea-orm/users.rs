@@ -10,24 +10,30 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub password: String,
-    #[sea_orm(column_name = "pfpFilename")]
+    #[sea_orm(column_name = "pfpFilename", column_type = "Text")]
     pub pfp_filename: Option<String>,
-    #[sea_orm(default_value = "default")]
+    #[sea_orm(column_type = "Text", default_value = "default")]
     pub role: String,
     #[sea_orm(default_value = 0)]
     pub suspended: i32,
     #[sea_orm(default_value = false)]
     pub seen_recovery_codes: Option<bool>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
     #[sea_orm(column_name = "dailyMessageLimit")]
     pub daily_message_limit: Option<i32>,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub bio: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub web_push_subscription_config: Option<String>,
 }
 

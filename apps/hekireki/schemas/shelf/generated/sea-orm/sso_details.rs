@@ -7,21 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SsoDetails")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub domain: String,
-    #[sea_orm(column_name = "baseUserGroupId")]
+    #[sea_orm(column_name = "baseUserGroupId", column_type = "Text")]
     pub base_user_group_id: Option<String>,
-    #[sea_orm(column_name = "selfServiceGroupId")]
+    #[sea_orm(column_name = "selfServiceGroupId", column_type = "Text")]
     pub self_service_group_id: Option<String>,
-    #[sea_orm(column_name = "adminGroupId")]
+    #[sea_orm(column_name = "adminGroupId", column_type = "Text")]
     pub admin_group_id: Option<String>,
-    #[sea_orm(column_name = "managerGroupId")]
+    #[sea_orm(column_name = "managerGroupId", column_type = "Text")]
     pub manager_group_id: Option<String>,
     #[sea_orm(column_name = "requireSsoLogin", default_value = true)]
     pub require_sso_login: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

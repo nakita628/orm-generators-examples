@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from datetime import timezone as dt_timezone
 from decimal import Decimal
@@ -6,6 +7,7 @@ from typing import Any, TypeVar
 from django.conf import settings
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
+from django.db.models import functions as db_functions
 from django.utils import timezone
 
 
@@ -51,6 +53,21 @@ class PlainJSONField(models.JSONField):
             return super().from_db_value(value, expression, connection)
         return value
 
+    def get_db_prep_value(self, value: Any, connection: BaseDatabaseWrapper, prepared: bool = False) -> Any:
+        if connection.vendor != "postgresql":
+            return super().get_db_prep_value(value, connection, prepared)
+        if not prepared:
+            value = self.get_prep_value(value)
+        return json.dumps(value, cls=self.encoder, ensure_ascii=False, separators=(",", ":"))
+
+    def get_lookup(self, lookup_name: str) -> Any:
+        lookup = super().get_lookup(lookup_name)
+        return None if lookup is None else lambda lhs, rhs: lookup(db_functions.Cast(lhs, models.JSONField()), rhs)
+
+    def get_transform(self, lookup_name: str) -> Any:
+        transform = super().get_transform(lookup_name)
+        return None if transform is None else lambda lhs: transform(db_functions.Cast(lhs, models.JSONField()))
+
 
 _M = TypeVar("_M", bound=models.Model)
 
@@ -70,15 +87,15 @@ def now_milliseconds() -> datetime:
 
 class Accounts(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField(default="")
-    nickname = models.TextField(default="")
-    password = models.TextField(default="")
-    image = models.TextField(default="")
-    api_token = models.TextField(db_column="apiToken", default="")
+    name = models.CharField(default="")
+    nickname = models.CharField(default="")
+    password = models.CharField(default="")
+    image = models.CharField(default="")
+    api_token = models.CharField(db_column="apiToken", default="")
     description = models.TextField(default="")
     note = models.IntegerField(default=0)
-    role = models.TextField(default="")
-    login_type = models.TextField(db_column="loginType", default="")
+    role = models.CharField(default="")
+    login_type = models.CharField(db_column="loginType", default="")
     link_account_id = models.IntegerField(null=True, db_column="linkAccountId")
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -91,17 +108,17 @@ class Accounts(models.Model):
 class Attachments(models.Model):
     id = models.AutoField(primary_key=True)
     is_share = models.BooleanField(db_column="isShare", default=False)
-    share_password = models.TextField(db_column="sharePassword", default="")
-    name = models.TextField(default="")
-    path = models.TextField(default="")
+    share_password = models.CharField(db_column="sharePassword", default="")
+    name = models.CharField(default="")
+    path = models.CharField(default="")
     size = models.DecimalField(max_digits=65, decimal_places=30, default=Decimal("0"))
-    type = models.TextField(default="")
+    type = models.CharField(default="")
     note = models.ForeignKey("Notes", on_delete=models.SET_NULL, related_name="attachments", db_column="noteId", null=True, db_index=False)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="attachments", db_column="accountId", null=True, db_index=False)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
-    perfix_path = models.TextField(null=True, db_column="perfixPath", default="")
+    perfix_path = models.CharField(null=True, db_column="perfixPath", default="")
     depth = models.IntegerField(null=True)
     metadata = PlainJSONField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -112,7 +129,7 @@ class Attachments(models.Model):
 
 class Config(models.Model):
     id = models.AutoField(primary_key=True)
-    key = models.TextField(default="")
+    key = models.CharField(default="")
     config = PlainJSONField(null=True)
     user = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="configs", db_column="userId", null=True, db_index=False)
 
@@ -123,14 +140,14 @@ class Config(models.Model):
 class Notes(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.IntegerField(default=0)
-    content = models.TextField(default="")
+    content = models.CharField(default="")
     is_archived = models.BooleanField(db_column="isArchived", default=False)
     is_recycle = models.BooleanField(db_column="isRecycle", default=False)
     is_share = models.BooleanField(db_column="isShare", default=False)
     is_top = models.BooleanField(db_column="isTop", default=False)
     is_reviewed = models.BooleanField(db_column="isReviewed", default=False)
-    share_password = models.TextField(db_column="sharePassword", default="")
-    share_encrypted_url = models.TextField(null=True, db_column="shareEncryptedUrl")
+    share_password = models.CharField(db_column="sharePassword", default="")
+    share_encrypted_url = models.CharField(null=True, db_column="shareEncryptedUrl")
     share_expiry_date = models.DateTimeField(null=True, db_column="shareExpiryDate")
     share_max_view = models.IntegerField(null=True, db_column="shareMaxView", default=0)
     share_view_count = models.IntegerField(null=True, db_column="shareViewCount", default=0)
@@ -149,9 +166,9 @@ class Comments(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField()
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="comments", db_column="accountId", null=True, db_index=False)
-    guest_name = models.TextField(null=True, db_column="guestName")
-    guest_ip = models.TextField(null=True, db_column="guestIP")
-    guest_ua = models.TextField(null=True, db_column="guestUA")
+    guest_name = models.CharField(null=True, db_column="guestName")
+    guest_ip = models.CharField(null=True, db_column="guestIP")
+    guest_ua = models.CharField(null=True, db_column="guestUA")
     note = models.ForeignKey("Notes", on_delete=models.RESTRICT, related_name="comments", db_column="noteId", db_index=False)
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="replies", db_column="parentId", null=True, db_index=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -164,8 +181,8 @@ class Comments(models.Model):
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField(default="")
-    icon = models.TextField(default="")
+    name = models.CharField(default="")
+    icon = models.CharField(default="")
     parent = models.IntegerField(default=0)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="tags", db_column="accountId", null=True, db_index=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -202,13 +219,13 @@ class NoteReference(models.Model):
 
 class Follows(models.Model):
     id = models.AutoField(primary_key=True)
-    site_name = models.TextField(null=True, db_column="siteName")
-    site_url = models.TextField(db_column="siteUrl")
-    site_avatar = models.TextField(null=True, db_column="siteAvatar")
+    site_name = models.CharField(null=True, db_column="siteName")
+    site_url = models.CharField(db_column="siteUrl")
+    site_avatar = models.CharField(null=True, db_column="siteAvatar")
     description = models.TextField(null=True)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
-    follow_type = models.TextField(db_column="followType", default="following")
+    follow_type = models.CharField(db_column="followType", default="following")
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="follows", db_column="accountId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -218,8 +235,8 @@ class Follows(models.Model):
 
 class Notifications(models.Model):
     id = models.AutoField(primary_key=True)
-    type = models.TextField()
-    title = models.TextField()
+    type = models.CharField()
+    title = models.CharField()
     content = models.TextField()
     metadata = PlainJSONField(null=True)
     is_read = models.BooleanField(db_column="isRead", default=False)
@@ -234,7 +251,7 @@ class Notifications(models.Model):
 
 class Cache(models.Model):
     id = models.AutoField(primary_key=True)
-    key = models.TextField(unique=True)
+    key = models.CharField(unique=True)
     value = PlainJSONField()
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -247,7 +264,7 @@ class Cache(models.Model):
 class Plugin(models.Model):
     id = models.AutoField(primary_key=True)
     metadata = PlainJSONField()
-    path = models.TextField()
+    path = models.CharField()
     is_use = models.BooleanField(db_column="isUse", default=True)
     is_dev = models.BooleanField(db_column="isDev", default=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)

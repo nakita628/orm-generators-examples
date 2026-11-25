@@ -16,22 +16,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "ConnectedSeatChange")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The reissued `IssuedLicense` row that carries the new seat count. A
     /// plain column ref, like `replacesId`: relationMode="prisma" carries no
     /// foreign keys.
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "licenseId")]
+    #[sea_orm(column_name = "licenseId", column_type = "Text")]
     pub license_id: String,
     /// The `ConnectedBillingAccount` row the invoice is raised against. Null
     /// when the customer had no billing account (`not_onboarded`).
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: Option<String>,
     /// The customer organization the license belongs to.
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: Option<String>,
     /// When the seats changed, which is the day the proration counts from.
-    #[sea_orm(column_name = "changedAt")]
+    #[sea_orm(column_name = "changedAt", column_type = "custom(\"timestamp(3)\")")]
     pub changed_at: DateTime,
     /// Seats on the new license above the seats on the one it replaced.
     #[sea_orm(column_name = "addedSeats")]
@@ -45,12 +46,16 @@ pub struct Model {
     /// Null when no billing account named one (`not_onboarded`).
     pub currency: Option<Currency>,
     /// The one-off invoice the added seats were billed on.
-    #[sea_orm(column_name = "stripeInvoiceId")]
+    #[sea_orm(column_name = "stripeInvoiceId", column_type = "Text")]
     pub stripe_invoice_id: Option<String>,
     pub state: ConnectedSeatChangeState,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

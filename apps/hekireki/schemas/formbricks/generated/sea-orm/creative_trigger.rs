@@ -8,12 +8,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CreativeTrigger")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "creativeId")]
+    #[sea_orm(column_name = "creativeId", column_type = "Text")]
     pub creative_id: String,
-    #[sea_orm(column_name = "actionClassId")]
+    #[sea_orm(column_name = "actionClassId", column_type = "Text")]
     pub action_class_id: String,
 }
 
@@ -23,14 +29,16 @@ pub enum Relation {
         belongs_to = "super::creative::Entity",
         from = "Column::CreativeId",
         to = "super::creative::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreativeTrigger_creativeId_fkey"
     )]
     Creative,
     #[sea_orm(
         belongs_to = "super::action_class::Entity",
         from = "Column::ActionClassId",
         to = "super::action_class::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CreativeTrigger_actionClassId_fkey"
     )]
     ActionClass,
 }

@@ -8,25 +8,33 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AgentVersion")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "agentId")]
+    #[sea_orm(column_name = "agentId", column_type = "Text")]
     pub agent_id: String,
     pub version: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Json,
-    #[sea_orm(column_name = "workflowId")]
+    #[sea_orm(column_name = "workflowId", column_type = "Text")]
     pub workflow_id: Option<String>,
-    #[sea_orm(column_name = "commitMessage")]
+    #[sea_orm(column_name = "commitMessage", column_type = "Text")]
     pub commit_message: Option<String>,
-    #[sea_orm(column_name = "authorId")]
+    #[sea_orm(column_name = "authorId", column_type = "Text")]
     pub author_id: Option<String>,
     /// "user", "api_key" or "system": who wrote the version when authorId is null.
-    #[sea_orm(column_name = "authorKind")]
+    #[sea_orm(column_name = "authorKind", column_type = "Text")]
     pub author_kind: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

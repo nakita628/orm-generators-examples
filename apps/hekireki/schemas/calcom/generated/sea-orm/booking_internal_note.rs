@@ -10,12 +10,17 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "notePresetId")]
     pub note_preset_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub text: Option<String>,
     #[sea_orm(column_name = "bookingId")]
     pub booking_id: i32,
     #[sea_orm(column_name = "createdById")]
     pub created_by_id: i32,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -25,20 +30,23 @@ pub enum Relation {
         belongs_to = "super::internal_note_preset::Entity",
         from = "Column::NotePresetId",
         to = "super::internal_note_preset::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingInternalNote_notePresetId_fkey"
     )]
     NotePreset,
     #[sea_orm(
         belongs_to = "super::booking::Entity",
         from = "Column::BookingId",
         to = "super::booking::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BookingInternalNote_bookingId_fkey"
     )]
     Booking,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "BookingInternalNote_createdById_fkey"
     )]
     CreatedBy,
 }

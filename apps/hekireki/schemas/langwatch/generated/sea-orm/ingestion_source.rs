@@ -18,27 +18,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IngestionSource")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Optional team-scope. null = org-wide.
-    #[sea_orm(column_name = "teamId")]
+    #[sea_orm(column_name = "teamId", column_type = "Text")]
     pub team_id: Option<String>,
     /// 'otel_generic' | 'claude_cowork' | 'workato' | 'copilot_studio' |
     /// 'openai_compliance' | 'claude_compliance' | 's3_custom' (extensible).
     /// String not enum so adapters can be added without migrations - the
     /// supported set lives in code (activity-monitor adapter registry).
-    #[sea_orm(column_name = "sourceType")]
+    #[sea_orm(column_name = "sourceType", column_type = "Text")]
     pub source_type: String,
     /// Human-friendly label for the admin UI. Unique per-org so two
     /// "Cowork" sources can coexist with different names.
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
     /// HMAC bearer token the upstream operator pastes into the platform
     /// (or LangWatch sends in pull mode). Stored encrypted at rest via
     /// the same pepper-derived KEK as VirtualKey secrets. Auto-generated
     /// on create, rotatable via the admin UI with a 24h grace window.
-    #[sea_orm(column_name = "ingestSecretHash")]
+    #[sea_orm(column_name = "ingestSecretHash", column_type = "Text")]
     pub ingest_secret_hash: String,
     /// Per-source-type configuration. Shape is platform-specific:
     /// - otel_generic: { allowedSourceTypeLabel?: string }
@@ -48,11 +51,15 @@ pub struct Model {
     /// - openai_compliance: { bucket, prefix, roleArn, pollEverySec }
     /// - claude_compliance: { workspaceApiKeyHash, pollEverySec }
     /// - s3_custom: { bucket, prefix, roleArn, parserDsl, pollEverySec }
-    #[sea_orm(column_name = "parserConfig", default_value = "{}")]
+    #[sea_orm(
+        column_name = "parserConfig",
+        column_type = "JsonBinary",
+        default_value = "{}"
+    )]
     pub parser_config: Json,
     /// For pull-based sources, persisted between polls so the next poll
     /// resumes where the last left off (timestamp / cursor / file marker).
-    #[sea_orm(column_name = "pollerCursor")]
+    #[sea_orm(column_name = "pollerCursor", column_type = "JsonBinary")]
     pub poller_cursor: Option<Json>,
     /// Phase 10 - number of consecutive errors observed by the puller
     /// worker. Reset to 0 on a successful run. Drives admin-UI banners
@@ -64,11 +71,11 @@ pub struct Model {
     /// Phase 10 - cron schedule for pull-mode sources. Validated by the
     /// adapter's pullConfig schema; mirrored here for fast worker
     /// dispatch. Null for push-mode sources.
-    #[sea_orm(column_name = "pullSchedule")]
+    #[sea_orm(column_name = "pullSchedule", column_type = "Text")]
     pub pull_schedule: Option<String>,
     /// Status flag. 'active' (default), 'disabled' (admin paused), or
     /// 'awaiting_first_event' (created but never received).
-    #[sea_orm(default_value = "awaiting_first_event")]
+    #[sea_orm(column_type = "Text", default_value = "awaiting_first_event")]
     pub status: String,
     /// ADR-088 v7: optional trace DESTINATION for conversation-bearing pulls
     /// (Databricks Genie). Null = don't route. Same shape as
@@ -77,7 +84,7 @@ pub struct Model {
     /// traces land. Must be a project of this org (validated at write time).
     /// Freely editable; already-routed history stays where it landed.
     /// NOT the deferred cost-attribution projectId (ADR-088 Decision 4).
-    #[sea_orm(column_name = "traceProjectId")]
+    #[sea_orm(column_name = "traceProjectId", column_type = "Text")]
     pub trace_project_id: Option<String>,
     /// The account the provider itself named when this connection was saved -
     /// an OpenAI or Anthropic organization id, read once per save and compared
@@ -89,11 +96,11 @@ pub struct Model {
     /// because Azure and Power Platform name what they read in parserConfig
     /// instead. "Unknown account" has to be a storable state.
     /// Spec: specs/ai-gateway/governance/ingestion-sources.feature
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: Option<String>,
     /// Last event timestamp observed (any direction). Surfaces in the
     /// admin UI as "last event 2 minutes ago".
-    #[sea_orm(column_name = "lastEventAt")]
+    #[sea_orm(column_name = "lastEventAt", column_type = "custom(\"timestamp(3)\")")]
     pub last_event_at: Option<DateTime>,
     /// ADR-128 - when a pull run last reached the provider without erroring,
     /// mirrored from the ingestionPullRunStatus projection. Deliberately NOT
@@ -102,7 +109,10 @@ pub struct Model {
     /// the "no data since" cut-off, below which a day's spend is unknown
     /// rather than zero.
     /// Spec: specs/governance/ingestion-source-health.feature
-    #[sea_orm(column_name = "lastSuccessAt")]
+    #[sea_orm(
+        column_name = "lastSuccessAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_success_at: Option<DateTime>,
     /// ADR-128 - how far the last run actually read, and whether it reached the
     /// end. Mirrored from the ingestionPullRunStatus projection, in the same way
@@ -120,9 +130,12 @@ pub struct Model {
     /// is what every row written before this existed reads as, and unknown must
     /// never render as either answer.
     /// Spec: specs/governance/ingestion-source-health.feature
-    #[sea_orm(column_name = "lastReadThroughAt")]
+    #[sea_orm(
+        column_name = "lastReadThroughAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_read_through_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastRunCompleteness")]
+    #[sea_orm(column_name = "lastRunCompleteness", column_type = "Text")]
     pub last_run_completeness: Option<String>,
     /// ADR-088 - the window this source read while pulled cost recording was
     /// off for the organization, so its spend was dropped rather than priced.
@@ -132,17 +145,31 @@ pub struct Model {
     /// than as unknown. Widened by any run that drops a priced item, cleared
     /// only when a later run re-reads back across the whole window.
     /// Spec: specs/governance/pulled-usage-cost-gap.feature
-    #[sea_orm(column_name = "unpricedUsageSince")]
+    #[sea_orm(
+        column_name = "unpricedUsageSince",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub unpriced_usage_since: Option<DateTime>,
-    #[sea_orm(column_name = "unpricedUsageThrough")]
+    #[sea_orm(
+        column_name = "unpricedUsageThrough",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub unpriced_usage_through: Option<DateTime>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "createdById")]
+    #[sea_orm(column_name = "createdById", column_type = "Text")]
     pub created_by_id: Option<String>,
 }
 
@@ -152,21 +179,24 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "IngestionSource_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::team::Entity",
         from = "Column::TeamId",
         to = "super::team::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "IngestionSource_teamId_fkey"
     )]
     Team,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::CreatedById",
         to = "super::user::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "IngestionSource_createdById_fkey"
     )]
     CreatedBy,
 }

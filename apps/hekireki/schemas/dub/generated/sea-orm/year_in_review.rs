@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "YearInReview")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     pub year: i32,
     #[sea_orm(column_name = "totalLinks")]
@@ -17,11 +18,15 @@ pub struct Model {
     pub top_links: Json,
     #[sea_orm(column_name = "topCountries")]
     pub top_countries: Json,
-    #[sea_orm(column_name = "workspaceId")]
+    #[sea_orm(column_name = "workspaceId", column_type = "String(StringLen::N(191))")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "sentAt")]
+    #[sea_orm(column_name = "sentAt", column_type = "custom(\"datetime(3)\")")]
     pub sent_at: Option<DateTime>,
 }
 
@@ -31,7 +36,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::WorkspaceId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "YearInReview_workspaceId_fkey"
     )]
     Workspace,
 }

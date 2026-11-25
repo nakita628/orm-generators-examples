@@ -15,13 +15,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::integration::Entity",
         from = "Column::IntegrationId",
-        to = "super::integration::Column::Id"
+        to = "super::integration::Column::Id",
+        fk_name = "_IntegrationToNotificationRule_A_fkey"
     )]
     Integration,
     #[sea_orm(
         belongs_to = "super::notification_rule::Entity",
         from = "Column::NotificationRuleId",
-        to = "super::notification_rule::Column::Id"
+        to = "super::notification_rule::Column::Id",
+        fk_name = "_IntegrationToNotificationRule_B_fkey"
     )]
     NotificationRule,
 }

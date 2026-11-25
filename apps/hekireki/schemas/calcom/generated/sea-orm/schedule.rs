@@ -8,8 +8,9 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "userId")]
     pub user_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
-    #[sea_orm(column_name = "timeZone")]
+    #[sea_orm(column_name = "timeZone", column_type = "Text")]
     pub time_zone: Option<String>,
 }
 
@@ -19,7 +20,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Schedule_userId_fkey"
     )]
     User,
     #[sea_orm(

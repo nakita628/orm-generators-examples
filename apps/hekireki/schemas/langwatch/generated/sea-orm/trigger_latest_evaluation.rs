@@ -7,22 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TriggerLatestEvaluation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "triggerId")]
+    #[sea_orm(column_name = "triggerId", column_type = "Text")]
     pub trigger_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: String,
-    #[sea_orm(column_name = "evaluatedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "evaluatedAt",
+        column_type = "custom(\"timestamptz(3)\")"
+    )]
     pub evaluated_at: DateTimeWithTimeZone,
+    #[sea_orm(column_type = "Text")]
     pub verdict: String,
     #[sea_orm(column_name = "observedValue")]
     pub observed_value: Option<f64>,
     pub threshold: Option<f64>,
+    #[sea_orm(column_type = "Text")]
     pub operator: Option<String>,
     #[sea_orm(column_name = "timePeriodMinutes")]
     pub time_period_minutes: Option<i32>,
-    #[sea_orm(column_name = "skipCode")]
+    #[sea_orm(column_name = "skipCode", column_type = "Text")]
     pub skip_code: Option<String>,
-    #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_at: DateTimeWithTimeZone,
 }
 
@@ -32,7 +37,8 @@ pub enum Relation {
         belongs_to = "super::trigger::Entity",
         from = "Column::TriggerId",
         to = "super::trigger::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TriggerLatestEvaluation_triggerId_fkey"
     )]
     Trigger,
 }

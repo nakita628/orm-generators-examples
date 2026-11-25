@@ -6,10 +6,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationSeatPeakMonth")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// `YYYY-MM`.
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub month: String,
     #[sea_orm(column_name = "fullPeak")]
     pub full_peak: i32,

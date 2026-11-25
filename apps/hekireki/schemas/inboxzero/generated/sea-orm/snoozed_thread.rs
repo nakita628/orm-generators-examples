@@ -8,18 +8,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "SnoozedThread")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
-    #[sea_orm(column_name = "scheduledFor")]
+    #[sea_orm(column_name = "scheduledFor", column_type = "custom(\"timestamp(3)\")")]
     pub scheduled_for: DateTime,
     #[sea_orm(default_value = "PENDING")]
     pub status: SnoozedThreadStatus,
-    #[sea_orm(column_name = "clientMutationId")]
+    #[sea_orm(column_name = "clientMutationId", column_type = "Text")]
     pub client_mutation_id: Option<String>,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -29,7 +30,8 @@ pub enum Relation {
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "SnoozedThread_emailAccountId_fkey"
     )]
     EmailAccount,
 }

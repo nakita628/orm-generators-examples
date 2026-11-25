@@ -9,13 +9,13 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "custom(\"mediumtext\")")]
     pub text: String,
     #[sea_orm(default_value = true)]
     pub visible: bool,
     #[sea_orm(column_name = "parentId")]
     pub parent_id: Option<i32>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     #[sea_orm(column_name = "rootType", default_value = "CHALLENGE")]
     pub root_type: CommentRoot,
@@ -23,9 +23,13 @@ pub struct Model {
     pub root_challenge_id: Option<i32>,
     #[sea_orm(column_name = "rootSolutionId")]
     pub root_solution_id: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -36,25 +40,29 @@ pub enum Relation {
         from = "Column::ParentId",
         to = "super::comment::Column::Id",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "NoAction",
+        fk_name = "Comment_parentId_fkey"
     )]
     ParentComment,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Comment_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::RootChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "Comment_rootChallengeId_fkey"
     )]
     RootChallenge,
     #[sea_orm(
         belongs_to = "super::shared_solution::Entity",
         from = "Column::RootSolutionId",
-        to = "super::shared_solution::Column::Id"
+        to = "super::shared_solution::Column::Id",
+        fk_name = "Comment_rootSolutionId_fkey"
     )]
     RootSolution,
     #[sea_orm(

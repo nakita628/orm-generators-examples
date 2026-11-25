@@ -7,17 +7,21 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "mastra_favorites")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "entityType")]
+    #[sea_orm(column_name = "entityType", column_type = "Text")]
     pub entity_type: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "entityId")]
+    #[sea_orm(column_name = "entityId", column_type = "Text")]
     pub entity_id: String,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "createdAtZ", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAtZ",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at_z: Option<DateTimeWithTimeZone>,
 }
 

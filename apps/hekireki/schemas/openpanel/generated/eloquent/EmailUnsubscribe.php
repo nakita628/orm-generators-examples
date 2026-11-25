@@ -15,8 +15,6 @@ class EmailUnsubscribe extends Model
 
     protected $keyType = 'string';
 
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
         'email',

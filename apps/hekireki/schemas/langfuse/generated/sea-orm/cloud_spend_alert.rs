@@ -7,12 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "cloud_spend_alerts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub org_id: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
+    #[sea_orm(column_type = "Decimal(Some((65, 30)))")]
     pub threshold: Decimal,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub triggered_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -22,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrgId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "cloud_spend_alerts_org_id_fkey"
     )]
     Org,
 }

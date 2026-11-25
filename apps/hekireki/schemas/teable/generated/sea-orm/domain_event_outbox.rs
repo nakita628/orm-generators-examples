@@ -7,22 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "domain_event_outbox")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub base_id: String,
+    #[sea_orm(column_type = "Text")]
     pub table_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub message_name: String,
     pub schema_version: i32,
+    #[sea_orm(column_type = "Text")]
     pub aggregate_id: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
     pub payload_bytes: i32,
     pub catalog_generation: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub required_consumers: Json,
+    #[sea_orm(column_type = "Text")]
     pub binding_id: Option<String>,
     pub storage_epoch: Option<i32>,
     #[sea_orm(default_value = true)]
     pub unpublished: bool,
+    #[sea_orm(column_type = "Text")]
     pub settled: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub settled_at: Option<DateTime>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

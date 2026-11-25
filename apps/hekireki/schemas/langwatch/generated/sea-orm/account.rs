@@ -7,35 +7,50 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Account")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(default_value = "oauth")]
+    #[sea_orm(column_type = "Text", default_value = "oauth")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
     /// WHO asserted `providerAccountId`. Better Auth keys accounts by
     /// `(provider, providerAccountId)`; auth's account create hook writes this
     /// (modules/auth/specs/account-issuer.feature). Nullable only so the column
     /// could be added to a populated table; the migration backfilled every row.
+    #[sea_orm(column_type = "Text")]
     pub issuer: Option<String>,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: String,
     #[sea_orm(column_type = "Text")]
     pub refresh_token: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub access_token: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
     pub ext_expires_in: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub token_type: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub scope: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub id_token: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub session_state: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -45,7 +60,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Account_userId_fkey"
     )]
     User,
 }

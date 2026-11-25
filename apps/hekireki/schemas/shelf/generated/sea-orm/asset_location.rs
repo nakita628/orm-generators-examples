@@ -7,20 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AssetLocation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "assetId")]
+    #[sea_orm(column_name = "assetId", column_type = "Text")]
     pub asset_id: String,
-    #[sea_orm(column_name = "locationId")]
+    #[sea_orm(column_name = "locationId", column_type = "Text")]
     pub location_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     #[sea_orm(default_value = 1)]
     pub quantity: i32,
-    #[sea_orm(column_name = "assetKitId")]
+    #[sea_orm(column_name = "assetKitId", column_type = "Text")]
     pub asset_kit_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -31,7 +36,8 @@ pub enum Relation {
         from = "Column::AssetId",
         to = "super::asset::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetLocation_assetId_fkey"
     )]
     Asset,
     #[sea_orm(
@@ -39,7 +45,8 @@ pub enum Relation {
         from = "Column::LocationId",
         to = "super::location::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetLocation_locationId_fkey"
     )]
     Location,
     #[sea_orm(
@@ -47,7 +54,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetLocation_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -55,7 +63,8 @@ pub enum Relation {
         from = "Column::AssetKitId",
         to = "super::asset_kit::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "AssetLocation_assetKitId_fkey"
     )]
     AssetKit,
 }

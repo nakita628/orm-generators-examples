@@ -8,44 +8,64 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub email: String,
+    #[sea_orm(column_type = "Text")]
     pub password: Option<String>,
     #[sea_orm(column_name = "providerName")]
     pub provider_name: Provider,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
-    #[sea_orm(column_name = "lastName")]
+    #[sea_orm(column_name = "lastName", column_type = "Text")]
     pub last_name: Option<String>,
     #[sea_orm(column_name = "isSuperAdmin", default_value = false)]
     pub is_super_admin: bool,
+    #[sea_orm(column_type = "Text")]
     pub bio: Option<String>,
     #[sea_orm(default_value = 0)]
     pub audience: i32,
-    #[sea_orm(column_name = "pictureId")]
+    #[sea_orm(column_name = "pictureId", column_type = "Text")]
     pub picture_id: Option<String>,
-    #[sea_orm(column_name = "providerId")]
+    #[sea_orm(column_name = "providerId", column_type = "Text")]
     pub provider_id: Option<String>,
     pub timezone: i32,
-    #[sea_orm(column_name = "timezoneName")]
+    #[sea_orm(column_name = "timezoneName", column_type = "Text")]
     pub timezone_name: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "lastReadNotifications")]
+    #[sea_orm(
+        column_name = "lastReadNotifications",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_read_notifications: DateTime,
-    #[sea_orm(column_name = "inviteId")]
+    #[sea_orm(column_name = "inviteId", column_type = "Text")]
     pub invite_id: Option<String>,
     #[sea_orm(default_value = true)]
     pub activated: bool,
+    #[sea_orm(column_type = "Text")]
     pub account: Option<String>,
     #[sea_orm(column_name = "connectedAccount", default_value = false)]
     pub connected_account: bool,
-    #[sea_orm(column_name = "lastOnline")]
+    #[sea_orm(
+        column_name = "lastOnline",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_online: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub ip: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub agent: Option<String>,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
     #[sea_orm(column_name = "sendSuccessEmails", default_value = true)]
     pub send_success_emails: bool,
@@ -60,7 +80,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::media::Entity",
         from = "Column::PictureId",
-        to = "super::media::Column::Id"
+        to = "super::media::Column::Id",
+        fk_name = "User_pictureId_fkey"
     )]
     Picture,
     #[sea_orm(has_many = "super::comments::Entity")]

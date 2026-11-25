@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,8 +17,6 @@ class UserTotp extends Model
 
     protected $keyType = 'string';
 
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
         'userId',
@@ -30,6 +29,20 @@ class UserTotp extends Model
         'recoveryCodes' => AsPrismaList::class,
         'enabledAt' => 'datetime',
     ];
+
+    protected function insertAndSetId(Builder $query, $attributes)
+    {
+        $base = $query->getQuery();
+        $base->applyBeforeQueryCallbacks();
+        $connection = $base->getConnection();
+        $connection->recordsHaveBeenModified();
+        $keyName = $this->getKeyName();
+        $row = $connection->selectFromWriteConnection(
+            $base->getGrammar()->compileInsertGetId($base, $attributes, $keyName),
+            $base->cleanBindings($attributes),
+        )[0];
+        $this->setAttribute($keyName, is_object($row) ? $row->{$keyName} : $row[$keyName]);
+    }
 
     public function user(): BelongsTo
     {

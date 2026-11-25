@@ -7,19 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Account")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
+    #[sea_orm(column_type = "Text")]
     pub provider: String,
-    #[sea_orm(column_name = "providerAccountId")]
+    #[sea_orm(column_name = "providerAccountId", column_type = "Text")]
     pub provider_account_id: String,
-    #[sea_orm(column_name = "providerRefreshToken")]
+    #[sea_orm(column_name = "providerRefreshToken", column_type = "Text")]
     pub provider_refresh_token: Option<String>,
-    #[sea_orm(column_name = "providerAccessToken")]
+    #[sea_orm(column_name = "providerAccessToken", column_type = "Text")]
     pub provider_access_token: Option<String>,
-    #[sea_orm(column_name = "providerScope")]
+    #[sea_orm(column_name = "providerScope", column_type = "Text")]
     pub provider_scope: Option<String>,
-    #[sea_orm(column_name = "loggedIn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "loggedIn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub logged_in: DateTimeWithTimeZone,
 }
 
@@ -29,7 +35,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Uid",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Account_userId_fkey"
     )]
     User,
 }

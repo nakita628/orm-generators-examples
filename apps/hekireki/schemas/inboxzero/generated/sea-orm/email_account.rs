@@ -13,24 +13,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EmailAccount")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
     #[sea_orm(column_name = "sortOrder")]
     pub sort_order: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub about: Option<String>,
-    #[sea_orm(column_name = "writingStyle")]
+    #[sea_orm(column_name = "writingStyle", column_type = "Text")]
     pub writing_style: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub signature: Option<String>,
-    #[sea_orm(column_name = "sentSignatureScan")]
+    #[sea_orm(column_name = "sentSignatureScan", column_type = "JsonBinary")]
     pub sent_signature_scan: Option<Json>,
-    #[sea_orm(column_name = "sentSignatureScannedAt")]
+    #[sea_orm(
+        column_name = "sentSignatureScannedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub sent_signature_scanned_at: Option<DateTime>,
     #[sea_orm(column_name = "includeReferralSignature", default_value = false)]
     pub include_referral_signature: bool,
@@ -38,45 +51,62 @@ pub struct Model {
     pub include_sent_with_signature: bool,
     #[sea_orm(column_name = "sentMessageOpenTrackingEnabled", default_value = true)]
     pub sent_message_open_tracking_enabled: bool,
-    #[sea_orm(column_name = "watchEmailsExpirationDate")]
+    #[sea_orm(
+        column_name = "watchEmailsExpirationDate",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub watch_emails_expiration_date: Option<DateTime>,
-    #[sea_orm(column_name = "watchEmailsSubscriptionId")]
+    #[sea_orm(column_name = "watchEmailsSubscriptionId", column_type = "Text")]
     pub watch_emails_subscription_id: Option<String>,
-    #[sea_orm(column_name = "watchEmailsSubscriptionHistory")]
+    #[sea_orm(
+        column_name = "watchEmailsSubscriptionHistory",
+        column_type = "JsonBinary"
+    )]
     pub watch_emails_subscription_history: Option<Json>,
-    #[sea_orm(column_name = "lastSyncedHistoryId")]
+    #[sea_orm(column_name = "lastSyncedHistoryId", column_type = "Text")]
     pub last_synced_history_id: Option<String>,
-    #[sea_orm(column_name = "behaviorProfile")]
+    #[sea_orm(column_name = "behaviorProfile", column_type = "JsonBinary")]
     pub behavior_profile: Option<Json>,
-    #[sea_orm(column_name = "personaAnalysis")]
+    #[sea_orm(column_name = "personaAnalysis", column_type = "JsonBinary")]
     pub persona_analysis: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub role: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub timezone: Option<String>,
-    #[sea_orm(column_name = "calendarBookingLink")]
+    #[sea_orm(column_name = "calendarBookingLink", column_type = "Text")]
     pub calendar_booking_link: Option<String>,
-    #[sea_orm(column_name = "draftDocsUrls")]
+    #[sea_orm(
+        column_name = "draftDocsUrls",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub draft_docs_urls: Vec<String>,
     #[sea_orm(column_name = "statsEmailFrequency", default_value = "WEEKLY")]
     pub stats_email_frequency: Frequency,
     #[sea_orm(column_name = "summaryEmailFrequency", default_value = "WEEKLY")]
     pub summary_email_frequency: Frequency,
-    #[sea_orm(column_name = "lastSummaryEmailAt")]
+    #[sea_orm(
+        column_name = "lastSummaryEmailAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_summary_email_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastInboxHealthEmailAt")]
+    #[sea_orm(
+        column_name = "lastInboxHealthEmailAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_inbox_health_email_at: Option<DateTime>,
     #[sea_orm(column_name = "coldEmailBlocker")]
     pub cold_email_blocker: Option<ColdEmailSetting>,
     #[sea_orm(column_name = "coldEmailDigest", default_value = false)]
     pub cold_email_digest: bool,
-    #[sea_orm(column_name = "coldEmailPrompt")]
+    #[sea_orm(column_name = "coldEmailPrompt", column_type = "Text")]
     pub cold_email_prompt: Option<String>,
-    #[sea_orm(column_name = "rulesPrompt")]
+    #[sea_orm(column_name = "rulesPrompt", column_type = "Text")]
     pub rules_prompt: Option<String>,
     #[sea_orm(column_name = "autoCategorizeSenders", default_value = false)]
     pub auto_categorize_senders: bool,
     #[sea_orm(column_name = "multiRuleSelectionEnabled", default_value = false)]
     pub multi_rule_selection_enabled: bool,
-    #[sea_orm(column_name = "sensitiveDataPolicy")]
+    #[sea_orm(column_name = "sensitiveDataPolicy", column_type = "Text")]
     pub sensitive_data_policy: Option<String>,
     #[sea_orm(column_name = "draftReplyConfidence", default_value = "ALL_EMAILS")]
     pub draft_reply_confidence: DraftReplyConfidence,
@@ -97,7 +127,7 @@ pub struct Model {
     /// Collapses the inbox's other mail from one sender into one row.
     #[sea_orm(column_name = "mailGroupBySender", default_value = true)]
     pub mail_group_by_sender: bool,
-    #[sea_orm(column_name = "mailDefaultSplitId")]
+    #[sea_orm(column_name = "mailDefaultSplitId", column_type = "Text")]
     pub mail_default_split_id: Option<String>,
     #[sea_orm(column_name = "mailSetup", default_value = "PENDING")]
     pub mail_setup: MailSetupState,
@@ -122,7 +152,7 @@ pub struct Model {
     pub meeting_recorder_follow_up_draft_enabled: bool,
     #[sea_orm(column_name = "filingEnabled", default_value = false)]
     pub filing_enabled: bool,
-    #[sea_orm(column_name = "filingPrompt")]
+    #[sea_orm(column_name = "filingPrompt", column_type = "Text")]
     pub filing_prompt: Option<String>,
     #[sea_orm(column_name = "filingConfirmationSendEmail", default_value = true)]
     pub filing_confirmation_send_email: bool,
@@ -134,12 +164,12 @@ pub struct Model {
     pub follow_up_auto_draft_enabled: bool,
     #[sea_orm(column_name = "digestSendEmail", default_value = true)]
     pub digest_send_email: bool,
-    #[sea_orm(column_name = "learnedWritingStyle")]
+    #[sea_orm(column_name = "learnedWritingStyle", column_type = "Text")]
     pub learned_writing_style: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "accountId")]
+    #[sea_orm(column_name = "accountId", column_type = "Text")]
     pub account_id: String,
 }
 
@@ -149,14 +179,16 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmailAccount_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::account::Entity",
         from = "Column::AccountId",
         to = "super::account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EmailAccount_accountId_fkey"
     )]
     Account,
     #[sea_orm(has_many = "super::label::Entity")]

@@ -7,20 +7,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "FilingFolder")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "Text")]
     pub folder_id: String,
-    #[sea_orm(column_name = "folderName")]
+    #[sea_orm(column_name = "folderName", column_type = "Text")]
     pub folder_name: String,
-    #[sea_orm(column_name = "folderPath")]
+    #[sea_orm(column_name = "folderPath", column_type = "Text")]
     pub folder_path: String,
-    #[sea_orm(column_name = "driveConnectionId")]
+    #[sea_orm(column_name = "driveConnectionId", column_type = "Text")]
     pub drive_connection_id: String,
-    #[sea_orm(column_name = "emailAccountId")]
+    #[sea_orm(column_name = "emailAccountId", column_type = "Text")]
     pub email_account_id: String,
 }
 
@@ -30,14 +35,16 @@ pub enum Relation {
         belongs_to = "super::drive_connection::Entity",
         from = "Column::DriveConnectionId",
         to = "super::drive_connection::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FilingFolder_driveConnectionId_fkey"
     )]
     DriveConnection,
     #[sea_orm(
         belongs_to = "super::email_account::Entity",
         from = "Column::EmailAccountId",
         to = "super::email_account::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "FilingFolder_emailAccountId_fkey"
     )]
     EmailAccount,
 }

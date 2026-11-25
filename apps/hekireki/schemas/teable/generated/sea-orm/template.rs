@@ -7,36 +7,58 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "template")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub base_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub cover: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub markdown_description: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub category_id: Vec<String>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_time: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub created_by: String,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_modified_time: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_modified_by: Option<String>,
     pub is_system: Option<bool>,
     pub is_published: Option<bool>,
     pub featured: Option<bool>,
+    #[sea_orm(column_type = "Text")]
     pub snapshot: Option<String>,
     pub order: f64,
     #[sea_orm(default_value = 0)]
     pub usage_count: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub publish_info: Option<Json>,
     #[sea_orm(default_value = 0)]
     pub visit_count: i32,
+    #[sea_orm(column_type = "Text")]
     pub kind: Option<String>,
     #[sea_orm(default_value = 1)]
     pub version: i32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub manifest: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub review: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub history: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub parent_template_id: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub slug: Option<String>,
 }
 

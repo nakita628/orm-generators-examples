@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,8 +19,6 @@ class Project extends Model
     protected $table = 'projects';
 
     protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -60,6 +59,20 @@ class Project extends Model
         'dataStoppedNotifiedAt' => 'datetime',
         'deleteAt' => 'datetime',
     ];
+
+    protected function insertAndSetId(Builder $query, $attributes)
+    {
+        $base = $query->getQuery();
+        $base->applyBeforeQueryCallbacks();
+        $connection = $base->getConnection();
+        $connection->recordsHaveBeenModified();
+        $keyName = $this->getKeyName();
+        $row = $connection->selectFromWriteConnection(
+            $base->getGrammar()->compileInsertGetId($base, $attributes, $keyName),
+            $base->cleanBindings($attributes),
+        )[0];
+        $this->setAttribute($keyName, is_object($row) ? $row->{$keyName} : $row[$keyName]);
+    }
 
     public function organization(): BelongsTo
     {

@@ -19,7 +19,10 @@ pub struct Model {
     pub key_prefix: String,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub last_used_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: Option<DateTimeWithTimeZone>,
 }
 
@@ -29,7 +32,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "api_key_user_id_fkey"
     )]
     User,
 }

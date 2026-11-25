@@ -5,9 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "UserNotificationPreferences")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     #[sea_orm(column_name = "dubLinks", default_value = true)]
     pub dub_links: bool,
@@ -19,7 +20,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "UserNotificationPreferences_userId_fkey"
     )]
     User,
 }

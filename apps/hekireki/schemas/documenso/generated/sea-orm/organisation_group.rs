@@ -7,12 +7,14 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganisationGroup")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     pub r#type: OrganisationGroupType,
     #[sea_orm(column_name = "organisationRole")]
     pub organisation_role: OrganisationMemberRole,
-    #[sea_orm(column_name = "organisationId")]
+    #[sea_orm(column_name = "organisationId", column_type = "Text")]
     pub organisation_id: String,
 }
 
@@ -22,7 +24,8 @@ pub enum Relation {
         belongs_to = "super::organisation::Entity",
         from = "Column::OrganisationId",
         to = "super::organisation::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "OrganisationGroup_organisationId_fkey"
     )]
     Organisation,
     #[sea_orm(has_many = "super::organisation_group_member::Entity")]

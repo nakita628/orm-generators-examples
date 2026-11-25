@@ -7,31 +7,37 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Comments")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub content: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "postId")]
+    #[sea_orm(column_name = "postId", column_type = "Text")]
     pub post_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
-    #[sea_orm(column_name = "displayName")]
+    #[sea_orm(column_name = "displayName", column_type = "Text")]
     pub display_name: Option<String>,
-    #[sea_orm(column_name = "parentId")]
+    #[sea_orm(column_name = "parentId", column_type = "Text")]
     pub parent_id: Option<String>,
     #[sea_orm(column_name = "anchorStart")]
     pub anchor_start: Option<i32>,
     #[sea_orm(column_name = "anchorEnd")]
     pub anchor_end: Option<i32>,
-    #[sea_orm(column_name = "anchorQuote")]
+    #[sea_orm(column_name = "anchorQuote", column_type = "Text")]
     pub anchor_quote: Option<String>,
-    #[sea_orm(column_name = "resolvedAt")]
+    #[sea_orm(column_name = "resolvedAt", column_type = "custom(\"timestamp(3)\")")]
     pub resolved_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
 }
 
@@ -40,25 +46,29 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "Comments_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
         belongs_to = "super::post::Entity",
         from = "Column::PostId",
-        to = "super::post::Column::Id"
+        to = "super::post::Column::Id",
+        fk_name = "Comments_postId_fkey"
     )]
     Post,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Comments_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::comments::Entity",
         from = "Column::ParentId",
-        to = "super::comments::Column::Id"
+        to = "super::comments::Column::Id",
+        fk_name = "Comments_parentId_fkey"
     )]
     Parent,
     #[sea_orm(

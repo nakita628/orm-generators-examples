@@ -7,23 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "TaskAssignment")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "taskId")]
+    #[sea_orm(column_name = "taskId", column_type = "Text")]
     pub task_id: String,
-    #[sea_orm(column_name = "viewerId")]
+    #[sea_orm(column_name = "viewerId", column_type = "Text")]
     pub viewer_id: Option<String>,
-    #[sea_orm(column_name = "groupId")]
+    #[sea_orm(column_name = "groupId", column_type = "Text")]
     pub group_id: Option<String>,
-    #[sea_orm(column_name = "linkId")]
+    #[sea_orm(column_name = "linkId", column_type = "Text")]
     pub link_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub email: Option<String>,
-    #[sea_orm(column_name = "notifiedAt")]
+    #[sea_orm(column_name = "notifiedAt", column_type = "custom(\"timestamp(3)\")")]
     pub notified_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastReminderAt")]
+    #[sea_orm(
+        column_name = "lastReminderAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_reminder_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -33,28 +42,32 @@ pub enum Relation {
         belongs_to = "super::task::Entity",
         from = "Column::TaskId",
         to = "super::task::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskAssignment_taskId_fkey"
     )]
     Task,
     #[sea_orm(
         belongs_to = "super::viewer::Entity",
         from = "Column::ViewerId",
         to = "super::viewer::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskAssignment_viewerId_fkey"
     )]
     Viewer,
     #[sea_orm(
         belongs_to = "super::viewer_group::Entity",
         from = "Column::GroupId",
         to = "super::viewer_group::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskAssignment_groupId_fkey"
     )]
     Group,
     #[sea_orm(
         belongs_to = "super::link::Entity",
         from = "Column::LinkId",
         to = "super::link::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "TaskAssignment_linkId_fkey"
     )]
     Link,
 }

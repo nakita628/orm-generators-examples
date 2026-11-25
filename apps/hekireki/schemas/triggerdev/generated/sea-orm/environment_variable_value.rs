@@ -7,27 +7,32 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "EnvironmentVariableValue")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "valueReferenceId")]
+    #[sea_orm(column_name = "valueReferenceId", column_type = "Text")]
     pub value_reference_id: Option<String>,
-    #[sea_orm(column_name = "variableId")]
+    #[sea_orm(column_name = "variableId", column_type = "Text")]
     pub variable_id: String,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: String,
     /// If true, the value is secret and cannot be revealed
     #[sea_orm(column_name = "isSecret", default_value = false)]
     pub is_secret: bool,
     #[sea_orm(column_name = "isProxyOnly", default_value = false)]
     pub is_proxy_only: bool,
-    #[sea_orm(column_name = "proxyConfig")]
+    #[sea_orm(column_name = "proxyConfig", column_type = "JsonBinary")]
     pub proxy_config: Option<Json>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
     #[sea_orm(default_value = 1)]
     pub version: i32,
-    #[sea_orm(column_name = "lastUpdatedBy")]
+    #[sea_orm(column_name = "lastUpdatedBy", column_type = "JsonBinary")]
     pub last_updated_by: Option<Json>,
 }
 
@@ -38,7 +43,8 @@ pub enum Relation {
         from = "Column::ValueReferenceId",
         to = "super::secret_reference::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "EnvironmentVariableValue_valueReferenceId_fkey"
     )]
     ValueReference,
     #[sea_orm(
@@ -46,7 +52,8 @@ pub enum Relation {
         from = "Column::VariableId",
         to = "super::environment_variable::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentVariableValue_variableId_fkey"
     )]
     Variable,
     #[sea_orm(
@@ -54,7 +61,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EnvironmentVariableValue_environmentId_fkey"
     )]
     Environment,
 }

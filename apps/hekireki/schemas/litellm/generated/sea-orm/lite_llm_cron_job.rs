@@ -8,11 +8,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_CronJob")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub cronjob_id: String,
+    #[sea_orm(column_type = "Text")]
     pub pod_id: String,
     #[sea_orm(default_value = "INACTIVE")]
     pub status: JobStatus,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub ttl: DateTime,
 }
 

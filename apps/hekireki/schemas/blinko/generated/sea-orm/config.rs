@@ -18,7 +18,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::accounts::Entity",
         from = "Column::UserId",
-        to = "super::accounts::Column::Id"
+        to = "super::accounts::Column::Id",
+        fk_name = "config_userId_fkey"
     )]
     User,
 }

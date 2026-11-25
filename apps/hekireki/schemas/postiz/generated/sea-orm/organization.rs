@@ -8,20 +8,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Organization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
-    #[sea_orm(column_name = "apiKey")]
+    #[sea_orm(column_name = "apiKey", column_type = "Text")]
     pub api_key: Option<String>,
-    #[sea_orm(column_name = "paymentId")]
+    #[sea_orm(column_name = "paymentId", column_type = "Text")]
     pub payment_id: Option<String>,
-    #[sea_orm(column_name = "streakSince")]
+    #[sea_orm(column_name = "streakSince", column_type = "custom(\"timestamp(3)\")")]
     pub streak_since: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
     #[sea_orm(column_name = "allowTrial", default_value = false)]
     pub allow_trial: bool,

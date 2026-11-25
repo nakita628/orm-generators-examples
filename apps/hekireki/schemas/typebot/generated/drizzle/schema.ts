@@ -460,7 +460,10 @@ export const typebot = pgTable(
     uniqueIndex('Typebot_publicId_key').on(table.publicId),
     uniqueIndex('Typebot_customDomain_key').on(table.customDomain),
     index('Typebot_workspaceId_idx').on(table.workspaceId),
-    index('Typebot_isArchived_createdAt_idx').on(table.isArchived, table.createdAt),
+    index('Typebot_isArchived_createdAt_idx').on(
+      table.isArchived,
+      table.createdAt.desc().nullsFirst(),
+    ),
     foreignKey({
       name: 'Typebot_folderId_fkey',
       columns: [table.folderId],
@@ -632,7 +635,7 @@ export const result = pgTable(
     index('Result_typebotId_hasStarted_createdAt_idx').on(
       table.typebotId,
       table.hasStarted,
-      table.createdAt,
+      table.createdAt.desc().nullsFirst(),
     ),
     index('Result_typebotId_isCompleted_idx').on(table.typebotId, table.isCompleted),
     foreignKey({

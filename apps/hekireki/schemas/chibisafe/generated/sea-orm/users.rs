@@ -10,22 +10,29 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: String,
+    #[sea_orm(column_type = "Text")]
     pub password: String,
     #[sea_orm(default_value = true)]
     pub enabled: bool,
-    #[sea_orm(column_name = "storageQuota", default_value = "0")]
+    #[sea_orm(
+        column_name = "storageQuota",
+        column_type = "Text",
+        default_value = "0"
+    )]
     pub storage_quota: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "apiKey")]
+    #[sea_orm(column_name = "apiKey", column_type = "Text")]
     pub api_key: Option<String>,
     #[sea_orm(column_name = "passwordEditedAt")]
     pub password_edited_at: Option<PrismaDateTime>,
     #[sea_orm(column_name = "apiKeyEditedAt")]
     pub api_key_edited_at: Option<PrismaDateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,

@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, MetaData, String, Text, TypeDecorator, Uuid, text
+from sqlalchemy import ARRAY, BigInteger, Dialect, Enum, ForeignKey, Index, MetaData, PrimaryKeyConstraint, String, Text, TypeDecorator, Uuid, literal_column, text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
@@ -130,7 +130,7 @@ class Workspace(Base):
 
     __table_args__ = (
         Index("Workspace_slug_idx", "slug"),
-        Index("Workspace_updatedAt_idx", "updatedAt"),
+        Index("Workspace_updatedAt_idx", literal_column("\"updatedAt\"").desc()),
         Index("Workspace_slug_key", "slug", unique=True),
     )
 
@@ -171,6 +171,10 @@ class WorkspaceAccess(Base):
     """@zod.custom(z.coerce.date())"""
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("UserProfile.id", ondelete="RESTRICT", onupdate="CASCADE", name="WorkspaceAccess_userId_fkey"), primary_key=True)
     role: Mapped[str] = mapped_column(Enum("owner", "editor", "analyst", name="WorkspaceRole"), default="owner", server_default=text("'owner'"))
+
+    __table_args__ = (
+        PrimaryKeyConstraint("userId", "workspaceId"),
+    )
 
     workspace: Mapped["Workspace"] = relationship(back_populates="workspace_access")
     user: Mapped["UserProfile"] = relationship(back_populates="workspace_access")
@@ -235,7 +239,7 @@ class KvStoreEntry(Base):
 
     __table_args__ = (
         Index("kv_expires_at_idx", "expires_at"),
-        Index("kv_key_pattern_idx", "key"),
+        Index("kv_key_pattern_idx", "key", postgresql_ops={"key": "text_pattern_ops"}),
     )
 
 class OAuthAccessToken(Base):
@@ -286,7 +290,7 @@ class ConfigurationObject(Base):
     config: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
 
     __table_args__ = (
-        Index("ConfigurationObject_updatedAt_idx", "updatedAt"),
+        Index("ConfigurationObject_updatedAt_idx", literal_column("\"updatedAt\"").desc()),
     )
 
     workspace: Mapped["Workspace"] = relationship(back_populates="configuration_object")
@@ -311,7 +315,7 @@ class ConfigurationObjectLink(Base):
     to_id: Mapped[str] = mapped_column("toId", ForeignKey("ConfigurationObject.id", ondelete="RESTRICT", onupdate="CASCADE", name="ConfigurationObjectLink_toId_fkey"))
 
     __table_args__ = (
-        Index("ConfigurationObjectLink_updatedAt_idx", "updatedAt"),
+        Index("ConfigurationObjectLink_updatedAt_idx", literal_column("\"updatedAt\"").desc()),
         Index("ConfigurationObjectLink_workspaceId_idx", "workspaceId"),
     )
 
@@ -467,7 +471,7 @@ class SourceTask(Base):
     __table_args__ = (
         Index("source_task_sync_id_idx", "sync_id"),
         Index("source_task_started_at_idx", "started_at"),
-        Index("source_task_sync_id_started_at_idx", "sync_id", "started_at"),
+        Index("source_task_sync_id_started_at_idx", "sync_id", literal_column("\"started_at\"").desc()),
     )
 
 class TaskLog(Base):
@@ -537,6 +541,10 @@ class ProfileBuilderState(Base):
     error_users: Mapped[int] = mapped_column("errorUsers")
     speed: Mapped[float]
 
+    __table_args__ = (
+        PrimaryKeyConstraint("profileBuilderId", "profileBuilderVersion", "totalInstances", "instanceIndex"),
+    )
+
 class ProfileBuilderState2(Base):
     __tablename__ = "ProfileBuilderState2"
 
@@ -582,6 +590,10 @@ class NotificationState(Base):
     """@zod.custom(z.coerce.date())"""
     status_change_id: Mapped[int] = mapped_column("statusChangeId", BigInteger)
     error: Mapped[Optional[str]]
+
+    __table_args__ = (
+        PrimaryKeyConstraint("channelId", "actorId", "type", "tableName"),
+    )
 
 class Notification(Base):
     __tablename__ = "Notification"
@@ -673,7 +685,7 @@ class ReprocessingJobs(Base):
     error: Mapped[Optional[str]]
 
     __table_args__ = (
-        Index("reprocessing_jobs_created_at_idx", "created_at"),
+        Index("reprocessing_jobs_created_at_idx", literal_column("\"created_at\"").desc()),
     )
 
     reprocessing_workers: Mapped[list["ReprocessingWorkers"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="job")

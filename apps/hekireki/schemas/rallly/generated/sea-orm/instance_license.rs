@@ -9,15 +9,24 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "instance_licenses")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub license_key: String,
     pub version: Option<i32>,
     pub r#type: LicenseType,
     pub seats: Option<i32>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub issued_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub licensee_email: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub licensee_name: Option<String>,
     #[sea_orm(default_value = false)]
     pub white_label_addon: bool,

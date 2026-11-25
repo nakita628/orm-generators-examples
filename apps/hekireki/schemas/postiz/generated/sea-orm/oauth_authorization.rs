@@ -7,30 +7,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthAuthorization")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "oauthAppId")]
+    #[sea_orm(column_name = "oauthAppId", column_type = "Text")]
     pub oauth_app_id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "accessToken")]
+    #[sea_orm(column_name = "accessToken", column_type = "Text")]
     pub access_token: Option<String>,
-    #[sea_orm(column_name = "authorizationCode")]
+    #[sea_orm(column_name = "authorizationCode", column_type = "Text")]
     pub authorization_code: Option<String>,
-    #[sea_orm(column_name = "codeExpiresAt")]
+    #[sea_orm(
+        column_name = "codeExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub code_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "codeChallenge")]
+    #[sea_orm(column_name = "codeChallenge", column_type = "Text")]
     pub code_challenge: Option<String>,
-    #[sea_orm(column_name = "codeChallengeMethod")]
+    #[sea_orm(column_name = "codeChallengeMethod", column_type = "Text")]
     pub code_challenge_method: Option<String>,
-    #[sea_orm(column_name = "redirectUri")]
+    #[sea_orm(column_name = "redirectUri", column_type = "Text")]
     pub redirect_uri: Option<String>,
-    #[sea_orm(column_name = "revokedAt")]
+    #[sea_orm(column_name = "revokedAt", column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -39,19 +47,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::oauth_app::Entity",
         from = "Column::OauthAppId",
-        to = "super::oauth_app::Column::Id"
+        to = "super::oauth_app::Column::Id",
+        fk_name = "OAuthAuthorization_oauthAppId_fkey"
     )]
     OauthApp,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "OAuthAuthorization_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "OAuthAuthorization_organizationId_fkey"
     )]
     Organization,
 }

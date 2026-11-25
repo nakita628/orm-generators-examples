@@ -7,15 +7,19 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "IdentifierReservation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "normalizedValue")]
+    #[sea_orm(column_name = "normalizedValue", column_type = "Text")]
     pub normalized_value: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "identifierId")]
+    #[sea_orm(column_name = "identifierId", column_type = "Text")]
     pub identifier_id: String,
-    #[sea_orm(column_name = "commandId")]
+    #[sea_orm(column_name = "commandId", column_type = "Text")]
     pub command_id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

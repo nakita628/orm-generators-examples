@@ -7,19 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OAuthRecord")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub kind: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub payload: Json,
-    #[sea_orm(column_name = "grantId")]
+    #[sea_orm(column_name = "grantId", column_type = "Text")]
     pub grant_id: Option<String>,
-    #[sea_orm(column_name = "userCode")]
+    #[sea_orm(column_name = "userCode", column_type = "Text")]
     pub user_code: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub uid: Option<String>,
-    #[sea_orm(column_name = "expiresAt")]
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "consumedAt")]
+    #[sea_orm(column_name = "consumedAt", column_type = "custom(\"timestamp(3)\")")]
     pub consumed_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

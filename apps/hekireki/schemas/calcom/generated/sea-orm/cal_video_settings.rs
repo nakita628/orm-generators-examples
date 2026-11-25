@@ -20,7 +20,7 @@ pub struct Model {
         default_value = false
     )]
     pub enable_automatic_recording_for_organizer: bool,
-    #[sea_orm(column_name = "redirectUrlOnExit")]
+    #[sea_orm(column_name = "redirectUrlOnExit", column_type = "Text")]
     pub redirect_url_on_exit: Option<String>,
     #[sea_orm(column_name = "disableTranscriptionForGuests", default_value = false)]
     pub disable_transcription_for_guests: bool,
@@ -31,9 +31,13 @@ pub struct Model {
     pub disable_transcription_for_organizer: bool,
     #[sea_orm(column_name = "requireEmailForGuests", default_value = false)]
     pub require_email_for_guests: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -43,7 +47,8 @@ pub enum Relation {
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CalVideoSettings_eventTypeId_fkey"
     )]
     EventType,
 }

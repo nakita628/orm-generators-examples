@@ -3331,7 +3331,7 @@ public partial class FormbricksContext : DbContext
                 .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
                 .HasForeignKey(d => new { d.FeedbackSourceId, d.WorkspaceId })
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FeedbackSourceFormbricksMapping_feedback_source_id_workspa_fkey");
+                .HasConstraintName("FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk");
 
             entity.HasOne(d => d.Survey).WithMany(p => p.FeedbackSourceMappings)
                 .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
@@ -3367,7 +3367,7 @@ public partial class FormbricksContext : DbContext
                 .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
                 .HasForeignKey(d => new { d.FeedbackSourceId, d.WorkspaceId })
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FeedbackSourceFieldMapping_feedback_source_id_workspaceId_fkey");
+                .HasConstraintName("FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey");
         });
 
         modelBuilder.Entity<FeedbackDirectory>(entity =>

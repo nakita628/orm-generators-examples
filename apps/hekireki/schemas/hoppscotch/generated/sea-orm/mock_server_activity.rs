@@ -8,13 +8,18 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "MockServerActivity")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "mockServerID")]
+    #[sea_orm(column_name = "mockServerID", column_type = "Text")]
     pub mock_server_id: String,
     pub action: MockServerAction,
-    #[sea_orm(column_name = "performedBy")]
+    #[sea_orm(column_name = "performedBy", column_type = "Text")]
     pub performed_by: Option<String>,
-    #[sea_orm(column_name = "performedAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "performedAt",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub performed_at: DateTimeWithTimeZone,
 }
 
@@ -24,7 +29,8 @@ pub enum Relation {
         belongs_to = "super::mock_server::Entity",
         from = "Column::MockServerId",
         to = "super::mock_server::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "MockServerActivity_mockServerID_fkey"
     )]
     MockServer,
 }

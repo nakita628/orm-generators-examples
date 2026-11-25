@@ -9,37 +9,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "CustomerQuery")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// The TSQL query text that was executed
+    #[sea_orm(column_type = "Text")]
     pub query: String,
     /// The scope of the query (determines which tenant IDs were used)
     pub scope: CustomerQueryScope,
     /// Query execution statistics from ClickHouse
+    #[sea_orm(column_type = "JsonBinary")]
     pub stats: Json,
     /// AI-generated title summarizing the query
+    #[sea_orm(column_type = "Text")]
     pub title: Option<String>,
     /// Where the query originated from
     #[sea_orm(default_value = "DASHBOARD")]
     pub source: CustomerQuerySource,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "Text")]
     pub project_id: Option<String>,
-    #[sea_orm(column_name = "environmentId")]
+    #[sea_orm(column_name = "environmentId", column_type = "Text")]
     pub environment_id: Option<String>,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: Option<String>,
     /// Time filter settings used when the query was executed
     /// Period like "7d", "24h", etc.
-    #[sea_orm(column_name = "filterPeriod")]
+    #[sea_orm(column_name = "filterPeriod", column_type = "Text")]
     pub filter_period: Option<String>,
     /// Custom start date (ISO 8601)
-    #[sea_orm(column_name = "filterFrom")]
+    #[sea_orm(column_name = "filterFrom", column_type = "custom(\"timestamp(3)\")")]
     pub filter_from: Option<DateTime>,
     /// Custom end date (ISO 8601)
-    #[sea_orm(column_name = "filterTo")]
+    #[sea_orm(column_name = "filterTo", column_type = "custom(\"timestamp(3)\")")]
     pub filter_to: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -50,7 +58,8 @@ pub enum Relation {
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CustomerQuery_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(
@@ -58,7 +67,8 @@ pub enum Relation {
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CustomerQuery_projectId_fkey"
     )]
     Project,
     #[sea_orm(
@@ -66,7 +76,8 @@ pub enum Relation {
         from = "Column::EnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CustomerQuery_environmentId_fkey"
     )]
     Environment,
     #[sea_orm(
@@ -74,7 +85,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "CustomerQuery_userId_fkey"
     )]
     User,
 }

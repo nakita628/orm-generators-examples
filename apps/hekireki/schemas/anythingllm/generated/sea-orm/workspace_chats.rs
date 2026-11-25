@@ -11,16 +11,22 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "workspaceId")]
     pub workspace_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub prompt: String,
+    #[sea_orm(column_type = "Text")]
     pub response: String,
     #[sea_orm(default_value = true)]
     pub include: bool,
     pub user_id: Option<i32>,
     pub thread_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub api_session_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
-    #[sea_orm(column_name = "lastUpdatedAt")]
+    #[sea_orm(
+        column_name = "lastUpdatedAt",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub last_updated_at: PrismaDateTime,
     #[sea_orm(column_name = "feedbackScore")]
     pub feedback_score: Option<bool>,
@@ -34,7 +40,8 @@ pub enum Relation {
         from = "Column::UserId",
         to = "super::users::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "workspace_chats_user_id_fkey"
     )]
     Users,
 }

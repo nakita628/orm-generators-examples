@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BulkInboxActionThread")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "jobId")]
+    #[sea_orm(column_name = "jobId", column_type = "Text")]
     pub job_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "threadId")]
+    #[sea_orm(column_name = "threadId", column_type = "Text")]
     pub thread_id: String,
 }
 
@@ -18,7 +18,8 @@ pub enum Relation {
         belongs_to = "super::bulk_inbox_action_job::Entity",
         from = "Column::JobId",
         to = "super::bulk_inbox_action_job::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "BulkInboxActionThread_jobId_fkey"
     )]
     Job,
 }

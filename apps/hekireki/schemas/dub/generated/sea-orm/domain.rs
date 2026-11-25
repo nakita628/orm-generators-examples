@@ -7,22 +7,30 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Domain")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub id: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub slug: String,
     #[sea_orm(default_value = false)]
     pub verified: bool,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub placeholder: Option<String>,
-    #[sea_orm(column_name = "expiredUrl", column_type = "Text")]
+    #[sea_orm(column_name = "expiredUrl", column_type = "custom(\"longtext\")")]
     pub expired_url: Option<String>,
-    #[sea_orm(column_name = "notFoundUrl", column_type = "Text")]
+    #[sea_orm(column_name = "notFoundUrl", column_type = "custom(\"longtext\")")]
     pub not_found_url: Option<String>,
     #[sea_orm(default_value = false)]
     pub primary: bool,
     #[sea_orm(default_value = false)]
     pub archived: bool,
-    #[sea_orm(column_name = "lastChecked")]
+    #[sea_orm(
+        column_name = "lastChecked",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub last_checked: DateTime,
+    #[sea_orm(column_type = "String(StringLen::N(191))")]
     pub logo: Option<String>,
     #[sea_orm(column_name = "appleAppSiteAssociation")]
     pub apple_app_site_association: Option<Json>,
@@ -32,11 +40,15 @@ pub struct Model {
     pub deepview_data: Option<Json>,
     #[sea_orm(column_name = "linkRetentionDays")]
     pub link_retention_days: Option<i32>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"datetime(3)\")",
+        default_expr = "Expr::cust(\"CURRENT_TIMESTAMP(3)\")"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"datetime(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "projectId")]
+    #[sea_orm(column_name = "projectId", column_type = "String(StringLen::N(191))")]
     pub project_id: Option<String>,
 }
 
@@ -46,7 +58,8 @@ pub enum Relation {
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
         to = "super::project::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "Domain_projectId_fkey"
     )]
     Project,
     #[sea_orm(has_many = "super::link::Entity")]

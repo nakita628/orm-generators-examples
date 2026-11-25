@@ -6,12 +6,13 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "workout_sessions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "Text")]
     pub user_id: String,
-    #[sea_orm(column_name = "startedAt")]
+    #[sea_orm(column_name = "startedAt", column_type = "custom(\"timestamp(3)\")")]
     pub started_at: DateTime,
-    #[sea_orm(column_name = "endedAt")]
+    #[sea_orm(column_name = "endedAt", column_type = "custom(\"timestamp(3)\")")]
     pub ended_at: Option<DateTime>,
     pub duration: Option<i32>,
     pub muscles: Vec<ExerciseAttributeValueEnum>,
@@ -25,7 +26,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "workout_sessions_userId_fkey"
     )]
     User,
     #[sea_orm(has_many = "super::workout_session_exercise::Entity")]

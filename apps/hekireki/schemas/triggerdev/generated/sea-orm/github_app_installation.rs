@@ -8,32 +8,38 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "GithubAppInstallation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "appInstallationId")]
     pub app_installation_id: i64,
     #[sea_orm(column_name = "targetId")]
     pub target_id: i64,
-    #[sea_orm(column_name = "targetType")]
+    #[sea_orm(column_name = "targetType", column_type = "Text")]
     pub target_type: String,
-    #[sea_orm(column_name = "accountHandle")]
+    #[sea_orm(column_name = "accountHandle", column_type = "Text")]
     pub account_handle: String,
+    #[sea_orm(column_type = "JsonBinary")]
     pub permissions: Option<Json>,
     #[sea_orm(column_name = "repositorySelection")]
     pub repository_selection: GithubRepositorySelection,
-    #[sea_orm(column_name = "installedBy")]
+    #[sea_orm(column_name = "installedBy", column_type = "Text")]
     pub installed_by: Option<String>,
-    #[sea_orm(column_name = "installedByUserId")]
+    #[sea_orm(column_name = "installedByUserId", column_type = "Text")]
     pub installed_by_user_id: Option<String>,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
-    #[sea_orm(column_name = "deletedAt")]
+    #[sea_orm(column_name = "deletedAt", column_type = "custom(\"timestamp(3)\")")]
     pub deleted_at: Option<DateTime>,
-    #[sea_orm(column_name = "suspendedAt")]
+    #[sea_orm(column_name = "suspendedAt", column_type = "custom(\"timestamp(3)\")")]
     pub suspended_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -42,7 +48,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
-        to = "super::organization::Column::Id"
+        to = "super::organization::Column::Id",
+        fk_name = "GithubAppInstallation_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::github_repository::Entity")]

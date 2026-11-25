@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_name = "userId")]
+    #[sea_orm(column_name = "userId", column_type = "String(StringLen::N(191))")]
     pub user_id: String,
     #[sea_orm(column_name = "rootType")]
     pub root_type: VoteType,
@@ -26,31 +26,36 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        fk_name = "Vote_userId_fkey"
     )]
     User,
     #[sea_orm(
         belongs_to = "super::challenge::Entity",
         from = "Column::ChallengeId",
-        to = "super::challenge::Column::Id"
+        to = "super::challenge::Column::Id",
+        fk_name = "Vote_challengeId_fkey"
     )]
     Challenge,
     #[sea_orm(
         belongs_to = "super::comment::Entity",
         from = "Column::CommentId",
-        to = "super::comment::Column::Id"
+        to = "super::comment::Column::Id",
+        fk_name = "Vote_commentId_fkey"
     )]
     Comment,
     #[sea_orm(
         belongs_to = "super::submission::Entity",
         from = "Column::SubmissionId",
-        to = "super::submission::Column::Id"
+        to = "super::submission::Column::Id",
+        fk_name = "Vote_submissionId_fkey"
     )]
     Submission,
     #[sea_orm(
         belongs_to = "super::shared_solution::Entity",
         from = "Column::SharedSolutionId",
-        to = "super::shared_solution::Column::Id"
+        to = "super::shared_solution::Column::Id",
+        fk_name = "Vote_sharedSolutionId_fkey"
     )]
     SharedSolution,
 }

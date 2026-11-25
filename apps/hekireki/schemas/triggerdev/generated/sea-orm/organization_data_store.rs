@@ -10,19 +10,29 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "OrganizationDataStore")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     /// Human-readable unique key (e.g. "hipaa-clickhouse-us-east")
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub key: String,
     /// Organization IDs that use this data store
-    #[sea_orm(column_name = "organizationIds")]
+    #[sea_orm(
+        column_name = "organizationIds",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub organization_ids: Vec<String>,
     pub kind: DataStoreKind,
     /// Versioned config JSON. Structure is discriminated by the top-level `version` field.
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Json,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 

@@ -9,14 +9,20 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "spaces")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub owner_id: String,
     #[sea_orm(default_value = "hobby")]
     pub tier: SpaceTier,
     pub space_type: Option<SpaceType>,
+    #[sea_orm(column_type = "Text")]
     pub industry: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub primary_color: Option<String>,
     #[sea_orm(default_value = false)]
     pub show_branding: bool,
@@ -24,9 +30,15 @@ pub struct Model {
     pub hide_attribution: bool,
     #[sea_orm(default_value = false)]
     pub shared: bool,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub nonprofit_discount_granted_at: Option<DateTime>,
     pub api_poll_quota_override: Option<i32>,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -36,7 +48,8 @@ pub enum Relation {
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
         to = "super::user::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "spaces_owner_id_fkey"
     )]
     Owner,
     #[sea_orm(has_many = "super::poll::Entity")]

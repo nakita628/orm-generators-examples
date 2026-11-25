@@ -15,8 +15,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WebhookEndpoint")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "organizationId")]
+    #[sea_orm(column_name = "organizationId", column_type = "Text")]
     pub organization_id: String,
     /// Where this endpoint delivers. Everything above the last hop is shared:
     /// same batching, same retry ladder, same delivery log, same signature over
@@ -25,60 +26,67 @@ pub struct Model {
     pub destination_kind: WebhookDestinationKind,
     /// The receiver URL. Present on `http` endpoints and null on the others;
     /// the per-kind shape is pinned by a CHECK constraint Prisma cannot model.
+    #[sea_orm(column_type = "Text")]
     pub url: Option<String>,
     /// The Amazon SQS queue this endpoint delivers to, on `sqs` endpoints. The
     /// region and the owning account are read off it rather than configured
     /// separately, so they can never disagree with the queue.
-    #[sea_orm(column_name = "sqsQueueUrl")]
+    #[sea_orm(column_name = "sqsQueueUrl", column_type = "Text")]
     pub sqs_queue_url: Option<String>,
     /// The role we assume to write to the queue, and the ExternalId that proves
     /// the request came from us rather than from anyone who learned the role's
     /// name. The recommended credential mode.
-    #[sea_orm(column_name = "sqsRoleArn")]
+    #[sea_orm(column_name = "sqsRoleArn", column_type = "Text")]
     pub sqs_role_arn: Option<String>,
-    #[sea_orm(column_name = "sqsExternalId")]
+    #[sea_orm(column_name = "sqsExternalId", column_type = "Text")]
     pub sqs_external_id: Option<String>,
     /// A static key pair for the queue, encrypted at rest exactly like the
     /// signing secret. Both halves are present or both are absent: a half-filled
     /// pair is what the AWS SDK reads as "we have credentials" and stops looking
     /// with, so the CHECK constraint refuses it.
-    #[sea_orm(column_name = "sqsAccessKeyId")]
+    #[sea_orm(column_name = "sqsAccessKeyId", column_type = "Text")]
     pub sqs_access_key_id: Option<String>,
-    #[sea_orm(column_name = "sqsSecretAccessKeyEncrypted")]
+    #[sea_orm(column_name = "sqsSecretAccessKeyEncrypted", column_type = "Text")]
     pub sqs_secret_access_key_encrypted: Option<String>,
-    #[sea_orm(column_name = "secretEncrypted")]
+    #[sea_orm(column_name = "secretEncrypted", column_type = "Text")]
     pub secret_encrypted: String,
     /// How deliveries are formatted and signed. Null: the batch envelope signed
     /// `t=,v1=`. `legacy_sha256`: one raw message per POST signed `sha256=`, kept
     /// only for endpoints migrated from governance anomaly destinations.
-    #[sea_orm(column_name = "signatureScheme")]
+    #[sea_orm(column_name = "signatureScheme", column_type = "Text")]
     pub signature_scheme: Option<String>,
     /// Set only by governance's anomaly destination migration: a create that
     /// repeats it in the same organization answers the endpoint it made. An
     /// archived endpoint gives its key up, so a retry after cleanup creates anew.
-    #[sea_orm(column_name = "idempotencyKey")]
+    #[sea_orm(column_name = "idempotencyKey", column_type = "Text")]
     pub idempotency_key: Option<String>,
     /// The secret this endpoint signed with before the last roll. Deliveries
     /// carry a second `v1=` computed from it until it expires, so a receiver
     /// swaps secrets on its own schedule instead of dropping deliveries in the
     /// gap. Null once the window closes or if the secret was never rolled.
-    #[sea_orm(column_name = "previousSecretEncrypted")]
+    #[sea_orm(column_name = "previousSecretEncrypted", column_type = "Text")]
     pub previous_secret_encrypted: Option<String>,
     /// When the previous secret stops being signed with and accepted.
-    #[sea_orm(column_name = "previousSecretExpiresAt")]
+    #[sea_orm(
+        column_name = "previousSecretExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub previous_secret_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "enabledEvents")]
+    #[sea_orm(
+        column_name = "enabledEvents",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub enabled_events: Vec<String>,
     #[sea_orm(default_value = "ACTIVE")]
     pub status: WebhookEndpointStatus,
     /// Why the endpoint is disabled: "auto_failures_72h" or "manual".
-    #[sea_orm(column_name = "disabledReason")]
+    #[sea_orm(column_name = "disabledReason", column_type = "Text")]
     pub disabled_reason: Option<String>,
-    #[sea_orm(column_name = "disabledAt")]
+    #[sea_orm(column_name = "disabledAt", column_type = "custom(\"timestamp(3)\")")]
     pub disabled_at: Option<DateTime>,
     /// Start of the current consecutive-failure streak; cleared on any 2xx.
     /// 72 hours of unbroken failures from this instant auto-disables.
-    #[sea_orm(column_name = "failingSince")]
+    #[sea_orm(column_name = "failingSince", column_type = "custom(\"timestamp(3)\")")]
     pub failing_since: Option<DateTime>,
     /// Delivery controls, each server-bounded (see webhookDeliveryControls
     /// constants): envelopes per POST, coalescing window before a partial
@@ -93,15 +101,29 @@ pub struct Model {
     /// certificate. Off by default; the hosted product ignores it.
     #[sea_orm(column_name = "allowSelfSignedCertificate", default_value = false)]
     pub allow_self_signed_certificate: bool,
-    #[sea_orm(column_name = "lastSuccessAt")]
+    #[sea_orm(
+        column_name = "lastSuccessAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_success_at: Option<DateTime>,
-    #[sea_orm(column_name = "lastFailureAt")]
+    #[sea_orm(
+        column_name = "lastFailureAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub last_failure_at: Option<DateTime>,
-    #[sea_orm(column_name = "archivedAt")]
+    #[sea_orm(column_name = "archivedAt", column_type = "custom(\"timestamp(3)\")")]
     pub archived_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub updated_at: DateTime,
 }
 
@@ -111,7 +133,8 @@ pub enum Relation {
         belongs_to = "super::organization::Entity",
         from = "Column::OrganizationId",
         to = "super::organization::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "WebhookEndpoint_organizationId_fkey"
     )]
     Organization,
     #[sea_orm(has_many = "super::webhook_endpoint_delivery::Entity")]

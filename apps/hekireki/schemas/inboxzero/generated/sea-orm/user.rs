@@ -8,43 +8,64 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "User")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(column_type = "Text")]
     pub name: Option<String>,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub email: String,
     #[sea_orm(column_name = "emailVerified", default_value = false)]
     pub email_verified: Option<bool>,
+    #[sea_orm(column_type = "Text")]
     pub image: Option<String>,
-    #[sea_orm(column_name = "completedOnboardingAt")]
+    #[sea_orm(
+        column_name = "completedOnboardingAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub completed_onboarding_at: Option<DateTime>,
     #[sea_orm(column_name = "signupIntent")]
     pub signup_intent: Option<SignupIntent>,
-    #[sea_orm(column_name = "onboardingAnswers")]
+    #[sea_orm(column_name = "onboardingAnswers", column_type = "JsonBinary")]
     pub onboarding_answers: Option<Json>,
-    #[sea_orm(column_name = "lastLogin")]
+    #[sea_orm(column_name = "lastLogin", column_type = "custom(\"timestamp(3)\")")]
     pub last_login: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub utms: Option<Json>,
-    #[sea_orm(column_name = "errorMessages")]
+    #[sea_orm(column_name = "errorMessages", column_type = "JsonBinary")]
     pub error_messages: Option<Json>,
-    #[sea_orm(column_name = "announcementDismissedAt")]
+    #[sea_orm(
+        column_name = "announcementDismissedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub announcement_dismissed_at: Option<DateTime>,
-    #[sea_orm(column_name = "dismissedHints")]
+    #[sea_orm(
+        column_name = "dismissedHints",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub dismissed_hints: Vec<String>,
-    #[sea_orm(column_name = "surveyFeatures")]
+    #[sea_orm(
+        column_name = "surveyFeatures",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub survey_features: Vec<String>,
-    #[sea_orm(column_name = "surveyRole")]
+    #[sea_orm(column_name = "surveyRole", column_type = "Text")]
     pub survey_role: Option<String>,
-    #[sea_orm(column_name = "surveyGoal")]
+    #[sea_orm(column_name = "surveyGoal", column_type = "Text")]
     pub survey_goal: Option<String>,
     #[sea_orm(column_name = "surveyCompanySize")]
     pub survey_company_size: Option<i32>,
-    #[sea_orm(column_name = "surveySource")]
+    #[sea_orm(column_name = "surveySource", column_type = "Text")]
     pub survey_source: Option<String>,
-    #[sea_orm(column_name = "surveyImprovements")]
+    #[sea_orm(column_name = "surveyImprovements", column_type = "Text")]
     pub survey_improvements: Option<String>,
     #[sea_orm(column_name = "mcpServerEnabled", default_value = false)]
     pub mcp_server_enabled: bool,
@@ -54,22 +75,22 @@ pub struct Model {
     pub email_otp_enabled: bool,
     #[sea_orm(column_name = "emailOtpVersion", default_value = 0)]
     pub email_otp_version: i32,
-    #[sea_orm(column_name = "aiProvider")]
+    #[sea_orm(column_name = "aiProvider", column_type = "Text")]
     pub ai_provider: Option<String>,
-    #[sea_orm(column_name = "aiModel")]
+    #[sea_orm(column_name = "aiModel", column_type = "Text")]
     pub ai_model: Option<String>,
-    #[sea_orm(column_name = "aiApiKey")]
+    #[sea_orm(column_name = "aiApiKey", column_type = "Text")]
     pub ai_api_key: Option<String>,
     #[sea_orm(column_name = "decisionModelEnabled")]
     pub decision_model_enabled: Option<bool>,
-    #[sea_orm(column_name = "webhookSecret")]
+    #[sea_orm(column_name = "webhookSecret", column_type = "Text")]
     pub webhook_secret: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "referralCode")]
+    #[sea_orm(column_name = "referralCode", column_type = "Text")]
     pub referral_code: Option<String>,
-    #[sea_orm(column_name = "premiumId")]
+    #[sea_orm(column_name = "premiumId", column_type = "Text")]
     pub premium_id: Option<String>,
-    #[sea_orm(column_name = "premiumAdminId")]
+    #[sea_orm(column_name = "premiumAdminId", column_type = "Text")]
     pub premium_admin_id: Option<String>,
     #[sea_orm(column_name = "scimAccessDisabled", default_value = false)]
     pub scim_access_disabled: bool,
@@ -80,13 +101,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::premium::Entity",
         from = "Column::PremiumId",
-        to = "super::premium::Column::Id"
+        to = "super::premium::Column::Id",
+        fk_name = "User_premiumId_fkey"
     )]
     Premium,
     #[sea_orm(
         belongs_to = "super::premium::Entity",
         from = "Column::PremiumAdminId",
-        to = "super::premium::Column::Id"
+        to = "super::premium::Column::Id",
+        fk_name = "User_premiumAdminId_fkey"
     )]
     PremiumAdmin,
     #[sea_orm(has_many = "super::account::Entity")]

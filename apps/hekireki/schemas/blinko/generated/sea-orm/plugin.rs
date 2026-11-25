@@ -14,7 +14,11 @@ pub struct Model {
     pub is_use: bool,
     #[sea_orm(column_name = "isDev", default_value = false)]
     pub is_dev: bool,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "updatedAt", column_type = "TimestampWithTimeZone")]
     pub updated_at: DateTimeWithTimeZone,

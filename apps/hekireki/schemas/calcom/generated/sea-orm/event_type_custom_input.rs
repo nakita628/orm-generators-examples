@@ -9,12 +9,14 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(column_name = "eventTypeId")]
     pub event_type_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub label: String,
     pub r#type: EventTypeCustomInputType,
     /// @zod.import(["import { customInputOptionSchema } from '../../zod-utils'"]).custom.use(customInputOptionSchema)
+    #[sea_orm(column_type = "JsonBinary")]
     pub options: Option<Json>,
     pub required: bool,
-    #[sea_orm(default_value = "")]
+    #[sea_orm(column_type = "Text", default_value = "")]
     pub placeholder: String,
 }
 
@@ -24,7 +26,8 @@ pub enum Relation {
         belongs_to = "super::event_type::Entity",
         from = "Column::EventTypeId",
         to = "super::event_type::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "EventTypeCustomInput_eventTypeId_fkey"
     )]
     EventType,
 }

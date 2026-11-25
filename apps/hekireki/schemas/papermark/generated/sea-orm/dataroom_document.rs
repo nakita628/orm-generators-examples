@@ -7,22 +7,27 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "DataroomDocument")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "dataroomId")]
+    #[sea_orm(column_name = "dataroomId", column_type = "Text")]
     pub dataroom_id: String,
-    #[sea_orm(column_name = "documentId")]
+    #[sea_orm(column_name = "documentId", column_type = "Text")]
     pub document_id: String,
-    #[sea_orm(column_name = "folderId")]
+    #[sea_orm(column_name = "folderId", column_type = "Text")]
     pub folder_id: Option<String>,
     #[sea_orm(column_name = "orderIndex")]
     pub order_index: Option<i32>,
-    #[sea_orm(column_name = "hierarchicalIndex")]
+    #[sea_orm(column_name = "hierarchicalIndex", column_type = "Text")]
     pub hierarchical_index: Option<String>,
-    #[sea_orm(column_name = "vectorStoreFileId")]
+    #[sea_orm(column_name = "vectorStoreFileId", column_type = "Text")]
     pub vector_store_file_id: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
 }
 
@@ -32,21 +37,24 @@ pub enum Relation {
         belongs_to = "super::dataroom::Entity",
         from = "Column::DataroomId",
         to = "super::dataroom::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DataroomDocument_dataroomId_fkey"
     )]
     Dataroom,
     #[sea_orm(
         belongs_to = "super::document::Entity",
         from = "Column::DocumentId",
         to = "super::document::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "DataroomDocument_documentId_fkey"
     )]
     Document,
     #[sea_orm(
         belongs_to = "super::dataroom_folder::Entity",
         from = "Column::FolderId",
         to = "super::dataroom_folder::Column::Id",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "DataroomDocument_folderId_fkey"
     )]
     Folder,
     #[sea_orm(has_many = "super::conversation::Entity")]

@@ -10,11 +10,16 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub status: AppMigrationStatus,
-    #[sea_orm(column_name = "finishedAt")]
+    #[sea_orm(column_name = "finishedAt", column_type = "custom(\"timestamp(3)\")")]
     pub finished_at: Option<DateTime>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 

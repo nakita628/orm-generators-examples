@@ -12,7 +12,11 @@ pub struct Model {
     pub from_note_id: i32,
     #[sea_orm(column_name = "toNoteId")]
     pub to_note_id: i32,
-    #[sea_orm(column_name = "createdAt", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 
@@ -21,13 +25,15 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::notes::Entity",
         from = "Column::FromNoteId",
-        to = "super::notes::Column::Id"
+        to = "super::notes::Column::Id",
+        fk_name = "noteReference_fromNoteId_fkey"
     )]
     FromNote,
     #[sea_orm(
         belongs_to = "super::notes::Entity",
         from = "Column::ToNoteId",
-        to = "super::notes::Column::Id"
+        to = "super::notes::Column::Id",
+        fk_name = "noteReference_toNoteId_fkey"
     )]
     ToNote,
 }

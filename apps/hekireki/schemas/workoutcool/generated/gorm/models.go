@@ -45,8 +45,8 @@ func (User) TableName() string {
 
 type UserFavoriteExercise struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	UserID     string    `gorm:"column:userId;uniqueIndex:user_favorite_exercises_userId_exerciseId_key;not null" json:"userId"`
-	ExerciseID string    `gorm:"column:exerciseId;uniqueIndex:user_favorite_exercises_userId_exerciseId_key;not null" json:"exerciseId"`
+	UserID     string    `gorm:"column:userId;uniqueIndex:user_favorite_exercises_userId_exerciseId_key,priority:1;not null" json:"userId"`
+	ExerciseID string    `gorm:"column:exerciseId;uniqueIndex:user_favorite_exercises_userId_exerciseId_key,priority:2;not null" json:"exerciseId"`
 	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	User       *User     `gorm:"belongsTo"`
 	Exercise   *Exercise `gorm:"belongsTo"`
@@ -246,8 +246,8 @@ func (*ExerciseAttributeName) BeforeUpdate(tx *gorm.DB) error {
 
 type ExerciseAttributeValue struct {
 	ID              string                 `gorm:"column:id;primaryKey" json:"id"`
-	AttributeNameID string                 `gorm:"column:attributeNameId;uniqueIndex:exercise_attribute_values_attributeNameId_value_key;not null" json:"attributeNameId"`
-	Value           string                 `gorm:"column:value;uniqueIndex:exercise_attribute_values_attributeNameId_value_key;not null" json:"value"`
+	AttributeNameID string                 `gorm:"column:attributeNameId;uniqueIndex:exercise_attribute_values_attributeNameId_value_key,priority:1;not null" json:"attributeNameId"`
+	Value           string                 `gorm:"column:value;uniqueIndex:exercise_attribute_values_attributeNameId_value_key,priority:2;not null" json:"value"`
 	CreatedAt       DateTime               `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt       DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	AttributeName   *ExerciseAttributeName `gorm:"foreignKey:AttributeNameID;belongsTo"`
@@ -282,9 +282,9 @@ func (*ExerciseAttributeValue) BeforeUpdate(tx *gorm.DB) error {
 
 type ExerciseAttribute struct {
 	ID               string                  `gorm:"column:id;primaryKey" json:"id"`
-	ExerciseID       string                  `gorm:"column:exerciseId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key;not null" json:"exerciseId"`
-	AttributeNameID  string                  `gorm:"column:attributeNameId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key;not null" json:"attributeNameId"`
-	AttributeValueID string                  `gorm:"column:attributeValueId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key;not null" json:"attributeValueId"`
+	ExerciseID       string                  `gorm:"column:exerciseId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key,priority:1;not null" json:"exerciseId"`
+	AttributeNameID  string                  `gorm:"column:attributeNameId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key,priority:2;not null" json:"attributeNameId"`
+	AttributeValueID string                  `gorm:"column:attributeValueId;uniqueIndex:exercise_attributes_exerciseId_attributeNameId_attributeVal_key,priority:3;not null" json:"attributeValueId"`
 	CreatedAt        DateTime                `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime                `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	Exercise         *Exercise               `gorm:"belongsTo"`
@@ -430,10 +430,10 @@ func (*SubscriptionPlan) BeforeUpdate(tx *gorm.DB) error {
 
 type PlanProviderMapping struct {
 	ID         string            `gorm:"column:id;primaryKey" json:"id"`
-	PlanID     string            `gorm:"column:planId;uniqueIndex:plan_provider_mappings_planId_provider_region_key;not null" json:"planId"`
-	Provider   string            `gorm:"column:provider;uniqueIndex:plan_provider_mappings_planId_provider_region_key;index:plan_provider_mappings_provider_externalId_idx;not null" json:"provider"`
-	ExternalID string            `gorm:"column:externalId;index:plan_provider_mappings_provider_externalId_idx;not null" json:"externalId"`
-	Region     *string           `gorm:"column:region;uniqueIndex:plan_provider_mappings_planId_provider_region_key" json:"region"`
+	PlanID     string            `gorm:"column:planId;uniqueIndex:plan_provider_mappings_planId_provider_region_key,priority:1;not null" json:"planId"`
+	Provider   string            `gorm:"column:provider;uniqueIndex:plan_provider_mappings_planId_provider_region_key,priority:2;index:plan_provider_mappings_provider_externalId_idx,priority:1;not null" json:"provider"`
+	ExternalID string            `gorm:"column:externalId;index:plan_provider_mappings_provider_externalId_idx,priority:2;not null" json:"externalId"`
+	Region     *string           `gorm:"column:region;uniqueIndex:plan_provider_mappings_planId_provider_region_key,priority:3" json:"region"`
 	Metadata   datatypes.JSON    `gorm:"column:metadata" json:"metadata"`
 	IsActive   *bool             `gorm:"column:isActive;default:true;not null" json:"isActive"`
 	CreatedAt  DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
@@ -469,14 +469,14 @@ func (*PlanProviderMapping) BeforeUpdate(tx *gorm.DB) error {
 
 type Subscription struct {
 	ID               string            `gorm:"column:id;primaryKey" json:"id"`
-	UserID           string            `gorm:"column:userId;uniqueIndex:subscriptions_userId_platform_key;not null" json:"userId"`
+	UserID           string            `gorm:"column:userId;uniqueIndex:subscriptions_userId_platform_key,priority:1;not null" json:"userId"`
 	PlanID           string            `gorm:"column:planId;not null" json:"planId"`
 	RevenueCatUserID *string           `gorm:"column:revenueCatUserId" json:"revenueCatUserId"`
 	Status           string            `gorm:"column:status;not null" json:"status"`
 	StartedAt        DateTime          `gorm:"column:startedAt;type:timestamp(3);not null" json:"startedAt"`
 	CurrentPeriodEnd *DateTime         `gorm:"column:currentPeriodEnd;type:timestamp(3)" json:"currentPeriodEnd"`
 	CancelledAt      *DateTime         `gorm:"column:cancelledAt;type:timestamp(3)" json:"cancelledAt"`
-	Platform         *string           `gorm:"column:platform;uniqueIndex:subscriptions_userId_platform_key" json:"platform"`
+	Platform         *string           `gorm:"column:platform;uniqueIndex:subscriptions_userId_platform_key,priority:2" json:"platform"`
 	CreatedAt        DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime          `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	User             *User             `gorm:"belongsTo"`
@@ -672,8 +672,8 @@ func (m *ProgramCoach) BeforeCreate(_ *gorm.DB) error {
 
 type ProgramWeek struct {
 	ID              string           `gorm:"column:id;primaryKey" json:"id"`
-	ProgramID       string           `gorm:"column:programId;uniqueIndex:program_weeks_programId_weekNumber_key;not null" json:"programId"`
-	WeekNumber      int              `gorm:"column:weekNumber;uniqueIndex:program_weeks_programId_weekNumber_key;size:32;not null" json:"weekNumber"`
+	ProgramID       string           `gorm:"column:programId;uniqueIndex:program_weeks_programId_weekNumber_key,priority:1;not null" json:"programId"`
+	WeekNumber      int              `gorm:"column:weekNumber;uniqueIndex:program_weeks_programId_weekNumber_key,priority:2;size:32;not null" json:"weekNumber"`
 	Title           string           `gorm:"column:title;not null" json:"title"`
 	TitleEn         string           `gorm:"column:titleEn;not null" json:"titleEn"`
 	TitleEs         string           `gorm:"column:titleEs;not null" json:"titleEs"`
@@ -703,20 +703,20 @@ func (m *ProgramWeek) BeforeCreate(_ *gorm.DB) error {
 
 type ProgramSession struct {
 	ID               string                   `gorm:"column:id;primaryKey" json:"id"`
-	WeekID           string                   `gorm:"column:weekId;uniqueIndex:program_sessions_weekId_sessionNumber_key;uniqueIndex:program_sessions_weekId_slug_key;uniqueIndex:program_sessions_weekId_slugEn_key;uniqueIndex:program_sessions_weekId_slugEs_key;uniqueIndex:program_sessions_weekId_slugPt_key;uniqueIndex:program_sessions_weekId_slugRu_key;uniqueIndex:program_sessions_weekId_slugZhCn_key;not null" json:"weekId"`
-	SessionNumber    int                      `gorm:"column:sessionNumber;uniqueIndex:program_sessions_weekId_sessionNumber_key;size:32;not null" json:"sessionNumber"`
+	WeekID           string                   `gorm:"column:weekId;uniqueIndex:program_sessions_weekId_sessionNumber_key,priority:1;uniqueIndex:program_sessions_weekId_slug_key,priority:1;uniqueIndex:program_sessions_weekId_slugEn_key,priority:1;uniqueIndex:program_sessions_weekId_slugEs_key,priority:1;uniqueIndex:program_sessions_weekId_slugPt_key,priority:1;uniqueIndex:program_sessions_weekId_slugRu_key,priority:1;uniqueIndex:program_sessions_weekId_slugZhCn_key,priority:1;not null" json:"weekId"`
+	SessionNumber    int                      `gorm:"column:sessionNumber;uniqueIndex:program_sessions_weekId_sessionNumber_key,priority:2;size:32;not null" json:"sessionNumber"`
 	Title            string                   `gorm:"column:title;not null" json:"title"`
 	TitleEn          string                   `gorm:"column:titleEn;not null" json:"titleEn"`
 	TitleEs          string                   `gorm:"column:titleEs;not null" json:"titleEs"`
 	TitlePt          string                   `gorm:"column:titlePt;not null" json:"titlePt"`
 	TitleRu          string                   `gorm:"column:titleRu;not null" json:"titleRu"`
 	TitleZhCn        string                   `gorm:"column:titleZhCn;not null" json:"titleZhCn"`
-	Slug             string                   `gorm:"column:slug;uniqueIndex:program_sessions_weekId_slug_key;not null" json:"slug"`
-	SlugEn           string                   `gorm:"column:slugEn;uniqueIndex:program_sessions_weekId_slugEn_key;not null" json:"slugEn"`
-	SlugEs           string                   `gorm:"column:slugEs;uniqueIndex:program_sessions_weekId_slugEs_key;not null" json:"slugEs"`
-	SlugPt           string                   `gorm:"column:slugPt;uniqueIndex:program_sessions_weekId_slugPt_key;not null" json:"slugPt"`
-	SlugRu           string                   `gorm:"column:slugRu;uniqueIndex:program_sessions_weekId_slugRu_key;not null" json:"slugRu"`
-	SlugZhCn         string                   `gorm:"column:slugZhCn;uniqueIndex:program_sessions_weekId_slugZhCn_key;not null" json:"slugZhCn"`
+	Slug             string                   `gorm:"column:slug;uniqueIndex:program_sessions_weekId_slug_key,priority:2;not null" json:"slug"`
+	SlugEn           string                   `gorm:"column:slugEn;uniqueIndex:program_sessions_weekId_slugEn_key,priority:2;not null" json:"slugEn"`
+	SlugEs           string                   `gorm:"column:slugEs;uniqueIndex:program_sessions_weekId_slugEs_key,priority:2;not null" json:"slugEs"`
+	SlugPt           string                   `gorm:"column:slugPt;uniqueIndex:program_sessions_weekId_slugPt_key,priority:2;not null" json:"slugPt"`
+	SlugRu           string                   `gorm:"column:slugRu;uniqueIndex:program_sessions_weekId_slugRu_key,priority:2;not null" json:"slugRu"`
+	SlugZhCn         string                   `gorm:"column:slugZhCn;uniqueIndex:program_sessions_weekId_slugZhCn_key,priority:2;not null" json:"slugZhCn"`
 	Description      string                   `gorm:"column:description;type:text;not null" json:"description"`
 	DescriptionEn    string                   `gorm:"column:descriptionEn;type:text;not null" json:"descriptionEn"`
 	DescriptionEs    string                   `gorm:"column:descriptionEs;type:text;not null" json:"descriptionEs"`
@@ -744,9 +744,9 @@ func (m *ProgramSession) BeforeCreate(_ *gorm.DB) error {
 
 type ProgramSessionExercise struct {
 	ID               string                `gorm:"column:id;primaryKey" json:"id"`
-	SessionID        string                `gorm:"column:sessionId;uniqueIndex:program_session_exercises_sessionId_order_key;not null" json:"sessionId"`
+	SessionID        string                `gorm:"column:sessionId;uniqueIndex:program_session_exercises_sessionId_order_key,priority:1;not null" json:"sessionId"`
 	ExerciseID       string                `gorm:"column:exerciseId;not null" json:"exerciseId"`
-	Order            int                   `gorm:"column:order;uniqueIndex:program_session_exercises_sessionId_order_key;size:32;not null" json:"order"`
+	Order            int                   `gorm:"column:order;uniqueIndex:program_session_exercises_sessionId_order_key,priority:2;size:32;not null" json:"order"`
 	Instructions     string                `gorm:"column:instructions;type:text;not null" json:"instructions"`
 	InstructionsEn   string                `gorm:"column:instructionsEn;type:text;not null" json:"instructionsEn"`
 	InstructionsEs   string                `gorm:"column:instructionsEs;type:text;not null" json:"instructionsEs"`
@@ -771,8 +771,8 @@ func (m *ProgramSessionExercise) BeforeCreate(_ *gorm.DB) error {
 
 type ProgramSuggestedSet struct {
 	ID                       string                  `gorm:"column:id;primaryKey" json:"id"`
-	ProgramSessionExerciseID string                  `gorm:"column:programSessionExerciseId;uniqueIndex:program_suggested_sets_programSessionExerciseId_setIndex_key;not null" json:"programSessionExerciseId"`
-	SetIndex                 int                     `gorm:"column:setIndex;uniqueIndex:program_suggested_sets_programSessionExerciseId_setIndex_key;size:32;not null" json:"setIndex"`
+	ProgramSessionExerciseID string                  `gorm:"column:programSessionExerciseId;uniqueIndex:program_suggested_sets_programSessionExerciseId_setIndex_key,priority:1;not null" json:"programSessionExerciseId"`
+	SetIndex                 int                     `gorm:"column:setIndex;uniqueIndex:program_suggested_sets_programSessionExerciseId_setIndex_key,priority:2;size:32;not null" json:"setIndex"`
 	Types                    ScalarList[string]      `gorm:"column:types;type:text[]" json:"types"`
 	ValuesInt                ScalarList[int]         `gorm:"column:valuesInt;type:integer[]" json:"valuesInt"`
 	ValuesSec                ScalarList[int]         `gorm:"column:valuesSec;type:integer[]" json:"valuesSec"`
@@ -793,8 +793,8 @@ func (m *ProgramSuggestedSet) BeforeCreate(_ *gorm.DB) error {
 
 type UserProgramEnrollment struct {
 	ID                string                `gorm:"column:id;primaryKey" json:"id"`
-	UserID            string                `gorm:"column:userId;uniqueIndex:user_program_enrollments_userId_programId_key;not null" json:"userId"`
-	ProgramID         string                `gorm:"column:programId;uniqueIndex:user_program_enrollments_userId_programId_key;not null" json:"programId"`
+	UserID            string                `gorm:"column:userId;uniqueIndex:user_program_enrollments_userId_programId_key,priority:1;not null" json:"userId"`
+	ProgramID         string                `gorm:"column:programId;uniqueIndex:user_program_enrollments_userId_programId_key,priority:2;not null" json:"programId"`
 	EnrolledAt        DateTime              `gorm:"column:enrolledAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"enrolledAt"`
 	CurrentWeek       *int                  `gorm:"column:currentWeek;size:32;default:1;not null" json:"currentWeek"`
 	CurrentSession    *int                  `gorm:"column:currentSession;size:32;default:1;not null" json:"currentSession"`
@@ -823,8 +823,8 @@ func (m *UserProgramEnrollment) BeforeCreate(tx *gorm.DB) error {
 
 type UserSessionProgress struct {
 	ID               string                 `gorm:"column:id;primaryKey" json:"id"`
-	EnrollmentID     string                 `gorm:"column:enrollmentId;uniqueIndex:user_session_progress_enrollmentId_sessionId_key;not null" json:"enrollmentId"`
-	SessionID        string                 `gorm:"column:sessionId;uniqueIndex:user_session_progress_enrollmentId_sessionId_key;not null" json:"sessionId"`
+	EnrollmentID     string                 `gorm:"column:enrollmentId;uniqueIndex:user_session_progress_enrollmentId_sessionId_key,priority:1;not null" json:"enrollmentId"`
+	SessionID        string                 `gorm:"column:sessionId;uniqueIndex:user_session_progress_enrollmentId_sessionId_key,priority:2;not null" json:"sessionId"`
 	StartedAt        DateTime               `gorm:"column:startedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
 	CompletedAt      *DateTime              `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
 	WorkoutSessionID *string                `gorm:"column:workoutSessionId;uniqueIndex:user_session_progress_workoutSessionId_key" json:"workoutSessionId"`

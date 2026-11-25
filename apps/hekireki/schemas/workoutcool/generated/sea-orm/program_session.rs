@@ -6,32 +6,35 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "program_sessions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "weekId")]
+    #[sea_orm(column_name = "weekId", column_type = "Text")]
     pub week_id: String,
     #[sea_orm(column_name = "sessionNumber")]
     pub session_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
-    #[sea_orm(column_name = "titleEn")]
+    #[sea_orm(column_name = "titleEn", column_type = "Text")]
     pub title_en: String,
-    #[sea_orm(column_name = "titleEs")]
+    #[sea_orm(column_name = "titleEs", column_type = "Text")]
     pub title_es: String,
-    #[sea_orm(column_name = "titlePt")]
+    #[sea_orm(column_name = "titlePt", column_type = "Text")]
     pub title_pt: String,
-    #[sea_orm(column_name = "titleRu")]
+    #[sea_orm(column_name = "titleRu", column_type = "Text")]
     pub title_ru: String,
-    #[sea_orm(column_name = "titleZhCn")]
+    #[sea_orm(column_name = "titleZhCn", column_type = "Text")]
     pub title_zh_cn: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
-    #[sea_orm(column_name = "slugEn")]
+    #[sea_orm(column_name = "slugEn", column_type = "Text")]
     pub slug_en: String,
-    #[sea_orm(column_name = "slugEs")]
+    #[sea_orm(column_name = "slugEs", column_type = "Text")]
     pub slug_es: String,
-    #[sea_orm(column_name = "slugPt")]
+    #[sea_orm(column_name = "slugPt", column_type = "Text")]
     pub slug_pt: String,
-    #[sea_orm(column_name = "slugRu")]
+    #[sea_orm(column_name = "slugRu", column_type = "Text")]
     pub slug_ru: String,
-    #[sea_orm(column_name = "slugZhCn")]
+    #[sea_orm(column_name = "slugZhCn", column_type = "Text")]
     pub slug_zh_cn: String,
     #[sea_orm(column_type = "Text")]
     pub description: String,
@@ -58,7 +61,8 @@ pub enum Relation {
         belongs_to = "super::program_week::Entity",
         from = "Column::WeekId",
         to = "super::program_week::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "program_sessions_weekId_fkey"
     )]
     Week,
     #[sea_orm(has_many = "super::program_session_exercise::Entity")]

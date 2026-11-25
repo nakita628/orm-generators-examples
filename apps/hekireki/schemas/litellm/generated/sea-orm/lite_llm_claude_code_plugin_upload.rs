@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "LiteLLM_ClaudeCodePluginUpload")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub plugin_name: String,
     pub content: Vec<u8>,
 }
@@ -16,7 +17,8 @@ pub enum Relation {
         from = "Column::PluginName",
         to = "super::lite_llm_claude_code_plugin_table::Column::Name",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "LiteLLM_ClaudeCodePluginUpload_plugin_name_fkey"
     )]
     Plugin,
 }

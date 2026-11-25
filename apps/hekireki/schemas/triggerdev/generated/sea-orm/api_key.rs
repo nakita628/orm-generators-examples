@@ -8,26 +8,45 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "api_keys")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub key_hash: String,
+    #[sea_orm(column_type = "Text")]
     pub last_four: String,
     /// Optional one-line note the creator adds to say what the key is for.
+    #[sea_orm(column_type = "Text")]
     pub description: Option<String>,
+    #[sea_orm(column_type = "Text")]
     pub runtime_environment_id: String,
+    #[sea_orm(column_type = "Text")]
     pub created_by_user_id: Option<String>,
     #[sea_orm(default_value = "USER")]
     pub issued_by: ApiKeyIssuer,
+    #[sea_orm(column_type = "Text")]
     pub preset_id: Option<String>,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub scopes: Vec<String>,
     /// CIDR ranges this key may be used from. Empty means any IP.
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub allowed_ip_ranges: Vec<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub last_used_at: Option<DateTime>,
+    #[sea_orm(column_type = "Text")]
     pub last_used_ip: Option<String>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub revoked_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub expires_at: Option<DateTime>,
+    #[sea_orm(column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
+    #[sea_orm(
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -38,7 +57,8 @@ pub enum Relation {
         from = "Column::RuntimeEnvironmentId",
         to = "super::runtime_environment::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "api_keys_runtime_environment_id_fkey"
     )]
     RuntimeEnvironment,
     #[sea_orm(
@@ -46,7 +66,8 @@ pub enum Relation {
         from = "Column::CreatedByUserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
-        on_delete = "SetNull"
+        on_delete = "SetNull",
+        fk_name = "api_keys_created_by_user_id_fkey"
     )]
     CreatedBy,
 }

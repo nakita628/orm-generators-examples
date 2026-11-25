@@ -10,22 +10,29 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
+    #[sea_orm(column_type = "Text")]
     pub uuid: String,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
+    #[sea_orm(column_type = "Text")]
     pub name: String,
+    #[sea_orm(column_type = "Text")]
     pub original: String,
+    #[sea_orm(column_type = "Text")]
     pub r#type: String,
+    #[sea_orm(column_type = "Text")]
     pub size: String,
+    #[sea_orm(column_type = "Text")]
     pub hash: String,
+    #[sea_orm(column_type = "Text")]
     pub ip: String,
-    #[sea_orm(column_name = "sourceUrl")]
+    #[sea_orm(column_name = "sourceUrl", column_type = "Text")]
     pub source_url: Option<String>,
     #[sea_orm(column_name = "isS3", default_value = false)]
     pub is_s3: bool,
     #[sea_orm(column_name = "isWatched", default_value = false)]
     pub is_watched: bool,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(column_name = "createdAt", default_expr = "Expr::current_timestamp()")]
     pub created_at: PrismaDateTime,
     #[sea_orm(column_name = "editedAt")]
     pub edited_at: Option<PrismaDateTime>,
@@ -38,7 +45,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
-        to = "super::users::Column::Id"
+        to = "super::users::Column::Id",
+        fk_name = "files_userId_fkey"
     )]
     User,
     #[sea_orm(has_one = "super::quarantine_files::Entity")]

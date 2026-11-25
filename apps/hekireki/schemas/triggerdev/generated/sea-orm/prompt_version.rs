@@ -7,27 +7,36 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "prompt_versions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
     pub version: i32,
-    #[sea_orm(column_name = "promptId")]
+    #[sea_orm(column_name = "promptId", column_type = "Text")]
     pub prompt_id: String,
-    #[sea_orm(column_name = "textContent")]
+    #[sea_orm(column_name = "textContent", column_type = "Text")]
     pub text_content: Option<String>,
-    #[sea_orm(column_name = "chatContent")]
+    #[sea_orm(column_name = "chatContent", column_type = "JsonBinary")]
     pub chat_content: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub model: Option<String>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub config: Option<Json>,
+    #[sea_orm(column_type = "Text")]
     pub source: String,
-    #[sea_orm(column_name = "commitMessage")]
+    #[sea_orm(column_name = "commitMessage", column_type = "Text")]
     pub commit_message: Option<String>,
-    #[sea_orm(column_name = "contentHash")]
+    #[sea_orm(column_name = "contentHash", column_type = "Text")]
     pub content_hash: String,
+    #[sea_orm(column_type = "Array(RcOrArc::new(ColumnType::Text))")]
     pub labels: Vec<String>,
-    #[sea_orm(column_name = "workerId")]
+    #[sea_orm(column_name = "workerId", column_type = "Text")]
     pub worker_id: Option<String>,
-    #[sea_orm(column_name = "createdBy")]
+    #[sea_orm(column_name = "createdBy", column_type = "Text")]
     pub created_by: Option<String>,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
 }
 
@@ -38,13 +47,15 @@ pub enum Relation {
         from = "Column::PromptId",
         to = "super::prompt::Column::Id",
         on_update = "Cascade",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "prompt_versions_promptId_fkey"
     )]
     Prompt,
     #[sea_orm(
         belongs_to = "super::background_worker::Entity",
         from = "Column::WorkerId",
-        to = "super::background_worker::Column::Id"
+        to = "super::background_worker::Column::Id",
+        fk_name = "prompt_versions_workerId_fkey"
     )]
     Worker,
 }

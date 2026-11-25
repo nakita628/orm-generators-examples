@@ -6,17 +6,24 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "CalendarCache")]
 pub struct Model {
+    #[sea_orm(column_type = "Text")]
     pub id: Option<String>,
-    #[sea_orm(primary_key, auto_increment = false)]
-    pub key: String,
-    pub value: Json,
-    #[sea_orm(column_name = "expiresAt")]
-    pub expires_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
-    pub updated_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_name = "credentialId")]
     pub credential_id: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
+    pub key: String,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub value: Json,
+    #[sea_orm(column_name = "expiresAt", column_type = "custom(\"timestamp(3)\")")]
+    pub expires_at: DateTime,
+    #[sea_orm(
+        column_name = "updatedAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
+    pub updated_at: DateTime,
     #[sea_orm(column_name = "userId")]
     pub user_id: Option<i32>,
 }
@@ -27,7 +34,8 @@ pub enum Relation {
         belongs_to = "super::credential::Entity",
         from = "Column::CredentialId",
         to = "super::credential::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "CalendarCache_credentialId_fkey"
     )]
     Credential,
 }

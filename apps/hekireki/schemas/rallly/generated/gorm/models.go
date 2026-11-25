@@ -88,7 +88,7 @@ func (*PaymentMethod) BeforeUpdate(tx *gorm.DB) error {
 
 type NonprofitApplication struct {
 	ID               string   `gorm:"column:id;primaryKey" json:"id"`
-	SpaceID          string   `gorm:"column:space_id;index:nonprofit_applications_space_id_created_at_idx;not null" json:"space_id"`
+	SpaceID          string   `gorm:"column:space_id;index:nonprofit_applications_space_id_created_at_idx,priority:1;not null" json:"space_id"`
 	UserID           string   `gorm:"column:user_id;not null" json:"user_id"`
 	OrganizationName string   `gorm:"column:organization_name;not null" json:"organization_name"`
 	Website          string   `gorm:"column:website;not null" json:"website"`
@@ -96,7 +96,7 @@ type NonprofitApplication struct {
 	Status           string   `gorm:"column:status;not null" json:"status"`
 	Reason           *string  `gorm:"column:reason" json:"reason"`
 	Model            *string  `gorm:"column:model" json:"model"`
-	CreatedAt        DateTime `gorm:"column:created_at;index:nonprofit_applications_space_id_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt        DateTime `gorm:"column:created_at;index:nonprofit_applications_space_id_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	Space            *Space   `gorm:"belongsTo"`
 	User             *User    `gorm:"belongsTo"`
 }
@@ -132,16 +132,16 @@ type QueuedEmail struct {
 	BatchID string `gorm:"column:batch_id;index:queued_emails_batch_id_idx;not null" json:"batch_id"`
 	// The account whose action queued the email. Banning it skips whatever
 	// is still pending.
-	UserID string `gorm:"column:user_id;index:queued_emails_user_id_status_idx;not null" json:"user_id"`
-	Status string `gorm:"column:status;index:queued_emails_status_created_at_idx;index:queued_emails_status_updated_at_idx;index:queued_emails_user_id_status_idx;default:'pending';not null" json:"status"`
+	UserID string `gorm:"column:user_id;index:queued_emails_user_id_status_idx,priority:1;not null" json:"user_id"`
+	Status string `gorm:"column:status;index:queued_emails_status_created_at_idx,priority:1;index:queued_emails_status_updated_at_idx,priority:1;index:queued_emails_user_id_status_idx,priority:2;default:'pending';not null" json:"status"`
 	// Not claimed before this time. Unset sends at the next run.
 	SendAfter *DateTime `gorm:"column:send_after;type:timestamp(3)" json:"send_after"`
 	Attempts  int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	ClaimedAt *DateTime `gorm:"column:claimed_at;type:timestamp(3)" json:"claimed_at"`
 	SentAt    *DateTime `gorm:"column:sent_at;type:timestamp(3)" json:"sent_at"`
 	LastError *string   `gorm:"column:last_error" json:"last_error"`
-	CreatedAt DateTime  `gorm:"column:created_at;index:queued_emails_status_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt DateTime  `gorm:"column:updated_at;index:queued_emails_status_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	CreatedAt DateTime  `gorm:"column:created_at;index:queued_emails_status_created_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt DateTime  `gorm:"column:updated_at;index:queued_emails_status_updated_at_idx,priority:2;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	User      *User     `gorm:"belongsTo"`
 }
 
@@ -219,7 +219,7 @@ func (*EventType) BeforeUpdate(tx *gorm.DB) error {
 type ScheduledEvent struct {
 	ID           string         `gorm:"column:id;primaryKey" json:"id"`
 	UserID       string         `gorm:"column:user_id;index:scheduled_events_user_id_idx;not null" json:"user_id"`
-	SpaceID      string         `gorm:"column:space_id;index:scheduled_events_space_id_idx;index:scheduled_events_space_id_status_start_idx;not null" json:"space_id"`
+	SpaceID      string         `gorm:"column:space_id;index:scheduled_events_space_id_idx;index:scheduled_events_space_id_status_start_idx,priority:1;not null" json:"space_id"`
 	EventTypeID  *string        `gorm:"column:event_type_id;index:scheduled_events_event_type_id_idx" json:"event_type_id"`
 	SheetSlotID  *string        `gorm:"column:sheet_slot_id;uniqueIndex:scheduled_events_sheet_slot_id_key" json:"sheet_slot_id"`
 	Title        string         `gorm:"column:title;not null" json:"title"`
@@ -229,10 +229,10 @@ type ScheduledEvent struct {
 	Capacity     *int           `gorm:"column:capacity;size:32" json:"capacity"`
 	CreatedAt    DateTime       `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt    DateTime       `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
-	Status       string         `gorm:"column:status;index:scheduled_events_space_id_status_start_idx;default:'confirmed';not null" json:"status"`
+	Status       string         `gorm:"column:status;index:scheduled_events_space_id_status_start_idx,priority:2;default:'confirmed';not null" json:"status"`
 	// Venue / anchor timezone for in-person or hybrid events. Null means no fixed venue (e.g. remote-only).
 	TimeZone         *string                `gorm:"column:time_zone" json:"time_zone"`
-	Start            DateTime               `gorm:"column:start;index:scheduled_events_space_id_status_start_idx;type:timestamp(3);not null" json:"start"`
+	Start            DateTime               `gorm:"column:start;index:scheduled_events_space_id_status_start_idx,priority:3;type:timestamp(3);not null" json:"start"`
 	End              DateTime               `gorm:"column:end;type:timestamp(3);not null" json:"end"`
 	AllDay           bool                   `gorm:"column:all_day;default:false;not null" json:"all_day"`
 	DeletedAt        *DateTime              `gorm:"column:deleted_at;type:timestamp(3)" json:"deleted_at"`
@@ -302,9 +302,9 @@ func (m *RescheduledEventDate) BeforeCreate(tx *gorm.DB) error {
 type ScheduledEventInvite struct {
 	ID               string          `gorm:"column:id;primaryKey" json:"id"`
 	UID              string          `gorm:"column:uid;uniqueIndex:scheduled_event_invites_uid_key;not null" json:"uid"`
-	ScheduledEventID string          `gorm:"column:scheduled_event_id;uniqueIndex:scheduled_event_invites_scheduled_event_id_invitee_email_key;not null" json:"scheduled_event_id"`
+	ScheduledEventID string          `gorm:"column:scheduled_event_id;uniqueIndex:scheduled_event_invites_scheduled_event_id_invitee_email_key,priority:1;not null" json:"scheduled_event_id"`
 	InviteeName      string          `gorm:"column:invitee_name;not null" json:"invitee_name"`
-	InviteeEmail     string          `gorm:"column:invitee_email;uniqueIndex:scheduled_event_invites_scheduled_event_id_invitee_email_key;index:scheduled_event_invites_invitee_email_idx;not null" json:"invitee_email"`
+	InviteeEmail     string          `gorm:"column:invitee_email;uniqueIndex:scheduled_event_invites_scheduled_event_id_invitee_email_key,priority:2;index:scheduled_event_invites_invitee_email_idx;not null" json:"invitee_email"`
 	InviteeID        *string         `gorm:"column:invitee_id;index:scheduled_event_invites_invitee_id_idx" json:"invitee_id"`
 	InviteeTimeZone  *string         `gorm:"column:invitee_time_zone" json:"invitee_time_zone"`
 	InviteeLocale    *string         `gorm:"column:invitee_locale" json:"invitee_locale"`
@@ -344,7 +344,7 @@ func (*ScheduledEventInvite) BeforeUpdate(tx *gorm.DB) error {
 type InstanceSettings struct {
 	ID                      int            `gorm:"column:id;primaryKey;size:32" json:"id"`
 	DisableUserRegistration bool           `gorm:"column:disable_user_registration;default:false;not null" json:"disable_user_registration"`
-	InstanceID              string         `gorm:"column:instance_id;uniqueIndex:instance_settings_instance_id_key;type:char(36);default:gen_random_uuid();not null" json:"instance_id"`
+	InstanceID              string         `gorm:"column:instance_id;uniqueIndex:instance_settings_instance_id_key;type:uuid;default:gen_random_uuid();not null" json:"instance_id"`
 	AppName                 *string        `gorm:"column:app_name" json:"app_name"`
 	PrimaryColor            *string        `gorm:"column:primary_color" json:"primary_color"`
 	PrimaryColorDark        *string        `gorm:"column:primary_color_dark" json:"primary_color_dark"`
@@ -382,9 +382,9 @@ func (*InstanceSettings) BeforeUpdate(tx *gorm.DB) error {
 
 type Credential struct {
 	ID                      string                   `gorm:"column:id;primaryKey" json:"id"`
-	UserID                  string                   `gorm:"column:user_id;uniqueIndex:credentials_user_id_provider_provider_account_id_key;not null" json:"user_id"`
-	Provider                string                   `gorm:"column:provider;uniqueIndex:credentials_user_id_provider_provider_account_id_key;not null" json:"provider"`
-	ProviderAccountID       string                   `gorm:"column:provider_account_id;uniqueIndex:credentials_user_id_provider_provider_account_id_key;not null" json:"provider_account_id"`
+	UserID                  string                   `gorm:"column:user_id;uniqueIndex:credentials_user_id_provider_provider_account_id_key,priority:1;not null" json:"user_id"`
+	Provider                string                   `gorm:"column:provider;uniqueIndex:credentials_user_id_provider_provider_account_id_key,priority:2;not null" json:"provider"`
+	ProviderAccountID       string                   `gorm:"column:provider_account_id;uniqueIndex:credentials_user_id_provider_provider_account_id_key,priority:3;not null" json:"provider_account_id"`
 	Type                    string                   `gorm:"column:type;not null" json:"type"`
 	Secret                  string                   `gorm:"column:secret;not null" json:"secret"`
 	Scopes                  ScalarList[string]       `gorm:"column:scopes;type:text[]" json:"scopes"`
@@ -424,10 +424,10 @@ func (*Credential) BeforeUpdate(tx *gorm.DB) error {
 
 type CalendarConnection struct {
 	ID                string             `gorm:"column:id;primaryKey" json:"id"`
-	UserID            string             `gorm:"column:user_id;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key;not null" json:"user_id"`
-	Provider          string             `gorm:"column:provider;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key;not null" json:"provider"`
+	UserID            string             `gorm:"column:user_id;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key,priority:1;not null" json:"user_id"`
+	Provider          string             `gorm:"column:provider;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key,priority:2;not null" json:"provider"`
 	IntegrationID     string             `gorm:"column:integration_id;not null" json:"integration_id"`
-	ProviderAccountID string             `gorm:"column:provider_account_id;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key;not null" json:"provider_account_id"`
+	ProviderAccountID string             `gorm:"column:provider_account_id;uniqueIndex:calendar_connections_user_id_provider_provider_account_id_key,priority:3;not null" json:"provider_account_id"`
 	Email             string             `gorm:"column:email;not null" json:"email"`
 	DisplayName       *string            `gorm:"column:display_name" json:"display_name"`
 	CreatedAt         DateTime           `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
@@ -466,12 +466,12 @@ func (*CalendarConnection) BeforeUpdate(tx *gorm.DB) error {
 
 type ProviderCalendar struct {
 	ID                     string              `gorm:"column:id;primaryKey" json:"id"`
-	CalendarConnectionID   string              `gorm:"column:calendar_connection_id;uniqueIndex:provider_calendars_calendar_connection_id_provider_calendar_key;index:connection_selected_idx;not null" json:"calendar_connection_id"`
-	ProviderCalendarID     string              `gorm:"column:provider_calendar_id;uniqueIndex:provider_calendars_calendar_connection_id_provider_calendar_key;not null" json:"provider_calendar_id"`
+	CalendarConnectionID   string              `gorm:"column:calendar_connection_id;uniqueIndex:provider_calendars_calendar_connection_id_provider_calendar_key,priority:1;index:connection_selected_idx,priority:1;not null" json:"calendar_connection_id"`
+	ProviderCalendarID     string              `gorm:"column:provider_calendar_id;uniqueIndex:provider_calendars_calendar_connection_id_provider_calendar_key,priority:2;not null" json:"provider_calendar_id"`
 	Name                   string              `gorm:"column:name;not null" json:"name"`
 	IsPrimary              bool                `gorm:"column:primary;index:primary_calendar_idx;default:false;not null" json:"primary"`
 	TimeZone               *string             `gorm:"column:time_zone" json:"time_zone"`
-	IsSelected             bool                `gorm:"column:selected;index:connection_selected_idx;default:false;not null" json:"selected"`
+	IsSelected             bool                `gorm:"column:selected;index:connection_selected_idx,priority:2;default:false;not null" json:"selected"`
 	IsDeleted              bool                `gorm:"column:deleted;default:false;not null" json:"deleted"`
 	IsWritable             bool                `gorm:"column:writable;default:false;not null" json:"writable"`
 	ProviderData           datatypes.JSON      `gorm:"column:provider_data" json:"provider_data"`
@@ -513,10 +513,10 @@ func (*ProviderCalendar) BeforeUpdate(tx *gorm.DB) error {
 
 type ConferencingConnection struct {
 	ID                string      `gorm:"column:id;primaryKey" json:"id"`
-	UserID            string      `gorm:"column:user_id;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key;not null" json:"user_id"`
-	Provider          string      `gorm:"column:provider;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key;not null" json:"provider"`
+	UserID            string      `gorm:"column:user_id;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key,priority:1;not null" json:"user_id"`
+	Provider          string      `gorm:"column:provider;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key,priority:2;not null" json:"provider"`
 	IntegrationID     string      `gorm:"column:integration_id;not null" json:"integration_id"`
-	ProviderAccountID string      `gorm:"column:provider_account_id;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key;not null" json:"provider_account_id"`
+	ProviderAccountID string      `gorm:"column:provider_account_id;uniqueIndex:conferencing_connections_user_id_provider_provider_account__key,priority:3;not null" json:"provider_account_id"`
 	Email             string      `gorm:"column:email;not null" json:"email"`
 	DisplayName       *string     `gorm:"column:display_name" json:"display_name"`
 	CreatedAt         DateTime    `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
@@ -673,7 +673,7 @@ func (*UserNotificationPreferences) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Poll struct {
-	ID          string    `gorm:"column:id;primaryKey" json:"id"`
+	ID          string    `gorm:"column:id;primaryKey;uniqueIndex:polls_id_key" json:"id"`
 	CreatedAt   DateTime  `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Deadline    *DateTime `gorm:"column:deadline;type:timestamp(3)" json:"deadline"`
@@ -746,7 +746,7 @@ type Participant struct {
 	// Per response edit link: grants edit access to this response without a session. App minted at creation, CSPRNG alphanumeric ≥32 chars (nanoid customAlphabet — url safe with no linkifier edge cases, unlike base64url); never a DB default so a code path that forgets to mint fails loudly. A response created through an emailed invite takes the invite's token. Rows that predate minting were backfilled with gen_random_uuid() hex
 	Token     string      `gorm:"column:token;uniqueIndex:participants_token_key;not null" json:"token"`
 	UserID    *string     `gorm:"column:user_id;index:participants_user_id_idx" json:"user_id"`
-	PollID    string      `gorm:"column:poll_id;index:participants_poll_id_idx;not null" json:"poll_id"`
+	PollID    string      `gorm:"column:poll_id;index:participants_poll_id_idx,type:hash;not null" json:"poll_id"`
 	Locale    *string     `gorm:"column:locale" json:"locale"`
 	TimeZone  *string     `gorm:"column:time_zone" json:"time_zone"`
 	CreatedAt DateTime    `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
@@ -785,8 +785,8 @@ func (*Participant) BeforeUpdate(tx *gorm.DB) error {
 
 type PollInvite struct {
 	ID     string `gorm:"column:id;primaryKey" json:"id"`
-	PollID string `gorm:"column:poll_id;uniqueIndex:poll_invites_poll_id_email_key;not null" json:"poll_id"`
-	Email  string `gorm:"column:email;uniqueIndex:poll_invites_poll_id_email_key;not null" json:"email"`
+	PollID string `gorm:"column:poll_id;uniqueIndex:poll_invites_poll_id_email_key,priority:1;not null" json:"poll_id"`
+	Email  string `gorm:"column:email;uniqueIndex:poll_invites_poll_id_email_key,priority:2;not null" json:"email"`
 	// Per invitee link. App minted, CSPRNG alphanumeric ≥32 chars (nanoid customAlphabet) — no schema default, so forgetting to mint fails loudly. Rotated on reactivation so a revoked (possibly leaked) token never regains access
 	Token      string    `gorm:"column:token;uniqueIndex:poll_invites_token_key;not null" json:"token"`
 	OpenedAt   *DateTime `gorm:"column:opened_at;type:timestamp(3)" json:"opened_at"`
@@ -829,16 +829,16 @@ func (*PollInvite) BeforeUpdate(tx *gorm.DB) error {
 
 type PollActivity struct {
 	ID     string `gorm:"column:id;primaryKey" json:"id"`
-	PollID string `gorm:"column:poll_id;index:poll_activities_poll_id_created_at_idx;index:poll_activities_poll_id_participant_id_idx;index:poll_activities_poll_id_option_id_idx;index:poll_activities_poll_id_invite_id_idx;not null" json:"poll_id"`
+	PollID string `gorm:"column:poll_id;index:poll_activities_poll_id_created_at_idx,priority:1;index:poll_activities_poll_id_participant_id_idx,priority:1;index:poll_activities_poll_id_option_id_idx,priority:1;index:poll_activities_poll_id_invite_id_idx,priority:1;not null" json:"poll_id"`
 	// Validated by a zod union in the feature, not a DB enum: the activity vocabulary grows without migrations
 	Type string `gorm:"column:type;not null" json:"type"`
 	// Subject ids are soft references (no FKs): activity must outlive its subjects — including account deletion — so refs persist as identity and the payload carries the display snapshot; whether a ref still resolves is the renderer's question
 	UserID        *string        `gorm:"column:user_id;index:poll_activities_user_id_idx" json:"user_id"`
-	ParticipantID *string        `gorm:"column:participant_id;index:poll_activities_poll_id_participant_id_idx" json:"participant_id"`
-	InviteID      *string        `gorm:"column:invite_id;index:poll_activities_poll_id_invite_id_idx" json:"invite_id"`
-	OptionID      *string        `gorm:"column:option_id;index:poll_activities_poll_id_option_id_idx" json:"option_id"`
+	ParticipantID *string        `gorm:"column:participant_id;index:poll_activities_poll_id_participant_id_idx,priority:2" json:"participant_id"`
+	InviteID      *string        `gorm:"column:invite_id;index:poll_activities_poll_id_invite_id_idx,priority:2" json:"invite_id"`
+	OptionID      *string        `gorm:"column:option_id;index:poll_activities_poll_id_option_id_idx,priority:2" json:"option_id"`
 	Payload       datatypes.JSON `gorm:"column:payload;default:'{}';not null" json:"payload"`
-	CreatedAt     DateTime       `gorm:"column:created_at;index:poll_activities_poll_id_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt     DateTime       `gorm:"column:created_at;index:poll_activities_poll_id_created_at_idx,priority:2,sort:desc;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	Poll          *Poll          `gorm:"belongsTo"`
 }
 
@@ -861,7 +861,7 @@ type Option struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
 	StartTime DateTime `gorm:"column:start_time;type:timestamp(0);not null" json:"start_time"`
 	Duration  int      `gorm:"column:duration_minutes;size:32;default:0;not null" json:"duration_minutes"`
-	PollID    string   `gorm:"column:poll_id;index:options_poll_id_idx;not null" json:"poll_id"`
+	PollID    string   `gorm:"column:poll_id;index:options_poll_id_idx,type:hash;not null" json:"poll_id"`
 	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	Poll      *Poll    `gorm:"belongsTo"`
 	Votes     []Vote   `gorm:"foreignKey:OptionID;constraint:votes_option_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -884,9 +884,9 @@ func (m *Option) BeforeCreate(tx *gorm.DB) error {
 
 type Vote struct {
 	ID            string       `gorm:"column:id;primaryKey" json:"id"`
-	ParticipantID string       `gorm:"column:participant_id;index:votes_participant_id_idx;not null" json:"participant_id"`
-	OptionID      string       `gorm:"column:option_id;index:votes_option_id_idx;not null" json:"option_id"`
-	PollID        string       `gorm:"column:poll_id;index:votes_poll_id_idx;not null" json:"poll_id"`
+	ParticipantID string       `gorm:"column:participant_id;index:votes_participant_id_idx,type:hash;not null" json:"participant_id"`
+	OptionID      string       `gorm:"column:option_id;index:votes_option_id_idx,type:hash;not null" json:"option_id"`
+	PollID        string       `gorm:"column:poll_id;index:votes_poll_id_idx,type:hash;not null" json:"poll_id"`
 	Type          string       `gorm:"column:type;default:'yes';not null" json:"type"`
 	CreatedAt     DateTime     `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt     *DateTime    `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false" json:"updated_at"`
@@ -1037,9 +1037,9 @@ func (*Sheet) BeforeUpdate(tx *gorm.DB) error {
 
 type SheetSlot struct {
 	ID             string          `gorm:"column:id;primaryKey" json:"id"`
-	SheetID        string          `gorm:"column:sheet_id;index:sheet_slots_sheet_id_start_time_idx;not null" json:"sheet_id"`
+	SheetID        string          `gorm:"column:sheet_id;index:sheet_slots_sheet_id_start_time_idx,priority:1;not null" json:"sheet_id"`
 	EventTypeID    string          `gorm:"column:event_type_id;index:sheet_slots_event_type_id_idx;not null" json:"event_type_id"`
-	StartTime      DateTime        `gorm:"column:start_time;index:sheet_slots_sheet_id_start_time_idx;type:timestamp(3);not null" json:"start_time"`
+	StartTime      DateTime        `gorm:"column:start_time;index:sheet_slots_sheet_id_start_time_idx,priority:2;type:timestamp(3);not null" json:"start_time"`
 	CreatedAt      DateTime        `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime        `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Sheet          *Sheet          `gorm:"belongsTo"`
@@ -1165,8 +1165,8 @@ func (*Space) BeforeUpdate(tx *gorm.DB) error {
 
 type SpaceMember struct {
 	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	SpaceID        string   `gorm:"column:space_id;uniqueIndex:space_members_space_id_user_id_key;not null" json:"space_id"`
-	UserID         string   `gorm:"column:user_id;uniqueIndex:space_members_space_id_user_id_key;index:space_members_user_id_idx;not null" json:"user_id"`
+	SpaceID        string   `gorm:"column:space_id;uniqueIndex:space_members_space_id_user_id_key,priority:1;not null" json:"space_id"`
+	UserID         string   `gorm:"column:user_id;uniqueIndex:space_members_space_id_user_id_key,priority:2;index:space_members_user_id_idx;not null" json:"user_id"`
 	CreatedAt      DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt      DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Role           string   `gorm:"column:role;default:'MEMBER';not null" json:"role"`
@@ -1206,8 +1206,8 @@ func (*SpaceMember) BeforeUpdate(tx *gorm.DB) error {
 
 type SpaceMemberInvite struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	SpaceID   string   `gorm:"column:space_id;uniqueIndex:space_member_invites_space_id_email_key;not null" json:"space_id"`
-	Email     string   `gorm:"column:email;uniqueIndex:space_member_invites_space_id_email_key;not null" json:"email"`
+	SpaceID   string   `gorm:"column:space_id;uniqueIndex:space_member_invites_space_id_email_key,priority:1;not null" json:"space_id"`
+	Email     string   `gorm:"column:email;uniqueIndex:space_member_invites_space_id_email_key,priority:2;not null" json:"email"`
 	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Role      string   `gorm:"column:role;default:'MEMBER';not null" json:"role"`
@@ -1336,15 +1336,15 @@ func (*SpaceWebhook) BeforeUpdate(tx *gorm.DB) error {
 
 type WebhookDelivery struct {
 	ID        string `gorm:"column:id;primaryKey" json:"id"`
-	WebhookID string `gorm:"column:webhook_id;uniqueIndex:webhook_deliveries_webhook_id_activity_id_key;not null" json:"webhook_id"`
+	WebhookID string `gorm:"column:webhook_id;uniqueIndex:webhook_deliveries_webhook_id_activity_id_key,priority:1;not null" json:"webhook_id"`
 	// Soft reference to the PollActivity row this delivery was fanned out from; with webhookId it makes fan-out idempotent
-	ActivityID string `gorm:"column:activity_id;uniqueIndex:webhook_deliveries_webhook_id_activity_id_key;not null" json:"activity_id"`
+	ActivityID string `gorm:"column:activity_id;uniqueIndex:webhook_deliveries_webhook_id_activity_id_key,priority:2;not null" json:"activity_id"`
 	EventType  string `gorm:"column:event_type;not null" json:"event_type"`
 	// Frozen at fan-out: retries resend exactly what the first attempt sent
 	Payload            datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
-	Status             string         `gorm:"column:status;index:webhook_deliveries_status_next_attempt_at_idx;default:'pending';not null" json:"status"`
+	Status             string         `gorm:"column:status;index:webhook_deliveries_status_next_attempt_at_idx,priority:1;default:'pending';not null" json:"status"`
 	Attempts           int            `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
-	NextAttemptAt      DateTime       `gorm:"column:next_attempt_at;index:webhook_deliveries_status_next_attempt_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_attempt_at"`
+	NextAttemptAt      DateTime       `gorm:"column:next_attempt_at;index:webhook_deliveries_status_next_attempt_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"next_attempt_at"`
 	LastResponseStatus *int           `gorm:"column:last_response_status;size:32" json:"last_response_status"`
 	LastError          *string        `gorm:"column:last_error" json:"last_error"`
 	CreatedAt          DateTime       `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
@@ -1384,8 +1384,8 @@ func (*WebhookDelivery) BeforeUpdate(tx *gorm.DB) error {
 type Account struct {
 	ID                    string    `gorm:"column:id;primaryKey" json:"id"`
 	UserID                string    `gorm:"column:user_id;index:accounts_user_id_idx;not null" json:"user_id"`
-	Provider              string    `gorm:"column:provider;uniqueIndex:accounts_provider_provider_account_id_key;not null" json:"provider"`
-	ProviderAccountID     string    `gorm:"column:provider_account_id;uniqueIndex:accounts_provider_provider_account_id_key;not null" json:"provider_account_id"`
+	Provider              string    `gorm:"column:provider;uniqueIndex:accounts_provider_provider_account_id_key,priority:1;not null" json:"provider"`
+	ProviderAccountID     string    `gorm:"column:provider_account_id;uniqueIndex:accounts_provider_provider_account_id_key,priority:2;not null" json:"provider_account_id"`
 	RefreshToken          *string   `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken           *string   `gorm:"column:access_token;type:text" json:"access_token"`
 	ExpiresAt             *int      `gorm:"column:expires_at;size:32" json:"expires_at"`
@@ -1444,8 +1444,8 @@ type User struct {
 	BanExpires                   *DateTime                    `gorm:"column:ban_expires;type:timestamp(3)" json:"ban_expires"`
 	Role                         string                       `gorm:"column:role;default:'user';not null" json:"role"`
 	LastLoginMethod              *string                      `gorm:"column:last_login_method" json:"last_login_method"`
-	IsAnonymous                  bool                         `gorm:"column:anonymous;index:users_anonymous_last_seen_at_idx;default:false;not null" json:"anonymous"`
-	LastSeenAt                   DateTime                     `gorm:"column:last_seen_at;index:users_anonymous_last_seen_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"last_seen_at"`
+	IsAnonymous                  bool                         `gorm:"column:anonymous;index:users_anonymous_last_seen_at_idx,priority:1;default:false;not null" json:"anonymous"`
+	LastSeenAt                   DateTime                     `gorm:"column:last_seen_at;index:users_anonymous_last_seen_at_idx,priority:2;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"last_seen_at"`
 	DeletedAt                    *DateTime                    `gorm:"column:deleted_at;index:users_deleted_at_idx;type:timestamp(3)" json:"deleted_at"`
 	JobTitle                     *string                      `gorm:"column:job_title" json:"job_title"`
 	ReviewRequestedAt            *DateTime                    `gorm:"column:review_requested_at;type:timestamp(3)" json:"review_requested_at"`

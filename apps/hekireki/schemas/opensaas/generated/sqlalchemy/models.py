@@ -1,4 +1,4 @@
-from sqlalchemy import Dialect, ForeignKey, Index, MetaData, Text, TypeDecorator, text
+from sqlalchemy import Dialect, ForeignKey, Index, MetaData, PrimaryKeyConstraint, Text, TypeDecorator, text
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Optional
@@ -130,6 +130,10 @@ class PageViewSource(Base):
     date_: Mapped[datetime] = mapped_column("date", primary_key=True, default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     daily_stats_id: Mapped[Optional[int]] = mapped_column("dailyStatsId", ForeignKey("DailyStats.id", ondelete="SET NULL", onupdate="CASCADE", name="PageViewSource_dailyStatsId_fkey"))
     visitors: Mapped[int]
+
+    __table_args__ = (
+        PrimaryKeyConstraint("date", "name"),
+    )
 
     daily_stats: Mapped[Optional["DailyStats"]] = relationship(back_populates="sources")
 

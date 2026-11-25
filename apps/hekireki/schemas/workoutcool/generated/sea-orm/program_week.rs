@@ -5,21 +5,23 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "program_weeks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "programId")]
+    #[sea_orm(column_name = "programId", column_type = "Text")]
     pub program_id: String,
     #[sea_orm(column_name = "weekNumber")]
     pub week_number: i32,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
-    #[sea_orm(column_name = "titleEn")]
+    #[sea_orm(column_name = "titleEn", column_type = "Text")]
     pub title_en: String,
-    #[sea_orm(column_name = "titleEs")]
+    #[sea_orm(column_name = "titleEs", column_type = "Text")]
     pub title_es: String,
-    #[sea_orm(column_name = "titlePt")]
+    #[sea_orm(column_name = "titlePt", column_type = "Text")]
     pub title_pt: String,
-    #[sea_orm(column_name = "titleRu")]
+    #[sea_orm(column_name = "titleRu", column_type = "Text")]
     pub title_ru: String,
-    #[sea_orm(column_name = "titleZhCn")]
+    #[sea_orm(column_name = "titleZhCn", column_type = "Text")]
     pub title_zh_cn: String,
     #[sea_orm(column_type = "Text")]
     pub description: String,
@@ -41,7 +43,8 @@ pub enum Relation {
         belongs_to = "super::program::Entity",
         from = "Column::ProgramId",
         to = "super::program::Column::Id",
-        on_delete = "Cascade"
+        on_delete = "Cascade",
+        fk_name = "program_weeks_programId_fkey"
     )]
     Program,
     #[sea_orm(has_many = "super::program_session::Entity")]

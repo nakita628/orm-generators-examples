@@ -8,32 +8,41 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "PublishedDocs")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
+    #[sea_orm(column_type = "Text")]
     pub slug: String,
+    #[sea_orm(column_type = "Text")]
     pub title: String,
-    #[sea_orm(column_name = "collectionID")]
+    #[sea_orm(column_name = "collectionID", column_type = "Text")]
     pub collection_id: String,
-    #[sea_orm(column_name = "creatorUid")]
+    #[sea_orm(column_name = "creatorUid", column_type = "Text")]
     pub creator_uid: String,
+    #[sea_orm(column_type = "Text")]
     pub version: String,
     #[sea_orm(column_name = "autoSync")]
     pub auto_sync: bool,
-    #[sea_orm(column_name = "documentTree")]
+    #[sea_orm(column_name = "documentTree", column_type = "JsonBinary")]
     pub document_tree: Option<Json>,
     #[sea_orm(column_name = "workspaceType")]
     pub workspace_type: WorkspaceType,
-    #[sea_orm(column_name = "workspaceID")]
+    #[sea_orm(column_name = "workspaceID", column_type = "Text")]
     pub workspace_id: String,
-    #[sea_orm(column_name = "environmentID")]
+    #[sea_orm(column_name = "environmentID", column_type = "Text")]
     pub environment_id: Option<String>,
-    #[sea_orm(column_name = "environmentName")]
+    #[sea_orm(column_name = "environmentName", column_type = "Text")]
     pub environment_name: Option<String>,
-    #[sea_orm(column_name = "environmentVariables")]
+    #[sea_orm(column_name = "environmentVariables", column_type = "JsonBinary")]
     pub environment_variables: Option<Json>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub metadata: Option<Json>,
-    #[sea_orm(column_name = "createdOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_name = "createdOn",
+        column_type = "custom(\"timestamptz(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_on: DateTimeWithTimeZone,
-    #[sea_orm(column_name = "updatedOn", column_type = "TimestampWithTimeZone")]
+    #[sea_orm(column_name = "updatedOn", column_type = "custom(\"timestamptz(3)\")")]
     pub updated_on: DateTimeWithTimeZone,
 }
 

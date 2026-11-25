@@ -24,7 +24,10 @@ pub struct Model {
     pub viewport_h: Option<i32>,
     pub page_h: Option<i32>,
     pub scroll_pct: Option<i32>,
-    #[sea_orm(column_type = "TimestampWithTimeZone")]
+    #[sea_orm(
+        column_type = "TimestampWithTimeZone",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTimeWithTimeZone,
 }
 
@@ -33,7 +36,8 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::website::Entity",
         from = "Column::WebsiteId",
-        to = "super::website::Column::Id"
+        to = "super::website::Column::Id",
+        fk_name = "heatmap_event_website_id_fkey"
     )]
     Website,
 }

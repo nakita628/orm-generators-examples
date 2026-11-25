@@ -8,14 +8,25 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "Premium")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Text")]
     pub id: String,
-    #[sea_orm(column_name = "createdAt")]
+    #[sea_orm(
+        column_name = "createdAt",
+        column_type = "custom(\"timestamp(3)\")",
+        default_expr = "Expr::current_timestamp()"
+    )]
     pub created_at: DateTime,
-    #[sea_orm(column_name = "updatedAt")]
+    #[sea_orm(column_name = "updatedAt", column_type = "custom(\"timestamp(3)\")")]
     pub updated_at: DateTime,
-    #[sea_orm(column_name = "pendingInvites")]
+    #[sea_orm(
+        column_name = "pendingInvites",
+        column_type = "Array(RcOrArc::new(ColumnType::Text))"
+    )]
     pub pending_invites: Vec<String>,
-    #[sea_orm(column_name = "lemonSqueezyRenewsAt")]
+    #[sea_orm(
+        column_name = "lemonSqueezyRenewsAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub lemon_squeezy_renews_at: Option<DateTime>,
     #[sea_orm(column_name = "lemonSqueezyCustomerId")]
     pub lemon_squeezy_customer_id: Option<i32>,
@@ -29,82 +40,118 @@ pub struct Model {
     pub lemon_squeezy_product_id: Option<i32>,
     #[sea_orm(column_name = "lemonSqueezyVariantId")]
     pub lemon_squeezy_variant_id: Option<i32>,
-    #[sea_orm(column_name = "lemonLicenseKey")]
+    #[sea_orm(column_name = "lemonLicenseKey", column_type = "Text")]
     pub lemon_license_key: Option<String>,
-    #[sea_orm(column_name = "lemonLicenseInstanceId")]
+    #[sea_orm(column_name = "lemonLicenseInstanceId", column_type = "Text")]
     pub lemon_license_instance_id: Option<String>,
-    #[sea_orm(column_name = "lemonSubscriptionStatus")]
+    #[sea_orm(column_name = "lemonSubscriptionStatus", column_type = "Text")]
     pub lemon_subscription_status: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeCustomerId")]
+    #[sea_orm(column_name = "stripeCustomerId", column_type = "Text")]
     pub stripe_customer_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeSubscriptionId")]
+    #[sea_orm(column_name = "stripeSubscriptionId", column_type = "Text")]
     pub stripe_subscription_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "stripeSubscriptionItemId")]
+    #[sea_orm(column_name = "stripeSubscriptionItemId", column_type = "Text")]
     pub stripe_subscription_item_id: Option<String>,
-    #[sea_orm(column_name = "stripePriceId")]
+    #[sea_orm(column_name = "stripePriceId", column_type = "Text")]
     pub stripe_price_id: Option<String>,
-    #[sea_orm(column_name = "stripeProductId")]
+    #[sea_orm(column_name = "stripeProductId", column_type = "Text")]
     pub stripe_product_id: Option<String>,
-    #[sea_orm(column_name = "stripeSubscriptionStatus")]
+    #[sea_orm(column_name = "stripeSubscriptionStatus", column_type = "Text")]
     pub stripe_subscription_status: Option<String>,
-    #[sea_orm(column_name = "stripeCancelAt")]
+    #[sea_orm(
+        column_name = "stripeCancelAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_cancel_at: Option<DateTime>,
     #[sea_orm(column_name = "stripeCancelAtPeriodEnd")]
     pub stripe_cancel_at_period_end: Option<bool>,
-    #[sea_orm(column_name = "stripeRenewsAt")]
+    #[sea_orm(
+        column_name = "stripeRenewsAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_renews_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeTrialEnd")]
+    #[sea_orm(
+        column_name = "stripeTrialEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_trial_end: Option<DateTime>,
-    #[sea_orm(column_name = "stripeTrialConversionInvoiceId")]
+    #[sea_orm(column_name = "stripeTrialConversionInvoiceId", column_type = "Text")]
     pub stripe_trial_conversion_invoice_id: Option<String>,
-    #[sea_orm(column_name = "stripeTrialConvertedAt")]
+    #[sea_orm(
+        column_name = "stripeTrialConvertedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_trial_converted_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeCancellationInitiatedAt")]
+    #[sea_orm(
+        column_name = "stripeCancellationInitiatedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_cancellation_initiated_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeCanceledAt")]
+    #[sea_orm(
+        column_name = "stripeCanceledAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_canceled_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeEndedAt")]
+    #[sea_orm(
+        column_name = "stripeEndedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_ended_at: Option<DateTime>,
-    #[sea_orm(column_name = "stripeCancellationFeedback")]
+    #[sea_orm(column_name = "stripeCancellationFeedback", column_type = "Text")]
     pub stripe_cancellation_feedback: Option<String>,
-    #[sea_orm(column_name = "stripeCancellationComment")]
+    #[sea_orm(column_name = "stripeCancellationComment", column_type = "Text")]
     pub stripe_cancellation_comment: Option<String>,
-    #[sea_orm(column_name = "stripeAiOverageLastInvoiceId")]
+    #[sea_orm(column_name = "stripeAiOverageLastInvoiceId", column_type = "Text")]
     pub stripe_ai_overage_last_invoice_id: Option<String>,
-    #[sea_orm(column_name = "stripeAiOverageLastPeriodEnd")]
+    #[sea_orm(
+        column_name = "stripeAiOverageLastPeriodEnd",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub stripe_ai_overage_last_period_end: Option<DateTime>,
     #[sea_orm(column_name = "stripeAiOverageLastUnits")]
     pub stripe_ai_overage_last_units: Option<i32>,
     #[sea_orm(column_name = "stripeInvoiceEmailsEnabled", default_value = false)]
     pub stripe_invoice_emails_enabled: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "appleOriginalTransactionId")]
+    #[sea_orm(column_name = "appleOriginalTransactionId", column_type = "Text")]
     pub apple_original_transaction_id: Option<String>,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "appleLatestTransactionId")]
+    #[sea_orm(column_name = "appleLatestTransactionId", column_type = "Text")]
     pub apple_latest_transaction_id: Option<String>,
-    #[sea_orm(column_name = "appleProductId")]
+    #[sea_orm(column_name = "appleProductId", column_type = "Text")]
     pub apple_product_id: Option<String>,
-    #[sea_orm(column_name = "appleSubscriptionGroupIdentifier")]
+    #[sea_orm(column_name = "appleSubscriptionGroupIdentifier", column_type = "Text")]
     pub apple_subscription_group_identifier: Option<String>,
-    #[sea_orm(column_name = "appleAppAccountToken")]
+    #[sea_orm(column_name = "appleAppAccountToken", column_type = "Text")]
     pub apple_app_account_token: Option<String>,
-    #[sea_orm(column_name = "appleSubscriptionStatus")]
+    #[sea_orm(column_name = "appleSubscriptionStatus", column_type = "Text")]
     pub apple_subscription_status: Option<String>,
-    #[sea_orm(column_name = "appleEnvironment")]
+    #[sea_orm(column_name = "appleEnvironment", column_type = "Text")]
     pub apple_environment: Option<String>,
-    #[sea_orm(column_name = "applePurchaseDate")]
+    #[sea_orm(
+        column_name = "applePurchaseDate",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub apple_purchase_date: Option<DateTime>,
-    #[sea_orm(column_name = "appleExpiresAt")]
+    #[sea_orm(
+        column_name = "appleExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub apple_expires_at: Option<DateTime>,
-    #[sea_orm(column_name = "appleRevokedAt")]
+    #[sea_orm(
+        column_name = "appleRevokedAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub apple_revoked_at: Option<DateTime>,
-    #[sea_orm(column_name = "appleOfferDiscountType")]
+    #[sea_orm(column_name = "appleOfferDiscountType", column_type = "Text")]
     pub apple_offer_discount_type: Option<String>,
-    #[sea_orm(column_name = "adminGrantExpiresAt")]
+    #[sea_orm(
+        column_name = "adminGrantExpiresAt",
+        column_type = "custom(\"timestamp(3)\")"
+    )]
     pub admin_grant_expires_at: Option<DateTime>,
     #[sea_orm(column_name = "adminGrantTier")]
     pub admin_grant_tier: Option<PremiumTier>,
